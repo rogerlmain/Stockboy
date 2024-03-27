@@ -1,0 +1,50 @@
+﻿@using Stockboy.Models
+
+@model List<Stockboy.Models.HoldingsData>
+
+@addTagHelper *, Stockboy
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+	Layout = "~/Layouts/Main.cshtml";
+	ViewData ["Title"] = "Home";
+}
+
+@section Scripts {
+	<script>
+
+		function lookup_stock () {
+			fetch ("/lookup", {
+				method: "post",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify ({ ticker: document.getElementById ("stock_ticker").value })
+			}).then (response => response.json ()).then (response => {
+				alert ("value is " + response.value);
+			});
+		}
+
+	</script>
+}
+
+<popup id="popup_window" classname="popup-window" onshow="load_popup_contents ()">
+	<div style="font-size: 12pt">
+		<img name="eyecandy" src="~/images/eyecandy.gif" />
+		<span>Loading...</span>
+	</div>
+</popup>
+
+<div id="current_holdings">
+	<partial name="Partials/CurrentHoldings" model="Model" />
+	@* @{await Html.RenderPartialAsync ("Partials/CurrentHoldings", Model);}; *@
+</div>
+
+<div class="button-bar">
+	<button id="add_ticker" onclick="return show_popup ('popup_window', 'TickerForm')">Add Ticker</button>
+	<button id="add_broker" onclick="return show_popup ('popup_window', 'BrokerForm')">Add Broker</button>
+	<button id="add_purchase" onclick="return show_popup ('popup_window', 'PurchaseForm')">Add Purchase</button>
+</div>
+
+<div class="with-lotsa-headspace">
+	<input type="text" id="stock_ticker" />
+	<button id="stock_lookup_button" onclick="lookup_stock ()">Lookup</button>
+</div>

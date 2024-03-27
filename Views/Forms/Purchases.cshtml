@@ -1,0 +1,55 @@
+﻿@using Stockboy.Models
+@using System.Diagnostics;
+
+
+<form id="purchases_form">
+	<div class="form-table">
+
+		<label for="broker_id">Broker</label>
+		<select id="broker_id" name="broker_id" required>
+			<option disabled selected value="">Select One</option>
+			@{
+				foreach (Broker broker in Model.brokers) {
+					<option value="@broker.id">@broker.name</option>
+				}
+			}
+		</select>
+
+		<label for="ticker_id">Ticker</label>
+		<select id="ticker_id" name="ticker_id" required>
+			<option disabled selected value="">Select One</option>
+			@{
+				foreach (Ticker ticker in Model.tickers) {
+					<option value="@ticker.id">@ticker.name</option>
+				}
+			}
+		</select>
+
+		<label for="quantity">Quantity</label>
+		<input type="numeric" id="quantity" name="quantity" commas="true" decimal-places="8" required value="@(Debugger.IsAttached ? 1 : String.Empty)"/>
+
+		<label for="purchase_price">Price</label>
+		<input type="currency" id="purchase_price" name="purchase_price" commas="true" decimal-places="10" required value="@(Debugger.IsAttached ? 0 : String.Empty)" />
+
+		<label for="purchase_date">Purchase Date</label>
+		<input type="datetime-local" id="purchase_date" name="purchase_date" default="now" />
+
+		<label for="settlement_date">Settlement Date</label>
+		<input type="date" id="settlement_date" name="settlement_date" default="now" />
+
+		<label for="purchase_type_id">Purchase Type</label>
+		<select id="purchase_type_id" name="purchase_type_id">
+			@{
+				foreach (OptionsModel option in Model.purchase_types) {
+					<option value="@option.id">@option.description</option>
+				}
+			}
+		</select>
+	</div>
+
+</form>
+
+<div class="button-bar">
+	<button id="cancel_button" onclick="close_popup ('popup_window')">Cancel</button>
+	<button id="submit_button" onclick="submit_form (document.getElementById ('purchases_form'), 'SavePurchase', update_holdings)">Save</button>
+</div>

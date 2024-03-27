@@ -1,0 +1,51 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Stockboy
+build_property.RootNamespace = Stockboy
+build_property.ProjectDir = D:\Projects\DotNet\Stockboy\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\Projects\DotNet\Stockboy
+build_property._RazorSourceGeneratorDebug = 
+
+[D:/Projects/DotNet/Stockboy/Helpers/Views/Popup.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SGVscGVyc1xWaWV3c1xQb3B1cC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/DotNet/Stockboy/Layouts/Main.cshtml]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0c1xNYWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/DotNet/Stockboy/Views/Forms/Brokers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcQnJva2Vycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/DotNet/Stockboy/Views/Forms/Purchases.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcUHVyY2hhc2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/DotNet/Stockboy/Views/Forms/SaveResult.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcU2F2ZVJlc3VsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/DotNet/Stockboy/Views/Forms/Tickers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcVGlja2Vycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/DotNet/Stockboy/Views/Home.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/DotNet/Stockboy/Views/Partials/CurrentHoldings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGlhbHNcQ3VycmVudEhvbGRpbmdzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 

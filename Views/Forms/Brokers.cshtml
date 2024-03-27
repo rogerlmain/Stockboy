@@ -1,0 +1,8 @@
+﻿@using System.Diagnostics;
+
+<div id="brokerage_form">
+	<label for="broker">Broker</label>
+	<input type="text" id="broker" name="broker" value="@(Debugger.IsAttached ? "TDAmeritrade" : String.Empty)" />
+
+	<button id="submit_broker" onclick="submit_broker ()">Save</button>
+</div>

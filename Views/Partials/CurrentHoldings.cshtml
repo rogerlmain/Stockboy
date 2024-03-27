@@ -1,0 +1,31 @@
+﻿@using Stockboy.Models
+
+@model List<Stockboy.Models.HoldingsData>
+
+<div class="with-headspace">
+	<div class="holdings-table">
+		<div class="header">
+			<div>Broker</div>
+			<div>Ticker</div>
+			<div>Company</div>
+			<div>Amount</div>
+			<div>Cost</div>
+			<div>Current Price</div>
+			<div>Value</div>
+			<div>Profit / Loss</div>
+		</div>
+
+		@{
+			foreach (HoldingsData holding in Model) {
+				<div>@holding.broker</div>
+				<div>@holding.ticker</div>
+				<div>@holding.name</div>
+				<div>@holding.amount</div>
+				<div>@holding.cost</div>
+				<div>@holding.price</div>
+				<div>@holding.value</div>
+				<div>@holding.profit</div>
+			}
+		}
+	</div>
+</div>

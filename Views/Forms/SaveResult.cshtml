@@ -1,0 +1,18 @@
+﻿@using Stockboy.Models
+@using static Stockboy.Classes.Globals
+
+@{
+	String? error = ViewData?["error"] as String;
+	String? name = ViewData?["name"] as String;
+}
+
+<div>
+	@{
+		if (not_null (error)) {
+			<div>Error. Cannot save @name: @error.</div>
+		} else {
+			<div>@name saved.</div>
+		}
+	}
+	<div class="right-aligned with-lotsa-headspace"><button id="close_button" onclick="hide_popup ('popup_window')">Close</button></div>
+</div>

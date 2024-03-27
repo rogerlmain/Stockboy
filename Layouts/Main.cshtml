@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title>Stockboy - @ViewData["Title"]</title>
+
+	<link rel="stylesheet" href="~/Styles/common.min.css" asp-append-version="true" />
+
+	<script src="~/Scripts/prototypes.js"></script>
+	<script src="~/Scripts/common.js"></script>
+	<script src="~/Scripts/elements.js"></script>
+
+	@await RenderSectionAsync("Scripts", required: false)
+
+</head>
+
+<body>
+
+	<div class="header">
+		<a href="/">Home</a>
+	</div>
+
+	<div class="full-page row-centered">
+		<div>@RenderBody()</div>
+	</div>
+
+	<div class="footer">
+		&copy; 2024 - Stockboy - <a asp-area="" asp-page="/Privacy">Privacy</a>
+	</div>
+
+</body>
+
+</html>
