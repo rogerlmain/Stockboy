@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@addTagHelper *, Stockboy
+
+<!DOCTYPE html>
 
 <html lang="en">
 
@@ -21,8 +23,18 @@
 
 <body>
 
+	<popup id="popup_window" classname="popup-window" onshow="load_popup_contents ()">
+		<div style="font-size: 12pt">
+			<img name="eyecandy" src="~/images/eyecandy.gif" />
+			<span>Loading...</span>
+		</div>
+	</popup>
+
 	<div class="header">
-		<a href="/">Home</a>
+		<div class="main-menu">
+			<a href="/">Home</a>
+			<a href="/Purchases">Purchases</a>
+		</div>
 	</div>
 
 	<div class="full-page row-centered">

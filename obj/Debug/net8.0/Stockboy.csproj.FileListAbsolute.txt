@@ -143,3 +143,4 @@ D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\refint\Stockboy.dll
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.pdb
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.genruntimeconfig.cache
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\ref\Stockboy.dll
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.sourcelink.json

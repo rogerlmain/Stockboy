@@ -69,7 +69,7 @@ namespace Stockboy.Controllers {
 
 		[Route ("SavePurchase")]
 		[HttpPost]
-		public IActionResult save_purchase ([FromBody] PurchaseDataModel purchase) {
+		public IActionResult save_purchase ([FromBody] PurchaseModel purchase) {
 			try {
 				context.purchases.Add (purchase);
 				context.SaveChanges ();

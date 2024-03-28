@@ -7,7 +7,7 @@ using static Stockboy.Classes.Globals;
 
 namespace Stockboy.Controllers {
 
-	public class HomeController : BaseController {
+	public class MainController : BaseController {
 
 
 		private async Task<StockDetailsModel?> get_stock_details (List<HoldingsModel> holdings) {
@@ -27,11 +27,20 @@ namespace Stockboy.Controllers {
 
 
 		[Route ("/")]
-		public async Task<IActionResult> Home () => View ("Home", Stocks.get_holdings (context));
+		public IActionResult home () {
+			List<HoldingsData> holdings = Stocks.get_holdings (context);
+			return View ("Home", Stocks.get_holdings (context)); //holdings.OrderByDescending (item => {
+			//	return item.GetType ().BaseType?.Name;
+			//})/*.ThenBy (item => item.GetType ().Name)*/.ToList ());
+		}
 
 
-		public HomeController (StockContext context) => this.context = context;
+		[Route ("/Purchases")]
+		public IActionResult purchases () => View ("Purchases", Stocks.get_purchases (context));
 
-	}// HomeController;
+
+		public MainController (StockContext context) => this.context = context;
+
+	}// MainController;
 
 }// namespace

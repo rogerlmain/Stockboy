@@ -56,4 +56,33 @@ function clear_commas (event) {
 }
 
 
+function highlight_row (table_name, highlighted_row, selected = false) {
+	for (let row of document.getElementById (table_name).querySelectorAll ("div.table-row")) {
+		if (row.getBoolean ("selected") && !selected) continue;
+		if (selected) row.removeAttribute ("selected");
+		for (let item of row.querySelectorAll ("div")) {
+			item.style.backgroundColor = null;
+			item.style.cursor = null;
+		}
+	}
+	for (let item of highlighted_row.querySelectorAll("div")) {
+		if (highlighted_row.getBoolean ("selected") && !selected) continue;
+		item.style.backgroundColor = (selected ? "var(--selected-color)": "var(--highlight-color)");
+		item.style.cursor = "pointer";
+	}
+	if (selected) highlighted_row.setAttribute ("selected", "true");
+}
+
+
+function remove_highlight (table_name) {
+	for (let row of document.getElementById (table_name).querySelectorAll ("div.table-row")) {
+		if (row.getBoolean ("selected")) continue;
+		for (let item of row.querySelectorAll ("div")) {
+			item.style.backgroundColor = null;
+			item.style.cursor = null;
+		}
+	}
+}
+
+
 document.addEventListener ("DOMContentLoaded", () => execute_custom_handlers (document));

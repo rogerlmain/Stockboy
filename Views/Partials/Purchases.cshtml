@@ -1,0 +1,6 @@
+﻿@using Stockboy.Models
+
+@model List<PurchaseData>
+@addTagHelper *, Stockboy
+
+<data-table id="purchases-table" endpoint="UpdatePurchases" id_field="purchase_id" data="@Model" />

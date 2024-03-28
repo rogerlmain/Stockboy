@@ -26,16 +26,8 @@
 	</script>
 }
 
-<popup id="popup_window" classname="popup-window" onshow="load_popup_contents ()">
-	<div style="font-size: 12pt">
-		<img name="eyecandy" src="~/images/eyecandy.gif" />
-		<span>Loading...</span>
-	</div>
-</popup>
-
-<div id="current_holdings">
-	<partial name="Partials/CurrentHoldings" model="Model" />
-	@* @{await Html.RenderPartialAsync ("Partials/CurrentHoldings", Model);}; *@
+<div id="current_holdings" class="with-headspace" endpoint="UpdateHoldings">
+	<partial name="Partials/Holdings" model="Model" />
 </div>
 
 <div class="button-bar">

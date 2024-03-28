@@ -1,0 +1,6 @@
+﻿@using Stockboy.Models
+
+@model List<Stockboy.Models.HoldingsData>
+@addTagHelper *, Stockboy
+
+<data-table id="holdings-table" endpoint="UpdateHoldings" data="@Model" />

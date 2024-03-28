@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stockboy.Classes;
 using Stockboy.Classes.Data;
+using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
@@ -18,7 +19,12 @@ namespace Stockboy.Controllers {
 
 
 		[Route ("UpdateHoldings")]
-		public IActionResult update_holdings () => View ("Partials/CurrentHoldings", Stocks.get_holdings (context));
+		public IActionResult update_holdings () => View ("Partials/Holdings", Stocks.get_holdings (context));
+
+
+		[Route ("UpdatePurchases")]
+		[HttpPost]
+		public IActionResult update_purchases ([FromBody] StringModel model) => View ("Partials/Purchases", Stocks.get_purchases (context).OrderBy (model.text));
 
 		
 		public StocksController (StockContext context) => this.context = context;

@@ -1,0 +1,42 @@
+﻿@using Stockboy.Classes;
+@using System.Reflection
+@using System.ComponentModel.DataAnnotations;
+
+@using static Stockboy.Classes.Globals
+
+@model Stockboy.Helpers.DataTableTagHelper
+
+@{
+	List<PropertyInfo> display_fields = Model.data.First ().DisplayFields ().OrderBy (field => field.InheritanceLevel ()).ToList();
+	int column_count = display_fields.Count ();
+}
+
+<div id="@Model.id" class="data-table" endpoint="@Model.endpoint" style="grid-template-columns: repeat(@column_count, min-content)" onmouseout="remove_highlight ('@Model.id')">
+	<div class="header">
+		@{
+			foreach (PropertyInfo field in display_fields) {
+				<div field="@field.Name">@(field.Name.ToHeader ())</div>
+			}
+		}
+	</div>
+
+	@{
+		foreach (var row in Model.data) {
+			<div class="table-row" style="display: contents"
+				onmouseover="highlight_row ('@Model.id', this)"
+				onclick="highlight_row ('@Model.id', this, true)">
+				@{
+					if (not_null (Model.id_field)) {
+						<input type="hidden" name="@Model.id_field" value="@(row.KeyField ().GetValue (row))" />
+					}
+				}
+
+				@{
+					foreach (PropertyInfo field in display_fields) {
+						<div>@(field.GetValue (row))</div>
+					}
+				}
+			</div>
+		}
+	}
+</div>

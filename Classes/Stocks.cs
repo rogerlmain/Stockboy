@@ -50,6 +50,10 @@ namespace Stockboy.Classes {
 
 		}
 
+
+		public static List<PurchaseData> get_purchases (StockContext context) => context.purchase_data.SelectAll ().OrderBy ("purchase_date");
+
+
 	}// Stocks;
 
 }// namespace;

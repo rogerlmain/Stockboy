@@ -91,6 +91,19 @@ function submit_form (form, target, response_process = null) {
 }
 
 
+function sort_table (table_id, endpoint, field) {
+	fetch (endpoint, {
+		method: "post",
+		headers: { "content-type": "application/json"},
+		body: JSON.stringify ({ text: field })
+	}).then (response => response.text ()).then (response => {
+		let table = document.getElementById (table_id);
+		table.innerHTML = response;
+		execute_custom_handlers (table);
+	});
+}
+
+
 /********/
 
 
@@ -133,6 +146,13 @@ function execute_custom_handlers (target) {
 
 		input.addEventListener ("invalid", () => input.setCustomValidity (message));
 		input.addEventListener ("change", () => input.setCustomValidity (blank));
+	}
+
+	for (let table of document.querySelectorAll ("div.data-table")) {
+		let endpoint = table.getAttribute ("endpoint");
+		for (let item of table.querySelectorAll ("div.header > div")) {
+			item.addEventListener ("click", () => sort_table (table.id, endpoint, item.getAttribute ("field")));
+		}
 	}
 
 }

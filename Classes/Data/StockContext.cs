@@ -13,7 +13,8 @@ namespace Stockboy.Classes.Data {
 
 		public DbSet<Ticker> tickers { get; set; }
 		public DbSet<Broker> brokers { get; set; }
-		public DbSet<PurchaseDataModel> purchases { get; set; }
+		public DbSet<PurchaseModel> purchases { get; set; }
+		public DbSet<PurchaseData> purchase_data { get; set; }
 		public DbSet<OptionsModel> purchase_types { get; set; }
 		public DbSet<HoldingsModel> holdings { get; set; }
 
