@@ -1,8 +1,12 @@
 ﻿@using System.Diagnostics;
 
+@{
+	bool debug = Debugger.IsAttached && false;
+}
+
 <div id="ticker_form">
 	<label for="ticker">Ticker</label>
-	<input type="text" id="ticker" name="ticker" value="@(Debugger.IsAttached ? "PCFBY" : String.Empty)" />
+	<input type="text" id="ticker" name="ticker" value="@(debug ? "PCFBY" : String.Empty)" />
 
 	<button id="submit_ticker" onclick="submit_ticker ()">Save</button>
 </div>

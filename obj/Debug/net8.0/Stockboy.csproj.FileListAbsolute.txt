@@ -1,3 +1,12 @@
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.csproj.AssemblyReference.cache
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.AssemblyInfoInputs.cache
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.AssemblyInfo.cs
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.csproj.CoreCompileInputs.cache
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.MvcApplicationPartsAssemblyInfo.cache
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.RazorAssemblyInfo.cache
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.RazorAssemblyInfo.cs
+D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.sourcelink.json
 D:\Projects\DotNet\Stockboy\bin\Debug\net8.0\appsettings.Development.json
 D:\Projects\DotNet\Stockboy\bin\Debug\net8.0\appsettings.json
 D:\Projects\DotNet\Stockboy\bin\Debug\net8.0\Stockboy.staticwebassets.runtime.json
@@ -121,14 +130,6 @@ D:\Projects\DotNet\Stockboy\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Draw
 D:\Projects\DotNet\Stockboy\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 D:\Projects\DotNet\Stockboy\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\Projects\DotNet\Stockboy\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.csproj.AssemblyReference.cache
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.GeneratedMSBuildEditorConfig.editorconfig
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.AssemblyInfoInputs.cache
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.AssemblyInfo.cs
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.csproj.CoreCompileInputs.cache
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.MvcApplicationPartsAssemblyInfo.cache
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.RazorAssemblyInfo.cache
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.RazorAssemblyInfo.cs
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\staticwebassets.build.json
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\staticwebassets.development.json
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\staticwebassets\msbuild.Stockboy.Microsoft.AspNetCore.StaticWebAssets.props
@@ -143,4 +144,3 @@ D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\refint\Stockboy.dll
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.pdb
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.genruntimeconfig.cache
 D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\ref\Stockboy.dll
-D:\Projects\DotNet\Stockboy\obj\Debug\net8.0\Stockboy.sourcelink.json

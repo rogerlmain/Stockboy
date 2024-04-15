@@ -8,7 +8,7 @@
 
 <div>
 	@{
-		if (not_null (error)) {
+		if (error is not null) {
 			<div>Error. Cannot save @name: @error.</div>
 		} else {
 			<div>@name saved.</div>

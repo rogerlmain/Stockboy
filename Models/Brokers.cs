@@ -1,6 +1,6 @@
 ﻿namespace Stockboy.Models {
 
-	public class Broker : BaseModel, IBaseModel {
+	public class BrokersTable : BaseModel {
 		public string name { get; set; }
 	}
 

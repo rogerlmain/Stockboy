@@ -1,17 +1,73 @@
 ﻿@using Stockboy.Models
 
-@model List<PurchaseData>
+@model PurchasePageModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Stockboy
 
 @{
 	Layout = "~/Layouts/Main.cshtml";
 	ViewData ["Title"] = "Purchases";
 }
 
-<div id="purchases_table" class="with-headspace" endpoint="UpdatePurchases">
-	<partial name="Partials/Purchases" model="Model" />
-</div>
+@section Scripts {
 
-<div class="button-bar">
-	<button id="add_purchase" onclick="return show_popup ('popup_window', 'PurchaseForm')">Add Purchase</button>
+	<script>
+
+		function update_filters (checkboxes) {
+
+			let table = document.getElementById ("purchases_table");
+
+			table.filters = null;
+
+			for (let checkbox of checkboxes) {
+				if (checkbox.checked) {
+					if (not_set (table.filters)) table.filters = new Array ();
+					if (!table.filters.includes (checkbox.value)) table.filters.push (checkbox.value);
+				}
+			}
+
+			sort_and_filter_table (table);
+
+		}
+
+	</script>
+
+}
+
+
+<div class="with-lotsa-headspace">	
+
+	@{
+		if (Model.tickers is not null) {
+			<checkbox-select-list field="symbol" onselect="update_filters (this.closest ('div.list').querySelectorAll ('input.checkbox'))">
+				<option value="@String.Empty">All tickers</option>
+				@{
+					foreach (TickersTable ticker in Model.tickers) {
+						<option value="@ticker.symbol">@ticker.symbol - @ticker.name</option>
+					}
+				}
+			</checkbox-select-list>
+		}
+	}
+
+	<div id="purchases_table" class="table-container with-headspace" endpoint="UpdatePurchases">
+		<partial name="Partials/Purchases" model="Model.table_data" />
+	</div>
+
+	<div class="button-bar">
+		<button id="edit_purchase" style="display: none"
+			onload="this.addEventListener ('TableRowSelected', event => {
+				if (event.detail.selected) {
+					this.setAttribute ('purchase_id', event.detail.id);
+					return this.style.removeProperty ('display');
+				}
+				this.removeAttribute ('purchase_id');
+				this.style.display = 'none';
+			})"
+ 			onclick="return show_popup ('popup_window', 'EditPurchaseForm', { text: this.getAttribute ('purchase_id') })">
+ 			Edit Purchase
+		</button>
+		<button id="add_purchase" onclick="return show_popup ('popup_window', 'CreatePurchaseForm')">Add Purchase</button>
+	</div>
+
 </div>

@@ -4,21 +4,28 @@ using Stockboy.Models;
 namespace Stockboy.Classes.Data {
 
 
-	public static class DataExtensions {
-		public static List<Model> SelectAll<Model> (this DbSet<Model> dataset) where Model : class => dataset.Select (item => item).ToList ();
-	}
-
-
 	public class StockContext : DbContext {
 
-		public DbSet<Ticker> tickers { get; set; }
-		public DbSet<Broker> brokers { get; set; }
-		public DbSet<PurchaseModel> purchases { get; set; }
-		public DbSet<PurchaseData> purchase_data { get; set; }
-		public DbSet<OptionsModel> purchase_types { get; set; }
-		public DbSet<HoldingsModel> holdings { get; set; }
+		public DbSet<BrokersTable> brokers { get; set; }
+		public DbSet<DividendsTable> dividends { get; set; }
+		public DbSet<OptionsData> purchase_types { get; set; }
+		public DbSet<PurchasesTable> purchases { get; set; }
+		//public DbSet<SalesTable> sales_table { get; set; }
+		public DbSet<TickersTable> tickers { get; set; }
 
-		public StockContext (DbContextOptions<StockContext> options) : base (options) {}
+		public DbSet<DividendsView> dividends_view { get; set; }
+		public DbSet<HoldingsView> holdings_view { get; set; }
+		public DbSet<PurchasesView> purchases_view { get; set; }
+		public DbSet<TickersView> tickers_view { get; set; }
+
+		public StockContext (DbContextOptions<StockContext> context) : base (context) {}
+
+		protected override void OnModelCreating (ModelBuilder modelBuilder) {
+			base.OnModelCreating (modelBuilder);
+
+			modelBuilder.Entity<PurchasesTable> ().Property (item => item.quantity).HasPrecision (14, 6);
+			modelBuilder.Entity<HoldingsView> ().Property (item => item.quantity).HasPrecision (14, 6);
+		}
 
 	}
 

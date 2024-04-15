@@ -26,7 +26,7 @@ namespace Stockboy.Classes.Data
                 if (property.Name == "id") continue;
                 if (query_string != string.Empty) query_string += comma;
                 sql_parameters ??= new();
-                sql_parameters.Add(new SqlParameter { ParameterName = $"@{property.Name}", Value = is_null(value) ? DBNull.Value : value });
+                sql_parameters.Add(new SqlParameter { ParameterName = $"@{property.Name}", Value = (value is null) ? DBNull.Value : value });
                 query_string += $" @{property.Name}";
             }
 
@@ -36,7 +36,7 @@ namespace Stockboy.Classes.Data
         public Guid? ExecuteProcedureGetId(string query, object parameters)
         {
             List<BaseModel>? result = ExecuteProcedure<BaseModel>(query, parameters);
-            return not_null(result) && result?.Count > 0 ? result[0].id : null;
+            return (result is not null) && result?.Count > 0 ? result[0].id : null;
         }
 
         public void ExecuteProcedureSetId<Model>(string query, IBaseModel parameters)
@@ -48,7 +48,7 @@ namespace Stockboy.Classes.Data
         public Model? ExecuteProcedureGetRow<Model>(string query, object parameters)
         {
             List<Model>? result = ExecuteProcedure<Model>(query, parameters);
-            return not_null(result) && result?.Count > 0 ? result[0] : default;
+            return (result is not null) && result?.Count > 0 ? result[0] : default;
         }
 
         public List<Model> ExecuteQuery<Model>(string query)
@@ -59,7 +59,7 @@ namespace Stockboy.Classes.Data
         public Model? ExecuteQueryGetRow<Model>(string query)
         {
             List<Model>? result = ExecuteQuery<Model>(query);
-            return not_null(result) && result?.Count > 0 ? result[0] : default;
+            return (result is not null) && result?.Count > 0 ? result[0] : default;
         }
 
         public List<Model> Select<Model>(string tablename) => context.Database.SqlQuery<Model>($"select * from {tablename}").ToList();

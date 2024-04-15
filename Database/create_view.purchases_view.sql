@@ -1,9 +1,7 @@
--- drop view if exists purchase_data;
-
-create view purchase_data as select
+create view purchases_view as select
 	pch.id as purchase_id,
 	brk.name as broker,
-	tck.ticker as symbol,
+	tck.symbol,
 	tck.name as asset,
 	pch.purchase_price,
 	pch.purchase_date,

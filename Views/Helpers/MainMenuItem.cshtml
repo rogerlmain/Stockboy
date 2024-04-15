@@ -1,0 +1,10 @@
+﻿@model Stockboy.Helpers.MainMenuItemTagHelper
+
+
+@{
+	if (Model.path == Model.href) {
+		<div class="main-menu-item" selected="true">@Model.text</div>
+	} else {
+		<a class="main-menu-item" href="@Model.href">@Model.text</a>
+	}
+}

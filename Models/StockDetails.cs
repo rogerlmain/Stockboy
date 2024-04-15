@@ -102,12 +102,12 @@ namespace Stockboy.Models {
 	public class StockDetailsModel {
 		public StockDetailsResult? quoteResponse { get; set; }
 
-		public Boolean has_stocks { get => (not_null (quoteResponse?.result) && (quoteResponse?.result?.Count > 0)); }
+		public Boolean has_stocks { get => ((quoteResponse?.result is not null) && (quoteResponse?.result?.Count > 0)); }
 
 		public Boolean no_stocks { get => !has_stocks; }
 
-		public StockDetails get_details (string ticker) {
-			if (has_stocks) foreach (StockDetails details in quoteResponse.result) {
+		public StockDetails? get_details (string ticker) {
+			if ((has_stocks) && (quoteResponse?.result is not null)) foreach (StockDetails details in quoteResponse.result) {
 				if (details.symbol == ticker) return details;
 			}
 			return null;

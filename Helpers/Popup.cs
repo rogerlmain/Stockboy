@@ -22,7 +22,7 @@ namespace Stockboy.Helpers {
 		public override async void Process (TagHelperContext context, TagHelperOutput output) {
 			(html_helper as IViewContextAware).Contextualize (ViewContext);
 			contents = (await output.GetChildContentAsync ()).GetContent ();
-			output.Content.SetHtmlContent (await html_helper.PartialAsync ("~/Helpers/Views/Popup.cshtml", this));
+			output.Content.SetHtmlContent (await html_helper.PartialAsync ("~/Views/Helpers/Popup.cshtml", this));
 			output.TagName = null;
 		}
 

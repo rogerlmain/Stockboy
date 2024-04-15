@@ -7,7 +7,7 @@ create table purchases (
 	purchase_price decimal(7,2) not null,
 	purchase_date datetime not null,
 	settlement_date datetime not null,
-	quantity decimal(14,8) not null,
+	quantity decimal(14,6) not null,
 	purchase_type_id uniqueidentifier not null,
 
 	constraint PK_purchases primary key (id),

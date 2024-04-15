@@ -29,6 +29,18 @@
       "PackagePath": "staticwebassets\\Styles\\common.scss"
     },
     {
+      "Id": "D:\\Projects\\DotNet\\Stockboy\\wwwroot\\Styles\\elements.css",
+      "PackagePath": "staticwebassets\\Styles\\elements.css"
+    },
+    {
+      "Id": "D:\\Projects\\DotNet\\Stockboy\\wwwroot\\Styles\\elements.min.css",
+      "PackagePath": "staticwebassets\\Styles\\elements.min.css"
+    },
+    {
+      "Id": "D:\\Projects\\DotNet\\Stockboy\\wwwroot\\Styles\\elements.scss",
+      "PackagePath": "staticwebassets\\Styles\\elements.scss"
+    },
+    {
       "Id": "D:\\Projects\\DotNet\\Stockboy\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },

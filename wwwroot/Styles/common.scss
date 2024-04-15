@@ -1,14 +1,20 @@
 :root {
 	--border-color: #000;
+	--element-border-color: #DDF;
 	--highlight-color: #FFFDDD;
 	--selected-color: #DDF;
-	--table-border: solid 1px #DDF;
+
+	--table-border: solid 1px var(--element-border-color);
 	--table-header-background: #EFEFFF;
+
 	--popup-border: solid 1px #889;
+
+	--element-background-color: #FFFFF8;
+	--dropdown-arrow-color: #DDF;
 }
 
 
-/********/
+/**** Debugging Styles ****/
 
 
 *.bordered, *.bordered * { border: solid 1px red }
@@ -71,6 +77,32 @@ label { font-weight: bold }
 *.with-headspace { margin-top: 1em }
 
 *.with-lotsa-headspace { margin-top: 2em }
+
+
+/********/
+
+
+div.main-menu {
+	display: flex;
+	column-gap: 0.5rem;
+}
+
+div.main-menu-item, a.main-menu-item {
+	font-size: 12pt;
+	color: black;
+	text-decoration: none;
+	padding: 0.2em 0.5em;
+	border-radius: 0.25rem;
+}
+
+a.main-menu-item:hover {
+	background-color: #CCC;
+}
+
+div.main-menu-item[selected] {
+	background-color: #888;
+	color: #EEE;
+}
 
 
 /********/

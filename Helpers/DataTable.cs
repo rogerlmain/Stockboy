@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Stockboy.Models;
 using System.Text.Encodings.Web;
 
 namespace Stockboy.Helpers {
@@ -20,12 +21,11 @@ namespace Stockboy.Helpers {
 
 		public string endpoint { get; set; }
 
-		public IEnumerable<Object> data { get; set; }
+		public TableModel data { get; set; }
 
 		public override async void Process (TagHelperContext context, TagHelperOutput output) {
 			(html_helper as IViewContextAware).Contextualize (ViewContext);
-			//contents = (await output.GetChildContentAsync ()).GetContent ();
-			output.Content.SetHtmlContent (await html_helper.PartialAsync ("~/Helpers/Views/DataTable.cshtml", this));
+			output.Content.SetHtmlContent (await html_helper.PartialAsync ("~/Views/Helpers/DataTable.cshtml", this));
 			output.TagName = null;
 		}
 

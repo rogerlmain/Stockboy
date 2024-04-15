@@ -1,0 +1,17 @@
+﻿@using Stockboy.Models
+
+@model TableModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+	Layout = "~/Layouts/Main.cshtml";
+	ViewData ["Title"] = "Purchases";
+}
+
+<div id="purchases_table" class="with-headspace" endpoint="UpdatePurchases">
+	<partial name="Partials/Dividends" model="Model" />
+</div>
+
+<div class="button-bar">
+	<button id="add_dividend" onclick="return show_popup ('popup_window', 'CreateDividendForm')">Add Dividend</button>
+</div>

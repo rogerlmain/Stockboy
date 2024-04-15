@@ -1,4 +1,29 @@
-﻿Object.defineProperties (Date.prototype, {
+﻿Document.prototype.broadcastEvent = function (event) {
+	for (let element of document.querySelectorAll ("*")) {
+		element.dispatchEvent (event);
+	}
+}
+
+
+/**** Array Extensions ****/
+
+
+Array.prototype.bump = function (element) {
+	if (!this.includes (element)) return;
+	this.remove (element);
+	this.unshift (element);
+}
+
+
+Array.prototype.remove = function (element) {
+	this.splice (this.indexOf (element), 1);
+}
+
+
+/**** Date Extensions ****/
+
+
+Object.defineProperties (Date.prototype, {
 
 	month: { get: function () { return (this.getMonth () + 1).toString ().leftPadded ("0", 2) } },
 	day: { get: function () { return this.getDate ().toString ().leftPadded ("0", 2) } },
@@ -13,14 +38,20 @@
 });
 
 
-Object.defineProperty (HTMLElement.prototype, "firstSibling", { get: function () { return this.parentNode?.children?.[0] } });
+/**** String Extensions ****/
 
 
 Object.defineProperties (String.prototype, {
 
 	isEmpty: { get: function () { return this.trim () == blank } },
 
-	isNumber: { get: function () { return parseInt (this).toString () == this } },
+	isNumber: { get: function () { 
+		for (let char of this) {
+			if (!digits.includes (parseInt (char))) return false;
+		}
+		//return parseInt (this).toString () == this } },
+		return true;
+	} },
 
 	integerValue: { 
 		get: function () {
@@ -65,9 +96,43 @@ String.prototype.leftPadded = function (char, size) {
 }
 
 
-/********/
+/**** HTMLElement Extensions ****/
+
+
+Object.defineProperties (HTMLElement.prototype, {
+
+	active: { 
+		get: function () { return this.getAttribute ("active") },
+		set: function (value) {
+			if (value === true) {
+				this.removeAttribute ("disabled");
+				this.setAttribute ("required", "true");
+				return;
+			}
+			this.removeAttribute ("required");
+			this.setAttribute ("disabled", "true");
+		}
+	},
+
+	firstSibling: { get: function () { return this.parentNode?.children?.[0] } }
+
+});
+
+
+HTMLElement.prototype.bindEvent = function (event, method) {
+	this.removeEventListener (event, method);
+	this.addEventListener (event, method);
+}
 
 
 HTMLElement.prototype.getBoolean = function (fieldname) {
 	return this.getAttribute (fieldname)?.matches ("true") ?? false;
 }
+
+
+HTMLElement.prototype.broadcastEvent = Document.prototype.broadcastEvent;
+
+
+/********/
+
+

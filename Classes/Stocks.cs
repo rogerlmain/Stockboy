@@ -1,57 +1,51 @@
 ﻿using Stockboy.Classes.Data;
-using Stockboy.Controllers;
 using Stockboy.Models;
+
+using static Stockboy.Classes.Globals;
 
 namespace Stockboy.Classes {
 
 	public class Stocks {
 
-		private const string alpha_vantage_api_key = "NP1ITADX88875NX9";
-		private const string polygon_api_key = "uB06z9g2lPXlOl4koojYFpma_VYhm8bM";
-		private const string finhubb_api_key = "co0qrqhr01qhaf74r5n0co0qrqhr01qhaf74r5ng";
-		private const string yahoo_api_key = "Vds1tH8wD9FQxYogZzlwMQN80q1aKv1Urbx6doe0";
 
-		private const string alpha_vantage_base_address = "https://www.alphavantage.co";
-		private const string polygon_io_base_address = "https://api.polygon.io";
+		//private decimal? get_stock_price (StockDetailsModel? stock_details, string ticker) => stock_details?.get_details (ticker)?.regularMarketPrice;
 
 
-		public static async Task<StockDetailsModel?> get_stock_details (string tickers) {
-			HttpClient client = new HttpClient ();
-			HttpRequestMessage request = new () {
-				Method = HttpMethod.Get,
-				RequestUri = new Uri ($"https://yfapi.net/v6/finance/quote?symbols={tickers}"),
-				Headers = {{ "x-api-key", yahoo_api_key }}
-			};
+		public async static Task<List<HoldingsModel>> get_holdings (StockContext context) {
 
-			HttpResponseMessage response = await client.SendAsync (request);
-			response.EnsureSuccessStatusCode ();
-			StockDetailsModel result = await response.Content.ReadAsAsync<StockDetailsModel> ();
-			return result;
-		}
+			List<HoldingsView>? holdings = context.holdings_view.SelectAll ().OrderBy ("name");
+			List<HoldingsModel>? holdings_model = null;
 
+			StockDetailsModel? stock_details = await APIs.get_stock_details (String.Join (comma, holdings.Select (holding => holding.symbol).ToArray ()));
 
-		public static List<HoldingsData> get_holdings (StockContext context) {
+			if (holdings is null) return null;
 
-			List<HoldingsModel> holdings = context.holdings.SelectAll ().OrderBy ("name");
-			List<HoldingsData>? holdings_data = null;
+			foreach (HoldingsView holding in holdings) {
+				HoldingsModel? data = holding.Export<HoldingsModel> ();
+				if (data is null) continue;
 
-			//StockDetailsModel? stock_details = await get_stock_details (holdings);
+				data.cost = Math.Round (data.cost, 2);
+				data.price = Math.Round (stock_details?.get_details (data.symbol)?.regularMarketPrice ?? 0, 2);
+				data.value = Math.Round (data.quantity * data.price ?? 0, 2);
+				data.profit = Math.Round (data.value - data.cost ?? 0, 2);
 
-			foreach (HoldingsModel holding in holdings) {
-				HoldingsData data = HoldingsData.import (holding);
-				//	data.price = get_stock_price (stock_details, data.ticker);
-				//	data.value = is_null (data.price) ? null : data.price * data.amount;
-				//	data.profit = is_null (data.value) ? null : data.value - data.cost;
-				holdings_data ??= new ();
-				holdings_data.Add (data);
+				holdings_model ??= new ();
+				holdings_model.Add (data);
 			}
 
-			return holdings_data;
+			return holdings_model;
 
 		}
 
 
-		public static List<PurchaseData> get_purchases (StockContext context) => context.purchase_data.SelectAll ().OrderBy ("purchase_date");
+		public static List<DividendsView> get_dividends_view (StockContext context) => context.dividends_view.SelectAll ();
+		public static List<PurchasesView> get_purchases_view (StockContext context) => context.purchases_view.SelectAll ();
+
+		// ORDERING TEMPORARY - REPLACE WITH DATA_TABLE TITLE ORDERING
+		public static List<TickersView> get_tickers_view (StockContext context) => context.tickers_view.SelectAll ().OrderBy ("ticker");
+
+
+		public static List<PurchasesTable> get_purchases (StockContext context) => context.purchases.SelectAll ();
 
 
 	}// Stocks;

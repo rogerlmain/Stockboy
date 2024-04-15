@@ -5,31 +5,25 @@ using Newtonsoft.Json;
 namespace Stockboy.Models {
 
 	[Keyless]
-	public class HoldingsModel {
-		[Display (Order = 0)]
+	public class HoldingsView  {
 		public string broker { get; set; } = String.Empty;
-		public string ticker { get; set; } = String.Empty;
-		public string name { get; set; } = String.Empty;
-		public decimal amount { get; set; }
+		public string symbol { get; set; } = String.Empty;
+		public string asset { get; set; } = String.Empty;
+		public decimal quantity { get; set; }
 		public decimal cost { get; set; }
 	}
 
-	public class HoldingsData : HoldingsModel {
-		[Display (Order = 5)]
+
+	public class HoldingsModel: HoldingsView  {
 		public decimal? price { get; set; }
 		public decimal? value { get; set; }
 		public decimal? profit { get; set; }
 
-		public static HoldingsData import (HoldingsModel model) => JsonConvert.DeserializeObject<HoldingsData> (JsonConvert.SerializeObject (model));
+		public static HoldingsModel? import (HoldingsView model) => JsonConvert.DeserializeObject<HoldingsModel> (JsonConvert.SerializeObject (model));
 	}
 
-	public class PurchaseFormModel {
-		public List<Broker> brokers { get; set; }
-		public List<Ticker> tickers { get; set; }
-		public List<OptionsModel> purchase_types { get; set; }
-	}
 
-	public class PurchaseModel : BaseModel, IBaseModel {
+	public class PurchasesTable : BaseModel {
 		public Guid ticker_id { get; set; }
 		public Guid broker_id { get; set; }
 		public decimal purchase_price { get; set; }
@@ -40,7 +34,7 @@ namespace Stockboy.Models {
 	}
 
 
-	public class PurchaseData {
+	public class PurchasesView {
 		[Key]
 		public Guid purchase_id { get; set; }
 		public string broker { get; set; } = String.Empty;
@@ -50,7 +44,22 @@ namespace Stockboy.Models {
 		public DateTime purchase_date { get; set; }
 		public DateTime settlement_date { get; set; }
 		public decimal quantity { get; set; }
-		public string purchase_type { get; set; }
+		public string? purchase_type { get; set; }
 	}
+
+
+	public class PurchaseFormModel {
+		public PurchasesTable? purchase { get; set; }
+		public List<BrokersTable>? brokers { get; set; }
+		public List<TickersTable>? tickers { get; set; }
+		public List<OptionsData>? purchase_types { get; set; }
+	}
+
+
+	public class PurchasePageModel {
+		public TableModel? table_data { get; set; }
+		public List<TickersTable>? tickers { get; set; }
+	}
+
 
 }

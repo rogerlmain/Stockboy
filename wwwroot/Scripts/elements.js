@@ -19,7 +19,7 @@
 
 	if (parts [0][0] == "-") parts [0] = parts [0].substring (1);
 
-	if ((value != "0") && (parts [0].leadingCharacters ("0") > leading_zeros)) return event.preventDefault (); // too many leading zeros
+	if ((parts [0] != "0") && (parts [0].leadingCharacters ("0") > leading_zeros)) return event.preventDefault (); // too many leading zeros
 	if ((parts [0] != blank) && !parts [0].isNumber) return event.preventDefault (); // garbage in number section
 
 	return true;
@@ -56,33 +56,102 @@ function clear_commas (event) {
 }
 
 
-function highlight_row (table_name, highlighted_row, selected = false) {
-	for (let row of document.getElementById (table_name).querySelectorAll ("div.table-row")) {
-		if (row.getBoolean ("selected") && !selected) continue;
-		if (selected) row.removeAttribute ("selected");
-		for (let item of row.querySelectorAll ("div")) {
-			item.style.backgroundColor = null;
-			item.style.cursor = null;
+/**** GridTable ****/
+
+
+function toggle_row_highlight (row, color = null) {
+	for (let item of row.querySelectorAll ("div")) {
+		if (is_null (color)) {
+			item.style.removeProperty ("background-color");
+			continue;
 		}
+		item.style.backgroundColor = color;
 	}
-	for (let item of highlighted_row.querySelectorAll("div")) {
-		if (highlighted_row.getBoolean ("selected") && !selected) continue;
-		item.style.backgroundColor = (selected ? "var(--selected-color)": "var(--highlight-color)");
-		item.style.cursor = "pointer";
+}
+
+
+function toggle_row_selection (row) {
+	let selected = row.getBoolean ("selected");
+	for (let next_row of row.parentNode.querySelectorAll ("div.table-row")) {
+		next_row.removeAttribute ("selected");
+		toggle_row_highlight (next_row);
 	}
-	if (selected) highlighted_row.setAttribute ("selected", "true");
+	if (!selected) {
+		row.setAttribute ("selected", "true");
+		toggle_row_highlight (row, "var(--selected-color)");
+	}
+
+	document.broadcastEvent (new CustomEvent ("TableRowSelected", {
+		detail: {
+			id: row.querySelector ("input[type='hidden']").value,
+			selected: row.getBoolean ("selected")
+		}
+	}));
+}
+
+
+function highlight_row (row) {
+	if (!row.getBoolean ("selected")) toggle_row_highlight (row, "var(--highlight-color)");
 }
 
 
 function remove_highlight (table_name) {
 	for (let row of document.getElementById (table_name).querySelectorAll ("div.table-row")) {
 		if (row.getBoolean ("selected")) continue;
-		for (let item of row.querySelectorAll ("div")) {
-			item.style.backgroundColor = null;
-			item.style.cursor = null;
-		}
+		toggle_row_highlight (row);
 	}
 }
 
 
-document.addEventListener ("DOMContentLoaded", () => execute_custom_handlers (document));
+/**** Checkbox Select List ****/
+
+
+function open_dropdown (select_list) {
+
+	let list = select_list.querySelector ("div.list");
+	let glyph = select_list.querySelector ("div.glyph");
+
+	glyph.style.transform = "rotate(180deg)";
+	return list.style.removeProperty ("height");
+
+}
+
+
+function close_dropdown (select_list) {
+
+	let list = select_list.querySelector ("div.list");
+	let glyph = select_list.querySelector ("div.glyph");
+
+	glyph.style.removeProperty ("transform");
+	list.style.height = 0;
+
+}
+
+
+function toggle_dropdown (select_list) {
+	if (parseInt (select_list.querySelector ("div.list").style.height) == 0) return open_dropdown (select_list);
+	close_dropdown (select_list);
+}
+
+
+/**** Load Handlers ****/
+
+
+document.addEventListener ("readystatechange", () => {
+
+	if (document.readyState != "complete") return;
+
+	load_custom_handlers (document);
+
+	for (let item of document.querySelectorAll("div.checkbox-select-list")) {
+		item.style.width = `${item.querySelector ("div.list").offsetWidth}px`;
+	}
+
+	document.body.addEventListener ("click", () => {
+		let checkbox_lists = document.body.querySelectorAll ("div.checkbox-select-list");
+		for (let list of checkbox_lists) {
+			close_dropdown (list);
+		}
+	});
+
+});

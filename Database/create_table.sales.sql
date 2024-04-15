@@ -7,7 +7,7 @@ create table sales (
 	sale_price decimal(7,2) not null,
 	sale_date datetime not null,
 	settlement_date datetime not null,
-	quantity decimal(14,8) not null,
+	quantity decimal(14,6) not null,
 
 	constraint PK_sales primary key (id),
 	constraint FK_sales_to_tickers foreign key (ticker_id) references tickers (id),

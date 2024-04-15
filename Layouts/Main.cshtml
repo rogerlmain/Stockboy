@@ -1,4 +1,6 @@
-﻿@addTagHelper *, Stockboy
+﻿@using Stockboy.Classes
+
+@addTagHelper *, Stockboy
 
 <!DOCTYPE html>
 
@@ -12,12 +14,13 @@
 	<title>Stockboy - @ViewData["Title"]</title>
 
 	<link rel="stylesheet" href="~/Styles/common.min.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/Styles/elements.min.css" asp-append-version="true" />
 
 	<script src="~/Scripts/prototypes.js"></script>
 	<script src="~/Scripts/common.js"></script>
 	<script src="~/Scripts/elements.js"></script>
 
-	@await RenderSectionAsync("Scripts", required: false)
+	@(await RenderSectionAsync ("Scripts", required: false))
 
 </head>
 
@@ -32,8 +35,10 @@
 
 	<div class="header">
 		<div class="main-menu">
-			<a href="/">Home</a>
-			<a href="/Purchases">Purchases</a>
+			<main-menu-item href="/" text="Home" />
+			<main-menu-item href="/Purchases" text="Purchases" />
+			<main-menu-item href="/Dividends" text="Dividends" />
+			<main-menu-item href="/Tickers" text="Tickers" />
 		</div>
 	</div>
 
