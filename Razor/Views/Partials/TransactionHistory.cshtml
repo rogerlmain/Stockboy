@@ -1,0 +1,19 @@
+﻿@using Stockboy.Models
+
+@model TableModel
+
+@addTagHelper *, Stockboy
+
+
+<data-table id="transactions_list" id_field="id" data="@Model" />
+
+<div class="button-bar">
+	<button id="new_transaction" onclick="return show_popup ('popup_window', { source: 'BrokerForm' })">Add</button>
+	<button id="edit_transaction" onclick="return show_popup ('popup_window', { source: 'TickerForm' })">Edit</button>
+
+	<button id="delete_transaction" onclick="return show_popup ('popup_window', { 
+		contents: `@{<partial name="Partials/PopupContents/DeleteConfirmation" model="" />}`
+		data: selected_row ('transactions_list).children [2].innerHTML
+	})">Delete</button>
+
+</div>

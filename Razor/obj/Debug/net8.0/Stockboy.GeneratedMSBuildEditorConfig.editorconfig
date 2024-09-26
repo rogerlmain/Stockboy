@@ -1,0 +1,103 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Stockboy
+build_property.RootNamespace = Stockboy
+build_property.ProjectDir = D:\Projects\Stockboy\Razor\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\Projects\Stockboy\Razor
+build_property._RazorSourceGeneratorDebug = 
+
+[D:/Projects/Stockboy/Razor/Views/Dividends.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGl2aWRlbmRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Forms/Brokers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcQnJva2Vycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Forms/Dividends.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcRGl2aWRlbmRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Forms/SaveResult.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcU2F2ZVJlc3VsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Forms/Tickers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcVGlja2Vycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Forms/Transactions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXNcVHJhbnNhY3Rpb25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Helpers/CheckboxSelectList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVscGVyc1xDaGVja2JveFNlbGVjdExpc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Helpers/DataTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVscGVyc1xEYXRhVGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Helpers/MainMenuItem.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVscGVyc1xNYWluTWVudUl0ZW0uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Helpers/Popup.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVscGVyc1xQb3B1cC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Home.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Layouts/Main.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGF5b3V0c1xNYWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Partials/Dividends.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGlhbHNcRGl2aWRlbmRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Partials/Holdings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGlhbHNcSG9sZGluZ3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Partials/PopupContents/DeleteConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGlhbHNcUG9wdXBDb250ZW50c1xEZWxldGVDb25maXJtYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Partials/Purchases.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGlhbHNcUHVyY2hhc2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Partials/Tickers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGlhbHNcVGlja2Vycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Partials/TransactionHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGlhbHNcVHJhbnNhY3Rpb25IaXN0b3J5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Purchases.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Test.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Projects/Stockboy/Razor/Views/Tickers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlja2Vycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

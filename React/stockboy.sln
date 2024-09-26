@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "stockboy.server", "stockboy.Server\stockboy.server.csproj", "{E1F8345E-6147-4137-96E8-274AEBEC89DF}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "stockboy.client", "stockboy.client\stockboy.client.esproj", "{7236C3CC-0E21-435B-A33E-96F487819F27}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E1F8345E-6147-4137-96E8-274AEBEC89DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1F8345E-6147-4137-96E8-274AEBEC89DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1F8345E-6147-4137-96E8-274AEBEC89DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1F8345E-6147-4137-96E8-274AEBEC89DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7236C3CC-0E21-435B-A33E-96F487819F27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7236C3CC-0E21-435B-A33E-96F487819F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7236C3CC-0E21-435B-A33E-96F487819F27}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7236C3CC-0E21-435B-A33E-96F487819F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7236C3CC-0E21-435B-A33E-96F487819F27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7236C3CC-0E21-435B-A33E-96F487819F27}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {84AA69A8-B53A-4F71-A529-9988CBFF5FFD}
+	EndGlobalSection
+EndGlobal

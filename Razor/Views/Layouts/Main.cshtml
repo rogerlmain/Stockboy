@@ -1,0 +1,61 @@
+﻿@using Stockboy.Classes
+
+@addTagHelper *, Stockboy
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title>Stockboy - @ViewData["Title"]</title>
+
+	<link rel="stylesheet" href="~/Styles/common.min.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/Styles/controls.min.css" asp-append-version="true" />
+
+	<script src="~/Scripts/prototypes.js"></script>
+	<script src="~/Scripts/common.js"></script>
+	<script src="~/Scripts/controls.js"></script>
+
+	@(RenderSection ("Scripts", required: false))
+
+</head>
+
+<body>
+
+	<popup id="popup_window" classname="popup-window" onshow="load_popup_contents ()">
+		<div style="font-size: 12pt">
+			<img name="eyecandy" src="~/images/eyecandy.gif" />
+			<span>Loading...</span>
+		</div>
+	</popup>
+
+	<popup id="confirmation_window" classname="popup-window" onshow="load_popup_contents ()">
+		<div style="font-size: 12pt">
+
+		</div>
+	</popup>
+
+	<div class="header">
+		<div class="main-menu">
+			<main-menu-item href="/" text="Home" />
+			<main-menu-item href="/Purchases" text="Purchases" />
+			<main-menu-item href="/Dividends" text="Dividends" />
+			<main-menu-item href="/Tickers" text="Tickers" />
+		</div>
+	</div>
+
+	<div class="full-page row-centered with-lotsa-headspace">
+		<div id="main_body">@RenderBody()</div>
+	</div>
+
+	<div class="footer">
+		&copy; 2024 - Stockboy - <a asp-area="" asp-page="/Privacy">Privacy</a>
+	</div>
+
+</body>
+
+</html>
