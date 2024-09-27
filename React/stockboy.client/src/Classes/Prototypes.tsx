@@ -3,7 +3,13 @@ export {}
 
 declare global {
 
+
+	interface DateConstructor {
+		today (): string
+	}
+
 	interface String {
+		padded (char: String, size: number): String;
 		titleCase (): String;
 	}
 
@@ -19,8 +25,22 @@ declare global {
 }
 
 
+Date.today = function (): string {
+	let date = new Date ();
+	return `${date.getFullYear ()}-${date.getMonth ().toString ().padded ("0", 2)}-${date.getDay ().toString ().padded ("0", 2)}`;
+}// today;
+
+
+
 String.Empty = "";
 String.Space = " ";
+
+
+String.prototype.padded = function (char: String, size: number): String {
+	let result = this;
+	while (result.length < size) result = `${char}${this}`;
+	return result;
+}
 
 
 String.prototype.titleCase = function (): String {

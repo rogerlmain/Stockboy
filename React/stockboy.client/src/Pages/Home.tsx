@@ -4,7 +4,7 @@ import HoldingsModel from "Models/HoldingsModel";
 import DataTable from "Controls/DataTable";
 
 import BasePage from "Pages/Abstract/BasePage";
-import DataPage, { DataProps, DataState } from "Pages/Abstract/DataPage";
+import DataPage, { DataProps, DataState } from "Controls/DataControl";
 import Transactions from "Pages/Transactions";
 
 import { BaseProps } from "Controls/BaseComponent";
@@ -30,7 +30,9 @@ export default class Home extends DataPage<DataProps, HomeState> {
 	public state: HomeState = new HomeState ();
 
 
-	public componentDidMount = () => this.fetch ("GetHoldings").then (response => this.setState ({data: response}));
+	public componentDidMount = () => this.fetch ("GetHoldings").then (response => {
+		this.setState ({data: response})
+	});
 
 
 	public render = () => is_null (this.state.data) ? this.load_screen : <div>

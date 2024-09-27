@@ -14,12 +14,12 @@ export class DataState<model = {}> extends BaseState {
 }// DataState;
 
 
-export default abstract class DataPage<props_model extends DataProps = DataProps, state_model extends DataState = DataState> extends BasePage<props_model, state_model> {
+export default abstract class DataControl<props_model extends DataProps = DataProps, state_model extends DataState = DataState> extends BasePage<props_model, state_model> {
 
 	protected load_screen: JSX.Element = <div>Loading...</div>
 
 
-	protected fetch = (url: RequestInfo, body?: any): any => new Promise ((resolve, reject) => {
+	protected fetch = (url: RequestInfo, body: any = null): any => new Promise ((resolve, reject) => {
 
 		let parameters = {
 			method: is_null (body) ? "get" : "post",
@@ -32,4 +32,4 @@ export default abstract class DataPage<props_model extends DataProps = DataProps
 
 	});
 
-}// DataPage;
+}// DataControl;

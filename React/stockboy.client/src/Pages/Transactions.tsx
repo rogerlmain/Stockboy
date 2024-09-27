@@ -1,14 +1,15 @@
 import React, { ReactElement } from "react";
 import BaseComponent, { BaseProps } from "Controls/BaseComponent";
 
-import DataPage, { DataProps, DataState } from "Pages/Abstract/DataPage";
+import DataPage, { DataProps, DataState } from "Controls/DataControl";
 import DataTable from "Controls/DataTable";
+import Eyecandy from "Controls/Eyecandy";
 
 import TransactionModel from "Models/TransactionsModel";
 import PopupWindow from "../Controls/PopupWindow";
 
 import { NameValueCollection } from "Classes/Collections";
-import { DeleteTransactionForm, EditTransactionForm, TransactionEyecandy } from "Forms/TransactionForms";
+import { DeleteTransactionForm, EditTransactionForm } from "Forms/TransactionForms";
 
 
 class TransactionState extends DataState<TransactionModel> {
@@ -21,6 +22,7 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 
 	private data_table_reference: React.RefObject<DataTable> = React.createRef ();
 	private popup_reference: React.RefObject<PopupWindow> = React.createRef ();
+	private transaction_form_reference: React.RefObject<EditTransactionForm> = React.createRef ();
 
 
 	private get transactions_popup (): ReactElement {
@@ -46,19 +48,36 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 
 	private delete_transaction = () => this.popup_window.show (<DeleteTransactionForm transaction={this.data_table.selected_row} />, new NameValueCollection ({
 
-		Yes: () => this.popup_window.show (<TransactionEyecandy 
+		Yes: () => this.popup_window.show (<Eyecandy 
 			command={() => this.fetch ("DeleteTransaction", this.data_table.selected_row).then (() => {
 				this.remove_selected_row ();
 				this.popup_window.hide ();
 			})}
 			text={"Deleting transaction"}>
-		</TransactionEyecandy>),
+		</Eyecandy>),
 
 		No: () => this.popup_window.hide ()
 	}));
 
 
-	private edit_transaction = () => this.popup_window.show (<EditTransactionForm />);
+	private edit_transaction = () => this.popup_window.show (<EditTransactionForm  ref={this.transaction_form_reference} broker_id={this.props.keys ["broker_id"]} ticker_id={this.props.keys ["ticker_id"]}/>, new NameValueCollection ({
+
+		Save: () => /*this.popup_window.show (<Eyecandy 
+			command={() =>*/ this.fetch ("SaveTransaction", Object.fromEntries (new FormData (this.transaction_form_reference.current.transaction_form.current))).then (() => {
+
+alert ("Saved");
+
+})
+
+/*
+				this.popup_window.hide ();
+			})}
+			text={"Saving transaction"}>
+		</Eyecandy>),
+
+		Close: () => this.popup_window.hide ()
+*/
+	}));
 
 
 	/********/
@@ -78,10 +97,12 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 
 		{this.transactions_table}
 
-		<div className="button-bar" style={{display: this.state.selected ? null : "none"}}>
-			<button id="add_transaction_button" onClick={() => this.popup_window.show ()}>Add</button>
-			<button id="edit_transaction_button" onClick={() => this.edit_transaction ()}>Edit</button>
-			<button id="delete_transaction_button" onClick={() => this.delete_transaction ()}>Delete</button>
+		<div className="button-bar">
+			<button id="add_transaction_button" onClick={() => this.edit_transaction ()}>Add</button>
+			<div style={{display: this.state.selected ? null : "none"}}>
+				<button id="edit_transaction_button" onClick={() => this.popup_window.show (<EditTransactionForm />)}>Edit</button>
+				<button id="delete_transaction_button" onClick={() => this.delete_transaction ()}>Delete</button>
+			</div>
 		</div>
 
 	</div>

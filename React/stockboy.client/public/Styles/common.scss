@@ -103,6 +103,11 @@ div.button-bar {
 	column-gap: 0.25rem;
 	justify-content: flex-end;
 	margin-top: 1rem;
+
+	div { 
+		display: flex;
+		column-gap: 0.25rem;
+	}
 }
 
 
@@ -146,6 +151,16 @@ div[class*="-column-grid"] {
 		margin-right: 0.5rem;
 	}
 
+}
+
+
+div.nested {
+	width: 100%;
+	justify-content: space-between;
+
+	div.nested label {
+		justify-self: right
+	}
 }
 
 

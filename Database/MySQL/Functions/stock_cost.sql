@@ -13,7 +13,7 @@ create function stock_cost (ticker_id varchar (36), broker_id varchar (36)) retu
     
     declare row_cursor cursor for select
 		tac.price * tac.quantity as cost,
-        ttp.description as transaction_type
+        ttp.name as transaction_type
 	from
 		transactions as tac
 	join

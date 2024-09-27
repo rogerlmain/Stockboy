@@ -91,6 +91,10 @@ div.button-bar {
   justify-content: flex-end;
   margin-top: 1rem;
 }
+div.button-bar div {
+  display: flex;
+  column-gap: 0.25rem;
+}
 
 div.glyph-arrow {
   width: 0;
@@ -141,6 +145,14 @@ div[class*=-column-grid] label {
   align-items: center;
   justify-content: flex-end;
   margin-right: 0.5rem;
+}
+
+div.nested {
+  width: 100%;
+  justify-content: space-between;
+}
+div.nested div.nested label {
+  justify-self: right;
 }
 
 div.form-table {

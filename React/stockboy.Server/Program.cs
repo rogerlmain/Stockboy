@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Stockboy.Server.Classes.Data;
+using Stockboy.Server.Classes;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,7 @@ builder.Services.AddControllers ();
 builder.Services.AddEndpointsApiExplorer ();
 builder.Services.AddSwaggerGen ();
 
-builder.Services.AddDbContext<StockContext> (options => options.UseMySQL (builder.Configuration.GetConnectionString ("MySqlConnection")));
+builder.Services.AddDbContext<DataContext> (options => options.UseMySQL (builder.Configuration.GetConnectionString ("MySqlConnection")));
 
 var app = builder.Build ();
 

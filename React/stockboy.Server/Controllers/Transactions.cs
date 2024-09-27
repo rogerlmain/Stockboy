@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
-using System.Collections.Specialized;
 
 
 namespace Stockboy.Server.Controllers {
@@ -20,17 +19,29 @@ namespace Stockboy.Server.Controllers {
 
 
 	[EnableCors]
-	public class Transactions: BaseController {
+	public class Transactions (DataContext context): Controller {
 
 		[HttpPost]
 		[Route ("GetTransactions")]
-		public IActionResult GetTransactions ([FromBody] GetTransactionsParameters parameters) => new JsonResult (Database.CallProcedure<TransactionsModel> ("get_transaction_history", parameters));
+		public IActionResult GetTransactions ([FromBody] GetTransactionsParameters parameters) => new JsonResult (Database.CallProcedure<TransactionModel> ("get_transaction_history", parameters));
+
+
+		[HttpGet]
+		[Route ("GetTransactionTypes")]
+		public IActionResult GetTransactionTypes () => new JsonResult (context?.transaction_types.SelectAll ().OrderBy ("ticker"));
 
 
 		[HttpPost]
 		[Route ("DeleteTransaction")]
 		public IActionResult DeleteTransaction ([FromBody] UpdateTransactionParameters parameters) => new JsonResult (new { success = Database.ExecuteProcedure ("delete_transaction", parameters) });
 
+
+		[HttpPost]
+		[Route ("SaveTransaction")]
+		public IActionResult SaveTransaction ([FromBody] TransactionDataModel parameters) {
+			context?.transactions
+			return new JsonResult (new { success = true });
+		}
 	}// Transactions;
 
 

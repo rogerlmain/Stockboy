@@ -13,7 +13,7 @@ create procedure get_transaction_history (broker_id varchar (36), ticker_id varc
 		tac.quantity,
 		tac.transaction_date,
 		tac.settlement_date,
-		ttp.description as transaction_type
+		ttp.name as transaction_type
 	from 
 		transactions as tac
 	join

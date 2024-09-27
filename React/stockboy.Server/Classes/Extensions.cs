@@ -17,7 +17,7 @@ namespace Stockboy.Server.Classes {
 
 	}// DataExtensions;
 
-
+/*
 	public static class DateOnlyExtensions {
 
 		public static DateOnly Create (this DateOnly source, DateOnly date) {
@@ -49,9 +49,9 @@ namespace Stockboy.Server.Classes {
 
 	}// DbContextExtensions;
 
-
+*/
 	public static class ObjectExtensions {
-
+/*
 		public static Boolean IsList (this Object item) => item.GetType ().GetGenericTypeDefinition () == typeof (List<>);
 
 		public static List<PropertyInfo> DisplayFields (this Object item) {
@@ -86,7 +86,7 @@ namespace Stockboy.Server.Classes {
 			return row.GetValue (field) as String;
 
 		}// Format;
-
+*/
 
 		public static List<String>? GetKeys (this Object source) {
 			List<String>? result = null;
@@ -100,8 +100,9 @@ namespace Stockboy.Server.Classes {
 
 		public static Object? GetValue (this Object source, String field) => source.GetType ().GetProperty (field)?.GetValue (source);
 
-		public static Model? Export<Model> (this Object model) => JsonConvert.DeserializeObject<Model> (JsonConvert.SerializeObject (model));
 
+		public static Model? Export<Model> (this Object model) => JsonConvert.DeserializeObject<Model> (JsonConvert.SerializeObject (model));
+/*
 		public static PropertyInfo KeyField (this Object source) => source.GetType ().GetProperties ().Where (property => property.GetCustomAttributes (typeof (KeyAttribute)).Any ()).First ();
 
 
@@ -124,12 +125,12 @@ namespace Stockboy.Server.Classes {
             if ((source.GetType () == typeof (decimal)) || (source.GetType () == typeof (decimal?))) return true;
 			return false;
 		}// IsNumeric;
-
+*/
 	}// ObjectExtensions;
 
 
 	public static class ListExtensions {
-
+/*
 		public static Boolean Includes (this List<PropertyInfo> source, PropertyInfo value) {
 			foreach (PropertyInfo property in source) {
 				if (property.Name == value.Name)  return true;
@@ -140,7 +141,7 @@ namespace Stockboy.Server.Classes {
 
 		public static String Join (this List<String> source, String delimiter) => String.Join (delimiter, source.ToArray ());
 
-
+*/
 		public static List<Model>? OrderBy<Model> (this List<Model> source, String sort_list) {
 
 			String [] sort_fields = sort_list.Split (',');
@@ -160,23 +161,23 @@ namespace Stockboy.Server.Classes {
 
 
 	}// ListExtensions;
-
+/*
 
 	public static class PropertyInfoExtensions {
  		public static Boolean IsCurrency (this PropertyInfo source) => Attribute.IsDefined (source, typeof (Currency));
 
 	}// PropertyInfoExtensions;
 
-
+*/
 	static class QueryableExtensions {
 
 		public static IOrderedQueryable<Model> SequentialOrderBy<Model> (this List<Model> source, String sort_field) {
 			Boolean descending = sort_field.Contains ("desc");
 			if (descending) {
 				sort_field = sort_field.Substring (0, sort_field.IndexOf ("desc")).Trim ();
-				return source.AsQueryable ().OrderByDescending (item => item.GetValue (sort_field));
+				return source.AsQueryable ().OrderByDescending (item => item!.GetValue (sort_field));
 			}
-			return source.AsQueryable ().OrderBy (item => item.GetValue (sort_field));
+			return source.AsQueryable ().OrderBy (item => item!.GetValue (sort_field));
 		}
 
 
@@ -184,13 +185,13 @@ namespace Stockboy.Server.Classes {
 			Boolean descending = sort_field.Contains ("desc");
 			if (descending) {
 				sort_field = sort_field.Substring (0, sort_field.IndexOf ("desc")).Trim ();
-				return (source.AsQueryable () as IOrderedQueryable<Model>)?.ThenByDescending (item => item.GetValue (sort_field));
+				return (source.AsQueryable () as IOrderedQueryable<Model>)?.ThenByDescending (item => item!.GetValue (sort_field));
 			}
-			return (source.AsQueryable () as IOrderedQueryable<Model>)?.ThenBy (item => item.GetValue (sort_field));
+			return (source.AsQueryable () as IOrderedQueryable<Model>)?.ThenBy (item => item!.GetValue (sort_field));
 		}
 
 	}
-
+/*
 
 	public static class StringExtensions {
 
@@ -203,5 +204,5 @@ namespace Stockboy.Server.Classes {
 		public static String ToHeader (this String value) => $"{char.ToUpper (value [0])}{value.Substring (1)}".Replace ("_", " ");
 
 	}// StringExtensions;
-
+*/
 }// Stockboy.Server.Classes;

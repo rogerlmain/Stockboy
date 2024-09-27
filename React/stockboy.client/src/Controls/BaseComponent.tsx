@@ -1,7 +1,7 @@
 import React from "react";
 
 
-export class BaseProps { id?: String = null }
+export class BaseProps { id?: string = null }
 
 
 export class BaseState {}
