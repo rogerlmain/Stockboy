@@ -10,8 +10,8 @@ import { NameValueCollection } from "Classes/Collections";
 
 class DataRowProps {
 	row: IBaseModel;
-	keys: Array<String> = null;
-	field_names: Array<String> = null;
+	keys: Array<string> = null;
+	field_names: Array<string> = null;
 	data_table: DataTable = null;
 	onclick: Function = null;
 }// DataRowProps;
@@ -20,17 +20,17 @@ class DataRowProps {
 class DataTableProps {
 	id : String = null;
 	data : Array<IBaseModel> = null;
-	totals ? : Array<String> = null;
-	fields ? : Array<String> = null;
-	keys ? : Array<String> = null;
+	totals? : Array<string> = null;
+	fields? : Array<string> = null;
+	keys? : Array<string> = null;
 	onclick ? : Function;
+	parent: React.Component = null;
 }// DataTableProps;
 
 
 class DataTableState {
-	data: Array<IBaseModel> = null;
-	sort_field: String = null;
-	ascending: Boolean = true;
+	sort_field: string = null;
+	ascending: boolean = true;
 	selected_row: NameValueCollection = null;
 }// DataTableState;
 
@@ -115,24 +115,23 @@ class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
 export default class DataTable extends BaseComponent<DataTableProps> {
 
 
-	private field_names: String [] = null;
+	private field_names: string [] = null;
 
 
 	private get field_count () { return not_set (this.props.keys) ? this.field_names.length : this.field_names.length };
 
 
-	private sort_table (sort_field: String) {
+	private sort_table (sort_field: string) {
 
 		let key = sort_field as keyof IBaseModel;
 
 		let ascending = (this.state.sort_field == sort_field) ? !this.state.ascending: true;
-		let sort_values: Array<IBaseModel> = this.state.data.toSorted ((first, second) => ascending ? (first [key] > second [key] ? 1 : -1) : (first [key] > second [key] ? -1 : 1));
+		let sort_values: Array<IBaseModel> = this.props.data.toSorted ((first, second) => ascending ? (first [key] > second [key] ? 1 : -1) : (first [key] > second [key] ? -1 : 1));
 
 		this.setState ({ 
 			sort_field,
-			ascending,
-			data: sort_values,
-		});
+			ascending
+		}, () => this.props.parent.setState ({ data: sort_values }));
 		
 	}// sort_table;
 
@@ -145,12 +144,11 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 
 	public constructor (props: DataTableProps) {
 		super (props);
-		this.state.data = this.props.data;
-		this.field_names = isset (this.props.fields) ? this.props.fields : Object.keys (this.state.data [0]);
+		this.field_names = isset (this.props.fields) ? this.props.fields : Object.keys (this.props.data [0]);
 	}// constructor;
 
 
-	public get selected_row (): IBaseModel { return this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id) }
+	public get selected_row (): IBaseModel { return this.props.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id) }
 
 
 	public componentDidUpdate (old_props: DataTableProps) {
@@ -158,17 +156,17 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 	}// componentDidUpdate;
 
 
-	public render = () => (is_null (this.state.data) || (this.state.data.length == 0)) ? <div>No data</div> : <div className="data-table" style={{ gridTemplateColumns: `repeat(${this.field_count}, min-content)` }}>
+	public render = () => (is_null (this.props.data) || (this.props.data.length == 0)) ? <div>No data</div> : <div className="data-table" style={{ gridTemplateColumns: `repeat(${this.field_count}, min-content)` }}>
 
 		<div className="table-header">
 			{isset (this.props.keys) ? <div style={{ display: "none" }}></div> : null}
 			{this.field_names.map (key => <div key={this.next_key} onClick={() => this.sort_table (key)}>
 				{key.titleCase ()}
-				{key == this.state.sort_field ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
+				{key == isset (this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
 			</div>)}
 		</div>
 
-		{this.state.data.map (row => <DataTableRow key={this.next_key} row={row} keys={this.props.keys} field_names={this.field_names} onclick={this.props.onclick} data_table={this} />)}
+		{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} keys={this.props.keys} field_names={this.field_names} onclick={this.props.onclick} data_table={this} />)}
 
 	</div>
 

@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json;
-using Stockboy.Server.Models;
+﻿using Stockboy.Server.Models;
 using Stockboy.Server.Models.APIs;
-
-using static Stockboy.Server.Classes.Globals;
 
 namespace Stockboy.Server.Classes {
 

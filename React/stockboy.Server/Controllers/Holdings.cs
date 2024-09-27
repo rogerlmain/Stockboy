@@ -2,8 +2,6 @@
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
 
-using static Stockboy.Server.Classes.Globals;
-
 
 namespace Stockboy.Server.Controllers {
 
@@ -12,9 +10,7 @@ namespace Stockboy.Server.Controllers {
 		public async static Task<List<HoldingsModel>?> GetHoldings (DataContext context) {
 
 			List<HoldingsView>? holdings = context.holdings_view.SelectAll ().OrderBy ("name");
-			List<HoldingsModel>? holdings_model = null;
-
-			if (holdings is null) return null;
+			List<HoldingsModel>? holdings_model = new ();
 
 			StockDetailsModel? stock_details = await APIs.get_stock_details (String.Join (comma, holdings.Select (holding => holding.symbol).ToArray ()));
 

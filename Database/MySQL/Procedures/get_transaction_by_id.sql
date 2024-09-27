@@ -1,8 +1,8 @@
-drop procedure if exists get_transaction_history;
+drop procedure if exists get_transaction_by_id;
 
 delimiter $$
 
-create procedure get_transaction_history (broker_id varchar (36), ticker_id varchar (36)) begin
+create procedure get_transaction_by_id (id varchar (36)) begin
 
 	select
 		tac.id,
@@ -29,8 +29,7 @@ create procedure get_transaction_history (broker_id varchar (36), ticker_id varc
 	on
 		ttp.id = transaction_type_id
 	where
-		((brk.id = broker_id) or (broker_id is null)) and
-		((tck.id = ticker_id) or (ticker_id is null)) and
+		(tac.id = id) and
         (not tac.deleted);
 
 end $$

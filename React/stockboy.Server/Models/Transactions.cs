@@ -15,9 +15,7 @@
 	}// TransactionModel;
 
 
-	public class TransactionDataModel {
-		public Guid? transaction_id { get; set; }
-
+	public class TransactionDataModel: BaseModel {
 		public Guid broker_id { get; set; }
         public Guid ticker_id { get; set; }
 

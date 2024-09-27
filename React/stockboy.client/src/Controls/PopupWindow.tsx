@@ -16,6 +16,7 @@ class PopupWindowState {
 	contents: String | ReactElement = null;
 	buttons: NameValueCollection = null;
 	visible: boolean = false;
+	closable: boolean = false;
 }// PopupWindowState;
 
 
@@ -51,23 +52,33 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 
 
 	public constructor (props: PopupWindowProps) {
+
 		super (props);
 		StylesheetList.add_stylesheet ("div.popup-window", PopupWindow.styles);
+
 		if (isset (this.props.children)) this.state.contents = this.props.children;
-		if (this.props.closable) this.state.buttons = this.close_button;
+
+		if (this.props.closable) {
+			this.state.buttons = this.close_button;
+			this.state.closable = true;
+		}// if;
+
 	}// constructor;
 
 
-	public show (contents?: String | ReactElement, buttons?: NameValueCollection) {
+	public show (contents?: String | ReactElement, buttons?: NameValueCollection, closable: boolean = false) {
 
 		let new_state = new NameValueCollection ({ buttons: null });
 
 		if (isset (contents)) new_state ["contents"] = contents;
 
-		if (isset (buttons)) {
-			if (this.props.closable) buttons.merge (this.close_button);
-			new_state ["buttons"] = buttons;
+		if (closable) {
+			if (not_set (buttons)) buttons = new NameValueCollection ();
+			buttons.merge (this.close_button);
+			new_state ["closable"] = true;
 		}// if;
+
+		if (isset (buttons)) new_state ["buttons"] = buttons;
 
 		return this.setState (new_state, () => this.setState ({ visible: true }));
 

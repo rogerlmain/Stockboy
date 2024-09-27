@@ -24,7 +24,10 @@ export default class MainMenuItem extends BaseComponent<MenuItemProps> {
 	/********/
 
 
-	public render = () => <div className="main-menu-item" onClick={() => main_page.change_page (this.props.page)} ref={this.control}>{this.props.text}</div>
+	public render = () => <div className="main-menu-item" ref={this.control} onClick={() => {
+		main_page.popup_window.hide ();
+		main_page.change_page (this.props.page);
+	}}>{this.props.text}</div>
 
 
 	public componentDidUpdate = () => this.control.current.setClass ("selected", this.props.page.type == this.props.selected_page.type);

@@ -21,18 +21,26 @@ export const PAGES	= {
 export default class MainPage extends BaseComponent {
 
 
+	private popup_reference: React.RefObject<PopupWindow> = React.createRef ();
+
+
+	/********/
+
+
 	public state: MainPageState = new MainPageState ();
 
-
-	public componentDidMount () {
-		main_page = this;
-	}// componentDidMount;
+	public get popup_window (): PopupWindow { return this.popup_reference.current }
 
 
 	public change_page = (new_page: ReactElement) => this.setState ({ current_page: new_page });
 
 
+	public componentDidMount = () => main_page = this;
+
+
 	public render = () => <div>
+
+		<PopupWindow id="popup_window" ref={this.popup_reference}>{"Default Value"}</PopupWindow>
 
 		<div className="header">
 			<div className="main-menu">

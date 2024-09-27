@@ -1,12 +1,12 @@
 export interface IBaseModel {
 
-	id: String;
+	id: string;
 
 }// IBaseModel;
 
 
 export default abstract class BaseModel implements IBaseModel {
 
-	public id: String = null;
+	public id: string = null;
 
 }// BaseModel;

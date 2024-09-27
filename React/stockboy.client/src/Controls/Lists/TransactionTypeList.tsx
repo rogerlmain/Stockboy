@@ -14,7 +14,7 @@ export default class TransactionTypeList extends DataControl<SelectListProps, Da
 
 	public constructor (props: SelectListProps) {
 		super (props);
-		this.fetch ("GetTransactionTypes").then (result => this.setState ({ data: result }));
+		this.fetch ("GetTransactionTypes").then ((response: Array<ListModel>) => this.setState ({ data: response }));
 	}// constructor;
 
 

@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-using static Stockboy.Server.Classes.Globals;
-
 
 namespace Stockboy.Server.Models {
 

@@ -2,6 +2,7 @@ import DataControl, { DataState } from "Controls/DataControl";
 import SelectList, { SelectListProps } from "Controls/Lists/SelectList";
 import Eyecandy from "Controls/Eyecandy";
 
+import TickersModel from "Models/TickersModel";
 import ListModel from "Models/ListModel";
 
 import { BaseProps } from "Controls/BaseComponent";
@@ -16,11 +17,11 @@ export default class TickerList extends DataControl<SelectListProps> {
 
 		super (props);
 
-		this.fetch ("GetTickers").then (result => {
+		this.fetch ("GetTickers").then ((response: Array<TickersModel>) => {
 
 			let tickers: Array<ListModel> = null;
 
-			result.forEach (row => {
+			response.forEach (row => {
 				if (is_null (tickers)) tickers = new Array<ListModel> ();
 				tickers.push ({ 
 					id: row.id,
@@ -33,6 +34,8 @@ export default class TickerList extends DataControl<SelectListProps> {
 	}// constructor;
 
 
-	public render = () => is_null (this.state.data) ? <Eyecandy text="Loading..." /> : <SelectList id="ticker_list" name={this.props.name} items={this.state.data} selected_item={this.props.selected_item} />
+	public render = () => is_null (this.state.data) ? <Eyecandy text="Loading..." /> : <SelectList id="ticker_list" name={this.props.name} 
+		items={this.state.data} selected_item={this.props.selected_item} header="Select Ticker">
+	</SelectList>
 
 }// TickerList;

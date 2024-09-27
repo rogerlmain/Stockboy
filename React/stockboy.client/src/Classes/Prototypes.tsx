@@ -4,6 +4,12 @@ export {}
 declare global {
 
 
+	interface Array<T> {
+		append (value: T): Array<T>
+		empty (): boolean;
+	}
+
+
 	interface DateConstructor {
 		today (): string
 	}
@@ -25,11 +31,32 @@ declare global {
 }
 
 
+/**** Array Prototypes ****/
+
+
+Array.prototype.append = function<T> (value: T): Array<T> {
+	this.push (value);
+	return this;
+}// append;
+
+
+Object.defineProperty (Array.prototype, "empty", {
+	get: function () { return this.length == 0 }
+
+});
+
+
+/**** Date Prototypes ****/
+
+
 Date.today = function (): string {
 	let date = new Date ();
 	return `${date.getFullYear ()}-${date.getMonth ().toString ().padded ("0", 2)}-${date.getDay ().toString ().padded ("0", 2)}`;
 }// today;
 
+
+
+/**** String Prototypes ****/
 
 
 String.Empty = "";
@@ -56,6 +83,9 @@ String.prototype.titleCase = function (): String {
 	return result.join (String.Space);
 
 }// titleCase;
+
+
+/**** HTMLElement Prototypes ****/
 
 
 HTMLElement.prototype.setClass = function (value: string, condition: Boolean) {

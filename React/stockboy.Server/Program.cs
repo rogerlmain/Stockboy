@@ -1,3 +1,5 @@
+global using static Stockboy.Server.Classes.Globals;
+
 using Microsoft.EntityFrameworkCore;
 using Stockboy.Server.Classes;
 

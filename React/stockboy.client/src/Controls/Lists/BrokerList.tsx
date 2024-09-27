@@ -14,10 +14,12 @@ export default class BrokerList extends DataControl<SelectListProps, DataState<L
 
 	public constructor (props: SelectListProps) {
 		super (props);
-		this.fetch ("GetBrokers").then (result => this.setState ({ data: result }));
+		this.fetch ("GetBrokers").then ((response: Array<ListModel>) => this.setState ({ data: response }));
 	}// constructor;
 
 
-	public render = () => is_null (this.state.data) ? <Eyecandy text="Loading..." /> : <SelectList id="broker_list" name={this.props.name} items={this.state.data} selected_item={this.props.selected_item} />
+	public render = () => is_null (this.state.data) ? <Eyecandy text="Loading..." /> : <SelectList id="broker_list" name={this.props.name} 
+		items={this.state.data} selected_item={this.props.selected_item} header="Select broker">
+	</SelectList>
 
 }// BrokerList;

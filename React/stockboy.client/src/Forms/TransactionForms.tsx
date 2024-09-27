@@ -50,7 +50,7 @@ export class EditTransactionForm extends BaseComponent<TransactionFormProps> {
 	public render = () => <form ref={this.transaction_form}>
 		<div className="two-column-grid">
 
-			<input type="hidden" id="transaction_id" />
+			<input type="hidden" id="id" />
 
 			<label htmlFor="broker">Broker</label>
 			<BrokerList selected_item={this.props.broker_id} name="broker_id" />
@@ -60,23 +60,23 @@ export class EditTransactionForm extends BaseComponent<TransactionFormProps> {
 
 			<label htmlFor="price">Price per share</label>
 			<div className="nested two-column-grid">
-				<input type="numeric" id="price" name="price" value={123} />
+				<input type="numeric" id="price" name="price" defaultValue={10} />
 				<div className="two-column-grid">
 
 					<label htmlFor="quantity">Quantity</label>
-					<input type="numeric" id="quantity" name="quantity" value={234} />
+					<input type="numeric" id="quantity" name="quantity" defaultValue={234} />
 
 				</div>
 			</div>
 
 			<label htmlFor="transaction_date">Transaction Date</label>
 			<div className="two-column-grid">
-				<input type="date" id="transaction_date" name="transaction_date" value={Date.today ()} />
+				<input type="date" id="transaction_date" name="transaction_date" defaultValue={Date.today ()} />
 				<div className="three-column-grid">
 
 					<div className="two-column-grid" style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}>
 						<label htmlFor="settlement_date">Settlment Date</label>
-						<input type="date" id="settlement_date" name="settlement_date" value={Date.today ()} />
+						<input type="date" id="settlement_date" name="settlement_date" defaultValue={Date.today ()} />
 					</div>
 
 					<label htmlFor="transaction_type">Transaction Type</label>

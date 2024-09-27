@@ -5,7 +5,7 @@ import { NameValueCollection } from "Classes/Collections";
 
 
 export class DataProps<model = {}> extends BaseProps{
-	keys?: Array<NameValueCollection>;
+	keys?: Array<NameValueCollection> = null;
 }// DataProps;
 
 
@@ -26,7 +26,10 @@ export default abstract class DataControl<props_model extends DataProps = DataPr
 			headers: { "content-type": "application/json" }
 		};
 
-		if (not_null (body)) parameters ["body"] = JSON.stringify (body);
+		if (not_null (body)) {
+			if (body instanceof FormData) body = Object.fromEntries (body);
+			parameters ["body"] = JSON.stringify (body);
+		}// if;
 
 		fetch (`${api_url}/${url}`, parameters).then (response => response.json ()).then (response => resolve (response));
 

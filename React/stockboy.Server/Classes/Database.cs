@@ -2,8 +2,6 @@
 using Newtonsoft.Json;
 using System.Data;
 
-using static Stockboy.Server.Classes.Globals;
-
 
 namespace Stockboy.Server.Classes {
 
@@ -20,20 +18,24 @@ namespace Stockboy.Server.Classes {
 		}// Connection_string;
 
 
-		private static MySqlCommand? database_command (String procedure_name, Object parameters, MySqlConnection connection) {
+		private static MySqlCommand? database_command (String procedure_name, Object? parameters, MySqlConnection connection) {
 
 			MySqlCommand command = new (procedure_name, connection);
 
 			command.CommandType = CommandType.StoredProcedure;
 			command.Connection.Open ();
 
-			List<String>? keys = parameters.GetKeys ();
+			if (not_null (parameters)) {
 
-			if (is_null (keys)) return null;
+				List<String>? keys = parameters!.GetKeys ();
 
-			foreach (String key in keys!) {
-				command.Parameters.AddWithValue (key, parameters.GetValue (key));
-			}// foreach;
+				if (is_null (keys)) return null;
+
+				foreach (String key in keys!) {
+					command.Parameters.AddWithValue (key, parameters!.GetValue (key));
+				}// foreach;
+
+			}// if;
 
 			return command;
 
@@ -43,7 +45,7 @@ namespace Stockboy.Server.Classes {
 		/********/
 
 
-		public static List<Model>? CallProcedure<Model> (String procedure_name, Object parameters) where Model: new () {
+		public static List<Model>? CallProcedure<Model> (String procedure_name, Object? parameters = null) where Model: new () {
 			using (var connection = new MySqlConnection (ConnectionString)) {
 
 				MySqlCommand? command = database_command (procedure_name, parameters, connection);

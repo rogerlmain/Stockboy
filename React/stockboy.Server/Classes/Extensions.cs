@@ -1,11 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Stockboy.Server.Models;
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-
-using static Stockboy.Server.Classes.Globals;
 
 
 namespace Stockboy.Server.Classes {

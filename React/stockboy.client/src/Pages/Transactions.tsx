@@ -10,6 +10,7 @@ import PopupWindow from "../Controls/PopupWindow";
 
 import { NameValueCollection } from "Classes/Collections";
 import { DeleteTransactionForm, EditTransactionForm } from "Forms/TransactionForms";
+import ErrorWindow from "../Controls/ErrorWindow";
 
 
 class TransactionState extends DataState<TransactionModel> {
@@ -21,17 +22,13 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 
 
 	private data_table_reference: React.RefObject<DataTable> = React.createRef ();
-	private popup_reference: React.RefObject<PopupWindow> = React.createRef ();
 	private transaction_form_reference: React.RefObject<EditTransactionForm> = React.createRef ();
 
-
-	private get transactions_popup (): ReactElement {
-		return <PopupWindow id="transactions_popup" ref={this.popup_reference}>{"Default Value"}</PopupWindow>
-	}// transactions_popup;
-
+	private active_transaction_form: ReactElement = null;
+	private active_transaction_form_buttons: NameValueCollection = null;
 
 	private get transactions_table (): ReactElement {
-		return <DataTable id="transations_table" data={this.state.data} ref={this.data_table_reference}
+		return <DataTable id="transations_table" data={this.state.data} ref={this.data_table_reference} parent={this}
 			keys={["id"]}
 			fields={["broker", "ticker", "company", "price", "quantity", "transaction_date", "settlement_date", "transaction_type"]}
 			onclick={(keys: NameValueCollection) => this.setState ({ selected: true })}>
@@ -39,45 +36,109 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 	}// transactions_table;
 
 
-	private get popup_window (): PopupWindow { return this.popup_reference.current }
+	private get transaction_form (): ReactElement {
+
+		if (is_null (this.active_transaction_form)) this.active_transaction_form = <EditTransactionForm ref={this.transaction_form_reference} 
+			broker_id={this.props.keys?.["broker_id"]} 
+			ticker_id={this.props.keys?.["ticker_id"]}>
+		</EditTransactionForm>;
+
+		return this.active_transaction_form;
+
+	}// transaction_form;
+
+
+	private get transaction_form_buttons (): NameValueCollection {
+
+		if (is_null (this.active_transaction_form_buttons)) this.active_transaction_form_buttons = new NameValueCollection ({
+
+			Save: () => {
+
+				let data: FormData = this.form_data;
+
+				main_page.popup_window.show (<Eyecandy command={() => this.fetch ("SaveTransaction", data).then ((response: TransactionModel) => {
+
+					if (isset (response ["error"])) return main_page.popup_window.show (<ErrorWindow text={response ["error"]} />, null, true);
+
+					this.add_new_row (response); // NEED CODE TO CATER FOR UPDATED ROWS
+
+					main_page.popup_window.show (
+						<div>
+							Transaction saved.<br />
+							<br />
+							Add another transaction?
+						</div>, new NameValueCollection ({
+							Yes: () => main_page.popup_window.show (this.transaction_form, this.transaction_form_buttons),
+							No: () => main_page.popup_window.hide ()
+						})
+					);
+
+				})} text={"Saving transaction"} />)
+
+			}, Close: () => main_page.popup_window.hide ()
+		});
+
+		return this.active_transaction_form_buttons;
+
+	}// transaction_form_buttons;
+
+
 	private get data_table (): DataTable { return this.data_table_reference.current }
+	private get form_data (): FormData { return new FormData (this.transaction_form_reference.current.transaction_form.current) }
+
+
+	private add_new_row (row: TransactionModel) {
+
+		let item: TransactionModel = null;
+
+		let sort_field: string = this.data_table.state.sort_field;
+		let ascending: boolean = this.data_table.state.ascending;
+
+		if (isset (row [sort_field])) {
+			for (let index = 0; index < this.state.data.length; index++) {
+
+				let item = this.state.data [index];
+
+				switch (ascending) {
+					case true: if (row [sort_field] > item [sort_field]) continue; break;
+					case false: if (row [sort_field] < item [sort_field]) continue; break;
+				}// switch;
+
+				return this.setState ({ data: this.state.data.toSpliced (index, 0, row) });
+
+			}// for;
+		}// if;
+
+		return this.setState ({ data: this.state.data.append (row) });
+
+	}// add_new_row;
+
+
+	private update_selected_row (row: TransactionModel) {
+
+		// ... DO SHIT HERE
+
+	}// update_selected_row;
 
 
 	private remove_selected_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: TransactionModel) => element.id == this.data_table.selected_row.id)), 1) });
 
 
-	private delete_transaction = () => this.popup_window.show (<DeleteTransactionForm transaction={this.data_table.selected_row} />, new NameValueCollection ({
+	private delete_transaction = () => main_page.popup_window.show (<DeleteTransactionForm transaction={this.data_table.selected_row} />, new NameValueCollection ({
 
-		Yes: () => this.popup_window.show (<Eyecandy 
+		Yes: () => main_page.popup_window.show (<Eyecandy 
 			command={() => this.fetch ("DeleteTransaction", this.data_table.selected_row).then (() => {
 				this.remove_selected_row ();
-				this.popup_window.hide ();
+				main_page.popup_window.hide ();
 			})}
 			text={"Deleting transaction"}>
 		</Eyecandy>),
 
-		No: () => this.popup_window.hide ()
+		No: () => main_page.popup_window.hide ()
 	}));
 
 
-	private edit_transaction = () => this.popup_window.show (<EditTransactionForm  ref={this.transaction_form_reference} broker_id={this.props.keys ["broker_id"]} ticker_id={this.props.keys ["ticker_id"]}/>, new NameValueCollection ({
-
-		Save: () => /*this.popup_window.show (<Eyecandy 
-			command={() =>*/ this.fetch ("SaveTransaction", Object.fromEntries (new FormData (this.transaction_form_reference.current.transaction_form.current))).then (() => {
-
-alert ("Saved");
-
-})
-
-/*
-				this.popup_window.hide ();
-			})}
-			text={"Saving transaction"}>
-		</Eyecandy>),
-
-		Close: () => this.popup_window.hide ()
-*/
-	}));
+	private edit_transaction = () => main_page.popup_window.show (this.transaction_form, this.transaction_form_buttons);
 
 
 	/********/
@@ -87,20 +148,20 @@ alert ("Saved");
 
 
 	public componentDidMount () {
-		this.fetch ("GetTransactions", this.props.keys).then ((response: Array<TransactionModel>) => this.setState ({ data: response }/*, () => this.setState ({ data_table: this.transactions_table })*/));
+		this.fetch ("GetTransactions", this.props.keys).then ((response: Array<TransactionModel>) => {
+			this.setState ({ data: response })
+		});
 	}// componentDidMount;
 
 
 	public render = () => is_null (this.state.data) ? this.load_screen : <div>
 
-		{this.transactions_popup}
-
-		{this.transactions_table}
+		{this.state.data.empty ? <div>There are no transactions</div> : this.transactions_table}
 
 		<div className="button-bar">
 			<button id="add_transaction_button" onClick={() => this.edit_transaction ()}>Add</button>
 			<div style={{display: this.state.selected ? null : "none"}}>
-				<button id="edit_transaction_button" onClick={() => this.popup_window.show (<EditTransactionForm />)}>Edit</button>
+				<button id="edit_transaction_button" onClick={() => main_page.popup_window.show (<EditTransactionForm />)}>Edit</button>
 				<button id="delete_transaction_button" onClick={() => this.delete_transaction ()}>Delete</button>
 			</div>
 		</div>
