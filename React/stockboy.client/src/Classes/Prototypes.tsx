@@ -1,3 +1,6 @@
+import React from "react";
+
+
 export {}
 
 
@@ -7,28 +10,42 @@ declare global {
 	interface Array<T> {
 		append (value: T): Array<T>
 		empty (): boolean;
+	}// Array<T>;
+
+
+	interface ElementCSSInlineStyle {
+
 	}
 
 
 	interface DateConstructor {
 		today (): string
-	}
+	}// DateConstructor;
+
+
+	interface HTMLElement {
+		setClass (value: String, condition: Boolean);
+	}// HTMLElement;
+
+
+	interface Object {
+		matches (candidate: Object);
+		merge (...objects: Object []);
+	}// Object;
+
 
 	interface String {
 		padded (char: String, size: number): String;
 		titleCase (): String;
-	}
+	}// String;
+
 
 	interface StringConstructor {
 		Empty: string;
 		Space: string;
-	}
+	}// StringConstructor;
 
-	interface HTMLElement {
-		setClass (value: String, condition: Boolean);
-	}
-
-}
+}// declare global;
 
 
 /**** Array Prototypes ****/
@@ -54,6 +71,44 @@ Date.today = function (): string {
 	return `${date.getFullYear ()}-${date.getMonth ().toString ().padded ("0", 2)}-${date.getDay ().toString ().padded ("0", 2)}`;
 }// today;
 
+
+
+/**** HTMLElement Prototypes ****/
+
+
+HTMLElement.prototype.setClass = function (value: string, condition: Boolean) {
+	if (condition) return this.classList.add (value);
+	this.classList.remove (value);
+}// setClass;
+
+
+/**** Object Prototypes ****/
+
+
+Object.prototype.matches = function (candidate: Object) {
+
+	if (is_null (candidate)) return false;
+
+	for (let key of Object.keys (this)) {
+		if (this [key] != candidate [key]) return false;
+	}// for;
+
+	return true;
+
+}// matches;
+
+
+Object.prototype.merge = function (...objects: Object []): Object {
+
+	objects.forEach (item => {
+		Object.keys (item).forEach (key => {
+			this [key] = item [key];
+		});
+	});
+
+	return this;
+
+}// merge;
 
 
 /**** String Prototypes ****/
@@ -84,12 +139,4 @@ String.prototype.titleCase = function (): String {
 
 }// titleCase;
 
-
-/**** HTMLElement Prototypes ****/
-
-
-HTMLElement.prototype.setClass = function (value: string, condition: Boolean) {
-	if (condition) return this.classList.add (value);
-	this.classList.remove (value);
-}// setClass;
 

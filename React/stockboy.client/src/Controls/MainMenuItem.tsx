@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React from "react";
 
 import MainPage from "Main";
 import BaseComponent from "Controls/BaseComponent";
@@ -7,8 +7,8 @@ import BasePage from "Pages/Abstract/BasePage";
 
 export class MenuItemProps {
 	public text: String = null;
-	public page: ReactElement = null;
-	public selected_page: ReactElement = null;
+	public page: React.ReactElement = null;
+	public selected_page: React.ReactElement = null;
 }// MenuItemProps;
 
 
@@ -18,7 +18,7 @@ export class MenuItemState { selected: Boolean = false }
 export default class MainMenuItem extends BaseComponent<MenuItemProps> {
 
 
-	private control = React.createRef<HTMLDivElement> ();
+	private control: React.RefObject<HTMLDivElement> = React.createRef ();
 
 
 	/********/

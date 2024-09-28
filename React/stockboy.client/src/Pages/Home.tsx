@@ -1,15 +1,20 @@
 import React from "react";
 
+import BasePage from "Pages/Abstract/BasePage";
+import Transactions from "Pages/Transactions";
+
 import HoldingsModel from "Models/HoldingsModel";
+
+import TickerForm from "Forms/TickerForm";
+
+import DataPage, { DataProps, DataState } from "Controls/DataControl";
 import DataTable from "Controls/DataTable";
 import Link from "Controls/Link";
 import ErrorWindow from "Controls/ErrorWindow";
 
-import BasePage from "Pages/Abstract/BasePage";
-import DataPage, { DataProps, DataState } from "Controls/DataControl";
-import Transactions from "Pages/Transactions";
-
 import { BaseProps } from "Controls/BaseComponent";
+
+import { NameValueCollection } from "Classes/Collections";
 
 
 class HomeState extends DataState<HoldingsModel> {
@@ -17,13 +22,13 @@ class HomeState extends DataState<HoldingsModel> {
 }// HomeState;
 
 
-export default class Home extends DataPage<DataProps, HomeState> {
+export default class HomePage extends DataPage<DataProps, HomeState> {
 
 
 	private lookup_stock = () => alert (`looking up ${this.state.active_ticker}`);
 
 
-	private data_table = React.createRef<DataTable> ();
+	private data_table: React.RefObject<DataTable> = React.createRef ();
 
 
 	/********/
@@ -58,11 +63,14 @@ export default class Home extends DataPage<DataProps, HomeState> {
 		</div>
 
 		<div className="button-bar">
-			<button id="add_ticker">Add Ticker</button>
+			<button id="add_ticker" onClick={() => main_page.popup_window.show (<TickerForm />, new NameValueCollection ({
+				Save: () => alert ("Saving..."),
+				Cancel: () => main_page.popup_window.hide ()
+			}))}>Add Ticker</button>
 			<button id="add_broker">Add Broker</button>
 			<button id="add_transaction">Add Transaction</button>
 		</div>
 
 	</div>);
 
-}// Home;
+}// HomePage;

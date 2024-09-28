@@ -1,16 +1,16 @@
-import React, { ReactElement } from "react";
-import BaseComponent, { BaseProps } from "Controls/BaseComponent";
+import React from "react";
 
+import BaseComponent, { BaseProps } from "Controls/BaseComponent";
 import DataPage, { DataProps, DataState } from "Controls/DataControl";
 import DataTable from "Controls/DataTable";
 import Eyecandy from "Controls/Eyecandy";
+import PopupWindow from "Controls/PopupWindow";
+import ErrorWindow from "Controls/ErrorWindow";
 
 import TransactionModel from "Models/TransactionsModel";
-import PopupWindow from "../Controls/PopupWindow";
 
 import { NameValueCollection } from "Classes/Collections";
 import { DeleteTransactionForm, EditTransactionForm } from "Forms/TransactionForms";
-import ErrorWindow from "../Controls/ErrorWindow";
 
 
 class TransactionState extends DataState<TransactionModel> {
@@ -18,16 +18,16 @@ class TransactionState extends DataState<TransactionModel> {
 }// TransactionState;
 
 
-export default class Transactions extends DataPage<DataProps, TransactionState> {
+export default class TransactionsPage extends DataPage<DataProps, TransactionState> {
 
 
 	private data_table_reference: React.RefObject<DataTable> = React.createRef ();
 	private transaction_form_reference: React.RefObject<EditTransactionForm> = React.createRef ();
 
-	private active_transaction_form: ReactElement = null;
+	private active_transaction_form: React.ReactElement = null;
 	private active_transaction_form_buttons: NameValueCollection = null;
 
-	private get transactions_table (): ReactElement {
+	private get transactions_table (): React.ReactElement {
 		return <DataTable id="transations_table" data={this.state.data} ref={this.data_table_reference} parent={this}
 			keys={["id"]}
 			fields={["broker", "ticker", "company", "price", "quantity", "transaction_date", "settlement_date", "transaction_type"]}
@@ -36,11 +36,16 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 	}// transactions_table;
 
 
-	private get transaction_form (): ReactElement {
+	private get data_table (): DataTable { return this.data_table_reference.current }
+	private get form_data (): FormData { return new FormData (this.transaction_form_reference.current.transaction_form.current) }
+
+
+	private transaction_form (row: TransactionModel = null): React.ReactElement {
 
 		if (is_null (this.active_transaction_form)) this.active_transaction_form = <EditTransactionForm ref={this.transaction_form_reference} 
 			broker_id={this.props.keys?.["broker_id"]} 
-			ticker_id={this.props.keys?.["ticker_id"]}>
+			ticker_id={this.props.keys?.["ticker_id"]}
+			data={row}>
 		</EditTransactionForm>;
 
 		return this.active_transaction_form;
@@ -48,7 +53,7 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 	}// transaction_form;
 
 
-	private get transaction_form_buttons (): NameValueCollection {
+	private transaction_form_buttons (editing: boolean = false): NameValueCollection {
 
 		if (is_null (this.active_transaction_form_buttons)) this.active_transaction_form_buttons = new NameValueCollection ({
 
@@ -62,13 +67,15 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 
 					this.add_new_row (response); // NEED CODE TO CATER FOR UPDATED ROWS
 
+					if (editing) return main_page.popup_window.show (<div>Transaction saved.</div>, null, true);
+
 					main_page.popup_window.show (
 						<div>
 							Transaction saved.<br />
 							<br />
 							Add another transaction?
 						</div>, new NameValueCollection ({
-							Yes: () => main_page.popup_window.show (this.transaction_form, this.transaction_form_buttons),
+							Yes: () => main_page.popup_window.show (this.transaction_form (), this.transaction_form_buttons ()),
 							No: () => main_page.popup_window.hide ()
 						})
 					);
@@ -81,10 +88,6 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 		return this.active_transaction_form_buttons;
 
 	}// transaction_form_buttons;
-
-
-	private get data_table (): DataTable { return this.data_table_reference.current }
-	private get form_data (): FormData { return new FormData (this.transaction_form_reference.current.transaction_form.current) }
 
 
 	private add_new_row (row: TransactionModel) {
@@ -138,7 +141,7 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 	}));
 
 
-	private edit_transaction = () => main_page.popup_window.show (this.transaction_form, this.transaction_form_buttons);
+	private edit_transaction = (row?: TransactionModel) => main_page.popup_window.show (this.transaction_form (row), this.transaction_form_buttons (isset (row)));
 
 
 	/********/
@@ -154,18 +157,20 @@ export default class Transactions extends DataPage<DataProps, TransactionState> 
 	}// componentDidMount;
 
 
-	public render = () => is_null (this.state.data) ? this.load_screen : <div>
+	public render = () => is_null (this.state.data) ? this.load_screen : <div className="page-layout">
 
-		{this.state.data.empty ? <div>There are no transactions</div> : this.transactions_table}
+		<div className="body">
+			{this.state.data.empty ? <div>There are no transactions</div> : this.transactions_table}
+		</div>
 
 		<div className="button-bar">
 			<button id="add_transaction_button" onClick={() => this.edit_transaction ()}>Add</button>
 			<div style={{display: this.state.selected ? null : "none"}}>
-				<button id="edit_transaction_button" onClick={() => main_page.popup_window.show (<EditTransactionForm />)}>Edit</button>
+				<button id="edit_transaction_button" onClick={() => this.edit_transaction (this.data_table.selected_row as TransactionModel)}>Edit</button>
 				<button id="delete_transaction_button" onClick={() => this.delete_transaction ()}>Delete</button>
 			</div>
 		</div>
 
 	</div>
 
-}// Transactions;
+}// TransactionsPage;

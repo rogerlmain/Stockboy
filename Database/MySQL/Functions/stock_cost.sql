@@ -22,7 +22,8 @@ create function stock_cost (ticker_id varchar (36), broker_id varchar (36)) retu
 		ttp.id = tac.transaction_type_id
 	where
 		(tac.broker_id = broker_id) and
-        (tac.ticker_id = ticker_id)
+        (tac.ticker_id = ticker_id) and
+        (not tac.deleted)
 	order by
 		tac.transaction_date;
         

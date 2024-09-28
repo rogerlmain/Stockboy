@@ -12,7 +12,7 @@
 }
 
 /**** Debugging Styles ****/
-*.bordered, *.bordered * {
+*.bordered, *.bordered *, *.outlined > * {
   border: solid 1px red;
 }
 
@@ -23,7 +23,7 @@
 }
 
 /********/
-html, body, *.full-page {
+html, body, *.full-page, *.page-layout {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -41,6 +41,22 @@ label {
 }
 
 /**** Layout Styles ****/
+*.page-layout {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: hidden;
+}
+*.page-layout > * {
+  margin: 1em;
+}
+*.page-layout *.body {
+  flex-grow: 1;
+  overflow-y: hidden;
+  width: min-content;
+  align-self: center;
+}
+
 *.row-block {
   display: flex;
   flex-direction: row;
@@ -70,6 +86,10 @@ label {
 *.right-aligned {
   display: flex;
   justify-content: flex-end;
+}
+
+*.maximum-size {
+  flex-grow: 1;
 }
 
 *.with-some-headspace {
@@ -187,6 +207,7 @@ div.popup-window {
   filter: drop-shadow(0.15em 0.15em 0.1em #666);
   background-color: #FFFFFD;
   transition: opacity 0.25s ease-in-out;
+  z-index: 1;
 }
 div.popup-window img.eyecandy {
   height: 1.2rem;

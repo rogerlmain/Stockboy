@@ -8,6 +8,8 @@ import BrokerList from "Controls/Lists/BrokerList";
 import TickerList from "Controls/Lists/TickerList";
 import TransactionTypeList from "Controls/Lists/TransactionTypeList";
 
+import TransactionModel from "Models/TransactionsModel";
+
 import { NameValueCollection } from "Classes/Collections";
 import { IBaseModel } from "Models/Abstract/BaseModel";
 
@@ -16,6 +18,7 @@ class TransactionFormProps extends BaseProps {
 	transaction?: IBaseModel = null; // Make mandatory after development
 	broker_id?: string = null;
 	ticker_id?: string = null;
+	data?: TransactionModel = null;
 }// TransactionFormProps;
 
 
@@ -50,7 +53,7 @@ export class EditTransactionForm extends BaseComponent<TransactionFormProps> {
 	public render = () => <form ref={this.transaction_form}>
 		<div className="two-column-grid">
 
-			<input type="hidden" id="id" />
+			<input type="hidden" id="id" defaultValue={this.props.data?.id} />
 
 			<label htmlFor="broker">Broker</label>
 			<BrokerList selected_item={this.props.broker_id} name="broker_id" />

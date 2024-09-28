@@ -1,11 +1,10 @@
-import React, { ReactElement, useMemo } from "react";
-import { createRoot } from "react-dom/client";
+import React from "react";
 
 import BaseComponent from "Controls/BaseComponent";
 import GlyphArrow, { direction_type } from "./GlyphArrow";
 
-import { IBaseModel } from "Models/Abstract/BaseModel";
 import { NameValueCollection } from "Classes/Collections";
+import { IBaseModel } from "Models/Abstract/BaseModel";
 
 
 class DataRowProps {
@@ -39,7 +38,6 @@ class DataRowState {}
 
 
 class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
-
 
 	private get key_values (): NameValueCollection {
 
@@ -84,7 +82,7 @@ class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
 
 		let keys: NameValueCollection = this.key_values;
 
-		return <div key={this.next_key} className={`table-row ${this.selected_class}`}  style={{padding: "1em"}}
+		return <div key={this.next_key} className={`table-row ${this.selected_class}`}
 
 			onMouseOver={(event: React.MouseEvent) => this.active_row (event.target).classList.add ("highlighted")}
 			onMouseOut={(event: React.MouseEvent) => this.active_row (event.target).classList.remove ("highlighted")}>
@@ -116,6 +114,8 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 
 
 	private field_names: string [] = null;
+	private initial_styles: React.CSSProperties = null;
+	private reference: React.RefObject<HTMLDivElement> = React.createRef ();
 
 
 	private get field_count () { return not_set (this.props.keys) ? this.field_names.length : this.field_names.length };
@@ -136,6 +136,21 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 	}// sort_table;
 
 
+	private update_styles () {
+
+		let data_table: HTMLDivElement = this.reference.current;
+		let data_styles: React.CSSProperties = new Object ().merge (this.initial_styles);
+
+		let overflow: boolean = (data_table.scrollHeight > data_table.parentElement.clientHeight);
+
+		Object.assign (data_table.style, data_styles.merge ({
+			height: overflow ? "100%" : String.Empty,
+			overflowY: overflow ? "scroll" : String.Empty
+		}));
+
+	}// callback_reference;
+
+
 	/********/
 
 
@@ -145,21 +160,27 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 	public constructor (props: DataTableProps) {
 		super (props);
 		this.field_names = isset (this.props.fields) ? this.props.fields : Object.keys (this.props.data [0]);
+		this.initial_styles = { gridTemplateColumns: `repeat(${this.field_count}, min-content)` }
 	}// constructor;
 
 
 	public get selected_row (): IBaseModel { return this.props.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id) }
 
 
-	public componentDidUpdate (old_props: DataTableProps) {
+	public componentDidUpdate (old_props: DataTableProps, old_state: DataTableState) {
 		if (old_props.data != this.props.data) this.setState ({data: this.props.data});
+		this.update_styles ();
 	}// componentDidUpdate;
 
 
-	public render = () => (is_null (this.props.data) || (this.props.data.length == 0)) ? <div>No data</div> : <div className="data-table" style={{ gridTemplateColumns: `repeat(${this.field_count}, min-content)` }}>
+	public componentDidMount = () => this.update_styles ();
 
+
+	public render = () => (is_null (this.props.data) || (this.props.data.length == 0)) ? <div>No data</div> : <div className="data-table" ref={this.reference}
+
+		style={this.initial_styles}>
+	
 		<div className="table-header">
-			{isset (this.props.keys) ? <div style={{ display: "none" }}></div> : null}
 			{this.field_names.map (key => <div key={this.next_key} onClick={() => this.sort_table (key)}>
 				{key.titleCase ()}
 				{key == isset (this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}

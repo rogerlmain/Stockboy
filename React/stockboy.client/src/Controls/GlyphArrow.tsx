@@ -1,5 +1,3 @@
-import React from "react"
-
 import BaseComponent from "Controls/BaseComponent";
 import StylesheetList from "../Classes/StylesheetList";
 

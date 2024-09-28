@@ -1,19 +1,20 @@
+import React from "react";
+
 import BaseComponent, { BaseProps } from "Controls/BaseComponent";
 import StylesheetList from "Classes/StylesheetList";
 
-import { ReactElement } from "react";
 import { NameValueCollection } from "Classes/Collections";
 
 
 class PopupWindowProps extends BaseProps {
-	children?: String | ReactElement = null;
+	children?: String | React.ReactElement = null;
 	buttons?: NameValueCollection = null;
 	closable?: boolean = false;
 }// PopupWindowProps;
 
 
 class PopupWindowState {
-	contents: String | ReactElement = null;
+	contents: String | React.ReactElement = null;
 	buttons: NameValueCollection = null;
 	visible: boolean = false;
 	closable: boolean = false;
@@ -40,7 +41,7 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 	private close_button: NameValueCollection = new NameValueCollection ({ Close: () => this.setState ({ visible: false }) });
 
 
-	private button_list = (): ReactElement => is_null (this.state.buttons) ? null : <div className="button-bar">
+	private button_list = (): React.ReactElement => is_null (this.state.buttons) ? null : <div className="button-bar">
 		{ Object.keys (this.state.buttons).map ((key: String) => <button key={this.next_key} onClick={this.state.buttons [key as keyof NameValueCollection]}>{key}</button>) }
 	</div>
 
@@ -66,7 +67,7 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 	}// constructor;
 
 
-	public show (contents?: String | ReactElement, buttons?: NameValueCollection, closable: boolean = false) {
+	public show (contents?: String | React.ReactElement, buttons?: NameValueCollection, closable: boolean = false) {
 
 		let new_state = new NameValueCollection ({ buttons: null });
 

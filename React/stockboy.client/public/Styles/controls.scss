@@ -10,7 +10,10 @@ button, input[type='text'] {
 }
 
 
-button { cursor: pointer }
+button { 
+	cursor: pointer;
+	&:hover { background-color: var(--selected-color) }
+}
 
 
 /**** Checkbox Select List ****/
@@ -45,7 +48,18 @@ div.checkbox-select-list div.list-item {
 }
 
 
-/**** Data Table ****/
+/**** Form Styles ****/
+
+
+form input, form select {
+	height: 1rem;
+	padding: 0.65rem 1rem !important;
+	border-radius: 1rem !important;
+	border: solid 1px black;
+}
+
+
+/**** Data Table Styles ****/
 
 
 div.data-table {
@@ -69,6 +83,8 @@ div.data-table {
 			border-bottom: solid 2px var(--element-border-color);
 			background-color: var(--table-header-background);
 			cursor: pointer;
+			position: sticky;
+			top: 0;
 		}
 	}
 
@@ -104,7 +120,7 @@ div.data-table {
 /* div.data-table */
 
 
-/********/
+/**** Menu Styles ****/
 
 
 div.main-menu {
