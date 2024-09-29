@@ -12,6 +12,7 @@ import TransactionModel from "Models/TransactionsModel";
 
 import { NameValueCollection } from "Classes/Collections";
 import { IBaseModel } from "Models/Abstract/BaseModel";
+import SelectList from "../Controls/Lists/SelectList";
 
 
 class TransactionFormProps extends BaseProps {
@@ -47,16 +48,39 @@ export class DeleteTransactionForm extends BaseComponent<TransactionFormProps> {
 export class EditTransactionForm extends BaseComponent<TransactionFormProps> {
 
 
+	state = { selel: "two" }
+
+	private form_element: React.RefObject<HTMLDivElement> = React.createRef ();
+
+
 	public transaction_form: React.RefObject<HTMLFormElement> = React.createRef ();
 
+public render = () => <div>
 
+<div className="form-element" ref={this.form_element}>
+<select id="test_select" onChange={event => this.setState ({ selel: event.target.value })}>
+	<option value="one">One</option>
+	<option value="two" selected={true}>Two</option>
+</select>
+<form>
+	<input type="hidden" name="test_input" value={this.state.selel} />
+	<input type="text" value="somevalue" />
+</form>
+</div>
+
+<button onClick={() => alert (JSON.stringify (Object.fromEntries (this.form_element.current.form_data ())))}>Doit</button>
+
+</div>
+
+/*
 	public render = () => <form ref={this.transaction_form}>
+
 		<div className="two-column-grid">
 
 			<input type="hidden" id="id" defaultValue={this.props.data?.id} />
 
 			<label htmlFor="broker">Broker</label>
-			<BrokerList selected_item={this.props.broker_id} name="broker_id" />
+			<BrokerList selected_item={isset (this.props.data) ? this.props.data.broker_id : this.props.broker_id} name="broker_id" />
 
 			<label htmlFor="ticker">Company / Ticker</label>
 			<TickerList selected_item={this.props.ticker_id} name="ticker_id" />
@@ -90,5 +114,5 @@ export class EditTransactionForm extends BaseComponent<TransactionFormProps> {
 
 		</div>
 	</form>
-
+*/
 }// EditTransactionForm;

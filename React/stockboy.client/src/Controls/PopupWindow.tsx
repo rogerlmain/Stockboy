@@ -1,9 +1,9 @@
 import React from "react";
 
 import BaseComponent, { BaseProps } from "Controls/BaseComponent";
-import StylesheetList from "Classes/StylesheetList";
 
 import { NameValueCollection } from "Classes/Collections";
+import SelectList from "./Lists/SelectList";
 
 
 class PopupWindowProps extends BaseProps {
@@ -24,20 +24,6 @@ class PopupWindowState {
 export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 
 
-	private static styles: String = `
-		position: absolute;
-		left: 50%;
-		top: 25%;
-		transform: translate(-50%);
-		padding: 2em;
-		border: var(--popup-border);
-		border-radius: 0.2rem;
-		filter: drop-shadow(0.15em 0.15em 0.1em #666);
-		background-color: #FFFFFD;
-		transition: opacity 0.25s ease-in-out;
-	`;
-
-
 	private close_button: NameValueCollection = new NameValueCollection ({ Close: () => this.setState ({ visible: false }) });
 
 
@@ -55,7 +41,6 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 	public constructor (props: PopupWindowProps) {
 
 		super (props);
-		StylesheetList.add_stylesheet ("div.popup-window", PopupWindow.styles);
 
 		if (isset (this.props.children)) this.state.contents = this.props.children;
 

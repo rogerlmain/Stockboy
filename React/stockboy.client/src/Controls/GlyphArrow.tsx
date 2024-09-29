@@ -1,5 +1,5 @@
 import BaseComponent from "Controls/BaseComponent";
-import StylesheetList from "../Classes/StylesheetList";
+import StylesheetList from "Classes/StylesheetList";
 
 
 class GlyphArrowProps { direction: direction_type = direction_type.forwards }

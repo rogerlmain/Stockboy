@@ -157,11 +157,9 @@ export default class TransactionsPage extends DataPage<DataProps, TransactionSta
 	}// componentDidMount;
 
 
-	public render = () => is_null (this.state.data) ? this.load_screen : <div className="page-layout">
+	public render = () => is_null (this.state.data) ? this.load_screen : <div>
 
-		<div className="body">
-			{this.state.data.empty ? <div>There are no transactions</div> : this.transactions_table}
-		</div>
+		{this.state.data.empty ? <div>There are no transactions</div> : this.transactions_table}
 
 		<div className="button-bar">
 			<button id="add_transaction_button" onClick={() => this.edit_transaction ()}>Add</button>

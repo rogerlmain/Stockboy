@@ -13,11 +13,6 @@ declare global {
 	}// Array<T>;
 
 
-	interface ElementCSSInlineStyle {
-
-	}
-
-
 	interface DateConstructor {
 		today (): string
 	}// DateConstructor;
@@ -26,6 +21,11 @@ declare global {
 	interface HTMLElement {
 		setClass (value: String, condition: Boolean);
 	}// HTMLElement;
+
+
+	interface HTMLDivElement {
+		form_data ();
+	}
 
 
 	interface Object {
@@ -80,6 +80,24 @@ HTMLElement.prototype.setClass = function (value: string, condition: Boolean) {
 	if (condition) return this.classList.add (value);
 	this.classList.remove (value);
 }// setClass;
+
+
+/**** HTMLElement Prototypes ****/
+
+
+HTMLDivElement.prototype.form_data = function (): FormData {
+
+		let elements = this.querySelectorAll ("select");
+		let result: FormData = new FormData ();
+
+		elements.forEach (element => {
+			//if (is_null (result)) result = new FormData ();
+			result.append (element.id, element.value);
+		});
+
+		return result;
+	}
+/*});*/
 
 
 /**** Object Prototypes ****/
