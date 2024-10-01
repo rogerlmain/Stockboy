@@ -6,7 +6,6 @@ using Stockboy.Server.Models;
 
 namespace Stockboy.Server.Controllers {
 
-
 	public class GetTransactionsParameters {
 		public Guid? broker_id { get; set; } = null;
 		public Guid? ticker_id { get; set; } = null;
@@ -47,9 +46,6 @@ namespace Stockboy.Server.Controllers {
 		[HttpPost]
 		[Route ("SaveTransaction")]
 		public IActionResult SaveTransaction ([FromBody] TransactionDataModel parameters) {
-
-			Boolean success = true;
-
 			try {
 
 				if (is_null (parameters.id)) parameters.id = Guid.NewGuid ();
@@ -69,10 +65,8 @@ namespace Stockboy.Server.Controllers {
 			} catch (Exception except) {
 				return new JsonResult (new { error = except.Message });
 			}// try;
-
 		}// SaveTransaction;
 
 	}// Transactions;
-
 
 }// Stockboy.Server.Controllers;

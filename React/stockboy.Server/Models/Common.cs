@@ -3,9 +3,6 @@
 
 namespace Stockboy.Server.Models {
 
-	public class Currency: Attribute {}
-
-
 	public interface IBaseModel {
 		[Key]
 		public Guid? id { get; set; }

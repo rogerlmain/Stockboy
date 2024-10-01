@@ -10,8 +10,6 @@ declare global {
 
 	var underscore: string;
 
-	var api_url: String;
-
 }// global;
 
 
@@ -22,5 +20,3 @@ globalThis.is_null = (value: any): Boolean => (value == null);
 globalThis.not_null = (value: any): Boolean => !is_null (value);
 
 globalThis.underscore = "_";
-
-globalThis.api_url = "https://localhost:7100";

@@ -1,7 +1,8 @@
 import React from "react";
 
+import DataPage, { DataProps, DataState } from "Controls/Abstract/DataControl";
+import APIClass from "Controls/Abstract/APIClass";
 import BaseComponent, { BaseProps } from "Controls/BaseComponent";
-import DataPage, { DataProps, DataState } from "Controls/DataControl";
 import DataTable from "Controls/DataTable";
 import Eyecandy from "Controls/Eyecandy";
 import PopupWindow from "Controls/PopupWindow";
@@ -24,13 +25,13 @@ export default class TransactionsPage extends DataPage<DataProps, TransactionSta
 	private data_table_reference: React.RefObject<DataTable> = React.createRef ();
 	private transaction_form_reference: React.RefObject<EditTransactionForm> = React.createRef ();
 
-	private active_transaction_form: React.ReactElement = null;
-	private active_transaction_form_buttons: NameValueCollection = null;
-
 	private get transactions_table (): React.ReactElement {
 		return <DataTable id="transations_table" data={this.state.data} ref={this.data_table_reference} parent={this}
 			keys={["id"]}
 			fields={["broker", "ticker", "company", "price", "quantity", "transaction_date", "settlement_date", "transaction_type"]}
+			date_fields={["transaction_date", "settlement_date"]}
+			numeric_fields={["quantity"]}
+			currency_fields={["price"]}
 			onclick={(keys: NameValueCollection) => this.setState ({ selected: true })}>
 		</DataTable>
 	}// transactions_table;
@@ -40,28 +41,22 @@ export default class TransactionsPage extends DataPage<DataProps, TransactionSta
 	private get form_data (): FormData { return new FormData (this.transaction_form_reference.current.transaction_form.current) }
 
 
-	private transaction_form (row: TransactionModel = null): React.ReactElement {
-
-		if (is_null (this.active_transaction_form)) this.active_transaction_form = <EditTransactionForm ref={this.transaction_form_reference} 
-			broker_id={this.props.keys?.["broker_id"]} 
-			ticker_id={this.props.keys?.["ticker_id"]}
-			data={row}>
-		</EditTransactionForm>;
-
-		return this.active_transaction_form;
-
-	}// transaction_form;
+	private transaction_form = (row: TransactionModel = null): React.ReactElement => <EditTransactionForm ref={this.transaction_form_reference} 
+		broker_id={this.props.keys?.["broker_id"]} 
+		ticker_id={this.props.keys?.["ticker_id"]}
+		data={row}>
+	</EditTransactionForm>;
 
 
 	private transaction_form_buttons (editing: boolean = false): NameValueCollection {
 
-		if (is_null (this.active_transaction_form_buttons)) this.active_transaction_form_buttons = new NameValueCollection ({
+		return new NameValueCollection ({
 
 			Save: () => {
 
 				let data: FormData = this.form_data;
 
-				main_page.popup_window.show (<Eyecandy command={() => this.fetch ("SaveTransaction", data).then ((response: TransactionModel) => {
+				main_page.popup_window.show (<Eyecandy command={() => APIClass.fetch_data ("SaveTransaction", data).then ((response: TransactionModel) => {
 
 					if (isset (response ["error"])) return main_page.popup_window.show (<ErrorWindow text={response ["error"]} />, null, true);
 
@@ -84,8 +79,6 @@ export default class TransactionsPage extends DataPage<DataProps, TransactionSta
 
 			}, Close: () => main_page.popup_window.hide ()
 		});
-
-		return this.active_transaction_form_buttons;
 
 	}// transaction_form_buttons;
 
@@ -130,7 +123,7 @@ export default class TransactionsPage extends DataPage<DataProps, TransactionSta
 	private delete_transaction = () => main_page.popup_window.show (<DeleteTransactionForm transaction={this.data_table.selected_row} />, new NameValueCollection ({
 
 		Yes: () => main_page.popup_window.show (<Eyecandy 
-			command={() => this.fetch ("DeleteTransaction", this.data_table.selected_row).then (() => {
+			command={() => APIClass.fetch_data ("DeleteTransaction", this.data_table.selected_row).then (() => {
 				this.remove_selected_row ();
 				main_page.popup_window.hide ();
 			})}
@@ -151,13 +144,13 @@ export default class TransactionsPage extends DataPage<DataProps, TransactionSta
 
 
 	public componentDidMount () {
-		this.fetch ("GetTransactions", this.props.keys).then ((response: Array<TransactionModel>) => {
+		APIClass.fetch_data ("GetTransactions", this.props.keys).then ((response: Array<TransactionModel>) => {
 			this.setState ({ data: response })
 		});
 	}// componentDidMount;
 
 
-	public render = () => is_null (this.state.data) ? this.load_screen : <div>
+	public render = () => is_null (this.state.data) ? this.load_screen : <div className="column-block">
 
 		{this.state.data.empty ? <div>There are no transactions</div> : this.transactions_table}
 

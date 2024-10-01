@@ -1,6 +1,8 @@
-import DataControl, { DataState } from "Controls/DataControl";
+import DataControl, { DataState } from "Controls/Abstract/DataControl";
+import APIClass from "Controls/Abstract/APIClass";
 import SelectList, { SelectListProps } from "Controls/Lists/SelectList";
 import Eyecandy from "Controls/Eyecandy";
+
 
 import ListModel from "Models/ListModel";
 
@@ -14,7 +16,7 @@ export default class BrokerList extends DataControl<SelectListProps, DataState<L
 
 	public constructor (props: SelectListProps) {
 		super (props);
-		this.fetch ("GetBrokers").then ((response: Array<ListModel>) => this.setState ({ data: response }));
+		APIClass.fetch_data ("GetBrokers").then ((response: Array<ListModel>) => this.setState ({ data: response }));
 	}// constructor;
 
 

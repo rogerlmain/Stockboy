@@ -1,11 +1,12 @@
-import DataControl, { DataState } from "Controls/DataControl";
+import DataControl, { DataState } from "Controls/Abstract/DataControl";
+import APIClass from "Controls/Abstract/APIClass";
 import SelectList, { SelectListProps } from "Controls/Lists/SelectList";
 import Eyecandy from "Controls/Eyecandy";
 
-import TickersModel from "Models/TickersModel";
 import ListModel from "Models/ListModel";
 
 import { BaseProps } from "Controls/BaseComponent";
+import { TickerModel } from "Models/TickersModel";
 
 
 export default class TickerList extends DataControl<SelectListProps> {
@@ -17,7 +18,7 @@ export default class TickerList extends DataControl<SelectListProps> {
 
 		super (props);
 
-		this.fetch ("GetTickers").then ((response: Array<TickersModel>) => {
+		APIClass.fetch_data ("GetTickers").then ((response: Array<TickerModel>) => {
 
 			let tickers: Array<ListModel> = null;
 

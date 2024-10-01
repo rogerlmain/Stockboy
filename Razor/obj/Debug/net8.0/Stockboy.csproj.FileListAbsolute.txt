@@ -297,3 +297,15 @@ D:\Projects\Stockboy\obj\Debug\net8.0\refint\Stockboy.dll
 D:\Projects\Stockboy\obj\Debug\net8.0\Stockboy.pdb
 D:\Projects\Stockboy\obj\Debug\net8.0\Stockboy.genruntimeconfig.cache
 D:\Projects\Stockboy\obj\Debug\net8.0\ref\Stockboy.dll
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.csproj.AssemblyReference.cache
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.AssemblyInfoInputs.cache
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.AssemblyInfo.cs
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.csproj.CoreCompileInputs.cache
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.MvcApplicationPartsAssemblyInfo.cache
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.RazorAssemblyInfo.cache
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.RazorAssemblyInfo.cs
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.sourcelink.json
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.dll
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\refint\Stockboy.dll
+D:\Projects\Stockboy\Razor\obj\Debug\net8.0\Stockboy.pdb

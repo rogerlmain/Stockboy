@@ -18,21 +18,4 @@ export default abstract class DataControl<props_model extends DataProps = DataPr
 
 	protected load_screen: JSX.Element = <div>Loading...</div>
 
-
-	protected fetch = (url: RequestInfo, body: any = null): any => new Promise ((resolve, reject) => {
-
-		let parameters = {
-			method: is_null (body) ? "get" : "post",
-			headers: { "content-type": "application/json" }
-		};
-
-		if (not_null (body)) {
-			if (body instanceof FormData) body = Object.fromEntries (body);
-			parameters ["body"] = JSON.stringify (body);
-		}// if;
-
-		fetch (`${api_url}/${url}`, parameters).then (response => response.json ()).then (response => resolve (response));
-
-	});
-
 }// DataControl;

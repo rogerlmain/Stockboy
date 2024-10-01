@@ -7,25 +7,25 @@ namespace Stockboy.Server.Controllers {
 
 	public class Holdings (DataContext context) : Controller {
 
-		public async static Task<List<HoldingsModel>?> GetHoldings (DataContext context) {
+		public static List<HoldingsModel>? GetHoldings (DataContext context) {
 
-			List<HoldingsView>? holdings = context.holdings_view.SelectAll ().OrderBy ("name");
 			List<HoldingsModel>? holdings_model = new ();
+			List<HoldingsView>? holdings = context.holdings_view.SelectAll ().OrderBy ("name");
 
-			StockDetailsModel? stock_details = await APIs.get_stock_details (String.Join (comma, holdings.Select (holding => holding.symbol).ToArray ()));
+			if (is_null (holdings)) return null;
 
-			foreach (HoldingsView holding in holdings) {
+			foreach (HoldingsView holding in holdings!) {
+
 				HoldingsModel? data = holding.Export<HoldingsModel> ();
 				if (data is null) continue;
 
 				data.cost = Math.Round (data.cost, 2);
-				data.price = Math.Round (stock_details?.get_details (data.symbol)?.regularMarketPrice ?? 0, 2);
-				data.value = Math.Round (data.quantity * data.price ?? 0, 2);
-				data.profit = Math.Round (data.value - data.cost ?? 0, 2);
 
 				holdings_model ??= new ();
 				holdings_model.Add (data);
-			}
+
+			}// foreach;
+
 			return holdings_model;
 
 		}// GetHoldings;
@@ -36,7 +36,13 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpGet]
 		[Route ("GetHoldings")]
-		public async Task<IActionResult> GetHoldings () => new JsonResult (await GetHoldings (context!));
+		public IActionResult GetHoldings () {
+			try {
+				return new JsonResult (GetHoldings (context!));
+			} catch (Exception except) { 
+				return new JsonResult (new { error = except.Message });
+			}// try;
+		}// GetHoldings;
 
 	}// Holdings;
 

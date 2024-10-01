@@ -7,7 +7,7 @@ export class NameValueCollection {
 
 
 	public constructor (values: KeyValuePair = null) {
-		if (isset (values)) this.merge (values);
+		if (isset (values)) this.copy (values);
 	}// constructor;
 
 }// NameValueCollection;

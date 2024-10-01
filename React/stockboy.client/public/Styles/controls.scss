@@ -52,10 +52,17 @@ div.checkbox-select-list div.list-item {
 
 
 form input, form select {
-	height: 1rem;
-	padding: 0.65rem 1rem !important;
+	height: 1.2rem;
+	padding: 0 10px !important;
 	border-radius: 1rem !important;
 	border: solid 1px black;
+}
+
+
+form select {
+	position: relative;
+	top: 0.5px;
+	padding: 0 6px !important;
 }
 
 

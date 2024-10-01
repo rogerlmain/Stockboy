@@ -6,10 +6,12 @@ export default class HoldingsModel extends BaseModel {
 	public broker_id: string;
 	public broker: string;
 	public symbol: string;
-	public asset: string;
+	public company: string;
+	public price: number;
 	public quantity: number;
+	public volume: number;
 	public cost: number;
 	public value: number;
-	public price: number;
 	public profit: number;
+	public last_updated: Date;
 }// HoldingsModel;

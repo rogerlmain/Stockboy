@@ -1,6 +1,11 @@
 import BaseModel from "Models/Abstract/BaseModel";
 
-export default class TickersModel extends BaseModel {
-    name: string = null;
+export class TickerModel extends BaseModel {
     symbol: string = null;
-}// TransactionModel;
+    name: string = null;
+	price: number = null;
+	volume: number = null;
+	dividend_date: number = null;
+	dividend_frequency: number = null;
+	last_updated: Date = null;
+}// TickerModel;

@@ -6,10 +6,7 @@
 		public string broker { get; set; } = String.Empty;
         public string ticker { get; set; } = String.Empty;
         public string company { get; set; } = String.Empty;
-
-		[Currency]
 		public decimal price { get; set; }
-
 		public decimal quantity { get; set; }
 		public DateTime transaction_date { get; set; }
 		public DateTime settlement_date { get; set; }
@@ -20,10 +17,7 @@
 	public class TransactionDataModel: BaseModel {
 		public Guid broker_id { get; set; }
         public Guid ticker_id { get; set; }
-
-		[Currency]
 		public decimal price { get; set; }
-
 		public decimal quantity { get; set; }
 		public DateTime transaction_date { get; set; }
 		public DateTime settlement_date { get; set; }

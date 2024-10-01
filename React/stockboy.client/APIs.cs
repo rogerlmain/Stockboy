@@ -1,8 +1,10 @@
-﻿using Stockboy.Server.Models;
-using Stockboy.Server.Models.APIs;
+﻿using Newtonsoft.Json;
+using Stockboy.Models;
+using Stockboy.Models.APIs;
 
-namespace Stockboy.Server.Classes {
+using static Stockboy.Classes.Globals;
 
+namespace Stockboy.Classes {
 	public class APIs {
 
 		private const string api_key = "uB06z9g2lPXlOl4koojYFpma_VYhm8bM";
@@ -49,5 +51,4 @@ namespace Stockboy.Server.Classes {
 
 
 	}
-
-}// Stockboy.Server.Classes;
+}

@@ -60,7 +60,7 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 
 		if (closable) {
 			if (not_set (buttons)) buttons = new NameValueCollection ();
-			buttons.merge (this.close_button);
+			buttons.copy (this.close_button);
 			new_state ["closable"] = true;
 		}// if;
 

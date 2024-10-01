@@ -1,4 +1,5 @@
-import DataControl, { DataState } from "Controls/DataControl";
+import DataControl, { DataState } from "Controls/Abstract/DataControl";
+import APIClass from "Controls/Abstract/APIClass";
 import SelectList, { SelectListProps } from "Controls/Lists/SelectList";
 import Eyecandy from "Controls/Eyecandy";
 
@@ -14,7 +15,7 @@ export default class TransactionTypeList extends DataControl<SelectListProps, Da
 
 	public constructor (props: SelectListProps) {
 		super (props);
-		this.fetch ("GetTransactionTypes").then ((response: Array<ListModel>) => this.setState ({ data: response }));
+		APIClass.fetch_data ("GetTransactionTypes").then ((response: Array<ListModel>) => this.setState ({ data: response }));
 	}// constructor;
 
 
