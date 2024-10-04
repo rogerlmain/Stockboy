@@ -1,11 +1,10 @@
-import React from "react";
+import React, { Component, DOMAttributes } from "react";
 
 
 export {}
 
 
 declare global {
-
 
 	interface Array<T> {
 		add (value: T): Array<T>;
@@ -28,6 +27,7 @@ declare global {
 
 
 	interface HTMLElement {
+		numericInput (): boolean;
 		setClass (value: String, condition: Boolean);
 	}// HTMLElement;
 
@@ -35,6 +35,14 @@ declare global {
 	interface HTMLDivElement {
 		form_data ();
 	}// HTMLDivElement;
+
+
+	interface HTMLInputElement {
+		pad_decimals (quantity: number);
+		set_commas ();
+		clear_commas ();
+		valid_keystroke (event: KeyboardEvent);
+	}// HTMLInputElement;
 
 
 	interface Number {
@@ -46,14 +54,26 @@ declare global {
 
 	interface Object {
 		copy (...candidates: Object []): Object;
+		isCurrency (): boolean;
+		isNumeric (): boolean;
 		matches (candidate: Object): boolean;
 		merge (...candidates: Object []): Object;
 	}// Object;
 
 
+	interface StringConstructor {
+		isString (candidate: any): boolean;
+	}// StringConstructor;
+
+
 	interface String {
+		isNumber (): boolean;
+		integerValue (): number;
+		matches (candidate: string): boolean;
 		padded (char: String, size: number, right_padded?: boolean): String;
-		titleCase (): String;
+		parseNumeric (): string;
+		titleCase (strip_spaces?: boolean): String;
+		leadingCharacters (char: string)
 	}// String;
 
 
@@ -62,7 +82,19 @@ declare global {
 		Space: string;
 	}// StringConstructor;
 
+
 }// declare global;
+
+
+declare module "react" {
+	interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+		commas?: string;
+		decimalPlaces?: number;
+		leadingZeros?: boolean;
+		negativeNumbers?: boolean;
+	}// HTMLAttributes;
+
+}// react;
 
 
 /**** Array Prototypes ****/
@@ -86,6 +118,17 @@ Object.defineProperty (Array.prototype, "empty", {
 	get: function () { return this.length == 0 }
 
 });
+
+
+/**** React Component Prototypes ****/
+
+
+let nativeSetState = Component.prototype.setState;
+
+Component.prototype.setState = function (state: any, callback?: () => void): boolean | Promise<boolean> {
+	nativeSetState.call (this, state, callback);
+	return true;
+}// setState;
 
 
 /**** Date Prototypes ****/
@@ -112,13 +155,18 @@ Date.prototype.timestamp = function (): number { return Math.floor (this.getMinu
 /**** HTMLElement Prototypes ****/
 
 
+HTMLElement.prototype.numericInput = function () {
+	return (this.tagName.toLowerCase () == "input") && (["numeric", "currency"].contains (this.getAttribute ("type")));
+}// numericInput;
+
+
 HTMLElement.prototype.setClass = function (value: string, condition: Boolean) {
 	if (condition) return this.classList.add (value);
 	this.classList.remove (value);
 }// setClass;
 
 
-/**** HTMLElement Prototypes ****/
+/**** HTMLDivElement Prototypes ****/
 
 
 HTMLDivElement.prototype.form_data = function (): FormData {
@@ -134,6 +182,81 @@ HTMLDivElement.prototype.form_data = function (): FormData {
 	return result;
 
 }// form_data;
+
+
+/**** HTMLInputElement Prototypes ****/
+
+
+HTMLInputElement.prototype.pad_decimals = function (quantity: number) {
+
+	let parts: Array<string> = this.value.split (".");
+
+	if (parts.length == 1) parts.push (String.Empty); // No decimals. Add it.
+	if (parts [0].trim ().length == 0) parts [0] = "0";
+
+	while (parts [1].length < quantity) parts [1] += "0";
+	this.value = parts.join (".");
+
+}// pad_decimals;
+
+
+HTMLInputElement.prototype.set_commas = function () {
+
+	let number = String.Empty;
+	let parts = this.value.split (".");
+	let negative = parts [0][0] == "-";
+
+	if (negative) parts [0] = parts [0].substring (1);
+
+	for (let i = 0; i < parts [0].length; i++) {
+		number = `${parts [0][parts [0].length - (i + 1)]}${((i > 0) && ((i % 3) == 0)) ? comma : String.Empty}${number}`;
+	}// for;
+
+	this.value = `${negative ? "-" : String.Empty}${number}${(parts.length > 1) ? "." + parts [1] : String.Empty}`;
+	
+}// set_commas;
+
+
+HTMLInputElement.prototype.clear_commas = function () {
+
+	let parts = this.value.split (".");
+	let negative = parts [0][0] == "-";
+
+	if (negative) parts [0] = parts [0].substring (1);
+
+	this.value = `${negative ? "-" : String.Empty}${parts [0].parseNumeric ()}${(parts.length > 1) ? "." + parts [1] : String.Empty}`;
+
+}// clear_commas;
+
+
+HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
+
+	let decimal_places: number = (this.getAttribute ("type") == "currency") ? 2 : (this.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
+	let leading_zeros: number = this.getAttribute ("leadingZeros")?.integerValue () ?? 0;
+	let negative_numbers: boolean = this.getAttribute ("negativeNumbers")?.toLowerCase () == "true";
+
+	let value = `${this.value.substring (0, this.selectionStart)}${event.key}${this.value.substring (this.selectionEnd)}`;
+
+	if (control_keys.contains (event.key)) return true; // allow permissable control keys: tab, delete, backspace etc. (see control keys in Globals.tsx for details)
+	if (((event.key == "c") || (event.key == "v")) && event.ctrlKey) return true; // allow copy/paste
+
+	if (value.trim () != value) return event.preventDefault (); // leading or trailing spaces are not allowed
+	if (!digits.includes (parseInt (value [0])) && (value [0] != "-")) return event.preventDefault (); // leading garbage
+	if ((value [0] == "-") && !negative_numbers) return event.preventDefault (); // negative numbers not allowed
+
+	let parts = value.split (".");
+
+	if ((parts.length > 2) || ((parts.length > 1) && (decimal_places == 0))) return event.preventDefault (); // too many decimal points or decimals not allowed
+	if ((parts.length == 2) && (((parts [1] != String.Empty) && !parts [1].isNumber) || (parts [1].length > decimal_places))) return event.preventDefault (); // garbage in decimal section or too many decimal places
+
+	if (parts [0][0] == "-") parts [0] = parts [0].substring (1);
+
+	if ((parts [0] != "0") && (parts [0].leadingCharacters ("0") > leading_zeros)) return event.preventDefault (); // too many leading zeros
+	if ((parts [0] != String.Empty) && !parts [0].isNumber ()) return event.preventDefault (); // garbage in number section
+
+	return true;
+
+}// valid_keystroke;
 
 
 /**** Number Prototypes ****/
@@ -171,17 +294,7 @@ Object.prototype.copy = function (...candidates: Object []): Object {
 }// copy;
 
 
-Object.prototype.matches = function (candidate: Object) {
-
-	if (is_null (candidate)) return false;
-
-	for (let key of Object.keys (this)) {
-		if (this [key] != candidate [key]) return false;
-	}// for;
-
-	return true;
-
-}// matches;
+Object.prototype.matches = function (candidate: Object) { return JSON.stringify (this) == JSON.stringify (candidate) }
 
 
 Object.prototype.merge = function (...candidates: Object []): Object {
@@ -198,11 +311,52 @@ Object.prototype.merge = function (...candidates: Object []): Object {
 }// merge;
 
 
+Object.defineProperties (Object.prototype, {
+
+	isCurrency: { 
+		get: function () {
+			return ((this instanceof HTMLInputElement) && (this.getAttribute ("type").toLowerCase () == "currency"));
+		}// get;
+	},// isCurrency;
+
+	isNumeric: {
+		get: function () {
+			return ((this instanceof HTMLInputElement) && (this.getAttribute ("type").toLowerCase () == "numeric"));
+		}// get;
+	}// isNumeric;
+
+});
+
+
 /**** String Prototypes ****/
 
 
 String.Empty = "";
 String.Space = " ";
+
+
+String.isString = function (candidate: any) { return typeof candidate == "string" }
+
+
+String.prototype.isNumber = function () { 
+
+	for (let char of this) {
+		if (!digits.includes (parseInt (char))) return false;
+	}// for;
+
+	return true;
+}// isNumber;
+
+
+String.prototype.integerValue = function () {
+	let result = parseInt (this.toString ());
+	return (result.toString () == this) ? result : 0;
+} // integer_value;
+
+
+String.prototype.matches = function (candidate: string) {
+	return this.toLowerCase ().trim () == candidate.toLowerCase ().trim ();
+}// matches;
 
 
 String.prototype.padded = function (char: String, size: number, right_padded: boolean = false): String {
@@ -212,7 +366,35 @@ String.prototype.padded = function (char: String, size: number, right_padded: bo
 }// padded;
 
 
-String.prototype.titleCase = function (): String {
+String.prototype.parseNumeric = function () {
+
+	let result: string = String.Empty;
+
+	for (let char of this) {
+		if (digits.includes (parseInt (char))) result += char;
+	}// for;
+
+	return result;
+
+}// parseNumeric;
+
+
+String.prototype.leadingCharacters = function (char: string): number {
+
+	let result: number = 0;
+	let value: String = this;
+
+	while ((value.length > 0) && (value [0] == char)) {
+		result++;
+		value = value.substring (1);
+	}// while;
+
+	return result;
+
+}// leadingCharacters;
+
+
+String.prototype.titleCase = function (strip_spaces: boolean = false): String {
 
 	let words: String [] = this.replace (underscore, String.Space).split (String.Space);
 	let result: String [] = new Array ();
@@ -222,7 +404,7 @@ String.prototype.titleCase = function (): String {
 		result.push (`${word.substring (0, 1).toUpperCase ()}${word.substring (1).toLowerCase ()}`);
 	});
 
-	return result.join (String.Space);
+	return result.join (strip_spaces? String.Empty : String.Space);
 
 }// titleCase;
 

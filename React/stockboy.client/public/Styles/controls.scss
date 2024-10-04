@@ -61,9 +61,11 @@ form input, form select {
 
 form select {
 	position: relative;
-	top: 0.5px;
 	padding: 0 6px !important;
 }
+
+
+input[type=numeric], input[type=currency] { text-align: right }
 
 
 /**** Data Table Styles ****/

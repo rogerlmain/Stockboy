@@ -46,7 +46,8 @@ body {
 
 
 label {
-	font-weight: bold
+	font-weight: bold;
+	margin-right: 0.5rem;
 }
 
 
@@ -69,17 +70,6 @@ label {
 	}
 }
 
-
-*.row-block {
-	display: flex;
-	flex-direction: row;
-}
-
-
-*.column-block {
-	display: flex;
-	flex-direction: column;
-}
 
 
 *.row-centered {
@@ -113,6 +103,33 @@ label {
 *.with-some-headspace { margin-top: 0.5rem }
 *.with-headspace { margin-top: 1rem }
 *.with-lotsa-headspace { margin-top: 2rem }
+
+
+*.row-block {
+	display: flex;
+	flex-direction: row;
+
+	&.row-centered { align-items: center }
+	&.column-centered { justify-content: center }
+}
+
+
+*.column-block {
+	display: flex;
+	flex-direction: column;
+
+	&.row-centered { justify-content: center }
+	&.column-centered { align-items: center }
+}
+
+
+*.row-block, *.column-block {
+	&.wide-row-spaced { row-gap: 2rem }
+	&.wide-column-spaced { column-gap: 2rem }
+
+	&.row-spaced { row-gap: 0.5rem }
+	&.column-spaced { column-gap: 0.5rem }
+}
 
 
 /**** Button Styles ****/
@@ -157,7 +174,8 @@ div[class*="-column-grid"] {
 	display: grid;
 	align-items: center;
 	justify-content: center;
-	row-gap: 0.2em;
+	column-gap: 0.5rem;
+	row-gap: 0.2rem;
 
 
 	* { white-space: nowrap }
@@ -168,7 +186,6 @@ div[class*="-column-grid"] {
 		flex-direction: row;
 		align-items: center;
 		justify-content: flex-end;
-		margin-right: 0.5rem;
 	}
 
 }
@@ -184,19 +201,20 @@ div.nested {
 }
 
 
+/**** Form Styles ****/
+
+
 div.form-table {
 	display: inline-grid;
 	grid-template-columns: min-content 1fr;
 	row-gap: 0.5em;
-}
 
-
-div.form-table label {
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	white-space: nowrap;
-	margin-right: 0.2em;
+	label {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		white-space: nowrap;
+	}
 }
 
 
@@ -207,7 +225,42 @@ div.miniform {
 }
 
 
+form div.compact {
+	input, select { width: 8.5rem }
+}
+
+
 /********/
+
+
+img.eyecandy {
+	height: 1.2rem;
+	width: auto;
+/*
+	position: relative;
+	top: -0.2rem;
+*/
+	margin-right: 0.3rem;
+
+	.small { height: 0.8rem }
+
+	.medium { height: 1.2rem }
+}
+
+
+/********/
+
+
+div.blackout {
+	position: absolute;
+	background-color: black;
+	opacity: 0.4;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 1;
+}
 
 
 div.popup-window {
@@ -222,12 +275,4 @@ div.popup-window {
 	background-color: #FFFFFD;
 	transition: opacity 0.25s ease-in-out;
 	z-index: 1;
-
-	img.eyecandy {
-		height: 1.2rem;
-		width: auto;
-		position: relative;
-		top: -0.2rem;
-		margin-right: 0.3rem;
-	}
 }

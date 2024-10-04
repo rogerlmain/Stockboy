@@ -8,32 +8,11 @@ import { IBaseModel } from "Models/Abstract/BaseModel";
 
 
 class DataRowProps {
-	row: IBaseModel;
+	row: IBaseModel = null;
 	field_names: Array<string> = null;
 	data_table: DataTable = null;
 	onclick: Function = null;
 }// DataRowProps;
-
-
-class DataTableProps {
-	id: String = null;
-	data: Array<IBaseModel> = null;
-	totals?: Array<string> = null;
-	fields?: Array<string> = null;
-	date_fields?: Array<string> = null;
-	numeric_fields?: Array<string> = null;
-	currency_fields?: Array<string> = null;
-	keys?: Array<string> = null;
-	onclick?: Function;
-	parent: React.Component = null;
-}// DataTableProps;
-
-
-class DataTableState {
-	sort_field: string = null;
-	ascending: boolean = true;
-	selected_row: NameValueCollection = null;
-}// DataTableState;
 
 
 class DataRowState {}
@@ -41,28 +20,17 @@ class DataRowState {}
 
 class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
 
-	private get key_values (): NameValueCollection {
-
-		let result: NameValueCollection = null;
-
-		this.props.data_table.props.keys.forEach ((key: String) => {
-			if (is_null (result)) result = new NameValueCollection ();
-			result [key.toString ()] = this.props.row [key as keyof IBaseModel];
-		});
-
-		return result;
-
-	}// key_values;
+	private get selected_row (): IBaseModel { return this.props.data_table.state.selected_row }
 
 
 	private active_row = (element: EventTarget) => (element as HTMLDivElement).parentNode as HTMLDivElement;
 
 
-	private styles (key: string, value: any) {
+	private styles (key: string, value: any): React.CSSProperties {
 
 		let result: React.CSSProperties = {}
 
-		if (this.props.data_table.props.currency_fields?.contains (key) || this.props.data_table.props.numeric_fields?.contains (key)) result ["justifySelf"] = "right";
+		if (this.props.data_table.props.currency_fields?.contains (key) || this.props.data_table.props.numeric_fields?.contains (key)) result ["textAlign"] = "right";
 		return result;
 
 	}// styles;
@@ -75,31 +43,37 @@ class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
 	}// format;
 
 
+	private get_selected_row (event: React.MouseEvent): IBaseModel {
+
+		let key_rows: NodeListOf<HTMLInputElement> = event.currentTarget.parentNode.querySelectorAll ("[name=keys] input[type=hidden]");
+
+		for (let row of this.props.data_table.props.data) {
+
+			let matches = true;
+
+			key_rows.forEach ((key_row: HTMLInputElement) => {
+				if (row [key_row.name] != key_row.value) matches = false;
+			});
+
+			if (matches) return row;
+
+		}// for;
+
+		return null;
+
+	}// get_selected_row;
+
+
 	/********/
 
 
 	public state: DataRowState = new DataRowState ();
 
 
-	public get selected_class (): string { 
-
-		let selected_row: NameValueCollection = this.props.data_table.state.selected_row;
-		let selected: boolean = true;
-
-		if (is_null (selected_row)) return String.Empty;
-
-		Object.keys (selected_row).forEach (key => {
-			if (selected_row [key] != this.key_values [key]) selected = false;
-		})// for;
-
-		return selected ? " selected" : String.Empty;
-
-	}// selected_class;
+	public get selected_class (): string { return (this.props.row == this.props.data_table.state.selected_row) ? " selected" : String.Empty; }
 
 
 	public render () {
-
-		//let keys: NameValueCollection = this.key_values;
 
 		return <div key={this.next_key} className={`table-row ${this.selected_class}`}
 
@@ -117,10 +91,14 @@ class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
 				return <div key={this.next_key} style={ this.styles (key, value) }
 
 					onClick={(event: React.MouseEvent) => {
-						this.props.data_table.setState ({ selected_row: this.key_values });
-						if (isset (this.props.onclick)) this.props.onclick (this.key_values)}
-				
-					}>
+
+						let row: IBaseModel = this.get_selected_row (event);
+
+						this.props.data_table.setState ({ selected_row: row }, () => {
+							if (isset (this.props.onclick)) this.props.onclick (this.props.row.merge ({keys: this.props.data_table.state.selected_row}));
+						});
+
+					}}>
 
 					{this.format (key, value)}
 				</div>
@@ -132,6 +110,34 @@ class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
 	}// render;
 
 }// DataTableRow;
+
+
+/********/
+
+
+class DataTableState {
+	sort_field: string = null;
+	ascending: boolean = true;
+	selected_row: IBaseModel = null;
+}// DataTableState;
+
+
+export class DataTableProperties {
+	fields?: Array<string> = null;
+	date_fields?: Array<string> = null;
+	numeric_fields?: Array<string> = null;
+	currency_fields?: Array<string> = null;
+	total_fields?: Array<string> = null;
+	keys?: Array<string> = null;
+	onclick?: Function;
+}// DataTableProperties;
+
+
+export class DataTableProps extends DataTableProperties {
+	id: String = null;
+	data: Array<IBaseModel> = null;
+	parent: React.Component = null;
+}// DataTableProps;
 
 
 export default class DataTable extends BaseComponent<DataTableProps> {
@@ -172,7 +178,32 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 			overflowY: overflow ? "scroll" : String.Empty
 		});
 
-	}// callback_reference;
+	}// update_styles;
+
+
+	private show_totals () {
+		return <div style={{ fontWeight: "bold", display: "contents" }}>
+			{this.props.fields.map ((field: string) => {
+
+				let field_index: number = this.props.fields.indexOf (field);
+
+				if (field_index == 0) return <div>Total</div>
+				if (this.props.total_fields.contains (field)) {
+
+					let border_style: React.CSSProperties = { textAlign: "right" };
+					let total = 0;
+
+					if ((field_index == (this.props.fields.length - 1)) || (!this.props.total_fields.contains (this.props.fields [field_index + 1]))) border_style.borderRight = "none";
+					this.props.data.forEach ((datum: IBaseModel) => total += datum [field]);
+					// calculate and show the total
+					return <div style={border_style}>{total}</div>;
+				}// if;
+
+				return <div style={{ borderRight: "none" }}></div>
+
+			})}
+		</div>
+	}// show_totals;
 
 
 	/********/
@@ -212,6 +243,8 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 			</div>
 
 			{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} field_names={this.field_names} onclick={this.props.onclick} data_table={this} />)}
+
+			{isset (this.props.total_fields) ? this.show_totals () : null}
 
 		</div>
 	

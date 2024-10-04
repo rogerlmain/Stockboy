@@ -38,6 +38,7 @@ body {
 
 label {
   font-weight: bold;
+  margin-right: 0.5rem;
 }
 
 /**** Layout Styles ****/
@@ -55,16 +56,6 @@ label {
   overflow-y: hidden;
   width: min-content;
   align-self: center;
-}
-
-*.row-block {
-  display: flex;
-  flex-direction: row;
-}
-
-*.column-block {
-  display: flex;
-  flex-direction: column;
 }
 
 *.row-centered {
@@ -102,6 +93,41 @@ label {
 
 *.with-lotsa-headspace {
   margin-top: 2rem;
+}
+
+*.row-block {
+  display: flex;
+  flex-direction: row;
+}
+*.row-block.row-centered {
+  align-items: center;
+}
+*.row-block.column-centered {
+  justify-content: center;
+}
+
+*.column-block {
+  display: flex;
+  flex-direction: column;
+}
+*.column-block.row-centered {
+  justify-content: center;
+}
+*.column-block.column-centered {
+  align-items: center;
+}
+
+*.row-block.wide-row-spaced, *.column-block.wide-row-spaced {
+  row-gap: 2rem;
+}
+*.row-block.wide-column-spaced, *.column-block.wide-column-spaced {
+  column-gap: 2rem;
+}
+*.row-block.row-spaced, *.column-block.row-spaced {
+  row-gap: 0.5rem;
+}
+*.row-block.column-spaced, *.column-block.column-spaced {
+  column-gap: 0.5rem;
 }
 
 /**** Button Styles ****/
@@ -154,7 +180,8 @@ div[class*=-column-grid] {
   display: grid;
   align-items: center;
   justify-content: center;
-  row-gap: 0.2em;
+  column-gap: 0.5rem;
+  row-gap: 0.2rem;
 }
 div[class*=-column-grid] * {
   white-space: nowrap;
@@ -164,7 +191,6 @@ div[class*=-column-grid] label {
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  margin-right: 0.5rem;
 }
 
 div.nested {
@@ -175,18 +201,17 @@ div.nested div.nested label {
   justify-self: right;
 }
 
+/**** Form Styles ****/
 div.form-table {
   display: inline-grid;
   grid-template-columns: min-content 1fr;
   row-gap: 0.5em;
 }
-
 div.form-table label {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   white-space: nowrap;
-  margin-right: 0.2em;
 }
 
 div.miniform {
@@ -195,7 +220,39 @@ div.miniform {
   column-gap: 0.25rem;
 }
 
+form div.compact input, form div.compact select {
+  width: 8.5rem;
+}
+
 /********/
+img.eyecandy {
+  height: 1.2rem;
+  width: auto;
+  /*
+  	position: relative;
+  	top: -0.2rem;
+  */
+  margin-right: 0.3rem;
+}
+img.eyecandy .small {
+  height: 0.8rem;
+}
+img.eyecandy .medium {
+  height: 1.2rem;
+}
+
+/********/
+div.blackout {
+  position: absolute;
+  background-color: black;
+  opacity: 0.4;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
 div.popup-window {
   position: absolute;
   left: 50%;
@@ -208,11 +265,4 @@ div.popup-window {
   background-color: #FFFFFD;
   transition: opacity 0.25s ease-in-out;
   z-index: 1;
-}
-div.popup-window img.eyecandy {
-  height: 1.2rem;
-  width: auto;
-  position: relative;
-  top: -0.2rem;
-  margin-right: 0.3rem;
 }

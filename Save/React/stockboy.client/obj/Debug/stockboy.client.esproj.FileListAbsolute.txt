@@ -1,0 +1,1 @@
+D:\Projects\Stockboy\React\stockboy.client\obj\Debug\stockboy.client.esproj.CoreCompileInputs.cache

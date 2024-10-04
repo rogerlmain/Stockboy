@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Stockboy")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0967eb6c232f8b9bee8951dc9716fd92f8c1350e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bc1f123150d9719c2d63e0a2b82061274298c835")]
 [assembly: System.Reflection.AssemblyProductAttribute("Stockboy")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Stockboy")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Projects\\Stockboy\\React\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7236C3CC-0E21-435B-A33E-96F487819F27}|stockboy.client\\stockboy.client.esproj|d:\\projects\\stockboy\\react\\stockboy.client\\src\\forms\\editform.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{7236C3CC-0E21-435B-A33E-96F487819F27}|stockboy.client\\stockboy.client.esproj|solutionrelative:stockboy.client\\src\\forms\\editform.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7236C3CC-0E21-435B-A33E-96F487819F27}|stockboy.client\\stockboy.client.esproj|d:\\projects\\stockboy\\react\\stockboy.client\\src\\pages\\datapage.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{7236C3CC-0E21-435B-A33E-96F487819F27}|stockboy.client\\stockboy.client.esproj|solutionrelative:stockboy.client\\src\\pages\\datapage.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7236C3CC-0E21-435B-A33E-96F487819F27}|stockboy.client\\stockboy.client.esproj|d:\\projects\\stockboy\\react\\stockboy.client\\src\\pages\\splits.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{7236C3CC-0E21-435B-A33E-96F487819F27}|stockboy.client\\stockboy.client.esproj|solutionrelative:stockboy.client\\src\\pages\\splits.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EditForm.tsx",
+              "DocumentMoniker": "D:\\Projects\\Stockboy\\React\\stockboy.client\\src\\Forms\\EditForm.tsx",
+              "RelativeDocumentMoniker": "stockboy.client\\src\\Forms\\EditForm.tsx",
+              "ToolTip": "D:\\Projects\\Stockboy\\React\\stockboy.client\\src\\Forms\\EditForm.tsx",
+              "RelativeToolTip": "stockboy.client\\src\\Forms\\EditForm.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2024-10-02T21:29:23.419Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DataPage.tsx",
+              "DocumentMoniker": "D:\\Projects\\Stockboy\\React\\stockboy.client\\src\\Pages\\DataPage.tsx",
+              "RelativeDocumentMoniker": "stockboy.client\\src\\Pages\\DataPage.tsx",
+              "ToolTip": "D:\\Projects\\Stockboy\\React\\stockboy.client\\src\\Pages\\DataPage.tsx",
+              "RelativeToolTip": "stockboy.client\\src\\Pages\\DataPage.tsx",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAQwG4AAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2024-10-02T21:24:15.579Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Splits.tsx",
+              "DocumentMoniker": "D:\\Projects\\Stockboy\\React\\stockboy.client\\src\\Pages\\Splits.tsx",
+              "RelativeDocumentMoniker": "stockboy.client\\src\\Pages\\Splits.tsx",
+              "ToolTip": "D:\\Projects\\Stockboy\\React\\stockboy.client\\src\\Pages\\Splits.tsx",
+              "RelativeToolTip": "stockboy.client\\src\\Pages\\Splits.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2024-10-02T21:11:47.677Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

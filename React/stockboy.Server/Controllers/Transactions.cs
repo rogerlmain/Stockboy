@@ -6,28 +6,17 @@ using Stockboy.Server.Models;
 
 namespace Stockboy.Server.Controllers {
 
-	public class GetTransactionsParameters {
-		public Guid? broker_id { get; set; } = null;
-		public Guid? ticker_id { get; set; } = null;
-	}// GetTransactionsParameters;
-
-
-	public class UpdateTransactionParameters {
-		public Guid id { get; set; }
-	}// UpdateTransactionParameters;
-
-
 	[EnableCors]
 	public class Transactions (DataContext context): Controller {
 
-		[HttpPost]
-		[Route ("GetTransactions")]
-		public IActionResult GetTransactions ([FromBody] GetTransactionsParameters parameters) => new JsonResult (Database.CallProcedure<TransactionModel> ("get_transactions", parameters));
-
-
 		[HttpGet]
 		[Route ("GetTransactions")]
-		public IActionResult GetTransactions () => new JsonResult (Database.CallProcedure<TransactionModel> ("get_transactions", new GetTransactionsParameters ()));
+		public IActionResult GetTransactions () => new JsonResult (Database.CallProcedure<TransactionModel> ("get_transactions", new GetParameters ()));
+
+
+		[HttpPost]
+		[Route ("GetTransactions")]
+		public IActionResult GetTransactions ([FromBody] GetParameters parameters) => new JsonResult (Database.CallProcedure<TransactionModel> ("get_transactions", parameters));
 
 
 		[HttpGet]
@@ -35,12 +24,12 @@ namespace Stockboy.Server.Controllers {
 		public IActionResult GetTransactionTypes () {
 			var result = new JsonResult (context?.transaction_types.SelectAll ().OrderBy ("sort_order"));
 			return result;
-		}
+		}// GetTransactionTypes;
 
 
 		[HttpPost]
 		[Route ("DeleteTransaction")]
-		public IActionResult DeleteTransaction ([FromBody] UpdateTransactionParameters parameters) => new JsonResult (new { success = Database.ExecuteProcedure ("delete_transaction", parameters) });
+		public IActionResult DeleteTransaction ([FromBody] UpdateParameters parameters) => new JsonResult (new { success = Database.ExecuteProcedure ("delete_transaction", parameters) });
 
 
 		[HttpPost]

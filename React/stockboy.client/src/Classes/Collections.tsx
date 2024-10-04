@@ -1,12 +1,11 @@
-export interface KeyValuePair { [key: string]: any }
+export interface KeyValuePair<IModel> { [key: string]: IModel }
 
 
-export class NameValueCollection {
+export class NameValueCollection<IModel> {
 
-	[key: string]: any;
+	[key: string]: IModel;
 
-
-	public constructor (values: KeyValuePair = null) {
+	public constructor (values: KeyValuePair<IModel> = null) {
 		if (isset (values)) this.copy (values);
 	}// constructor;
 

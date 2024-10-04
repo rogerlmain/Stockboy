@@ -2,22 +2,71 @@ import BaseComponent, { BaseProps } from "Controls/BaseComponent";
 import ListModel from "Models/ListModel"
 
 
-export class SelectListProps extends BaseProps {
-	items?: Array<ListModel> = null;
-	selected_item?: string = "two";
-	header?: string = "Select one";
-	name: string = null;
+export class ListProps extends BaseProps {
+	header?: string;
+	disabled?: boolean;
+	selected_item?: string;
+	onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+}// ListProps;
+
+
+export class SelectProps extends ListProps {
+	name: string;
+	table: string;
+}// SelectProps;
+
+
+class SelectListProps extends SelectProps {
+	data?: Array<ListModel>;
 }// SelectListProps;
 
 
-export default class SelectList extends BaseComponent<SelectListProps> {
+class SelectListState {
+	selected_item?: string = null;
+}// SelectListState;
 
-	state = { sel: "two " }
+
+export default class SelectList extends BaseComponent<SelectListProps, SelectListState> {
+
+	private static defaultProps: SelectListProps = {
+		data: null,
+		name: null,
+		table: null,
+		selected_item: null
+	}// defaultProps;
 
 
-	public render = () => <select id={this.props.id} name={this.props.name} value={this.props.selected_item || "header"}>
-		{(not_set (this.props.selected_item) && isset (this.props.header)) ? <option key={this.next_key} value="header">{this.props.header}</option> : null}
-		{this.props.items?.map ((item: ListModel) => <option key={this.next_key} value={item.id}>{item.name}</option>)}
-	</select>;
+	/********/
+
+
+	public static All: string = "All";
+
+
+	public state: SelectListState = new SelectListState ();
+
+
+	public componentDidUpdate (previous_props: SelectListProps) {
+		if (previous_props.selected_item != this.props.selected_item) this.setState ({ selected_item: this.props.selected_item });
+	}// componentDidUpdate;
+
+
+	public componentDidMount () { if (isset (this.props.selected_item)) this.setState ({selected_item: this.props.selected_item}) }
+
+
+	public render = () => {
+
+		return <select id={this.props.id} name={this.props.name} 
+
+		onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+			this.setState ({ selected_item: event.currentTarget.value });
+			if (isset (this.props.onChange)) this.props.onChange (event);
+		}}
+
+		disabled={this.props.disabled}>
+
+		{not_set (this.state.selected_item) || (this.props.header == SelectList.All) ? <option key={this.next_key}>{this.props.header ?? `Select ${this.props.name.replace (underscore, String.Space)}`}</option> : null}
+		{this.props.data?.map ((item: ListModel) => <option key={this.next_key} value={item.id} selected={item.id == this.state.selected_item}>{item.name}</option>)}
+
+	</select>};
 
 }// SelectList;

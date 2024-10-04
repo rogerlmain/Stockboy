@@ -6,6 +6,8 @@ create procedure get_transaction_by_id (id varchar (36)) begin
 
 	select
 		tac.id,
+        brk.id as broker_id,
+        tck.id as ticker_id,
         tck.name as company,
         tck.symbol as ticker,
 		brk.name as broker,
