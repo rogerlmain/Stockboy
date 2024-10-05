@@ -12,6 +12,7 @@ import { DeleteForm } from "Forms/DeleteForm";
 import { EditForm } from "Forms/EditForm";
 
 import { IBaseModel } from "Models/Abstract/BaseModel";
+import TransactionModel from "../Models/TransactionModel";
 
 class DataPageProps {
 	edit_form: React.ComponentType = null;
@@ -33,6 +34,9 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 	private data_table_reference: React.RefObject<DataTable> = React.createRef ();
 
 
+	private get table () { return this.data_table_reference.current }
+
+
 	private edit_record = (row: IBaseModel = null) => main_page.popup_window.show (<EditForm data={row} body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this} />);
 	private remove_selected_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
@@ -50,8 +54,8 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 		let item: IBaseModel = null;
 
-		let sort_field: string = this.data_table_reference.current.state.sort_field;
-		let ascending: boolean = this.data_table_reference.current.state.ascending;
+		let sort_field: string = this.table.state.sort_field;
+		let ascending: boolean = this.table.state.ascending;
 
 		if (isset (row [sort_field])) {
 			for (let index = 0; index < this.state.data.length; index++) {
@@ -71,6 +75,24 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 		return this.setState ({ data: this.state.data.append (row) });
 
 	}// add_new_row;
+
+
+	public update_row (data: IBaseModel) {
+
+		let selected_row = this.state.data.find ((row: IBaseModel) => {
+
+			let found: boolean = false;
+
+			this.props.table_properties.keys.forEach (key => found = (row [key] == data [key]));
+
+			return found;
+
+		});
+
+		Object.assign (selected_row, data);
+		this.forceUpdate ();
+
+	}// update_row;
 
 
 	public fetch_data () {
@@ -96,6 +118,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 
 	public render = () => <div className="page-layout">
+
 		<form>
 			<div className="wide-column-spaced row-block">
 
@@ -110,23 +133,28 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 			</div>
 		</form>
 
-		<div className="body with-headspace">
-			{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no transactions</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
-				onclick={(row: IBaseModel) => this.setState ({ selected_row: row })} ref={this.data_table_reference}
-				data={this.state.data} parent={this} {...this.props.table_properties}>
-			</DataTable>}
-		</div>
+		<div className="body page-layout with-headspace">
 
-		<div className="button-bar">
+			<div className="body">
+				{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no transactions</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
+					onclick={(row: IBaseModel) => this.setState ({ selected_row: row })} ref={this.data_table_reference}
+					data={this.state.data} parent={this} {...this.props.table_properties}>
+				</DataTable>}
+			</div>
 
-			<button id="add_button" onClick={() => {this.edit_record (); return true}}>Add</button>
+			<div className="button-bar">
 
-			<div style={{display: isset (this.state.selected_row) ? null : "none"}}>
-				<button id="edit_button" onClick={() => this.edit_record (this.state.selected_row)}>Edit</button>
-				<button id="delete_button" onClick={() => this.delete_record ()}>Delete</button>
+				<button id="add_button" onClick={() => {this.edit_record (); return true}}>Add</button>
+
+				<div style={{display: isset (this.state.selected_row) ? null : "none"}}>
+					<button id="edit_button" onClick={() => this.edit_record (this.state.selected_row)}>Edit</button>
+					<button id="delete_button" onClick={() => this.delete_record ()}>Delete</button>
+				</div>
+
 			</div>
 
 		</div>
+
 	</div>
 
 }// DataPage;

@@ -13,15 +13,17 @@ declare global {
 	var digits: Array<number>;
 	var control_keys: Array<string>;
 
+	var is_empty: Function;
+	var not_empty: Function;
+
 	var isset: Function;
 	var not_set: Function;
-
-	var coalesce: Function;
 
 	var is_null: Function;
 	var not_null: Function;
 
-	var inject_element: Function;
+	var is_defined: Function;
+	var not_defined: Function;
 
 }// global;
 
@@ -38,54 +40,16 @@ globalThis.underscore = "_";
 globalThis.digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 globalThis.control_keys = ["Enter", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Backspace", "Delete", "Escape"];
 
+globalThis.is_empty = (value: any): Boolean => isset (value) && ((String.isString (value) && (value == String.Empty)) || (Array.isArray (value) && (value.length == 0)));
+globalThis.not_empty = (value: any): Boolean => !is_empty (value);
+
 globalThis.isset = (value: any): Boolean => not_null (value) && (value != undefined);
 globalThis.not_set = (value: any): Boolean => !isset (value);
 
 globalThis.is_null = (value: any): Boolean => (value == null);
 globalThis.not_null = (value: any): Boolean => !is_null (value);
 
-
-// Find the first non-null value in a list
-globalThis.coalesce = (...options: Array<any>) => {
-
-	for (let index = 0; index < options.length; index++) {
-		if (isset (options [index])) return options [index];
-	}// for;
-
-	return null;
-
-}// coalesce;
+globalThis.is_defined = (value: any): Boolean => isset (value) && not_empty (value);
+globalThis.not_defined = (value: any): Boolean => !is_defined (value);
 
 
-globalThis.inject_element = (parent: ReactElement, new_element: ReactElement, criteria: NameValueCollection<string>, match_any: boolean = true): ReactElement => {
-
-	let child_list: Array<any> = new Array<any> ();
-
-	let has_criteria = element => {
-
-		for (let criterion of Object.keys (criteria)) {
-
-			let has_key = Object.keys (element.props).contains (criterion);
-			let has_value = element.props [criterion] == criteria [criterion];
-
-			if ((match_any) && (has_key) && (has_value)) return true;
-			if (!(has_key && has_value)) return false;
-
-		}// for;
-
-		return true;
-
-	}// has_criteria;
-
-	let children = Array.isArray (parent.props.children) ? parent.props.children : [parent.props.children];
-
-	children.forEach ((child: string | ReactElement) => {
-		if (String.isString (child)) return child_list.push (child);
-		child_list.push (inject_element (child as ReactElement, new_element, criteria, match_any));
-	});
-
-	if (has_criteria (parent)) child_list.push (new_element)
-
-	return React.cloneElement (parent, parent.props, ...child_list);
-
-}// insert_element;

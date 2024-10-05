@@ -20,9 +20,6 @@ class DataRowState {}
 
 class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
 
-	private get selected_row (): IBaseModel { return this.props.data_table.state.selected_row }
-
-
 	private active_row = (element: EventTarget) => (element as HTMLDivElement).parentNode as HTMLDivElement;
 
 
@@ -219,11 +216,7 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 	}// constructor;
 
 
-	public get selected_row (): IBaseModel { return this.props.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id) }
-
-
 	public componentDidUpdate (old_props: DataTableProps, old_state: DataTableState) {
-		if (old_props.data != this.props.data) this.setState ({data: this.props.data});
 		this.update_styles ();
 	}// componentDidUpdate;
 

@@ -25,13 +25,13 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 
 
 	public static defaultValues = {
-		broker_id: null, //"bf6be2f3-7141-11ef-b1e8-a4f933c45288",
-		ticker_id: null, //"153d4ae0-7168-11ef-b1e8-a4f933c45288",
-		price: String.Empty, //2.81,
-		quantity: null, //0.968005,
-		transaction_date: null, //"2024-09-30",
-		settlement_date: null, //"2024-10-01",
-		transaction_type: null, //"D6BC19B8-4BDE-4D87-9DB3-BAC3C41476B0"
+		broker_id: null,
+		ticker_id: null,
+		price: null,
+		quantity: null,
+		transaction_date: null,
+		settlement_date: null,
+		transaction_type: null,
 	}// defaultProps;
 
 
@@ -44,7 +44,7 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 	public render () { 
 		return <div className="column-block">
 
-			<input type="hidden" id="id" value={this.props.data?.id} />
+			<input type="hidden" id="id" name="id" value={this.props.data?.id} />
 
 			<div className="two-column-grid">
 

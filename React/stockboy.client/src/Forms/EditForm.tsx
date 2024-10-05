@@ -1,15 +1,11 @@
 import React, { ReactElement } from "react";
+
 import BaseComponent from "Controls/BaseComponent";
-/*
-import BrokerList from "Controls/Lists/BrokerList";
-import TickerList from "Controls/Lists/TickerList";
-import TransactionTypeList from "Controls/Lists/TransactionTypeList";
-import APIClass from "Controls/Abstract/APIClass";
-import Eyecandy from "Controls/Eyecandy";
-*/
+import APIClass from "Classes/APIClass";
+
+import DataPage from "Pages/DataPage";
+
 import { IBaseModel } from "Models/Abstract/BaseModel";
-import APIClass from "../Classes/APIClass";
-import DataPage from "../Pages/DataPage";
 
 
 export interface IEditFormProps {
@@ -39,24 +35,36 @@ export class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 
 
 	private save_record () {
+
 		let form_data = new FormData (this.form_reference.current);
+		let new_record = not_defined ((this.form_reference.current.querySelector ("[id]") as HTMLInputElement).value);
 
 		main_page.popup_window.show (<div className="column-centered column-spaced row-block">
 			<img src="Images/eyecandy.gif" />
-			Saving transaction<br />
-			One moment, please.
+			Saving transaction. One moment, please.
 		</div>);
 
 		APIClass.fetch_data ("SaveTransaction", form_data).then (response => {
-			this.props.parent.add_new_row (response);
-			main_page.popup_window.show (<div>
-				Transaction saved.<br />
-				Save another one?
-				<div className="button-bar">
-					<button onClick={() => main_page.popup_window.show (<EditForm {...this.props} />)}>Yes</button>
-					<button onClick={() => main_page.popup_window.hide ()}>No</button>
-				</div>
-			</div>)
+
+			if (new_record) {
+
+				this.props.parent.add_new_row (response);
+
+				return main_page.popup_window.show (<div>
+
+					Transaction saved. Save another one?
+
+					<div className="button-bar">
+						<button onClick={() => main_page.popup_window.show (<EditForm {...this.props} />)}>Yes</button>
+						<button onClick={() => main_page.popup_window.hide ()}>No</button>
+					</div>
+
+				</div>);
+
+			}// if;
+
+			this.props.parent.update_row (response);
+			main_page.popup_window.hide ();
 			
 		});
 

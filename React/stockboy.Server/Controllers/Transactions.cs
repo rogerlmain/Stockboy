@@ -37,9 +37,14 @@ namespace Stockboy.Server.Controllers {
 		public IActionResult SaveTransaction ([FromBody] TransactionDataModel parameters) {
 			try {
 
+				TransactionDataModel? result = null;
+
 				if (is_null (parameters.id)) parameters.id = Guid.NewGuid ();
 
-				TransactionDataModel? result = context?.transactions.Add (parameters).Entity;
+				switch (is_null (parameters.id)) {
+					case true: result = context?.transactions.Add (parameters).Entity; break;
+					default: result = context?.transactions.Update (parameters).Entity; break;
+				}// switch;
 
 				if (is_null (result)) throw new Exception ("Record could not be saved (don't ask me why)");
 

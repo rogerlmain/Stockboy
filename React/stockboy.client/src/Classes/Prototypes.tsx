@@ -137,6 +137,8 @@ Component.prototype.setState = function (state: any, callback?: () => void): boo
 
 Date.format = function (date_value: string | Date, format: date_format = date_format.readable): string {
 
+	if (is_null (date_value)) return null;
+
 	let date: Date = (date_value instanceof Date) ? date_value : new Date (date_value);
 
 	if (format == date_format.readable) return `${(date.getMonth () + 1).toString ().padded ("0", 2)}-${date.getDate ().toString ().padded ("0", 2)}-${date.getFullYear ()}`;
