@@ -13,6 +13,7 @@ import { EditForm } from "Forms/EditForm";
 
 import { IBaseModel } from "Models/Abstract/BaseModel";
 import TransactionModel from "../Models/TransactionModel";
+import Eyecandy from "../Controls/Eyecandy";
 
 class DataPageProps {
 	edit_form: React.ComponentType = null;
@@ -38,10 +39,8 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 
 	private edit_record = (row: IBaseModel = null) => main_page.popup_window.show (<EditForm data={row} body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this} />);
-	private remove_selected_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
-
-	private delete_record = () => main_page.popup_window.show (<DeleteForm key_names={["broker_id", "ticker_id"]} record={this.state.selected_row} />);
+	private delete_record = () => main_page.popup_window.show (<DeleteForm key_names={["broker_id", "ticker_id"]} parent={this} record={this.state.selected_row} />);
 
 
 	/********/
@@ -50,7 +49,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 	public state: DataPageState = new DataPageState ();
 
 
-	public add_new_row (row: IBaseModel) {
+	public add_row (row: IBaseModel) {
 
 		let item: IBaseModel = null;
 
@@ -74,7 +73,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 		return this.setState ({ data: this.state.data.append (row) });
 
-	}// add_new_row;
+	}// add_row;
 
 
 	public update_row (data: IBaseModel) {
@@ -93,6 +92,9 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 		this.forceUpdate ();
 
 	}// update_row;
+
+
+	public remove_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
 
 	public fetch_data () {

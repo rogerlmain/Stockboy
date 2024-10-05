@@ -41,14 +41,14 @@ export class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 
 		main_page.popup_window.show (<div className="column-centered column-spaced row-block">
 			<img src="Images/eyecandy.gif" />
-			Saving transaction. One moment, please.
+			Saving {this.props.parent.props.name}. One moment, please.
 		</div>);
 
-		APIClass.fetch_data ("SaveTransaction", form_data).then (response => {
+		APIClass.fetch_data (`Save${this.props.parent.props.name.titleCase ()}`, form_data).then (response => {
 
 			if (new_record) {
 
-				this.props.parent.add_new_row (response);
+				this.props.parent.add_row (response);
 
 				return main_page.popup_window.show (<div>
 
