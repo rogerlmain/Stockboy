@@ -15,7 +15,8 @@ create procedure get_transactions (broker_id varchar (36), ticker_id varchar (36
 		tac.quantity,
 		tac.transaction_date,
 		tac.settlement_date,
-		ttp.name as transaction_type
+		ttp.name as transaction_type,
+        ttp.id as transaction_type_id
 	from 
 		transactions as tac
 	join

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("stockboy.server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bc1f123150d9719c2d63e0a2b82061274298c835")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+688779245bc6592c9bf2f9be6c9b09261c0c65b7")]
 [assembly: System.Reflection.AssemblyProductAttribute("stockboy.server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("stockboy.server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

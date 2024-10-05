@@ -13,4 +13,5 @@ export default class TransactionModel extends BaseModel {
 	transaction_date: Date = null;
 	settlement_date: Date = null;
 	transaction_type: string = null;
+	transaction_type_id: string = null;
 }// TransactionModel;

@@ -31,7 +31,7 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 		quantity: null,
 		transaction_date: null,
 		settlement_date: null,
-		transaction_type: null,
+		transaction_type_id: null,
 	}// defaultProps;
 
 
@@ -62,7 +62,7 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 			<div className="four-column-grid compact">
 
 				<label htmlFor="price">Price per share</label>
-				<input type="currency" id="price" name="price" commas="true" defaultValue={this.props.data?.price ?? EditTransactionForm.defaultValues.price} />
+				<input type="numeric" id="price" name="price" commas="true" decimalPlaces={4} defaultValue={this.props.data?.price ?? EditTransactionForm.defaultValues.price} />
 
 				<label htmlFor="quantity">Quantity</label>
 				<input type="numeric" id="quantity" name="quantity" defaultValue={this.props.data?.quantity ?? EditTransactionForm.defaultValues.quantity} />
@@ -75,7 +75,7 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 			</div>
 
 			<div className="row-centered with-some-headspace">
-				<TransactionTypeList selected_item={this.props.data?.transaction_type ?? EditTransactionForm.defaultValues.transaction_type} />
+				<TransactionTypeList selected_item={this.props.data?.transaction_type_id ?? EditTransactionForm.defaultValues.transaction_type_id} />
 			</div>
 
 		</div>
