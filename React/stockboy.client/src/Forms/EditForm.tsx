@@ -35,46 +35,6 @@ class EditFormState {
 
 export class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 
-/*
-	private form_element: React.RefObject<HTMLDivElement> = React.createRef ();
-
-/*
-	private form_buttons (editing: boolean = false): NameValueCollection {
-
-		return new NameValueCollection ({
-
-			Save: () => {
-
-				let data = this.data;
-
-				main_page.popup_window.show (<Eyecandy command={() => APIClass.fetch_data ("SaveTransaction", data).then ((response: IBaseModel) => {
-
-					if (isset (response ["error"])) return main_page.popup_window.show (<ErrorWindow text={response ["error"]} />, null, true);
-
-					this.add_new_row (response);
-
-					if (editing) return main_page.popup_window.show (<div>Transaction saved.</div>, null, true);
-
-					main_page.popup_window.show (
-						<div>
-							Transaction saved.<br />
-							<br />
-							Add another transaction?
-						</div>, new NameValueCollection ({
-							Yes: () => main_page.popup_window.show (this.props.parent.edit_form (), this.form_buttons ()),
-							No: () => main_page.popup_window.hide ()
-						})
-					);
-
-				})} text={"Saving transaction"} />)
-
-			}, Close: () => main_page.popup_window.hide ()
-		});
-
-	}// form_buttons;
-*/
-
-
 	private form_reference: React.RefObject<HTMLFormElement> = React.createRef ();
 
 

@@ -1,3 +1,5 @@
+import React from "react";
+
 import BaseComponent, { BaseProps } from "Controls/BaseComponent";
 import ListModel from "Models/ListModel"
 
@@ -36,6 +38,9 @@ export default class SelectList extends BaseComponent<SelectListProps, SelectLis
 	}// defaultProps;
 
 
+	private update_selected_item = () => this.setState ({ selected_item: this.props.selected_item }, () => this.select_list_reference.current.dispatchEvent (new Event ("change", { bubbles: true })));
+
+
 	/********/
 
 
@@ -45,17 +50,20 @@ export default class SelectList extends BaseComponent<SelectListProps, SelectLis
 	public state: SelectListState = new SelectListState ();
 
 
+	public select_list_reference: React.RefObject<HTMLSelectElement> = React.createRef ();
+
+
 	public componentDidUpdate (previous_props: SelectListProps) {
-		if (previous_props.selected_item != this.props.selected_item) this.setState ({ selected_item: this.props.selected_item });
+		if (previous_props.selected_item != this.props.selected_item) this.update_selected_item ();
 	}// componentDidUpdate;
 
 
-	public componentDidMount () { if (isset (this.props.selected_item)) this.setState ({selected_item: this.props.selected_item}) }
+	public componentDidMount () { if (isset (this.props.selected_item)) this.update_selected_item (); }
 
 
 	public render = () => {
 
-		return <select id={this.props.id} name={this.props.name} 
+		return <select id={this.props.id} name={this.props.name} ref={this.select_list_reference}
 
 		onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
 			this.setState ({ selected_item: event.currentTarget.value });

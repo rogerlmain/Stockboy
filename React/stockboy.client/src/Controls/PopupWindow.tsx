@@ -43,7 +43,7 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 	public show = (contents: String | React.ReactElement = this.state.contents) => this.setState ({ contents }, () => this.setState ({ visible: true }));
 
 
-	public hide = () => this.setState ({ visible: false });
+	public hide = () => this.setState ({ visible: false }, () => this.setState ({contents: null}));
 
 
 	public render = () => <div style={{ display: (this.state.visible ? "flex" : "none") }}>

@@ -1,3 +1,5 @@
+import React from "react";
+
 import APIClass from "Classes/APIClass";
 import BaseComponent from "Controls/BaseComponent";
 import Eyecandy from "Controls/Eyecandy";
@@ -34,6 +36,9 @@ export default class DataList extends BaseComponent<DataListProps, DataListState
 	/********/
 
 
+	private select_list_reference: React.RefObject<SelectList> = React.createRef ();
+
+
 	private get title () { return this.props.table.titleCase (true) }
 
 	private get control_name () { return `${this.props.name}_list` }
@@ -50,7 +55,7 @@ export default class DataList extends BaseComponent<DataListProps, DataListState
 			this.setState ({ 
 				data: response,
 				loading: false
-			})
+			});
 		}));
 
 	}// load_data;
@@ -72,7 +77,7 @@ export default class DataList extends BaseComponent<DataListProps, DataListState
 
 	public render = () => <div className="row-block" style={{ alignItems: "center" }}>
 		<label htmlFor={this.control_name}>{this.title}</label>
-		{this.state.loading ? <Eyecandy text="Loading..." small={true} /> : <SelectList id={this.control_name} data={this.state.data} {...this.props} />}
+		{this.state.loading ? <Eyecandy text="Loading..." small={true} /> : <SelectList id={this.control_name} data={this.state.data} {...this.props} ref={this.select_list_reference} />}
 	</div>
 
 }// BrokerList;

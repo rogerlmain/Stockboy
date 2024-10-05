@@ -26,11 +26,16 @@ declare global {
 }// global;
 
 
+export enum date_format {
+	readable,
+	database
+}// date_format;
+
+
 globalThis.comma = ",";
 globalThis.underscore = "_";
 
 globalThis.digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-
 globalThis.control_keys = ["Enter", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Backspace", "Delete", "Escape"];
 
 globalThis.isset = (value: any): Boolean => not_null (value) && (value != undefined);

@@ -33,7 +33,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 	private data_table_reference: React.RefObject<DataTable> = React.createRef ();
 
 
-	private edit_record = (row?: IBaseModel) => main_page.popup_window.show (<EditForm data={row} body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this} />);
+	private edit_record = (row: IBaseModel = null) => main_page.popup_window.show (<EditForm data={row} body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this} />);
 	private remove_selected_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
 
@@ -123,7 +123,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 			<div style={{display: isset (this.state.selected_row) ? null : "none"}}>
 				<button id="edit_button" onClick={() => this.edit_record (this.state.selected_row)}>Edit</button>
-				<button id="delete_split_button" onClick={() => this.delete_record ()}>Delete</button>
+				<button id="delete_button" onClick={() => this.delete_record ()}>Delete</button>
 			</div>
 
 		</div>

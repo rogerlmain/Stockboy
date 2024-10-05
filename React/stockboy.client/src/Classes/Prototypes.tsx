@@ -1,4 +1,5 @@
 import React, { Component, DOMAttributes } from "react";
+import { date_format } from "Classes/Globals";
 
 
 export {}
@@ -15,8 +16,8 @@ declare global {
 
 
 	interface DateConstructor {
-		format (date_value: string | Date, readable?: boolean): string;
-		today (readable?: boolean): string;
+		format (date_value: string | Date, format?: date_format): string;
+		today (format?: date_format): string;
 		current_date (): Date;
 	}// DateConstructor;
 
@@ -134,16 +135,19 @@ Component.prototype.setState = function (state: any, callback?: () => void): boo
 /**** Date Prototypes ****/
 
 
-Date.format = function (date_value: string | Date, readable: boolean = true): string {
+Date.format = function (date_value: string | Date, format: date_format = date_format.readable): string {
 
 	let date: Date = (date_value instanceof Date) ? date_value : new Date (date_value);
 
-	if (readable) return `${(date.getMonth () + 1).toString ().padded ("0", 2)}-${date.getDate ().toString ().padded ("0", 2)}-${date.getFullYear ()}`;
-	return `${date.getFullYear ()}-${(date.getMonth () + 1).toString ().padded ("0", 2)}-${date.getDate ().toString ().padded ("0", 2)}`;
-}
+	if (format == date_format.readable) return `${(date.getMonth () + 1).toString ().padded ("0", 2)}-${date.getDate ().toString ().padded ("0", 2)}-${date.getFullYear ()}`;
+	if (format == date_format.database) return `${date.getFullYear ()}-${(date.getMonth () + 1).toString ().padded ("0", 2)}-${date.getDate ().toString ().padded ("0", 2)}`;
+
+	return date.toDateString ();
+
+}// Date.format;
 
 
-Date.today = function (readable: boolean = true): string { return Date.format (new Date (), readable); }
+Date.today = function (format: date_format = date_format.readable): string { return Date.format (new Date (), format); }
 
 
 Date.current_date = function (): Date { return new Date () }
@@ -175,7 +179,6 @@ HTMLDivElement.prototype.form_data = function (): FormData {
 	let result: FormData = new FormData ();
 
 	elements.forEach (element => {
-		//if (is_null (result)) result = new FormData ();
 		result.append (element.id, element.value);
 	});
 
