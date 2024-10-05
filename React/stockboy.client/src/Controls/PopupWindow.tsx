@@ -46,7 +46,7 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 	public hide = () => this.setState ({ visible: false }, () => this.setState ({contents: null}));
 
 
-	public render = () => <div style={{ display: (this.state.visible ? "flex" : "none") }}>
+	public render = () => <div className="full-screen" style={{ display: (this.state.visible ? "flex" : "none") }}>
 		<div className="blackout"></div>
 		<div className="popup-window column-block">{this.state.contents}</div>
 	</div>

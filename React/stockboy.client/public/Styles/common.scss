@@ -132,6 +132,19 @@ label {
 }
 
 
+/**** Positioning Styles ****/
+
+
+div.full-screen {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: 0;
+}
+
+
 /**** Button Styles ****/
 
 
@@ -252,13 +265,9 @@ img.eyecandy {
 
 
 div.blackout {
-	position: absolute;
+	@extend div, .full-screen;
 	background-color: black;
 	opacity: 0.4;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
 	z-index: 1;
 }
 
