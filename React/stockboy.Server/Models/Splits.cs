@@ -1,6 +1,6 @@
 ﻿namespace Stockboy.Server.Models {
 
-	public class SplitsModel {
+	public class SplitListModel: BaseModel {
 		public Guid broker_id { get; set; }
 		public Guid ticker_id { get; set; }
 		public string broker { get; set; } = String.Empty;
@@ -10,6 +10,14 @@
 		public decimal previous { get; set; }
 		public decimal current { get; set; }
 		public DateTime split_date { get; set; }
-	}// Splits;
+	}// SplitListModel;
+
+	public class SplitDataModel: BaseModel {
+		public Guid broker_id { get; set; }
+		public Guid ticker_id { get; set; }
+		public decimal previous { get; set; }
+		public decimal current { get; set; }
+		public DateTime split_date { get; set; }
+	}// SplitDataModel;
 
 }// Stockboy.Server.Models;

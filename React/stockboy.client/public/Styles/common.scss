@@ -24,6 +24,7 @@
 * {
 	font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 	box-sizing: border-box;
+	white-space: nowrap;
 }
 
 
@@ -131,6 +132,12 @@ label {
 	&.column-spaced { column-gap: 0.5rem }
 }
 
+*.horizontally-spaced-out {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
 
 /**** Positioning Styles ****/
 
@@ -190,17 +197,12 @@ div[class*="-column-grid"] {
 	column-gap: 0.5rem;
 	row-gap: 0.2rem;
 
-
-	* { white-space: nowrap }
-
-
 	label {
 		display: inline-flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: flex-end;
 	}
-
 }
 
 
@@ -226,7 +228,6 @@ div.form-table {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		white-space: nowrap;
 	}
 }
 
@@ -243,7 +244,7 @@ form div.compact {
 }
 
 
-/********/
+/**** Eyecandy Styles ****/
 
 
 img.eyecandy {

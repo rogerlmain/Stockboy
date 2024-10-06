@@ -137,7 +137,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 		<div className="body page-layout with-headspace">
 
-			<div className="body">
+			<div className="body" style={{ flexGrow: 0 }}>
 				{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no transactions</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
 					onclick={(row: IBaseModel) => this.setState ({ selected_row: row })} ref={this.data_table_reference}
 					data={this.state.data} parent={this} {...this.props.table_properties}>

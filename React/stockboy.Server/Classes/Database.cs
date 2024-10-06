@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using Stockboy.Server.Models;
 using System.Data;
 
 
@@ -45,7 +46,7 @@ namespace Stockboy.Server.Classes {
 		/********/
 
 
-		public static List<Model>? CallProcedure<Model> (String procedure_name, Object? parameters = null) where Model: new () {
+		public static List<TModel>? CallProcedure<TModel> (String procedure_name, Object? parameters = null) where TModel: IBaseModel, new () {
 			using (var connection = new MySqlConnection (ConnectionString)) {
 
 				MySqlCommand? command = database_command (procedure_name, parameters, connection);
@@ -57,7 +58,7 @@ namespace Stockboy.Server.Classes {
 
 				data_table.Load (reader);
 
-				return JsonConvert.DeserializeObject<List<Model>> (JsonConvert.SerializeObject (data_table));
+				return JsonConvert.DeserializeObject<List<TModel>> (JsonConvert.SerializeObject (data_table));
 
 			}// using;
 		}// CallProcedure;

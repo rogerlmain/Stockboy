@@ -120,7 +120,7 @@ class DataTableState {
 
 
 export class DataTableProperties {
-	fields?: Array<string> = null;
+	fields?: Array<string | NameValueCollection<string>> = null;
 	date_fields?: Array<string> = null;
 	numeric_fields?: Array<string> = null;
 	currency_fields?: Array<string> = null;
@@ -180,18 +180,19 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 
 	private show_totals () {
 		return <div style={{ fontWeight: "bold", display: "contents" }}>
-			{this.props.fields.map ((field: string) => {
+			{this.props.fields.map ((field: string | NameValueCollection<string>) => {
 
 				let field_index: number = this.props.fields.indexOf (field);
+				let field_name: string = String.isString (field) ? field : field [Object.keys (field) [0]];
 
 				if (field_index == 0) return <div>Total</div>
-				if (this.props.total_fields.contains (field)) {
+				if (this.props.total_fields.contains (field_name)) {
 
 					let border_style: React.CSSProperties = { textAlign: "right" };
 					let total = 0;
 
 					if ((field_index == (this.props.fields.length - 1)) || (!this.props.total_fields.contains (this.props.fields [field_index + 1]))) border_style.borderRight = "none";
-					this.props.data.forEach ((datum: IBaseModel) => total += datum [field]);
+					this.props.data.forEach ((datum: IBaseModel) => total += datum [field_name]);
 					// calculate and show the total
 					return <div style={border_style}>{total}</div>;
 				}// if;
@@ -210,9 +211,21 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 
 
 	public constructor (props: DataTableProps) {
+
 		super (props);
-		this.field_names = isset (this.props.fields) ? this.props.fields : Object.keys (this.props.data [0]);
+
+		if (isset (this.props.fields)) {
+			this.props.fields.forEach ((field: string | NameValueCollection<string>) => {
+				if (not_set (this.field_names)) this.field_names = new Array<string> ();
+				if (String.isString (field)) return this.field_names.push (field as string);
+				this.field_names.push (field [Object.keys (field) [0]]);
+			});
+		} else {
+			this.field_names = Object.keys (this.props.data [0]);
+		}// if;
+
 		this.initial_styles = { gridTemplateColumns: `repeat(${this.field_count}, min-content)` }
+
 	}// constructor;
 
 

@@ -15,5 +15,5 @@ const properties: DataTableProperties = {
 
 
 export default class SplitsPage extends BaseComponent {
-	public render = () => <DataPage table_properties={properties} edit_form={EditSplitForm} name="Splits" />
+	public render = () => <DataPage table_properties={properties} edit_form={EditSplitForm} name="Split" />
 }// SplitsPage;

@@ -1,17 +1,18 @@
 import React from "react";
 
-import TickerForm from "Forms/TickerForm";
 import HoldingsModel from "Models/HoldingsModel";
 
 import APIClass, { StockPriceData } from "Classes/APIClass";
 import DataTable from "Controls/DataTable";
-import ErrorWindow from "Controls/ErrorWindow";
+import Eyecandy from "Controls/Eyecandy";
 import Link from "Controls/Link";
+import BrokerList from "Controls/Lists/BrokerList";
+import SelectList from "Controls/Lists/SelectList";
+import TickerList from "Controls/Lists/TickerList";
 
 import TransactionsPage from "Pages/Transactions";
 
 import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControls";
-import { NameValueCollection } from "Classes/Collections";
 import { TickerModel } from "Models/TickerModel";
 
 
@@ -19,6 +20,7 @@ const one_hour = 60 * 60 * 1000;
 
 class HomeState extends DataState<HoldingsModel> {
 	active_ticker: String = null;
+	dead_stocks: boolean = true;
 }// HomeState;
 
 
@@ -31,13 +33,10 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	private data_table: React.RefObject<DataTable> = React.createRef ();
 
 
-	/********/
+	private holdings_list: Array<HoldingsModel> = null;
 
 
-	public state: HomeState = new HomeState ();
-
-
-	public componentDidMount = () => APIClass.fetch_data ("GetHoldings").then ((response: Array<HoldingsModel>) => {
+	private update_ticker_list = () => APIClass.fetch_data ("GetHoldings").then ((response: Array<HoldingsModel>) => {
 
 		let ticker_list: string = null;
 
@@ -68,30 +67,83 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 			});
 			
 		});
-
+			
 		response.forEach ((item: HoldingsModel) => {
 			item.value = (item.quantity * item.price).truncate_to (2);
 			item.profit = (item.value - item.cost).truncate_to (2);
 		});
 
-		this.setState ({ data: response });
+		this.setState ({ data: this.holdings_list = response });
 
 	});
 
 
-	public render = () => is_null (this.state.data) ? this.load_screen : (this.state.data.empty ? <div className="column-block column-centered">
+	private filter_ticker_list () {
+
+		let result = null;
+
+		this.holdings_list.forEach ((item: HoldingsModel) => {
+			if (!this.state.dead_stocks && (item.quantity == 0)) return;
+			if (is_null (result)) result = new Array<HoldingsModel> ();
+			result.push (item);
+		});
+
+		this.setState ({ data: result });
+
+	}// filter_ticker_list;
+
+
+	/********/
+
+
+	public state: HomeState = new HomeState ();
+
+
+	public componentDidUpdate (previous_props: DataProps, previous_state: HomeState) {
+		if (previous_state.dead_stocks != this.state.dead_stocks) this.filter_ticker_list ();
+	}
+
+
+	public componentDidMount = () => this.update_ticker_list ();
+
+
+	public render = () => is_null (this.state.data) ? <Eyecandy text="Loading holdings..." /> : (this.state.data.empty ? <div className="column-block column-centered">
 		No stock information available<br />
 		<br />
 		<div className="row-centered">To add stock purchases,&nbsp;<Link command={() => main_page.change_page (<TransactionsPage />)} text="click here" /></div>
-	</div> : <div>
-		<div className="miniform">
-			<input type="text" id="stock_ticker" onChange={event => this.setState ({active_ticker: event.target.value })} />
-			<button id="stock_lookup_button" onClick={() => this.lookup_stock ()}>Lookup</button>
+	</div> : <div className="page-layout">
+
+		<div className="horizontally-spaced-out">
+
+			<div className="miniform">
+				<input type="text" id="stock_ticker" onChange={event => this.setState ({active_ticker: event.target.value })} />
+				<button id="stock_lookup_button" onClick={() => this.lookup_stock ()}>Lookup</button>
+			</div>
+
+			<div className="two-column-grid">
+				<label htmlFor="dead_stock_checkbox">Show dead stocks (sold or defunct)</label>
+				<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.dead_stocks} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState ({ dead_stocks: event.target.checked })} />
+			</div>
+
 		</div>
 
-		<div className="with-headspace">
+		<form>
+			<div className="wide-column-spaced row-block">
+
+				<BrokerList header={SelectList.All} selected_item={this.state.broker_id} 
+					onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: (event.currentTarget.value == SelectList.All ? null : event.currentTarget.value) })}>
+				</BrokerList>
+
+				<TickerList header={SelectList.All} broker_id={this.state.broker_id}
+					onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.currentTarget.value })}>
+				</TickerList>
+
+			</div>
+		</form>
+
+		<div className="body">
 			<DataTable id="holdings-table" data={this.state.data} ref={this.data_table} parent={this}
-				fields={["broker", "symbol", "company", "price", "quantity", "cost", "value", "profit"]}
+				fields={["broker", "symbol", "company", "price", "quantity", "cost", "value", { profit: "Profit / Loss" }]}
 				numeric_fields={["quantity"]}
 				currency_fields={["price", "cost", "value", "profit"]}
 				total_fields={["cost", "value", "profit"]}

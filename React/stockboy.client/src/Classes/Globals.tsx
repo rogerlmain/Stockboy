@@ -11,6 +11,7 @@ declare global {
 	var underscore: string;
 
 	var digits: Array<number>;
+	var action_keys: Array<string>;
 	var control_keys: Array<string>;
 
 	var is_empty: Function;
@@ -38,7 +39,8 @@ globalThis.comma = ",";
 globalThis.underscore = "_";
 
 globalThis.digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-globalThis.control_keys = ["Enter", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Backspace", "Delete", "Escape"];
+globalThis.action_keys = ["Enter", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Backspace", "Delete", "Escape"];
+globalThis.control_keys = ["c", "v", "a"]; // use in conjunction with ctrl key
 
 globalThis.is_empty = (value: any): Boolean => isset (value) && ((String.isString (value) && (value == String.Empty)) || (Array.isArray (value) && (value.length == 0)));
 globalThis.not_empty = (value: any): Boolean => !is_empty (value);

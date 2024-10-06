@@ -2,18 +2,20 @@ drop function if exists stock_quantity;
 
 delimiter $$
 
-create function stock_quantity (ticker_id varchar (36), broker_id varchar (36)) returns decimal (18, 8) begin
+create function stock_quantity (broker_id varchar (36), ticker_id varchar (36)) returns decimal (18, 8) begin
 
 	declare done boolean default false;
     
     declare quantity decimal (18, 8) default null;
     declare transaction_type varchar (12) default null;
+    declare transaction_date date default null;
     
     declare total decimal (18, 8) default 0;
     
     declare row_cursor cursor for select
-		tac.quantity,
-        ttp.name as transaction_type
+		tac.quantity as quantity,
+        ttp.name as transaction_type,
+        tac.transaction_date as transaction_date
 	from
 		transactions as tac
 	join
@@ -24,8 +26,18 @@ create function stock_quantity (ticker_id varchar (36), broker_id varchar (36)) 
 		(tac.broker_id = broker_id) and
         (tac.ticker_id = ticker_id) and
         (not tac.deleted)
+	union select
+		spl.current / spl.previous as quantity,
+		'Split' as transaction_type,
+		spl.split_date as transaction_date
+	from
+		splits as spl
+	where
+		(spl.broker_id = broker_id) and
+        (spl.ticker_id = ticker_id) and
+        (not spl.deleted)
 	order by
-		tac.transaction_date;
+		transaction_date;
         
 	declare continue handler for not found set done = true;
     
@@ -33,7 +45,7 @@ create function stock_quantity (ticker_id varchar (36), broker_id varchar (36)) 
     
     row_loop: loop
     
-		fetch row_cursor into quantity, transaction_type;
+		fetch row_cursor into quantity, transaction_type, transaction_date;
         
         if done then
 			leave row_loop;

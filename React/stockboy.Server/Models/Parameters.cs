@@ -6,8 +6,8 @@
 	}// GetParameters;
 
 
-	public class UpdateParameters {
+	public class DeleteParameters {
 		public Guid id { get; set; }
-	}// UpdateParameters;
+	}// DeleteParameters;
 
 }// Stockboy.Server.Models;

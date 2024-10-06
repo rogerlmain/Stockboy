@@ -68,6 +68,7 @@ declare global {
 
 
 	interface String {
+		contains (substring: string): boolean;
 		isNumber (): boolean;
 		integerValue (): number;
 		matches (candidate: string): boolean;
@@ -75,6 +76,7 @@ declare global {
 		parseNumeric (): string;
 		titleCase (strip_spaces?: boolean): String;
 		leadingCharacters (char: string)
+		strip_non_numeric ();
 	}// String;
 
 
@@ -92,7 +94,7 @@ declare module "react" {
 		commas?: string;
 		decimalPlaces?: number;
 		leadingZeros?: boolean;
-		negativeNumbers?: boolean;
+		negativeNumbers?: string;
 	}// HTMLAttributes;
 
 }// react;
@@ -242,8 +244,8 @@ HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 
 	let value = `${this.value.substring (0, this.selectionStart)}${event.key}${this.value.substring (this.selectionEnd)}`;
 
-	if (control_keys.contains (event.key)) return true; // allow permissable control keys: tab, delete, backspace etc. (see control keys in Globals.tsx for details)
-	if (((event.key == "c") || (event.key == "v")) && event.ctrlKey) return true; // allow copy/paste
+	if (action_keys.contains (event.key)) return true; // allow permissable control keys: tab, delete, backspace etc. (see control keys in Globals.tsx for details)
+	if (control_keys.contains (event.key) && event.ctrlKey) return true; // allow copy/paste/select all
 
 	if (value.trim () != value) return event.preventDefault (); // leading or trailing spaces are not allowed
 	if (!digits.includes (parseInt (value [0])) && (value [0] != "-")) return event.preventDefault (); // leading garbage
@@ -343,6 +345,9 @@ String.Space = " ";
 String.isString = function (candidate: any) { return typeof candidate == "string" }
 
 
+String.prototype.contains = function (substring: string) { return this.indexOf (substring) > -1 }
+
+
 String.prototype.isNumber = function () { 
 
 	for (let char of this) {
@@ -357,6 +362,21 @@ String.prototype.integerValue = function () {
 	let result = parseInt (this.toString ());
 	return (result.toString () == this) ? result : 0;
 } // integer_value;
+
+
+String.prototype.leadingCharacters = function (char: string): number {
+
+	let result: number = 0;
+	let value: String = this;
+
+	while ((value.length > 0) && (value [0] == char)) {
+		result++;
+		value = value.substring (1);
+	}// while;
+
+	return result;
+
+}// leadingCharacters;
 
 
 String.prototype.matches = function (candidate: string) {
@@ -384,19 +404,19 @@ String.prototype.parseNumeric = function () {
 }// parseNumeric;
 
 
-String.prototype.leadingCharacters = function (char: string): number {
+String.prototype.strip_non_numeric = function (): String {
 
-	let result: number = 0;
-	let value: String = this;
+	let result = String.Empty;
 
-	while ((value.length > 0) && (value [0] == char)) {
-		result++;
-		value = value.substring (1);
-	}// while;
+	for (let index = 0; index < this.length; index++) {
+		if ((this [index] == "-") && (index == 0)) { result += this [index]; continue; }
+		if ((this [index] == ".") && (!result.contains ("."))) { result += this [index]; continue; }
+		if (digits.contains (parseInt (this [index]))) result += this [index];
+	}// for;
 
 	return result;
 
-}// leadingCharacters;
+}// strip_non_numeric;
 
 
 String.prototype.titleCase = function (strip_spaces: boolean = false): String {

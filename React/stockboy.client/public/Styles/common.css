@@ -20,6 +20,7 @@
 * {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   box-sizing: border-box;
+  white-space: nowrap;
 }
 
 /********/
@@ -130,6 +131,12 @@ label {
   column-gap: 0.5rem;
 }
 
+*.horizontally-spaced-out {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 /**** Positioning Styles ****/
 div.full-screen, div.blackout {
   position: absolute;
@@ -193,9 +200,6 @@ div[class*=-column-grid] {
   column-gap: 0.5rem;
   row-gap: 0.2rem;
 }
-div[class*=-column-grid] * {
-  white-space: nowrap;
-}
 div[class*=-column-grid] label {
   display: inline-flex;
   flex-direction: row;
@@ -221,7 +225,6 @@ div.form-table label {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  white-space: nowrap;
 }
 
 div.miniform {
@@ -234,7 +237,7 @@ form div.compact input, form div.compact select {
   width: 8.5rem;
 }
 
-/********/
+/**** Eyecandy Styles ****/
 img.eyecandy {
   height: 1.2rem;
   width: auto;

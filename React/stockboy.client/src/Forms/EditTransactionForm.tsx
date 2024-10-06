@@ -55,17 +55,16 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 				<TickerList selected_item={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditTransactionForm.defaultValues.ticker_id} 
 					broker_id={this.state.broker_id}>
 				</TickerList>
+
 			</div>
 
-			<br />
-
-			<div className="four-column-grid compact">
+			<div className="compact four-column-grid with-headspace">
 
 				<label htmlFor="price">Price per share</label>
 				<input type="numeric" id="price" name="price" commas="true" decimalPlaces={4} defaultValue={this.props.data?.price ?? EditTransactionForm.defaultValues.price} />
 
 				<label htmlFor="quantity">Quantity</label>
-				<input type="numeric" id="quantity" name="quantity" defaultValue={this.props.data?.quantity ?? EditTransactionForm.defaultValues.quantity} />
+				<input type="numeric" id="quantity" name="quantity" decimalPlaces={6} defaultValue={this.props.data?.quantity ?? EditTransactionForm.defaultValues.quantity} />
 
 				<label htmlFor="transaction_date">Transaction Date</label>
 				<input type="date" id="transaction_date" name="transaction_date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.transaction_date : EditTransactionForm.defaultValues.transaction_date, date_format.database)} />

@@ -43,10 +43,6 @@ div.checkbox-select-list div.list {
 	overflow: hidden;
 }
 
-div.checkbox-select-list div.list-item {
-	white-space: nowrap
-}
-
 
 /**** Form Styles ****/
 
@@ -75,8 +71,6 @@ div.data-table {
 	display: inline-grid;
 	border-top: var(--table-border);
 	border-left: var(--table-border);
-	white-space: nowrap;
-
 
 	div.table-header {
 		display: contents;

@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 document.addEventListener ("readystatechange", () => {
 
 	if (document.readyState != "complete") return;
@@ -19,19 +21,40 @@ new MutationObserver ((mutations: Array<MutationRecord>, observer: MutationObser
 	mutations.forEach ((mutation: MutationRecord) => {
 
 		
-		document.querySelectorAll ("input").forEach ((field: Element) => {
+		document.querySelectorAll ("input").forEach ((field: HTMLInputElement) => {
 
-			let element = (field as HTMLInputElement);
+			if (!(field.isCurrency || field.isNumeric)) return;
 
-			if (!(element.isCurrency || element.isNumeric)) return;
+			if (!(field.onpaste)) field.onpaste = (event: Event) => setTimeout (() => {
 
-			if (!element.onfocus) element.onfocus = () => {
-				if (element.getAttribute ("commas") == "true") element.clear_commas ();
+				let value: string = field.value.strip_non_numeric ();
+
+				let decimal_places: number = (field.getAttribute ("type") == "currency") ? 2 : (field.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
+				let leading_zeros: number = field.getAttribute ("leadingZeros")?.integerValue () ?? 0;
+				let negative_numbers: boolean = field.getAttribute ("negativeNumbers")?.toLowerCase () == "true";
+
+				if ((value [0] == "-") && !negative_numbers) value = value.substring (1);
+
+				let parts = value.split (".");
+
+				if (decimal_places == 0) return field.value = parts [0];
+
+				if (parts [1].length > decimal_places) {
+					parts [1] = parts [1].substring (0, decimal_places);
+					value = `${parts [0]}.${parts [1]}`;
+				}// if;
+
+				field.value = value;
+
+			});
+
+			if (!field.onfocus) field.onfocus = () => {
+				if (field.getAttribute ("commas") == "true") field.clear_commas ();
 			}// onfocus;
 
-			if (!element.onblur) element.onblur = () => {
-				if (element.getAttribute ("commas") == "true") element.set_commas ();
-				if (element.isCurrency) element.pad_decimals (2);
+			if (!field.onblur) field.onblur = () => {
+				if (field.getAttribute ("commas") == "true") field.set_commas ();
+				if (field.isCurrency) field.pad_decimals (2);
 			}// onblur;
 
 		});

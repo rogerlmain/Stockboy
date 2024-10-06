@@ -50,7 +50,7 @@ namespace Stockboy.Server.Classes {
 					return true;
 				}// if;
 
-				record!.CopyFields (values, copy_nulls);
+				record!.Merge (values, copy_nulls);
 				return true;
 
 			} catch {
@@ -85,7 +85,7 @@ namespace Stockboy.Server.Classes {
 
 	public static class ObjectExtensions {
 
-		public static void CopyFields (this Object source, Object model, Boolean copy_nulls = false) {
+		public static void Merge (this Object source, Object model, Boolean copy_nulls = false) {
 			
 			List<String>? keys = source.GetKeys ();
 
@@ -97,7 +97,7 @@ namespace Stockboy.Server.Classes {
 				source.GetType ().GetProperty (key)?.SetValue (source, model.GetValue (key));
 			}// foreach;
 
-		}// CopyFields;
+		}// Merge;
 
 
 		public static Model? Export<Model> (this Object model) => JsonConvert.DeserializeObject<Model> (JsonConvert.SerializeObject (model));
