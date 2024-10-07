@@ -2,28 +2,29 @@ import React from "react";
 
 import HoldingsModel from "Models/HoldingsModel";
 
+import LocalDate from "Classes/LocalDate";
+
 import APIClass, { StockPriceData } from "Classes/APIClass";
-import DataTable from "Controls/DataTable";
 import Eyecandy from "Controls/Eyecandy";
 import Link from "Controls/Link";
 import BrokerList from "Controls/Lists/BrokerList";
 import SelectList from "Controls/Lists/SelectList";
 import TickerList from "Controls/Lists/TickerList";
+import DataTable from "Controls/Tables/DataTable";
 
 import TransactionsPage from "Pages/Transactions";
 
 import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControls";
 import { TickerModel, TickerPrice } from "Models/TickerModel";
-import LocalDate from "../Classes/LocalDate";
 
 
 const one_hour = 60 * 60 * 1000;
 
 class HomeState extends DataState<HoldingsModel> {
 	active_ticker: String = null;
-	dead_stocks: boolean = false;
+	dead_stocks: boolean = true; //false;
 	sold_stocks: boolean = false;
-	live_stocks: boolean = true;
+	live_stocks: boolean = false; //true;
 	loading: boolean = true;
 }// HomeState;
 

@@ -2,7 +2,7 @@ import React from "react";
 
 import APIClass from "Classes/APIClass";
 import BaseComponent from "Controls/BaseComponent";
-import DataTable, { DataTableProperties } from "Controls/DataTable";
+import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
 import BrokerList from "Controls/Lists/BrokerList";
 import SelectList from "Controls/Lists/SelectList";

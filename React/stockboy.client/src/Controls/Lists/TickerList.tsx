@@ -1,8 +1,9 @@
 import DataList from "Controls/Lists/DataList";
+import NameValueCollection from "Classes/Collections";
 
-import { NameValueCollection } from "Classes/Collections";
 import { DataControl } from "Controls/Abstract/DataControls";
 import { ListProps } from "Controls/Lists/SelectList";
+
 
 
 class TickerListProps extends ListProps {
@@ -17,9 +18,9 @@ export default class TickerList extends DataControl<TickerListProps> {
 
 	private get_parameters () {
 		if (is_null (this.props.broker_id)) return null;
-		if (is_null (this.parameters)) return this.parameters = new NameValueCollection<string> ({ broker_id: this.props.broker_id });
+		if (is_null (this.parameters)) return this.parameters = new NameValueCollection ({ broker_id: this.props.broker_id });
 		if (this.parameters ["broker_id"] == this.props.broker_id) return this.parameters;
-		return new NameValueCollection<string> ({ broker_id: this.props.broker_id });
+		return new NameValueCollection ({ broker_id: this.props.broker_id });
 	}// get_parameters;
 
 

@@ -1,16 +1,5 @@
 import React, { ReactElement } from "react";
-import ReactDOMServer from "react-dom/server";
-
-import parse from "html-react-parser";
-
 import BaseComponent, { BaseProps } from "Controls/BaseComponent";
-import SelectList from "Controls/Lists/SelectList";
-
-import { NameValueCollection } from "Classes/Collections";
-import HTMLReactParser from "html-react-parser";
-
-
-class ButtonCollection extends NameValueCollection<React.MouseEventHandler<HTMLButtonElement>> {}
 
 
 class PopupWindowProps extends BaseProps {

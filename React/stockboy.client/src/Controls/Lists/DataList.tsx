@@ -1,13 +1,14 @@
 import React from "react";
 
 import APIClass from "Classes/APIClass";
+import NameValueCollection from "Classes/Collections";
+
+import SelectList, { SelectProps } from "Controls/Lists/SelectList";
 import BaseComponent from "Controls/BaseComponent";
 import Eyecandy from "Controls/Eyecandy";
-import SelectList, { SelectProps } from "Controls/Lists/SelectList";
 
 import ListModel from "Models/ListModel";
 
-import { NameValueCollection } from "Classes/Collections";
 
 
 class DataListState {

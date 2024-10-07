@@ -51,6 +51,11 @@ declare global {
 	}// HTMLInputElement;
 
 
+	interface NumberConstructor {
+		isNumber (candidate: any): boolean;
+	}// NumberConstructor;
+
+
 	interface Number {
 		number_format (decimal_places: number): string;
 		round_to (decimal_places: number): number;
@@ -291,6 +296,11 @@ HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 
 
 /**** Number Prototype Functions ****/
+
+
+Number.isNumber = function (candidate: any) {
+	return typeof (candidate) == "number";
+}// isNumber;
 
 
 Number.prototype.number_format = function (decimal_places: number): string {

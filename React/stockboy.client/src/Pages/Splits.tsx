@@ -3,7 +3,7 @@ import BaseComponent from "Controls/BaseComponent";
 import SplitModel from "Models/SplitModel";
 
 import { EditSplitForm } from "Forms/EditSplitForm";
-import { DataTableProperties } from "Controls/DataTable";
+import { DataTableProperties } from "Controls/Tables/DataTable";
 
 
 const properties: DataTableProperties = {
