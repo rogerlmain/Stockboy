@@ -15,7 +15,7 @@
 /**** Debugging Styles ****/
 
 
-*.bordered, *.bordered *, *.outlined > * { border: solid 1px red }
+*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined > * { border: solid 1px red }
 
 
 /**** Global Styles ****/

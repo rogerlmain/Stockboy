@@ -23,7 +23,7 @@ class HomeState extends DataState<HoldingsModel> {
 	active_ticker: String = null;
 	dead_stocks: boolean = false;
 	sold_stocks: boolean = false;
-	live_stocks: boolean = false; //true;
+	live_stocks: boolean = true;
 	loading: boolean = true;
 }// HomeState;
 
@@ -271,22 +271,17 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	}// componentDidMount;
 
 
-	public render = () => this.state.loading ? <Eyecandy text="Loading holdings..." /> : <div className="column-block column-centered">
-		<div className="page-layout">
+	public render = () => this.state.loading ? <Eyecandy text="Loading holdings..." /> : <div className="page-layout column-centered">
 
-			<div className={`${isset (this.state.data) ? "horizontally-spaced-out" : null} row-centered`}>
-
-				{this.lookup_panel}
-
-				{this.checkbox_panel}
-
-			</div>
-
-			{this.filter_panel}
-
-			{is_null (this.state.data) ? this.empty_data_panel : this.grid_panel}
-
+		<div className={`${isset (this.state.data) ? "horizontally-spaced-out row-centered" : "right-aligned"}`} style={{ width: "65rem" }}>
+			{this.lookup_panel}
+			{this.checkbox_panel}
 		</div>
+
+		{this.filter_panel}
+		{is_null (this.state.data) ? this.empty_data_panel : this.grid_panel}
+
 	</div>
+
 
 }// HomePage;

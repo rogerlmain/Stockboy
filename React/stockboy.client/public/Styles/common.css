@@ -12,7 +12,7 @@
 }
 
 /**** Debugging Styles ****/
-*.bordered, *.bordered *, *.outlined > * {
+*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined > * {
   border: solid 1px red;
 }
 
