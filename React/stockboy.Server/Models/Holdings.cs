@@ -12,27 +12,30 @@ namespace Stockboy.Server.Models {
 		public string? broker { get; set; } = null;
 		public string? symbol { get; set; } = null;
 		public string? company { get; set; } = null;
-		public decimal? price { get; set; } = null;
-		public decimal? quantity { get; set; } = null;
-		public decimal? cost { get; set; } = null;
+		public decimal cost_price { get; set; } = Decimal.Zero;
+		public decimal? current_price { get; set; } = null;
+		public decimal quantity { get; set; } = Decimal.Zero;
+		public decimal total_purchase_price { get; set; } = Decimal.Zero;
+		public decimal total_sale_price { get; set; } = Decimal.Zero;
 		public decimal? value { get; set; } = null;
 		public decimal? profit { get; set; } = null;
-		public decimal? total_sale_price { get; set; } = null;
 		public DateTime? last_updated { get; set; } = null;
 	}// HoldingsModel;
 
 
 	[Keyless]
-	public class ActivityView {
-		public Guid broker_id { get; set; }
-		public Guid ticker_id { get; set; }
+	public class ActivityView: BaseModel {
+		public Guid broker_id { get; set; } = Guid.Empty;
+		public Guid ticker_id { get; set; } = Guid.Empty;
 		public string broker { get; set; } = String.Empty;
 		public string symbol { get; set; } = String.Empty;
 		public string company { get; set; } = String.Empty;
-		public decimal? price { get; set; }
-		public decimal quantity { get; set; }
+		public decimal cost_price { get; set; } = Decimal.Zero;
+		public decimal? current_price { get; set; } = null;
+		public DateTime? last_updated { get; set; } = null;
+		public decimal quantity { get; set; } = Decimal.Zero;
 		public string transaction_type { get; set; } = String.Empty;
-		public DateTime transaction_date { get; set; }
+		public DateTime transaction_date { get; set; } = DateTime.Now;
 	}// ActivityView;
 
 

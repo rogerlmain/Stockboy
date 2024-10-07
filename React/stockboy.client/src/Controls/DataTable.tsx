@@ -35,7 +35,8 @@ class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
 
 	private format (key: string, value: any) {
 		if (this.props.data_table.props.date_fields?.contains (key)) return Date.format (value);
-		if (this.props.data_table.props.currency_fields?.contains (key)) return value?.currency_format ();
+		if (this.props.data_table.props.currency_fields?.contains (key)) return value?.number_format (currency_decimals);
+		if (this.props.data_table.props.numeric_fields?.contains (key)) return value?.number_format (numeric_decimals);
 		return value;
 	}// format;
 
@@ -140,12 +141,37 @@ export class DataTableProps extends DataTableProperties {
 export default class DataTable extends BaseComponent<DataTableProps> {
 
 
-	private field_names: string [] = null;
 	private initial_styles: React.CSSProperties = null;
 	private reference: React.RefObject<HTMLDivElement> = React.createRef ();
 
 
-	private get field_count () { return not_set (this.props.keys) ? this.field_names.length : this.field_names.length };
+	private get field_count () { return not_set (this.props.keys) ? this.props.fields.length : this.props.fields.length };
+
+
+	private field_name (field: string | NameValueCollection<string>): string {
+		if (String.isString (field)) return field.toString ();
+		return Object.keys (field) [0];
+	}// field_name;
+
+
+	private field_title (field: string | NameValueCollection<string>): string {
+		if (String.isString (field)) return (field as string).titleCase ();
+		return field [this.field_name (field)].titleCase ();
+	}// field_title;
+
+
+	private field_name_list (): Array<string> {
+
+		let result: Array<string> = null;
+
+		this.props.fields.forEach ((field: string | NameValueCollection<string>) => {
+			if (is_null (result)) result = new Array<string> ();
+			result.push (this.field_name (field));
+		});
+
+		return result;
+
+	}// field_name_list
 
 
 	private sort_table (sort_field: string) {
@@ -211,21 +237,8 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 
 
 	public constructor (props: DataTableProps) {
-
 		super (props);
-
-		if (isset (this.props.fields)) {
-			this.props.fields.forEach ((field: string | NameValueCollection<string>) => {
-				if (not_set (this.field_names)) this.field_names = new Array<string> ();
-				if (String.isString (field)) return this.field_names.push (field as string);
-				this.field_names.push (field [Object.keys (field) [0]]);
-			});
-		} else {
-			this.field_names = Object.keys (this.props.data [0]);
-		}// if;
-
 		this.initial_styles = { gridTemplateColumns: `repeat(${this.field_count}, min-content)` }
-
 	}// constructor;
 
 
@@ -242,13 +255,19 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 			style={this.initial_styles}>
 	
 			<div className="table-header">
-				{this.field_names.map (key => <div key={this.next_key} onClick={() => this.sort_table (key)}>
-					{key.titleCase ()}
-					{(key == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
-				</div>)}
+				{this.props.fields.map ((field: string | NameValueCollection<string>) => {
+					
+					let name = this.field_name (field);
+					let title = this.field_title (field);
+
+					return <div key={this.next_key} onClick={() => this.sort_table (name)}>
+						{title}
+						{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
+					</div>
+				})}
 			</div>
 
-			{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} field_names={this.field_names} onclick={this.props.onclick} data_table={this} />)}
+			{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} field_names={this.field_name_list ()} onclick={this.props.onclick} data_table={this} />)}
 
 			{isset (this.props.total_fields) ? this.show_totals () : null}
 

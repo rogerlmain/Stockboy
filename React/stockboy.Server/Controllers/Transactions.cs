@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;

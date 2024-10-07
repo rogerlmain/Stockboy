@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
 
@@ -9,55 +8,47 @@ namespace Stockboy.Server.Controllers {
 	public class Holdings (DataContext context) : Controller {
 
 
-		private decimal? calculate_holding (string transaction_type, decimal? existing_value, decimal? new_value) {
-			switch (transaction_type) {
-				case "Buy": return existing_value + new_value;
-				case "Sell": return existing_value - new_value;
-				case "Split": return existing_value * new_value;
-				default: return existing_value; // Should never happen
-			}// switch;
-		}// calculate_holding;
-
-
-		/********/
-
-
 		[HttpGet]
 		[Route ("GetHoldings")]
 		public IActionResult GetHoldings () {
 			try {
 
+				String? previous_broker = null;
 				String? previous_company = null;
+
 				List<HoldingsModel>? holdings = null;
 				List<ActivityView> activity = context.activity_view.SelectAll ();
- 
+				HoldingsModel? holding = null;
+
 				foreach (ActivityView item in activity) {
 
-					HoldingsModel? holding = null;
-
-					if (item.company != previous_company) holding = holdings?.Find (holding => (holding.broker_id == item.broker_id) && (holding.ticker_id == item.ticker_id));
-
-					if (is_null (holding)) {
+					if ((item.broker != previous_broker) || (item.company != previous_company)) {
 						holding = new () {
 							broker_id = item.broker_id,
 							ticker_id = item.ticker_id,
 							broker = item.broker,
 							symbol = item.symbol,
 							company = item.company,
-							cost = 0,
+							cost_price = item.cost_price,
+							current_price = item.current_price,
 						};
 
 						(holdings ??= new ()).Add (holding);
 					}// if;
 
-					holding!.price = item.price;
-					holding!.quantity = item.quantity;
-					holding!.last_updated = item.transaction_date;
+					holding!.last_updated = item.last_updated;
 
-					holding!.cost = calculate_holding (item.transaction_type, holding.price * holding.quantity, item.price) ?? 0;
-					holding!.quantity = calculate_holding (item.transaction_type, holding.quantity, item.quantity) ?? 0;
-					
-					if (item.transaction_type == "Sell") holding!.total_sale_price += holding.price * holding.quantity;
+					switch (item.transaction_type) {
+						case "Buy": holding.quantity += item.quantity; break;
+						case "Sell": holding.quantity -= item.quantity; break;
+						case "Split": holding.quantity *= item.quantity; break;
+					}// switch;
+
+					if (item.transaction_type == "Buy") holding!.total_purchase_price += item.cost_price * item.quantity;
+					if (item.transaction_type == "Sell") holding!.total_sale_price += item.cost_price * item.quantity;
+
+					previous_broker = item.broker;
+					previous_company = item.company;
 
 				}// foreach;
 

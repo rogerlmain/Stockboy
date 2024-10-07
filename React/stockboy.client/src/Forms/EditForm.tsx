@@ -36,8 +36,8 @@ export class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 
 	private save_record () {
 
-		let form_data = new FormData (this.form_reference.current);
-		let new_record = not_defined ((this.form_reference.current.querySelector ("[id]") as HTMLInputElement).value);
+		let form_data = new FormData (this.form_reference.current).remove_empties ();
+		let new_record = !form_data.has ("id");
 
 		main_page.popup_window.show (<div className="column-centered column-spaced row-block">
 			<img src="Images/eyecandy.gif" />

@@ -27,6 +27,11 @@ declare global {
 	}// Date;
 
 
+	interface FormData {
+		remove_empties ();
+	}// FormData;
+
+
 	interface HTMLElement {
 		numericInput (): boolean;
 		setClass (value: String, condition: Boolean);
@@ -47,7 +52,7 @@ declare global {
 
 
 	interface Number {
-		currency_format (): string;
+		number_format (decimal_places: number): string;
 		round_to (decimal_places: number): number;
 		truncate_to (decimal_places: number): number;
 	}// Number;
@@ -74,7 +79,7 @@ declare global {
 		matches (candidate: string): boolean;
 		padded (char: String, size: number, right_padded?: boolean): String;
 		parseNumeric (): string;
-		titleCase (strip_spaces?: boolean): String;
+		titleCase (strip_spaces?: boolean): string;
 		leadingCharacters (char: string)
 		strip_non_numeric ();
 	}// String;
@@ -100,7 +105,7 @@ declare module "react" {
 }// react;
 
 
-/**** Array Prototypes ****/
+/**** Array Prototype Functions ****/
 
 
 Array.prototype.add = function<T> (value: T): Array<T> {
@@ -123,7 +128,7 @@ Object.defineProperty (Array.prototype, "empty", {
 });
 
 
-/**** React Component Prototypes ****/
+/**** React Component Prototype Functions ****/
 
 
 let nativeSetState = Component.prototype.setState;
@@ -134,7 +139,7 @@ Component.prototype.setState = function (state: any, callback?: () => void): boo
 }// setState;
 
 
-/**** Date Prototypes ****/
+/**** Date Prototype Functions ****/
 
 
 Date.format = function (date_value: string | Date, format: date_format = date_format.readable): string {
@@ -157,10 +162,29 @@ Date.today = function (format: date_format = date_format.readable): string { ret
 Date.current_date = function (): Date { return new Date () }
 
 
-Date.prototype.timestamp = function (): number { return Math.floor (this.getMinutes () / 1000) }
+Date.prototype.timestamp = function (): number { return this.valueOf () }
 
 
-/**** HTMLElement Prototypes ****/
+/**** FormData Prototype Functions ****/
+
+
+FormData.prototype.remove_empties = function () {
+
+	let form_data = null;
+
+	this.forEach ((value: FormDataEntryValue, key: string) => {
+		if (is_defined (value)) {
+			if (is_null (form_data)) form_data = new FormData ();
+			form_data.append (key, value);
+		}// if;
+	});
+
+	return form_data;
+
+}// remove_empties;
+
+
+/**** HTMLElement Prototype Functions ****/
 
 
 HTMLElement.prototype.numericInput = function () {
@@ -174,7 +198,7 @@ HTMLElement.prototype.setClass = function (value: string, condition: Boolean) {
 }// setClass;
 
 
-/**** HTMLDivElement Prototypes ****/
+/**** HTMLDivElement Prototype Functions ****/
 
 
 HTMLDivElement.prototype.form_data = function (): FormData {
@@ -191,7 +215,7 @@ HTMLDivElement.prototype.form_data = function (): FormData {
 }// form_data;
 
 
-/**** HTMLInputElement Prototypes ****/
+/**** HTMLInputElement Prototype Functions ****/
 
 
 HTMLInputElement.prototype.pad_decimals = function (quantity: number) {
@@ -238,7 +262,7 @@ HTMLInputElement.prototype.clear_commas = function () {
 
 HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 
-	let decimal_places: number = (this.getAttribute ("type") == "currency") ? 2 : (this.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
+	let decimal_places: number = (this.getAttribute ("type") == "currency") ? currency_decimals : (this.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
 	let leading_zeros: number = this.getAttribute ("leadingZeros")?.integerValue () ?? 0;
 	let negative_numbers: boolean = this.getAttribute ("negativeNumbers")?.toLowerCase () == "true";
 
@@ -266,15 +290,15 @@ HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 }// valid_keystroke;
 
 
-/**** Number Prototypes ****/
+/**** Number Prototype Functions ****/
 
 
-Number.prototype.currency_format = function (): string {
+Number.prototype.number_format = function (decimal_places: number): string {
 	let parts = this.toString ().split (".");
 	if (parts.length == 1) parts.push ("00");
-	parts [1] = parts [1].padded ("0", 2, true).toString ();
+	parts [1] = parts [1].padded ("0", decimal_places, true).substring (0, decimal_places).toString ();
 	return parts.join (".");
-}// currency_format;
+}// number_format;
 
 
 Number.prototype.round_to = function (decimal_places: number): number {
@@ -287,7 +311,7 @@ Number.prototype.truncate_to = function (decimal_places: number): number {
 }// truncate_to;
 
 
-/**** Object Prototypes ****/
+/**** Object Prototype Functions ****/
 
 
 Object.prototype.copy = function (...candidates: Object []): Object {
@@ -335,7 +359,7 @@ Object.defineProperties (Object.prototype, {
 });
 
 
-/**** String Prototypes ****/
+/**** String Prototype Functions ****/
 
 
 String.Empty = "";
@@ -386,7 +410,9 @@ String.prototype.matches = function (candidate: string) {
 
 String.prototype.padded = function (char: String, size: number, right_padded: boolean = false): String {
 	let result = this;
-	while (result.length < size) result = (right_padded ? `${this}${char}` : `${char}${this}`);
+	while (result.length < size) {
+		result = (right_padded ? `${result}${char}` : `${char}${result}`);
+	}// while;
 	return result;
 }// padded;
 
@@ -419,7 +445,7 @@ String.prototype.strip_non_numeric = function (): String {
 }// strip_non_numeric;
 
 
-String.prototype.titleCase = function (strip_spaces: boolean = false): String {
+String.prototype.titleCase = function (strip_spaces: boolean = false): string {
 
 	let words: String [] = this.replace (underscore, String.Space).split (String.Space);
 	let result: String [] = new Array ();

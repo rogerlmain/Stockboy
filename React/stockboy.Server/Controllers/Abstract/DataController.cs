@@ -14,6 +14,8 @@ namespace Stockboy.Server.Controllers {
 			try {
 
 				TDataModel? result = default;
+
+				if (is_null (parameters)) throw new Exception ("Parameters is null - bad data.");
 				Boolean new_record = is_null (parameters.id);
 
 				if (new_record) parameters.id = Guid.NewGuid ();

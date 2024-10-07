@@ -29,7 +29,7 @@ new MutationObserver ((mutations: Array<MutationRecord>, observer: MutationObser
 
 				let value: string = field.value.strip_non_numeric ();
 
-				let decimal_places: number = (field.getAttribute ("type") == "currency") ? 2 : (field.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
+				let decimal_places: number = (field.getAttribute ("type") == "currency") ? currency_decimals : (field.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
 				let leading_zeros: number = field.getAttribute ("leadingZeros")?.integerValue () ?? 0;
 				let negative_numbers: boolean = field.getAttribute ("negativeNumbers")?.toLowerCase () == "true";
 
@@ -54,7 +54,7 @@ new MutationObserver ((mutations: Array<MutationRecord>, observer: MutationObser
 
 			if (!field.onblur) field.onblur = () => {
 				if (field.getAttribute ("commas") == "true") field.set_commas ();
-				if (field.isCurrency) field.pad_decimals (2);
+				if (field.isCurrency) field.pad_decimals (currency_decimals);
 			}// onblur;
 
 		});

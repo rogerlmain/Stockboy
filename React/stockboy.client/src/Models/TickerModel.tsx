@@ -9,3 +9,10 @@ export class TickerModel extends BaseModel {
 	dividend_frequency: number = null;
 	last_updated: Date = null;
 }// TickerModel;
+
+
+export class TickerPrice {
+	id: string = null;
+	symbol: string = null;
+	price: number = null;
+}// TickerPrice;

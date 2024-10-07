@@ -7,6 +7,9 @@ export {}
 
 declare global {
 
+	var currency_decimals: number;
+	var numeric_decimals: number;
+
 	var comma: string;
 	var underscore: string;
 
@@ -34,6 +37,9 @@ export enum date_format {
 	database
 }// date_format;
 
+
+globalThis.currency_decimals = 4;
+globalThis.numeric_decimals = 6;
 
 globalThis.comma = ",";
 globalThis.underscore = "_";

@@ -13,14 +13,18 @@ import TickerList from "Controls/Lists/TickerList";
 import TransactionsPage from "Pages/Transactions";
 
 import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControls";
-import { TickerModel } from "Models/TickerModel";
+import { TickerModel, TickerPrice } from "Models/TickerModel";
+import LocalDate from "../Classes/LocalDate";
 
 
 const one_hour = 60 * 60 * 1000;
 
 class HomeState extends DataState<HoldingsModel> {
 	active_ticker: String = null;
-	dead_stocks: boolean = true;
+	dead_stocks: boolean = false;
+	sold_stocks: boolean = false;
+	live_stocks: boolean = false; //true;
+	loading: boolean = true;
 }// HomeState;
 
 
@@ -36,98 +40,164 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	private holdings_list: Array<HoldingsModel> = null;
 
 
-	private update_ticker_list = () => APIClass.fetch_data ("GetHoldings").then ((response: Array<HoldingsModel>) => {
+	private get_outdated_tickers (holdings: Array<HoldingsModel>) {
+
+		let ticker_list: Array<TickerPrice> = null;
+
+		holdings.forEach ((item: HoldingsModel) => {
+
+			let ticker_price = ticker_list?.find ((ticker: TickerPrice) => ticker.id == item.ticker_id);
+
+			if ((isset (ticker_price) || (Date.current_date ().timestamp () - new LocalDate (item.last_updated).timestamp ()) <= one_hour) || (item.current_price == -1)) return;
+			if (is_null (ticker_list)) ticker_list = new Array<TickerPrice> ();
+
+			ticker_list.push ({
+				id: item.ticker_id,
+				symbol: item.symbol,
+				price: null
+			});
+
+		});
+
+		return ticker_list;
+
+	}// get_outdated_tickers;
+
+
+	private get_ticker_list (list: Array<TickerPrice>): string {
 
 		let ticker_list: string = null;
 
-		response.forEach ((item: HoldingsModel) => {
-			if (is_null (item.price) || ((Date.current_date ().timestamp () - new Date (item.last_updated).timestamp ()) > one_hour)) {
-				if (is_null (ticker_list)) return ticker_list = item.symbol;
-				ticker_list = `${ticker_list},${item.symbol}`;
-			}// if;
+		list.forEach ((item: TickerPrice) => {
+			if (is_null (ticker_list)) return ticker_list = item.symbol;
+			ticker_list = `${ticker_list},${item.symbol}`;
 		});
 
-		if (isset (ticker_list)) APIClass.fetch_stock_prices (ticker_list).then ((stock_prices: Array<StockPriceData>) => {
+		return ticker_list;
 
-			response.forEach ((item: HoldingsModel) => {
+	}// get_ticker_list;
 
-				let stock_price: StockPriceData = stock_prices.find ((stock_item: StockPriceData) => stock_item.symbol == item.symbol);
 
-				if (isset (stock_price)) {
-			
-					item.merge (stock_price);
+	private async get_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerPrice>> { 
+		
+		let outdated_prices: Array<TickerPrice> = null;
+		let stock_prices: Array<StockPriceData> = null;
 
-					APIClass.fetch_data ("SaveTicker", new TickerModel ().merge (stock_price, {
-						id: item.ticker_id,
-						name: item.company,
-						last_updated: Date.current_date ()
-					}));
+		outdated_prices = this.get_outdated_tickers (holdings);
+		if (is_null (outdated_prices)) return null;
 
-				}// if;
+		let ticker_list: string = this.get_ticker_list (outdated_prices);
+
+		if (isset (ticker_list)) stock_prices = await APIClass.fetch_stock_prices (ticker_list);
+		if (is_null (stock_prices)) return null;
+
+		return new Promise<Array<TickerPrice>> (resolve => {
+
+			stock_prices.forEach ((stock_price: StockPriceData) => {
+				let ticker_price = outdated_prices.find ((ticker_price: TickerPrice) => ticker_price.symbol == stock_price.symbol);
+				if (isset (ticker_price)) ticker_price.price = stock_price.price;
 			});
-			
-		});
-			
-		response.forEach ((item: HoldingsModel) => {
-			item.value = (item.quantity * item.price).truncate_to (2);
-			item.profit = (item.value - item.cost).truncate_to (2);
+
+			resolve (outdated_prices);
+
 		});
 
-		this.setState ({ data: this.holdings_list = response });
-
-	});
+	}// get_stock_prices;
 
 
-	private filter_ticker_list () {
+	private async update_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerPrice>> {
+
+		let stock_prices: Array<TickerPrice> = await this.get_stock_prices (holdings);
+
+		if (is_null (stock_prices)) return null;
+
+		return new Promise<Array<TickerPrice>> (resolve => {
+
+			stock_prices.forEach ((price: TickerPrice) => {
+				APIClass.fetch_data ("SaveTicker", new TickerModel ().merge ({
+					id: price.id,
+					price: price.price ?? -1,
+					last_updated: Date.current_date ()
+				}));
+			});
+
+			resolve (stock_prices);
+
+		});
+
+	}// update_stock_prices;
+
+
+	private update_holdings_list (): Promise<Array<HoldingsModel>> {
+		return new Promise (resolve => {
+			APIClass.fetch_data ("GetHoldings").then ((holdings: Array<HoldingsModel>) => {
+				this.update_stock_prices (holdings).then ((stock_prices: Array<TickerPrice>) => {
+					if (isset (stock_prices)) holdings.forEach ((holding: HoldingsModel) => {
+
+						let stock_price: TickerPrice = stock_prices.find ((item: TickerPrice) => holding.ticker_id == item.id);
+					
+						if (isset (stock_price)) holding.current_price = stock_price.price;
+
+					});
+				});
+
+				holdings.forEach ((holding: HoldingsModel) => {
+					holding.value = holding.quantity * holding.current_price;
+					holding.profit = holding.total_sale_price - holding.total_purchase_price;
+				});
+
+				resolve (holdings);
+
+			});
+		});
+	}// update_holdings_list;
+
+
+	private filter_holdings_list () {
 
 		let result = null;
 
-		this.holdings_list.forEach ((item: HoldingsModel) => {
-			if (!this.state.dead_stocks && (item.quantity == 0)) return;
+		function add_stock (item: HoldingsModel) {
 			if (is_null (result)) result = new Array<HoldingsModel> ();
 			result.push (item);
+		}// add_stock;
+
+		this.holdings_list.forEach ((item: HoldingsModel) => {
+			if (this.state.dead_stocks && (item.current_price == -1)) add_stock (item);
+			if (this.state.sold_stocks && (item.quantity == 0 )) add_stock (item);
+			if (this.state.live_stocks && ((item.current_price != -1) && (item.quantity != 0 ))) add_stock (item);
 		});
 
-		this.setState ({ data: result });
+		this.setState ({ 
+			loading: false,
+			data: result 
+		});
 
-	}// filter_ticker_list;
+	}// filter_holdings_list;
 
 
 	/********/
 
 
-	public state: HomeState = new HomeState ();
+	private get lookup_panel () {
 
+		if (is_null (this.state.data)) return;
 
-	public componentDidUpdate (previous_props: DataProps, previous_state: HomeState) {
-		if (previous_state.dead_stocks != this.state.dead_stocks) this.filter_ticker_list ();
-	}
-
-
-	public componentDidMount = () => this.update_ticker_list ();
-
-
-	public render = () => is_null (this.state.data) ? <Eyecandy text="Loading holdings..." /> : (this.state.data.empty ? <div className="column-block column-centered">
-		No stock information available<br />
-		<br />
-		<div className="row-centered">To add stock purchases,&nbsp;<Link command={() => main_page.change_page (<TransactionsPage />)} text="click here" /></div>
-	</div> : <div className="page-layout">
-
-		<div className="horizontally-spaced-out">
-
+		return <div style={{ display: "inline-block" }}>
 			<div className="miniform">
 				<input type="text" id="stock_ticker" onChange={event => this.setState ({active_ticker: event.target.value })} />
 				<button id="stock_lookup_button" onClick={() => this.lookup_stock ()}>Lookup</button>
 			</div>
-
-			<div className="two-column-grid">
-				<label htmlFor="dead_stock_checkbox">Show dead stocks (sold or defunct)</label>
-				<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.dead_stocks} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState ({ dead_stocks: event.target.checked })} />
-			</div>
-
 		</div>
 
-		<form>
+	}// lookup_panel;
+
+
+	private get filter_panel () {
+
+		if (is_null (this.state.data)) return;
+
+		return <form>
 			<div className="wide-column-spaced row-block">
 
 				<BrokerList header={SelectList.All} selected_item={this.state.broker_id} 
@@ -141,16 +211,82 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 			</div>
 		</form>
 
-		<div className="body">
+	}// filter_panel;
+
+
+	private get checkbox_panel () {
+		return <div className="two-column-grid">
+			<label htmlFor="dead_stock_checkbox">Show live stocks</label>
+			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.live_stocks} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState ({ live_stocks: event.target.checked })} />
+
+			<label htmlFor="dead_stock_checkbox">Show dead stocks</label>
+			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.dead_stocks} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState ({ dead_stocks: event.target.checked })} />
+
+			<label htmlFor="dead_stock_checkbox">Show sold stocks</label>
+			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.sold_stocks} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState ({ sold_stocks: event.target.checked })} />
+		</div>
+	}// checkbox_panel;
+
+
+	private get empty_data_panel () {
+		return <div className="column-centered column-block">
+			No stock information available<br />
+			<br />
+			<div className="row-centered">To add stock purchases,&nbsp;<Link command={() => main_page.change_page (<TransactionsPage />)} text="click here" /></div>
+		</div>
+	}// empty_data_panel;
+
+
+	private get grid_panel () {
+		return <div className="body">
 			<DataTable id="holdings-table" data={this.state.data} ref={this.data_table} parent={this}
-				fields={["broker", "symbol", "company", "price", "quantity", "cost", "value", { profit: "Profit / Loss" }]}
+				fields={["broker", "symbol", "company", "current_price", "quantity", 
+					{ total_purchase_price: "Purchase Price"}, 
+					{ total_sale_price: "Sale Price"}, 
+					{ value: "Current Value" }, 
+					{ profit: "Profit / Loss" }
+				]}
 				numeric_fields={["quantity"]}
-				currency_fields={["price", "cost", "value", "profit"]}
+				currency_fields={["current_price", "total_purchase_price", "total_sale_price", "value", "profit"]}
 				total_fields={["cost", "value", "profit"]}
 				keys={["ticker_id", "broker_id"]}>
 			</DataTable>
 		</div>
+	}// grid_panel;
 
-	</div>);
+
+	/********/
+
+
+	public state: HomeState = new HomeState ();
+
+
+	public componentDidUpdate (previous_props: DataProps, previous_state: HomeState) {
+		if ((previous_state.live_stocks != this.state.live_stocks) || (previous_state.sold_stocks != this.state.sold_stocks) || (previous_state.dead_stocks != this.state.dead_stocks)) this.filter_holdings_list ();
+	}// componentDidUpdate;
+
+
+	public componentDidMount () {
+		this.update_holdings_list ().then ((holdings: Array<HoldingsModel>) => this.setState ({ data: this.holdings_list = holdings }, () => this.filter_holdings_list ()));
+	}// componentDidMount;
+
+
+	public render = () => this.state.loading ? <Eyecandy text="Loading holdings..." /> : <div className="column-block column-centered">
+		<div className="page-layout">
+
+			<div className={`${isset (this.state.data) ? "horizontally-spaced-out" : null} row-centered`}>
+
+				{this.lookup_panel}
+
+				{this.checkbox_panel}
+
+			</div>
+
+			{this.filter_panel}
+
+			{is_null (this.state.data) ? this.empty_data_panel : this.grid_panel}
+
+		</div>
+	</div>
 
 }// HomePage;
