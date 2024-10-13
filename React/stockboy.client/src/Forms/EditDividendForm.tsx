@@ -99,7 +99,7 @@ export default class EditDividendForm extends BaseComponent<EditDividendFormProp
 			<div className="compact four-column-grid with-headspace">
 
 				<InputElement id="amount_per_share" label="Amount per share">
-					<input type="currency" commas="true" decimalPlaces={2} ref={this.per_share_textbox_ref} style={{ outline: "none" }}
+					<input type="currency" commas="true" decimalPlaces={2} ref={this.per_share_textbox_ref}
 						defaultValue={this.props.data?.amount_per_share ?? EditDividendForm.defaultValues.amount_per_share}
 						onChange={this.update_total_dividend}>
 					</input>

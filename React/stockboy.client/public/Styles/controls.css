@@ -14,6 +14,11 @@ button:hover {
   background-color: var(--selected-color);
 }
 
+/**** Input Styles ****/
+input, select, textarea {
+  outline: none;
+}
+
 /**** Checkbox Select List ****/
 div.checkbox-select-list {
   display: inline-flex;

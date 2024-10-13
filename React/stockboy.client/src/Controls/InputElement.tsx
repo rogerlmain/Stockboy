@@ -42,7 +42,7 @@ export default class InputElement extends BaseComponent<InputElementProps> {
 
 	public componentDidMount () {
 		this.input_element_ref.current.querySelectorAll<FormInputItem> ("input, textarea").forEach ((element: FormInputItem) => {
-			element.addEventListener ("keypress", () => this.handle_change (element));
+			element.addEventListener ("keyup", () => this.handle_change (element));
 		});
 	}// componentDidMount;
 
