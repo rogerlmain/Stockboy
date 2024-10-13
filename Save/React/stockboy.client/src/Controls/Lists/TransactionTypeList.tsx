@@ -1,24 +1,23 @@
-import APIClass from "Controls/Abstract/APIClass";
-import SelectList, { SelectListProps } from "Controls/Lists/SelectList";
-import Eyecandy from "Controls/Eyecandy";
+import DataList from "./DataList";
 
-import ListModel from "Models/ListModel";
-
-import { DataControl, DataState } from "Controls/Abstract/DataControls";
+import { DataControl } from "Controls/Abstract/DataControls";
 import { BaseProps } from "Controls/BaseComponent";
 
 
-export default class TransactionTypeList extends DataControl<SelectListProps, DataState<ListModel>> {
-
-	public state: DataState<ListModel> = new DataState<ListModel> ();
-
-
-	public constructor (props: SelectListProps) {
-		super (props);
-		APIClass.fetch_data ("GetTransactionTypes").then ((response: Array<ListModel>) => this.setState ({ data: response }));
-	}// constructor;
+class TransactionTypeListProps extends BaseProps {
+	selected_item: string;
+}// TransactionTypeListProps;
 
 
-	public render = () => is_null (this.state.data) ? <Eyecandy text="Loading..." /> : <SelectList id="transaction_type_list" name={this.props.name} items={this.state.data} selected_item={this.props.selected_item} />
+export default class TransactionTypeList extends DataControl<TransactionTypeListProps> {
+
+	public static defaultProps: TransactionTypeListProps = {
+		selected_item: null,
+	}// defaultProps;
+
+
+	public render () { 
+		return <DataList name="transaction_type_id" header="Transaction types" table="transaction_types" selected_item={this.props.selected_item} />
+	}// render;
 
 }// TransactionTypeList;

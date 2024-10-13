@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 
 import Stylesheet from "Classes/Stylesheet";
 import BaseComponent from "Controls/BaseComponent";
@@ -38,7 +38,7 @@ export default class StylesheetList extends BaseComponent<StylesheetListProps> {
 	}// update_stylesheet;
 
 
-	private render_stylesheets (): React.ReactElement {
+	private render_stylesheets (): ReactElement {
 
 		let styles: String = String.Empty;
 

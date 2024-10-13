@@ -1,31 +1,33 @@
-import APIClass from "Controls/Abstract/APIClass";
-import SelectList, { SelectListProps } from "Controls/Lists/SelectList";
-import Eyecandy from "Controls/Eyecandy";
+import DataList from "Controls/Lists/DataList";
 
-import ListModel from "Models/ListModel";
-
-import { DataControl, DataState } from "Controls/Abstract/DataControls";
+import { ChangeEventHandler } from "react";
+import { DataControl } from "Controls/Abstract/DataControls";
 import { BaseProps } from "Controls/BaseComponent";
 
 
-export default class BrokerList extends DataControl<SelectListProps, DataState<ListModel>> {
-
-	public state: DataState<ListModel> = new DataState<ListModel> ();
-
-
-	public constructor (props: SelectListProps) {
-		super (props);
-		APIClass.fetch_data ("GetBrokers").then ((response: Array<ListModel>) => this.setState ({ data: response }));
-	}// constructor;
+class BrokerListProps extends BaseProps {
+	title?: string;
+	header?: string;
+	selected_item?: string;
+	onChange?: ChangeEventHandler<HTMLSelectElement>;
+}// BrokerListProps;
 
 
-	public render = () => is_null (this.state.data) ? <Eyecandy text="Loading..." /> : <SelectList id="broker_list" name={this.props.name}
+export default class BrokerList extends DataControl<BrokerListProps> {
 
-		items={this.state.data} selected_item={this.props.selected_item} 
-		header={this.props.header || "Select broker"} 
+	public static defaultProps: BrokerListProps = {
+		title: null,
+		header: null,
+		selected_item: null,
+		onChange: null,
+	}// defaultProps;
 
-		onChange={this.props.onChange}>
 
-	</SelectList>
+	public render () {
+		return <DataList name="broker_id" title={this.props.title ?? "Broker"} header={this.props.header} table="brokers"
+			selected_item={this.props.selected_item}
+			onChange={this.props.onChange}>
+		</DataList>
+	}// render;
 
 }// BrokerList;

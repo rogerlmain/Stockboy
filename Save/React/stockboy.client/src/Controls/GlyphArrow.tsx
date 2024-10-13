@@ -2,9 +2,6 @@ import BaseComponent from "Controls/BaseComponent";
 import StylesheetList from "Classes/StylesheetList";
 
 
-class GlyphArrowProps { direction: direction_type = direction_type.forwards }
-
-
 export enum direction_type {
 	forwards,
 	backwards
@@ -12,6 +9,9 @@ export enum direction_type {
 
 
 const rotated = { transform: "rotate(180deg)" }
+
+
+class GlyphArrowProps { direction: direction_type }
 
 
 export default class GlyphArrow extends BaseComponent<GlyphArrowProps> {
@@ -34,7 +34,9 @@ export default class GlyphArrow extends BaseComponent<GlyphArrowProps> {
 	/********/
 
 
-	public defaultProps: GlyphArrowProps;
+	public static defaultProps: GlyphArrowProps = {
+		direction: direction_type.forwards,
+	}// defaultProps;
 
 
 	public constructor (props: GlyphArrowProps) { 

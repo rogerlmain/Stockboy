@@ -29,9 +29,10 @@ export default abstract class APIClass {
 		}// if;
 
 		fetch (url, parameters).then (response => {
-			return response.json ()
+			return response.json ();
 		}).then (response => {
-			if (isset (response ["error"])) return main_page.popup_window.show (<ErrorWindow text={response ["error"]} />, null, true);
+			if (is_null (response)) return resolve (null);
+			if (isset (response ["error"])) return main_page.popup_window.show (<ErrorWindow text={response ["error"]} />);
 			resolve (response);
 		});
 

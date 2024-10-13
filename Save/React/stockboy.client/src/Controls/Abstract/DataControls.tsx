@@ -1,11 +1,9 @@
-import BasePage from "Pages/Abstract/BasePage";
-import BaseComponent, { BaseProps, BaseState } from "Controls/BaseComponent";
-
-import DataTable from "Controls/DataTable";
-
 import { ReactElement } from "react";
-import { NameValueCollection } from "Classes/Collections";
-import { IBaseModel } from "Models/Abstract/BaseModel";
+import { BaseProps, BaseState } from "Controls/BaseComponent";
+
+import BasePage from "Pages/Abstract/BasePage";
+import DataTable from "Controls/Tables/DataTable";
+
 
 
 export interface IDataPage extends DataControl {

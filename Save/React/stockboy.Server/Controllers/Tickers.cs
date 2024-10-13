@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
-using System.Data.Entity;
-using System.Linq;
-using System.Linq.Expressions;
 
 
 namespace Stockboy.Server.Controllers {
+
+
+	public class TickerParameters {
+		public Guid broker_id { get; set; }
+	}// TickerParameters;
 
 
 	public class Tickers (DataContext context) : Controller {
@@ -17,9 +16,15 @@ namespace Stockboy.Server.Controllers {
 
 		/********/
 
+
 		[HttpGet]
 		[Route ("GetTickers")]
 		public IActionResult GetTickers () => new JsonResult (context?.tickers.SelectAll ().OrderBy ("name"));
+
+
+		[HttpPost]
+		[Route ("GetTickers")]
+		public IActionResult GetTickers ([FromBody] TickerParameters parameters) => new JsonResult (Database.CallProcedure<TickerModel> ("get_transaction_tickers", parameters));
 
 
 		[HttpPost]

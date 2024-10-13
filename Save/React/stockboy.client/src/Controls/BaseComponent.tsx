@@ -1,15 +1,24 @@
-import React from "react";
+import { Component } from "react";
 
 
-export class BaseProps { id?: string = null }
+export interface IBaseProps { id?: string }
 
 
-export class BaseState {}
+export interface IBaseState {}
 
 
-export default class BaseComponent<props_model = BaseProps, state_model = BaseState> extends React.Component<props_model, state_model> {
+export class BaseProps implements IBaseProps { id?: string = null }
+
+
+export class BaseState implements IBaseState {}
+
+
+export default class BaseComponent<props_model = BaseProps, state_model = BaseState> extends Component<props_model, state_model> {
 
 	private key: number = 0;
+
+
+	/********/
 
 	protected get next_key () { return this.key++ }
 

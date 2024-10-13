@@ -1,68 +1,111 @@
-import React from "react";
+import { date_format } from "Classes/Globals";
+import { IEditFormProps } from "Forms/EditForm";
+import { ChangeEvent } from "react";
 
-import BaseComponent, { BaseProps } from "Controls/BaseComponent";
-import PopupWindow from "Controls/PopupWindow";
-
-import SelectList from "Controls/Lists/SelectList";
+import BaseComponent from "Controls/BaseComponent";
+import InputElement from "Controls/InputElement";
 import BrokerList from "Controls/Lists/BrokerList";
 import TickerList from "Controls/Lists/TickerList";
 import TransactionTypeList from "Controls/Lists/TransactionTypeList";
 
-import TransactionModel from "Models/TransactionModel";
-
-import { DataControl } from "Controls/Abstract/DataControls";
-import { NameValueCollection } from "Classes/Collections";
-import { IBaseModel } from "Models/Abstract/BaseModel";
-import { EditForm } from "./EditForm";
+import TransactionModel from "Models/Transactions";
 
 
-class EditTransactionFormProps extends BaseProps {
-	broker_id?: string = null;
-	ticker_id?: string = null;
-	data?: TransactionModel = null;
+
+class EditTransactionFormProps implements IEditFormProps {
+	broker_id?: string;
+	ticker_id?: string;
+	data?: TransactionModel;
 }// EditTransactionFormProps;
 
 
-export class EditTransactionForm extends BaseComponent<EditTransactionFormProps> {
+class EditTransactionFormState {
+	broker_id: string = null;
+}// EditTransactionFormState;
 
-	public render = () => <div className="two-column-grid">
 
-		<input type="hidden" id="id" value={this.props.data?.id} />
+export class EditTransactionForm extends BaseComponent<EditTransactionFormProps, EditTransactionFormState> {
 
-		<label htmlFor="broker">Broker</label>
-		<BrokerList selected_item={isset (this.props.data) ? this.props.data.broker_id : this.props.broker_id} name="broker_id" />
 
-		<label htmlFor="ticker">Company / Ticker</label>
-		<TickerList selected_item={isset (this.props.data) ? this.props.data.ticker_id : this.props.ticker_id} name="ticker_id" />
+	private static defaultValues = {
+		broker_id: null,
+		ticker_id: null,
+		price: null,
+		quantity: null,
+		transaction_date: null,
+		settlement_date: null,
+		transaction_type_id: null,
+	}// defaultProps;
 
-		<label htmlFor="price">Price per share</label>
-		<div className="nested two-column-grid">
-			<input type="numeric" id="price" name="price" defaultValue={isset (this.props.data) ? this.props.data.price : String.Empty} />
+
+	/********/
+
+
+	public static defaultProps = {
+		broker_id: null,
+		ticker_id: null,
+		data: null,
+	}// defaultProps;
+
+
+	public state: EditTransactionFormState = new EditTransactionFormState ();
+
+
+	public componentDidMount = () => this.setState ({ broker_id: this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id });
+
+
+	public render () { 
+		return <div className="column-block">
+
+			<input type="hidden" id="id" name="id" value={this.props.data?.id} />
+
 			<div className="two-column-grid">
 
-				<label htmlFor="quantity">Quantity</label>
-				<input type="numeric" id="quantity" name="quantity" defaultValue={isset (this.props.data) ? this.props.data.quantity : String.Empty} />
+				<InputElement>
+					<BrokerList selected_item={this.props.data?.broker_id ?? this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id} 
+						onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: event.target.value})}>
+					</BrokerList>
+				</InputElement>
+
+				<InputElement>
+					<TickerList selected_item={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditTransactionForm.defaultValues.ticker_id} 
+						broker_id={this.state.broker_id}>
+					</TickerList>
+				</InputElement>
 
 			</div>
-		</div>
 
-		<label htmlFor="transaction_date">Transaction Date</label>
-		<div className="two-column-grid">
-			<input type="date" id="transaction_date" name="transaction_date" defaultValue={isset (this.props.data) ? Date.format (this.props.data.transaction_date) : Date.today (false)} />
-			<div className="three-column-grid">
+			<div className="compact four-column-grid with-headspace">
 
-				<div className="two-column-grid" style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}>
-					<label htmlFor="settlement_date">Settlment Date</label>
-					<input type="date" id="settlement_date" name="settlement_date" defaultValue={isset (this.props.data) ? Date.format (this.props.data.settlement_date) : Date.today (false)} />
-				</div>
+				<InputElement id="price" label="Price per share">
+					<input type="currency" id="price" name="price" commas="true" defaultValue={this.props.data?.price ?? EditTransactionForm.defaultValues.price} />
+				</InputElement>
 
-				<label htmlFor="transaction_type">Transaction Type</label>
-				<TransactionTypeList name="transaction_type_id" selected_item={isset (this.props.data) ? this.props.data.transaction_type : String.Empty} />
+				<InputElement id="quantity" label="Quantity">
+					<input type="numeric" id="quantity" name="quantity" decimalPlaces={6} defaultValue={this.props.data?.quantity ?? EditTransactionForm.defaultValues.quantity} />
+				</InputElement>
 
+				<InputElement id="transaction_date" label="Transaction Date">
+					<input type="date" id="transaction_date" name="transaction_date" 
+						defaultValue={Date.format (isset (this.props.data) ? this.props.data.transaction_date : EditTransactionForm.defaultValues.transaction_date, date_format.database)}>
+					</input>
+				</InputElement>
+
+				<InputElement id="settlement_date" label="Settlment Date">
+					<input type="date" id="settlement_date" name="settlement_date" 
+						defaultValue={Date.format (isset (this.props.data) ? this.props.data.settlement_date : EditTransactionForm.defaultValues.settlement_date, date_format.database)}>
+					</input>
+				</InputElement>
 			</div>
-		</div>
 
-	</div>
+			<div className="row-centered with-some-headspace">
+				<InputElement>
+					<TransactionTypeList selected_item={this.props.data?.transaction_type_id ?? EditTransactionForm.defaultValues.transaction_type_id} />
+				</InputElement>
+			</div>
+
+		</div>
+	}// render;
 
 
 }// EditTransactionForm;

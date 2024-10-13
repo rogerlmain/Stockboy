@@ -1,107 +1,137 @@
-/*
-import React from "react";
-*/
-import BaseComponent from "Controls/BaseComponent";
-/*
-import BrokerList from "Controls/Lists/BrokerList";
-import TickerList from "Controls/Lists/TickerList";
-import TransactionTypeList from "Controls/Lists/TransactionTypeList";
-import APIClass from "Controls/Abstract/APIClass";
-import Eyecandy from "Controls/Eyecandy";
-
+import { ComponentType, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
 import { IBaseModel } from "Models/Abstract/BaseModel";
 
+import APIClass from "Classes/APIClass";
+import BaseComponent from "Controls/BaseComponent";
 
-class EditFormState {
-	command: Function = null;
-	saving: boolean = false;
-}// EditFormState;
+import DataPage from "Pages/DataPage";
 
 
 export interface IEditFormProps {
+	broker_id?: string;
+	ticker_id?: string;
 	data?: IBaseModel;
 }// IEditFormProps
 
-*/
-export class EditFormProps {
-	//name: string = null;
-	//keys: Array<string> = null;
-	//data?: IBaseModel = null;
-	body: React.ComponentType/*<IEditFormProps>*/ = null;
+
+export class EditFormProps implements IEditFormProps {
+	broker_id?: string;
+	ticker_id?: string;
+	data?: IBaseModel;
+	body: ComponentType<IEditFormProps>;
+	parent: DataPage;
 }// IEditFormProps;
 
 
-export class EditForm extends BaseComponent<EditFormProps>/*, EditFormState>*/ {
+class EditFormState {
+	contents: ReactElement = null;
+	complete: boolean = true;
+}// EditFormState;
 
-/*
-	private form_element: React.RefObject<HTMLDivElement> = React.createRef ();
 
-/*
-	private form_buttons (editing: boolean = false): NameValueCollection {
+export const EditFormContext: Context<EditForm> = createContext (null);
 
-		return new NameValueCollection ({
 
-			Save: () => {
+export default class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 
-				let data = this.data;
+	private form_ref: RefObject<HTMLFormElement> = createRef ();
 
-				main_page.popup_window.show (<Eyecandy command={() => APIClass.fetch_data ("SaveTransaction", data).then ((response: IBaseModel) => {
 
-					if (isset (response ["error"])) return main_page.popup_window.show (<ErrorWindow text={response ["error"]} />, null, true);
+	private required_fields_completed (): boolean {
 
-					this.add_new_row (response);
+		let fields: FormItemList = this.form_ref.current.querySelectorAll ("input:not([type='hidden']), select, textarea");
+		let complete: boolean = true;
 
-					if (editing) return main_page.popup_window.show (<div>Transaction saved.</div>, null, true);
+		fields.forEach ((field: FormItem) => {
 
-					main_page.popup_window.show (
-						<div>
-							Transaction saved.<br />
-							<br />
-							Add another transaction?
-						</div>, new NameValueCollection ({
-							Yes: () => main_page.popup_window.show (this.props.parent.edit_form (), this.form_buttons ()),
-							No: () => main_page.popup_window.hide ()
-						})
-					);
+			let container = field.closest ("[name='input_element'");
 
-				})} text={"Saving transaction"} />)
+			if (is_null (container)) return;
+			if (is_defined (field.value)) return container.classList.add ("hidden");;
 
-			}, Close: () => main_page.popup_window.hide ()
+			if (container.hasClass ("required")) {
+				complete = false;
+				return field.style.border = "solid 1px red";
+			}// if;
+			
 		});
 
-	}// form_buttons;
+		this.setState ({ complete });
+
+		return complete;
+
+	}// required_fields_completed;
 
 
-	/********
+	private save_record (event: MouseEvent<HTMLButtonElement>) {
 
+		if (!this.required_fields_completed ()) return event.preventDefault ();
 
-	private save_record () {
-		let form_data = new FormData (this.form.current);
-		this.setState ({ 
-			command: () => APIClass.fetch_data ("SaveTransaction", form_data),
-			saving: true
+		let form_data = new FormData (this.form_ref.current).remove_empties ();
+		let new_record = !form_data.has ("id");
+
+		main_page.popup_window.show (<div className="column-centered column-spaced row-block">
+			<img src="Images/eyecandy.gif" />
+			Saving {this.props.parent.props.name}. One moment, please.
+		</div>);
+
+		APIClass.fetch_data (`Save${this.props.parent.props.name.titleCase ()}`, form_data).then (response => {
+
+			if (new_record) {
+
+				this.props.parent.add_row (response);
+
+				return main_page.popup_window.show (<div>
+
+					Transaction saved. Save another one?
+
+					<div className="button-bar">
+						<button onClick={() => main_page.popup_window.show (<EditForm {...this.props} />)}>Yes</button>
+						<button onClick={() => main_page.popup_window.hide ()}>No</button>
+					</div>
+
+				</div>);
+
+			}// if;
+
+			this.props.parent.update_row (response);
+			main_page.popup_window.hide ();
+			
 		});
+
 	}// save_record;
 
 
-	/********
+	/********/
 
 
-	public form: React.RefObject<HTMLFormElement> = React.createRef ();
-	*/
+	public static defaultProps: EditFormProps = {
+		broker_id: null,
+		ticker_id: null,
+		data: null,
+		body: null,
+		parent: null
+	}// defaultProps;
 
-	public render = () => /*this.state.saving ? <Eyecandy command={this.state.command} text="Saving..." /> : <div>
 
-		<form ref={this.form}>
-			{*//*keys={this.props.keys} body={this.props.body}*//*}
-			<this.props.body data={this.props.data} />
-		</form>
+	public state: EditFormState = new EditFormState ();
 
-		<div className="button-bar">
-			<button id="save_button" onClick={this.save_record}>Save</button>
-			<button id="close_button" onClick={main_page.popup_window.hide}>Close</button>
-		</div>
 
-	</div>*/
+	public render () {
+		return <EditFormContext.Provider value={this}>
+			<div>
+
+				<div className={`${this.state.complete ? "hidden" : String.Empty} row-centered warning`}>The highlighted fields are required.</div>
+
+				<form ref={this.form_ref}><this.props.body data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} /></form>
+
+				<div className="button-bar">
+					<button id="save_button" onClick={(event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>
+					{main_page.popup_window.close_button}
+				</div>
+
+			</div>
+		</EditFormContext.Provider>
+	}// render;
 
 }// EditForm;

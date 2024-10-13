@@ -1,8 +1,7 @@
 import BaseModel from "Models/Abstract/BaseModel";
-import { IDataPageModel } from "Pages/DataPage";
 
 
-export default class SplitModel extends BaseModel implements IDataPageModel {
+export default class SplitListModel extends BaseModel {
 	public broker_id: string = null;
 	public ticker_id: string = null;
 	public broker: string = null;
@@ -11,4 +10,4 @@ export default class SplitModel extends BaseModel implements IDataPageModel {
 	public previous: number = null;
 	public current: number = null;
 	public split_date: Date = null;
-}// SplitModel;
+}// SplitListModel;

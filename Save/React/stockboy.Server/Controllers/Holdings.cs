@@ -7,38 +7,63 @@ namespace Stockboy.Server.Controllers {
 
 	public class Holdings (DataContext context) : Controller {
 
-		public static List<HoldingsModel>? GetHoldings (DataContext context) {
 
-			List<HoldingsModel>? holdings_model = new ();
-			List<HoldingsView>? holdings = context.holdings_view.SelectAll ().OrderBy ("name");
-
-			if (is_null (holdings)) return null;
-
-			foreach (HoldingsView holding in holdings!) {
-
-				HoldingsModel? data = holding.Export<HoldingsModel> ();
-				if (data is null) continue;
-
-				data.cost = Math.Round (data.cost, 2);
-
-				holdings_model ??= new ();
-				holdings_model.Add (data);
-
-			}// foreach;
-
-			return holdings_model;
-
-		}// GetHoldings;
-
-
-		private DataContext? context { get; set; } = context;
+		private static class TransactionTypes {
+			public const string buy = "Buy";
+			public const string sell = "Sell";
+			public const string split = "Split";
+		}// TransactionTypes;
 
 
 		[HttpGet]
 		[Route ("GetHoldings")]
 		public IActionResult GetHoldings () {
 			try {
-				return new JsonResult (GetHoldings (context!));
+
+				String? previous_broker = null;
+				String? previous_company = null;
+
+				List<HoldingsModel>? holdings = null;
+				List<ActivityView> activity = context.activity_view.SelectAll ();
+				HoldingsModel? holding = null;
+
+				foreach (ActivityView item in activity) {
+
+					if ((item.broker != previous_broker) || (item.company != previous_company)) {
+
+						if (item.transaction_type == TransactionTypes.split) continue; // No stocks purchased to split. Move on.
+
+						holding = new () {
+							broker_id = item.broker_id,
+							ticker_id = item.ticker_id,
+							broker = item.broker,
+							symbol = item.symbol,
+							company = item.company,
+							cost_price = item.cost_price,
+							current_price = item.current_price,
+						};
+
+						(holdings ??= new ()).Add (holding);
+					}// if;
+
+					holding!.last_updated = item.last_updated;
+
+					switch (item.transaction_type) {
+						case TransactionTypes.buy: holding.quantity += item.quantity; break;
+						case TransactionTypes.sell: holding.quantity -= item.quantity; break;
+						case TransactionTypes.split: holding.quantity *= item.quantity; break;
+					}// switch;
+
+					if (item.transaction_type == TransactionTypes.buy) holding!.total_purchase_price += item.cost_price * item.quantity;
+					if (item.transaction_type == TransactionTypes.sell) holding!.total_sale_price += item.cost_price * item.quantity;
+
+					previous_broker = item.broker;
+					previous_company = item.company;
+
+				}// foreach;
+
+				return new JsonResult (holdings);
+
 			} catch (Exception except) { 
 				return new JsonResult (new { error = except.Message });
 			}// try;

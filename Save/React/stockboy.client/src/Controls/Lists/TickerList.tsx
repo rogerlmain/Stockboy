@@ -1,54 +1,50 @@
-import APIClass from "Controls/Abstract/APIClass";
-import SelectList, { SelectListProps } from "Controls/Lists/SelectList";
-import Eyecandy from "Controls/Eyecandy";
+import NameValueCollection from "Classes/Collections";
+import DataList from "Controls/Lists/DataList";
 
-import ListModel from "Models/ListModel";
-
-import { DataControl, DataState } from "Controls/Abstract/DataControls";
+import { ChangeEventHandler } from "react";
+import { DataControl } from "Controls/Abstract/DataControls";
 import { BaseProps } from "Controls/BaseComponent";
-import { TickerModel } from "Models/TickerModel";
 
 
-class TickerListProps extends SelectListProps {
-	broker_id?: string = null;
+
+class TickerListProps extends BaseProps {
+	title?: string;
+	header?: string;
+	selected_item?: string;
+	onChange?: ChangeEventHandler<HTMLSelectElement>;
+	broker_id?: string;
 }// TickerListProps;
 
+export default class TickerList extends DataControl<TickerListProps> {
 
-class TickerListState extends DataState<ListModel> {
-	loading: boolean = false;
-}// TickerListState;
-
-
-export default class TickerList extends DataControl<TickerListProps, TickerListState> {
-
-	public state: TickerListState = new TickerListState ();
-
-	public load_tickers () {
-		this.setState ({ loading: true }, () => APIClass.fetch_data ("GetTickers", { broker_id: this.props.broker_id }).then ((response: Array<TickerModel>) => {
-
-			let tickers: Array<ListModel> = null;
-
-			response.forEach (row => {
-				if (is_null (tickers)) tickers = new Array<ListModel> ();
-				tickers.push ({ 
-					id: row.id,
-					name: `${row.name} (${row.symbol})`
-				});
-			});
-			this.setState ({ data: tickers });
-		}));
-	}// load_tickers;
+	private parameters: NameValueCollection<string> = null;
 
 
-	public constructor (props: TickerListProps) {
-		super (props);
-	}// constructor;
+	private get_parameters () {
+		if (is_null (this.props.broker_id)) return null;
+		if (is_null (this.parameters)) return this.parameters = new NameValueCollection ({ broker_id: this.props.broker_id });
+		if (this.parameters ["broker_id"] == this.props.broker_id) return this.parameters;
+		return new NameValueCollection ({ broker_id: this.props.broker_id });
+	}// get_parameters;
 
 
-	public render = () => is_null (this.state.loading) ? <Eyecandy text="Loading..." /> : <SelectList id="ticker_list" name={this.props.name} 
-		items={this.state.data} selected_item={this.props.selected_item} 
-		header={this.props.header || "Select Ticker"} 
-		disabled = {is_null (this.state.data)}>
-	</SelectList>
+	/********/
 
-}// TickerList;
+
+	public static defaultProps: TickerListProps = {
+		title: null,
+		header: null,
+		selected_item: null,
+		onChange: null,
+		broker_id: null,
+	}// defaultProps;
+
+	
+	public render = () => <DataList name="ticker_id" title={this.props.title ?? "Ticker"} header={this.props.header} table="tickers"
+		onChange={this.props.onChange} parameters={this.get_parameters ()}
+		selected_item={this.props.selected_item} 
+		disabled={is_null (this.props.broker_id)}>
+	</DataList>
+
+}// BrokerList;
+

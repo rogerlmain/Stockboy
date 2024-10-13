@@ -14,6 +14,11 @@ button:hover {
   background-color: var(--selected-color);
 }
 
+/**** Input Styles ****/
+input, select, textarea {
+  outline: none;
+}
+
 /**** Checkbox Select List ****/
 div.checkbox-select-list {
   display: inline-flex;
@@ -39,10 +44,6 @@ div.checkbox-select-list div.list {
   overflow: hidden;
 }
 
-div.checkbox-select-list div.list-item {
-  white-space: nowrap;
-}
-
 /**** Form Styles ****/
 form input, form select {
   height: 1.2rem;
@@ -53,8 +54,11 @@ form input, form select {
 
 form select {
   position: relative;
-  top: 0.5px;
   padding: 0 6px !important;
+}
+
+input[type=numeric], input[type=currency] {
+  text-align: right;
 }
 
 /**** Data Table Styles ****/
@@ -62,7 +66,6 @@ div.data-table {
   display: inline-grid;
   border-top: var(--table-border);
   border-left: var(--table-border);
-  white-space: nowrap;
 }
 div.data-table div.table-header {
   display: contents;

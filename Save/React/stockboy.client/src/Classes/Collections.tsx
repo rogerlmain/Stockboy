@@ -1,12 +1,13 @@
-export interface KeyValuePair { [key: string]: any }
+export class KeyValuePair<IModel> { [key: string]: any }
 
 
-export class NameValueCollection {
+export default class NameValueCollection<IModel> extends KeyValuePair<IModel> {
 
-	[key: string]: any;
+	public hasKey? = (key: string): boolean => Object.keys (this).contains (key);
 
 
-	public constructor (values: KeyValuePair = null) {
+	public constructor (values: KeyValuePair<IModel> = null) {
+		super ();
 		if (isset (values)) this.copy (values);
 	}// constructor;
 

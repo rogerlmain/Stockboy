@@ -1,54 +1,86 @@
-import React from "react";
+import { ChangeEvent } from "react";
+import { IEditFormProps } from "Forms/EditForm";
+import { date_format } from "Classes/Globals";
 
-import BaseComponent, { BaseProps } from "Controls/BaseComponent";
-import PopupWindow from "Controls/PopupWindow";
-
-import SelectList from "Controls/Lists/SelectList";
+import BaseComponent from "Controls/BaseComponent";
+import InputElement from "Controls/InputElement";
 import BrokerList from "Controls/Lists/BrokerList";
 import TickerList from "Controls/Lists/TickerList";
 
-import SplitModel from "Models/SplitModel";
-
-import { DataControl } from "Controls/Abstract/DataControls";
-import { NameValueCollection } from "Classes/Collections";
-import { IBaseModel } from "Models/Abstract/BaseModel";
+import SplitModel from "Models/Splits";
 
 
-class EditSplitFormProps extends BaseProps {
+class EditSplitFormProps implements IEditFormProps {
 	broker_id?: string = null;
 	ticker_id?: string = null;
 	data?: SplitModel = null;
 }// EditSplitFormProps;
 
 
-export class EditSplitForm extends BaseComponent<EditSplitFormProps> {
+class EditSplitFormState {
+	broker_id: string = null;
+}// EditSplitFormState;
 
 
-	private form_element: React.RefObject<HTMLDivElement> = React.createRef ();
+export class EditSplitForm extends BaseComponent<EditSplitFormProps, EditSplitFormState> {
 
 
-	public Split_form: React.RefObject<HTMLFormElement> = React.createRef ();
+	public static defaultValues = {
+		broker_id: null,
+		ticker_id: null,
+		previous: null,
+		current: null,
+		transaction_date: null,
+	}// defaultValues;
 
 
-	public render = () => <form ref={this.Split_form}>
+	public state: EditSplitFormState = new EditSplitFormState ();
 
-		<div className="two-column-grid">
+
+	public componentDidMount = () => this.setState ({ broker_id: this.props.broker_id ?? EditSplitForm.defaultValues.broker_id });
+
+
+	public render () {
+		return <div className="column-block">
 
 			<input type="hidden" id="id" value={this.props.data?.id} />
 
-			<label htmlFor="broker">Broker</label>
-			<BrokerList selected_item={isset (this.props.data) ? this.props.data.broker_id : this.props.broker_id} name="broker_id" />
-
-			<label htmlFor="ticker">Company / Ticker</label>
-			<TickerList selected_item={isset (this.props.data) ? this.props.data.ticker_id : this.props.ticker_id} name="ticker_id" />
-
-			<label htmlFor="split_date">Split Date</label>
 			<div className="two-column-grid">
-				<input type="date" id="split_date" name="split_date" defaultValue={isset (this.props.data) ? Date.format (this.props.data.split_date) : Date.today (false)} />
+
+				<InputElement>
+					<BrokerList selected_item={this.props.data?.broker_id ?? this.props.broker_id ?? EditSplitForm.defaultValues.broker_id} 
+						onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: event.target.value})}>
+					</BrokerList>
+				</InputElement>
+
+				<InputElement>
+					<TickerList selected_item={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditSplitForm.defaultValues.ticker_id} 
+						broker_id={this.state.broker_id}>
+					</TickerList>
+				</InputElement>
+
 			</div>
 
-		</div>
+			<div className="compact six-column-grid with-headspace">
 
-	</form>
+				<InputElement id="previous" label="Previous">
+					<input type="numeric" id="previous" name="previous" decimal-places={1} defaultValue={this.props.data?.previous ?? EditSplitForm.defaultValues.previous} />
+				</InputElement>
+
+				<InputElement id="previous" label="Current">
+					<input type="numeric" id="current" name="current" decimal-places={1} defaultValue={this.props.data?.current ?? EditSplitForm.defaultValues.current} />
+				</InputElement>
+
+				<div className="full-width row-centered">
+					<div className="two-column-grid">
+						<InputElement id="split_date" label="Split Date">
+							<input type="date" id="split_date" name="split_date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.split_date : EditSplitForm.defaultValues.transaction_date, date_format.database)} />
+						</InputElement>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	}// render;
 
 }// EditSplitForm;
