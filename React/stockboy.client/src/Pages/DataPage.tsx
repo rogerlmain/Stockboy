@@ -1,28 +1,27 @@
-import React from "react";
+import React, { ComponentType, ChangeEvent, RefObject, createRef } from "react";
+
+import BaseComponent, { BaseProps, IBaseProps, IBaseState } from "Controls/BaseComponent";
+import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
 import APIClass from "Classes/APIClass";
-import BaseComponent from "Controls/BaseComponent";
-import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
 import BrokerList from "Controls/Lists/BrokerList";
 import SelectList from "Controls/Lists/SelectList";
 import TickerList from "Controls/Lists/TickerList";
+import EditForm from "Forms/EditForm";
 
 import { DeleteForm } from "Forms/DeleteForm";
-import { EditForm } from "Forms/EditForm";
-
 import { IBaseModel } from "Models/Abstract/BaseModel";
-import TransactionModel from "../Models/TransactionModel";
-import Eyecandy from "../Controls/Eyecandy";
 
-class DataPageProps {
-	edit_form: React.ComponentType = null;
+
+class DataPageProps extends BaseProps implements IBaseProps {
+	edit_form: ComponentType = null;
 	table_properties: DataTableProperties = null;
 	name: string = null;
 }// DataPageProps;
 
 
-class DataPageState {
+class DataPageState implements IBaseState {
 	broker_id: string = null;
 	ticker_id: string = null;
 	selected_row: IBaseModel = null;
@@ -32,10 +31,10 @@ class DataPageState {
 
 export default class DataPage extends BaseComponent <DataPageProps, DataPageState> {
 
-	private data_table_reference: React.RefObject<DataTable> = React.createRef ();
+	private data_table_ref: RefObject<DataTable> = createRef ();
 
 
-	private get table () { return this.data_table_reference.current }
+	private get table () { return this.data_table_ref.current }
 
 
 	private edit_record = (row: IBaseModel = null) => main_page.popup_window.show (<EditForm data={row} body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this} />);
@@ -125,11 +124,11 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 			<div className="wide-column-spaced row-block">
 
 				<BrokerList header={SelectList.All} selected_item={this.state.broker_id} 
-					onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: (event.currentTarget.value == SelectList.All ? null : event.currentTarget.value) })}>
+					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: (event.currentTarget.value == SelectList.All ? null : event.currentTarget.value) })}>
 				</BrokerList>
 
 				<TickerList header={SelectList.All} broker_id={this.state.broker_id}
-					onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.currentTarget.value })}>
+					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.currentTarget.value })}>
 				</TickerList>
 
 			</div>
@@ -139,7 +138,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 			<div className="body" style={{ flexGrow: 0 }}>
 				{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no transactions</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
-					onclick={(row: IBaseModel) => this.setState ({ selected_row: row })} ref={this.data_table_reference}
+					onclick={(row: IBaseModel) => this.setState ({ selected_row: row })} ref={this.data_table_ref}
 					data={this.state.data} parent={this} {...this.props.table_properties}>
 				</DataTable>}
 			</div>

@@ -12,6 +12,7 @@ declare global {
 		append (value: T): Array<T>;
 		contains (value: any): boolean;
 		empty (): boolean;
+		getIntegers (allow_non_numeric?: boolean): Array<number>;
 	}// Array<T>;
 
 
@@ -27,12 +28,18 @@ declare global {
 	}// Date;
 
 
+	interface Element{
+		hasClass (class_name: string): boolean;
+	}// Element;
+
+
 	interface FormData {
 		remove_empties ();
 	}// FormData;
 
 
 	interface HTMLElement {
+		hasClass (class_name: string): boolean;
 		numericInput (): boolean;
 		setClass (value: String, condition: Boolean);
 	}// HTMLElement;
@@ -57,6 +64,7 @@ declare global {
 
 
 	interface Number {
+		length: number;
 		number_format (decimal_places: number): string;
 		round_to (decimal_places: number): number;
 		truncate_to (decimal_places: number): number;
@@ -77,24 +85,24 @@ declare global {
 	}// StringConstructor;
 
 
-	interface String {
-		contains (substring: string): boolean;
-		isNumber (): boolean;
-		integerValue (): number;
-		matches (candidate: string): boolean;
-		padded (char: String, size: number, right_padded?: boolean): String;
-		parseNumeric (): string;
-		titleCase (strip_spaces?: boolean): string;
-		leadingCharacters (char: string)
-		strip_non_numeric ();
-	}// String;
-
-
 	interface StringConstructor {
 		Empty: string;
 		Space: string;
 	}// StringConstructor;
 
+
+	interface String {
+		contains (substring: string): boolean;
+		integerValue (): number;
+		isInteger (): boolean;
+		leadingCharacters (char: string)
+		matches (candidate: string): boolean;
+		parseNumeric (): string;
+		parts (delimiter: string, minimum: number, maximum: number): Array<string>;
+		strip_non_numeric ();
+		titleCase (strip_spaces?: boolean): string;
+		trimmedEnd (value: string): string;
+	}// String;
 
 }// declare global;
 
@@ -113,6 +121,11 @@ declare module "react" {
 /**** Array Prototype Functions ****/
 
 
+Object.defineProperty (Array.prototype, "empty", {
+	get: function () { return this.length == 0 }
+});
+
+
 Array.prototype.add = function<T> (value: T): Array<T> {
 	return (this.contains (value)) ? this : this.append (value);
 }// add;
@@ -127,10 +140,23 @@ Array.prototype.append = function<T> (value: T): Array<T> {
 Array.prototype.contains = function (value: any) { return this.indexOf (value) > -1 };
 
 
-Object.defineProperty (Array.prototype, "empty", {
-	get: function () { return this.length == 0 }
+Array.prototype.getIntegers = function (allow_non_numeric: boolean = false): Array<number> {
 
-});
+	let result: Array<number> = null;
+
+	this.forEach ((value: string) => {
+
+		if (value == String.Empty) value = "0";
+		if (!value.isInteger () && !allow_non_numeric) throw `Invalid value in Array.prototype.getNumbers: ${value}`;
+		if (is_null (result)) result = new Array<number> ();
+
+		result.push (parseInt (value));
+
+	});
+
+	return result;
+
+}// getIntegers;
 
 
 /**** React Component Prototype Functions ****/
@@ -153,8 +179,8 @@ Date.format = function (date_value: string | Date, format: date_format = date_fo
 
 	let date: Date = (date_value instanceof Date) ? date_value : new Date (date_value);
 
-	if (format == date_format.readable) return `${(date.getMonth () + 1).toString ().padded ("0", 2)}-${date.getDate ().toString ().padded ("0", 2)}-${date.getFullYear ()}`;
-	if (format == date_format.database) return `${date.getFullYear ()}-${(date.getMonth () + 1).toString ().padded ("0", 2)}-${date.getDate ().toString ().padded ("0", 2)}`;
+	if (format == date_format.readable) return `${(date.getMonth () + 1).toString ().padStart (2, "0")}-${date.getDate ().toString ().padStart (2, "0")}-${date.getFullYear ()}`;
+	if (format == date_format.database) return `${date.getFullYear ()}-${(date.getMonth () + 1).toString ().padStart (2, "0")}-${date.getDate ().toString ().padStart (2, "0")}`;
 
 	return date.toDateString ();
 
@@ -168,6 +194,12 @@ Date.current_date = function (): Date { return new Date () }
 
 
 Date.prototype.timestamp = function (): number { return this.valueOf () }
+
+
+/**** Element Prototype Functions ****/
+
+
+Element.prototype.hasClass = function (class_name: string): boolean { return this.classList.contains (class_name); }
 
 
 /**** FormData Prototype Functions ****/
@@ -267,7 +299,7 @@ HTMLInputElement.prototype.clear_commas = function () {
 
 HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 
-	let decimal_places: number = (this.getAttribute ("type") == "currency") ? currency_decimals : (this.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
+	let decimal_places: number = (this.getAttribute ("type") == "currency") && !this.hasAttribute ("decimalPlaces") ? currency_decimals : (this.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
 	let leading_zeros: number = this.getAttribute ("leadingZeros")?.integerValue () ?? 0;
 	let negative_numbers: boolean = this.getAttribute ("negativeNumbers")?.toLowerCase () == "true";
 
@@ -283,12 +315,12 @@ HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 	let parts = value.split (".");
 
 	if ((parts.length > 2) || ((parts.length > 1) && (decimal_places == 0))) return event.preventDefault (); // too many decimal points or decimals not allowed
-	if ((parts.length == 2) && (((parts [1] != String.Empty) && !parts [1].isNumber) || (parts [1].length > decimal_places))) return event.preventDefault (); // garbage in decimal section or too many decimal places
+	if ((parts.length == 2) && (((parts [1] != String.Empty) && !parts [1].isInteger) || (parts [1].length > decimal_places))) return event.preventDefault (); // garbage in decimal section or too many decimal places
 
 	if (parts [0][0] == "-") parts [0] = parts [0].substring (1);
 
 	if ((parts [0] != "0") && (parts [0].leadingCharacters ("0") > leading_zeros)) return event.preventDefault (); // too many leading zeros
-	if ((parts [0] != String.Empty) && !parts [0].isNumber ()) return event.preventDefault (); // garbage in number section
+	if ((parts [0] != String.Empty) && !parts [0].isInteger ()) return event.preventDefault (); // garbage in number section
 
 	return true;
 
@@ -296,6 +328,13 @@ HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 
 
 /**** Number Prototype Functions ****/
+
+
+Object.defineProperties (Number.prototype, {
+	length: {
+		get: function () { return this.toString ().length }
+	}// length;
+});
 
 
 Number.isNumber = function (candidate: any) {
@@ -306,7 +345,7 @@ Number.isNumber = function (candidate: any) {
 Number.prototype.number_format = function (decimal_places: number): string {
 	let parts = this.toString ().split (".");
 	if (parts.length == 1) parts.push ("00");
-	parts [1] = parts [1].padded ("0", decimal_places, true).substring (0, decimal_places).toString ();
+	parts [1] = parts [1].padEnd (decimal_places, "0").substring (0, decimal_places).toString ();
 	return parts.join (".");
 }// number_format;
 
@@ -382,20 +421,21 @@ String.isString = function (candidate: any) { return typeof candidate == "string
 String.prototype.contains = function (substring: string) { return this.indexOf (substring) > -1 }
 
 
-String.prototype.isNumber = function () { 
+String.prototype.integerValue = function () {
+	let result = parseInt (this.toString ());
+	return (result.toString () == this) ? result : 0;
+} // integer_value;
+
+
+String.prototype.isInteger = function () { 
 
 	for (let char of this) {
 		if (!digits.includes (parseInt (char))) return false;
 	}// for;
 
 	return true;
-}// isNumber;
 
-
-String.prototype.integerValue = function () {
-	let result = parseInt (this.toString ());
-	return (result.toString () == this) ? result : 0;
-} // integer_value;
+}// isInteger;
 
 
 String.prototype.leadingCharacters = function (char: string): number {
@@ -418,15 +458,6 @@ String.prototype.matches = function (candidate: string) {
 }// matches;
 
 
-String.prototype.padded = function (char: String, size: number, right_padded: boolean = false): String {
-	let result = this;
-	while (result.length < size) {
-		result = (right_padded ? `${result}${char}` : `${char}${result}`);
-	}// while;
-	return result;
-}// padded;
-
-
 String.prototype.parseNumeric = function () {
 
 	let result: string = String.Empty;
@@ -438,6 +469,23 @@ String.prototype.parseNumeric = function () {
 	return result;
 
 }// parseNumeric;
+
+
+String.prototype.parts = function (delimiter: string, minimum: number = null, maximum: number = null): Array<string> {
+
+	let result: Array<string> = this.split (delimiter);
+
+	if (is_null (minimum)) return result;
+	if (is_null (maximum)) maximum = minimum;
+
+	if ((result.length < minimum) || (result.length > maximum)) {
+		let expectation = (minimum == maximum) ? minimum : `at least ${minimum} and as many as ${maximum}`;
+		throw `Invalid number of parts for ${this}. Expected ${expectation}. Found ${result.length}`;
+	}// if;
+
+	return result;
+
+}// parts;
 
 
 String.prototype.strip_non_numeric = function (): String {
@@ -470,3 +518,11 @@ String.prototype.titleCase = function (strip_spaces: boolean = false): string {
 }// titleCase;
 
 
+String.prototype.trimmedEnd = function (value: string): string {
+
+	let new_value = this.toString ();
+
+	while (new_value.endsWith (value)) new_value = new_value.substring (0, new_value.lastIndexOf (value) - 1);
+	return new_value;
+
+}// trimmedEnd;

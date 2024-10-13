@@ -1,11 +1,10 @@
-import React, { ReactElement } from "react";
+import { ComponentType, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
+import { IBaseModel } from "Models/Abstract/BaseModel";
 
-import BaseComponent from "Controls/BaseComponent";
 import APIClass from "Classes/APIClass";
+import BaseComponent from "Controls/BaseComponent";
 
 import DataPage from "Pages/DataPage";
-
-import { IBaseModel } from "Models/Abstract/BaseModel";
 
 
 export interface IEditFormProps {
@@ -15,28 +14,60 @@ export interface IEditFormProps {
 }// IEditFormProps
 
 
-export class EditFormProps {
+export class EditFormProps implements IEditFormProps {
 	broker_id?: string;
 	ticker_id?: string;
 	data?: IBaseModel;
-	body: React.ComponentType<IEditFormProps>;
+	body: ComponentType<IEditFormProps>;
 	parent: DataPage;
 }// IEditFormProps;
 
 
 class EditFormState {
 	contents: ReactElement = null;
+	complete: boolean = true;
 }// EditFormState;
 
 
-export class EditForm extends BaseComponent<EditFormProps, EditFormState> {
-
-	private form_reference: React.RefObject<HTMLFormElement> = React.createRef ();
+export const EditFormContext: Context<EditForm> = createContext (null);
 
 
-	private save_record () {
+export default class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 
-		let form_data = new FormData (this.form_reference.current).remove_empties ();
+	private form_ref: RefObject<HTMLFormElement> = createRef ();
+
+
+	private required_fields_completed (): boolean {
+
+		let fields: FormItemList = this.form_ref.current.querySelectorAll ("input:not([type='hidden']), select, textarea");
+		let complete: boolean = true;
+
+		fields.forEach ((field: FormItem) => {
+
+			let container = field.closest ("[name='input_element'");
+
+			if (is_null (container)) return;
+			if (is_defined (field.value)) return container.classList.add ("hidden");;
+
+			if (container.hasClass ("required")) {
+				complete = false;
+				return field.style.border = "solid 1px red";
+			}// if;
+			
+		});
+
+		this.setState ({ complete });
+
+		return complete;
+
+	}// required_fields_completed;
+
+
+	private save_record (event: MouseEvent<HTMLButtonElement>) {
+
+		if (!this.required_fields_completed ()) return event.preventDefault ();
+
+		let form_data = new FormData (this.form_ref.current).remove_empties ();
 		let new_record = !form_data.has ("id");
 
 		main_page.popup_window.show (<div className="column-centered column-spaced row-block">
@@ -74,9 +105,6 @@ export class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 	/********/
 
 
-	public state: EditFormState = new EditFormState ();
-
-
 	public static defaultProps: EditFormProps = {
 		broker_id: null,
 		ticker_id: null,
@@ -86,15 +114,24 @@ export class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 	}// defaultProps;
 
 
-	public render = () => <div>
+	public state: EditFormState = new EditFormState ();
 
-		<form ref={this.form_reference}><this.props.body data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} /></form>
 
-		<div className="button-bar">
-			<button id="save_button" onClick={() => this.save_record ()}>Save</button>
-			{main_page.popup_window.close_button}
-		</div>
+	public render () {
+		return <EditFormContext.Provider value={this}>
+			<div>
 
-	</div>
+				<div className={`${this.state.complete ? "hidden" : String.Empty} row-centered warning`}>The highlighted fields are required.</div>
+
+				<form ref={this.form_ref}><this.props.body data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} /></form>
+
+				<div className="button-bar">
+					<button id="save_button" onClick={(event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>
+					{main_page.popup_window.close_button}
+				</div>
+
+			</div>
+		</EditFormContext.Provider>
+	}// render;
 
 }// EditForm;

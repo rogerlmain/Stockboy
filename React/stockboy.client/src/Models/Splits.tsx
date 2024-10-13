@@ -1,7 +1,7 @@
 import BaseModel from "Models/Abstract/BaseModel";
 
 
-export default class SplitModel extends BaseModel {
+export default class SplitListModel extends BaseModel {
 	public broker_id: string = null;
 	public ticker_id: string = null;
 	public broker: string = null;
@@ -10,4 +10,4 @@ export default class SplitModel extends BaseModel {
 	public previous: number = null;
 	public current: number = null;
 	public split_date: Date = null;
-}// SplitModel;
+}// SplitListModel;

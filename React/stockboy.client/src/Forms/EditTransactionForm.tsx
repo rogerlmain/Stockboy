@@ -1,18 +1,21 @@
+import { date_format } from "Classes/Globals";
+import { IEditFormProps } from "Forms/EditForm";
+import { ChangeEvent } from "react";
+
 import BaseComponent from "Controls/BaseComponent";
+import InputElement from "Controls/InputElement";
 import BrokerList from "Controls/Lists/BrokerList";
 import TickerList from "Controls/Lists/TickerList";
 import TransactionTypeList from "Controls/Lists/TransactionTypeList";
 
-import TransactionModel from "Models/TransactionModel";
+import TransactionModel from "Models/Transactions";
 
-import { IEditFormProps } from "Forms/EditForm";
-import { date_format } from "Classes/Globals";
 
 
 class EditTransactionFormProps implements IEditFormProps {
-	broker_id?: string = null;
-	ticker_id?: string = null;
-	data?: TransactionModel = null;
+	broker_id?: string;
+	ticker_id?: string;
+	data?: TransactionModel;
 }// EditTransactionFormProps;
 
 
@@ -24,7 +27,7 @@ class EditTransactionFormState {
 export class EditTransactionForm extends BaseComponent<EditTransactionFormProps, EditTransactionFormState> {
 
 
-	public static defaultValues = {
+	private static defaultValues = {
 		broker_id: null,
 		ticker_id: null,
 		price: null,
@@ -32,6 +35,16 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 		transaction_date: null,
 		settlement_date: null,
 		transaction_type_id: null,
+	}// defaultProps;
+
+
+	/********/
+
+
+	public static defaultProps = {
+		broker_id: null,
+		ticker_id: null,
+		data: null,
 	}// defaultProps;
 
 
@@ -48,33 +61,47 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 
 			<div className="two-column-grid">
 
-				<BrokerList selected_item={this.props.data?.broker_id ?? this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id} 
-					onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: event.target.value})}>
-				</BrokerList>
+				<InputElement>
+					<BrokerList selected_item={this.props.data?.broker_id ?? this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id} 
+						onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: event.target.value})}>
+					</BrokerList>
+				</InputElement>
 
-				<TickerList selected_item={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditTransactionForm.defaultValues.ticker_id} 
-					broker_id={this.state.broker_id}>
-				</TickerList>
+				<InputElement>
+					<TickerList selected_item={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditTransactionForm.defaultValues.ticker_id} 
+						broker_id={this.state.broker_id}>
+					</TickerList>
+				</InputElement>
 
 			</div>
 
 			<div className="compact four-column-grid with-headspace">
 
-				<label htmlFor="price">Price per share</label>
-				<input type="numeric" id="price" name="price" commas="true" decimalPlaces={4} defaultValue={this.props.data?.price ?? EditTransactionForm.defaultValues.price} />
+				<InputElement id="price" label="Price per share">
+					<input type="currency" id="price" name="price" commas="true" defaultValue={this.props.data?.price ?? EditTransactionForm.defaultValues.price} />
+				</InputElement>
 
-				<label htmlFor="quantity">Quantity</label>
-				<input type="numeric" id="quantity" name="quantity" decimalPlaces={6} defaultValue={this.props.data?.quantity ?? EditTransactionForm.defaultValues.quantity} />
+				<InputElement id="quantity" label="Quantity">
+					<input type="numeric" id="quantity" name="quantity" decimalPlaces={6} defaultValue={this.props.data?.quantity ?? EditTransactionForm.defaultValues.quantity} />
+				</InputElement>
 
-				<label htmlFor="transaction_date">Transaction Date</label>
-				<input type="date" id="transaction_date" name="transaction_date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.transaction_date : EditTransactionForm.defaultValues.transaction_date, date_format.database)} />
+				<InputElement id="transaction_date" label="Transaction Date">
+					<input type="date" id="transaction_date" name="transaction_date" 
+						defaultValue={Date.format (isset (this.props.data) ? this.props.data.transaction_date : EditTransactionForm.defaultValues.transaction_date, date_format.database)}>
+					</input>
+				</InputElement>
 
-				<label htmlFor="settlement_date">Settlment Date</label>
-				<input type="date" id="settlement_date" name="settlement_date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.settlement_date : EditTransactionForm.defaultValues.settlement_date, date_format.database)} />
+				<InputElement id="settlement_date" label="Settlment Date">
+					<input type="date" id="settlement_date" name="settlement_date" 
+						defaultValue={Date.format (isset (this.props.data) ? this.props.data.settlement_date : EditTransactionForm.defaultValues.settlement_date, date_format.database)}>
+					</input>
+				</InputElement>
 			</div>
 
 			<div className="row-centered with-some-headspace">
-				<TransactionTypeList selected_item={this.props.data?.transaction_type_id ?? EditTransactionForm.defaultValues.transaction_type_id} />
+				<InputElement>
+					<TransactionTypeList selected_item={this.props.data?.transaction_type_id ?? EditTransactionForm.defaultValues.transaction_type_id} />
+				</InputElement>
 			</div>
 
 		</div>

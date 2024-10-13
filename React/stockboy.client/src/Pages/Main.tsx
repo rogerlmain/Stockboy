@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement, RefObject, createRef } from "react";
 
 import StylesheetList from "Classes/StylesheetList";
 import MainMenuItem from "Controls/MainMenuItem";
@@ -17,7 +17,7 @@ import DataPage from "Pages/DataPage";
 import { createRoot } from "react-dom/client";
 
 
-export class MainPageState { current_page: React.ReactElement = /*<TransactionsPage /> }*/<HomePage /> }
+export class MainPageState { current_page: React.ReactElement = <SplitsPage /> /*<HomePage />*/ }
 
 
 export const PAGES	= {
@@ -32,7 +32,7 @@ export const PAGES	= {
 export default class MainPage extends BaseComponent {
 
 
-	private popup_reference: React.RefObject<PopupWindow> = React.createRef ();
+	private popup_ref: React.RefObject<PopupWindow> = React.createRef ();
 
 
 	/********/
@@ -40,7 +40,7 @@ export default class MainPage extends BaseComponent {
 
 	public state: MainPageState = new MainPageState ();
 
-	public get popup_window (): PopupWindow { return this.popup_reference.current }
+	public get popup_window (): PopupWindow { return this.popup_ref.current }
 
 
 	public change_page = (new_page: React.ReactElement) => this.setState ({ current_page: new_page });
@@ -51,7 +51,7 @@ export default class MainPage extends BaseComponent {
 
 	public render = () => <div className="page-layout">
 
-		<PopupWindow id="popup_window" ref={this.popup_reference}>{"Default Value"}</PopupWindow>
+		<PopupWindow id="popup_window" ref={this.popup_ref}>{"Default Value"}</PopupWindow>
 
 		<div className="header">
 			<div className="main-menu">

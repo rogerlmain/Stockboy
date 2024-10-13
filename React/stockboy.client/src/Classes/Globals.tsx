@@ -3,6 +3,17 @@ export {};
 
 declare global {
 
+	type FormInputItem = (HTMLInputElement | HTMLTextAreaElement);
+	type FormItem = (FormInputItem | HTMLSelectElement);
+
+	type FormItemList = NodeListOf<FormItem>;
+
+
+	/********/
+
+
+	var form_items: string;
+
 	var currency_decimals: number;
 	var numeric_decimals: number;
 
@@ -34,6 +45,8 @@ export enum date_format {
 }// date_format;
 
 
+globalThis.form_items = "input, select, textarea";
+
 globalThis.currency_decimals = 4;
 globalThis.numeric_decimals = 6;
 
@@ -55,5 +68,4 @@ globalThis.not_null = (value: any): Boolean => !is_null (value);
 
 globalThis.is_defined = (value: any): Boolean => isset (value) && not_empty (value);
 globalThis.not_defined = (value: any): Boolean => !is_defined (value);
-
 

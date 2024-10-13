@@ -1,6 +1,8 @@
-import { IBaseModel } from "Models/Abstract/BaseModel";
 import BaseComponent from "Controls/BaseComponent";
 import DataTable from "Controls/Tables/DataTable";
+
+import { CSSProperties, MouseEvent } from "react";
+import { IBaseModel } from "Models/Abstract/BaseModel";
 
 
 class DataRowProps {
@@ -19,9 +21,9 @@ export default class DataTableRow extends BaseComponent<DataRowProps, DataRowSta
 	private active_row = (element: EventTarget) => (element as HTMLDivElement).parentNode as HTMLDivElement;
 
 
-	private styles (key: string, value: any): React.CSSProperties {
+	private styles (key: string, value: any): CSSProperties {
 
-		let result: React.CSSProperties = {}
+		let result: CSSProperties = {}
 
 		if (this.props.data_table.props.currency_fields?.contains (key) || this.props.data_table.props.numeric_fields?.contains (key)) result ["textAlign"] = "right";
 		return result;
@@ -41,7 +43,7 @@ export default class DataTableRow extends BaseComponent<DataRowProps, DataRowSta
 	}// format;
 
 
-	private get_selected_row (event: React.MouseEvent): IBaseModel {
+	private get_selected_row (event: MouseEvent): IBaseModel {
 
 		let key_rows: NodeListOf<HTMLInputElement> = event.currentTarget.parentNode.querySelectorAll ("[name=keys] input[type=hidden]");
 
@@ -75,8 +77,8 @@ export default class DataTableRow extends BaseComponent<DataRowProps, DataRowSta
 
 		return <div key={this.next_key} className={`table-row ${this.selected_class}`}
 
-			onMouseOver={(event: React.MouseEvent) => this.active_row (event.target).classList.add ("highlighted")}
-			onMouseOut={(event: React.MouseEvent) => this.active_row (event.target).classList.remove ("highlighted")}>
+			onMouseOver={(event: MouseEvent) => this.active_row (event.target).classList.add ("highlighted")}
+			onMouseOut={(event: MouseEvent) => this.active_row (event.target).classList.remove ("highlighted")}>
 
 			{isset (this.props.data_table.props.keys) ? <div name="keys" style={{ display: "none" }}>
 				{this.props.data_table.props.keys.map (key => <input key={this.next_key} type="hidden" name={key.toString ()} value={this.props.row [key as keyof IBaseModel].toString ()} />)}
@@ -88,7 +90,7 @@ export default class DataTableRow extends BaseComponent<DataRowProps, DataRowSta
 
 				return <div key={this.next_key} style={ this.styles (field_name, value) }
 
-					onClick={(event: React.MouseEvent) => {
+					onClick={(event: MouseEvent) => {
 
 						let row: IBaseModel = this.get_selected_row (event);
 

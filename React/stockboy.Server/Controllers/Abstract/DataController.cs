@@ -5,10 +5,15 @@ using Stockboy.Server.Models;
 
 namespace Stockboy.Server.Controllers {
 
-	public abstract class DataController<TDataModel, TListModel> (DataContext context): Controller where TDataModel: class, IBaseModel, new () where TListModel: class, IBaseModel, new () {
+	public abstract class DataController<TDataModel, TListModel> (DataContext context) : Controller where TDataModel : class, IBaseModel, new() where TListModel : class, IBaseModel, new() {
 
-		public JsonResult GetData (string command, GetParameters parameters) => new JsonResult (Database.CallProcedure<TListModel> (command, parameters));
-
+		public JsonResult GetData (string command, GetParameters parameters) {
+			try {
+				return new JsonResult (Database.CallProcedure<TListModel> (command, parameters));
+			} catch (Exception except) {
+				return new JsonResult (new { error = except.Message });
+			}// try;
+		}// GetData;
 
 		public JsonResult SaveData (string command, TDataModel parameters) {
 			try {

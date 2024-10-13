@@ -1,14 +1,14 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, MouseEvent } from "react";
 import BaseComponent, { BaseProps } from "Controls/BaseComponent";
 
 
 class PopupWindowProps extends BaseProps {
-	children?: String | React.ReactElement = null;
+	children?: String | ReactElement = null;
 }// PopupWindowProps;
 
 
 class PopupWindowState {
-	contents: String | React.ReactElement = null;
+	contents: String | ReactElement = null;
 	visible: boolean = false;
 }// PopupWindowState;
 
@@ -17,7 +17,7 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 
 	public state: PopupWindowState = new PopupWindowState ();
 
-	public close_button: ReactElement = <button onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+	public close_button: ReactElement = <button onClick={(event: MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault ();
 		this.hide ();
 	}}>Close</button>;
@@ -29,7 +29,7 @@ export default class PopupWindow extends BaseComponent<PopupWindowProps> {
 	}// constructor;
 
 
-	public show = (contents: String | React.ReactElement = this.state.contents) => this.setState ({ contents }, () => this.setState ({ visible: true }));
+	public show = (contents: String | ReactElement = this.state.contents) => this.setState ({ contents }, () => this.setState ({ visible: true }));
 
 
 	public hide = () => this.setState ({ visible: false }, () => this.setState ({contents: null}));

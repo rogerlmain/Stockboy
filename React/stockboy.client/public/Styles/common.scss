@@ -28,7 +28,17 @@
 }
 
 
-/********/
+/**** Text Styles ****/
+
+
+div.warning {
+	font-weight: bold;
+	font-size: 9pt;
+	margin-bottom: 1rem;
+}
+
+
+/**** Tag Styles ****/
 
 
 html, body, *.full-page, *.page-layout {
@@ -53,6 +63,19 @@ label {
 
 
 /**** Layout Styles ****/
+
+
+div.row-divider {
+	height: 0;
+	margin: 1rem 0;
+	border: none;
+	border-top: solid 1px var(--border-color);
+}
+
+
+*.container { display: contents }
+
+*.hidden { display: none !important }
 
 
 *.page-layout {
@@ -203,6 +226,8 @@ div[class*="-column-grid"] {
 		align-items: center;
 		justify-content: flex-end;
 	}
+
+	*.full-width { grid-column: 1/-1 }
 }
 
 

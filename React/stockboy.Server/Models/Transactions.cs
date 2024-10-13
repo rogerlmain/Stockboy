@@ -18,6 +18,7 @@
         public string company { get; set; } = String.Empty;
 		public decimal price { get; set; }
 		public decimal quantity { get; set; }
+		public decimal cost { get; set; }
 		public DateTime transaction_date { get; set; }
 		public DateTime settlement_date { get; set; }
 		public string transaction_type { get; set; } = String.Empty;

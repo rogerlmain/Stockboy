@@ -2,7 +2,7 @@ drop table if exists transaction_types;
 
 create table transaction_types (
 	id varchar (36) unique primary key not null,
-    description varchar (12),
+    name varchar (12),
     sort_order int
 );
 

@@ -1,10 +1,7 @@
 export class KeyValuePair<IModel> { [key: string]: any }
 
 
-export default class NameValueNameValueCollection<IModel> extends KeyValuePair<IModel> {
-
-	/*[key: string]: any;*/
-
+export default class NameValueCollection<IModel> extends KeyValuePair<IModel> {
 
 	public hasKey? = (key: string): boolean => Object.keys (this).contains (key);
 
@@ -14,4 +11,4 @@ export default class NameValueNameValueCollection<IModel> extends KeyValuePair<I
 		if (isset (values)) this.copy (values);
 	}// constructor;
 
-}// NameValueNameValueCollection;
+}// NameValueCollection;

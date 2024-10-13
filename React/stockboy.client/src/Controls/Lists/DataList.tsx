@@ -1,14 +1,19 @@
-import React from "react";
-
 import APIClass from "Classes/APIClass";
-import NameValueCollection from "Classes/Collections";
 
-import SelectList, { SelectProps } from "Controls/Lists/SelectList";
-import BaseComponent from "Controls/BaseComponent";
+import BaseComponent, { IBaseProps } from "Controls/BaseComponent";
+import SelectList, { BaseSelectListProps } from "Controls/Lists/SelectList";
+
+import { createRef, RefObject } from "react";
+
 import Eyecandy from "Controls/Eyecandy";
-
 import ListModel from "Models/ListModel";
 
+
+class DataListProps extends BaseSelectListProps implements IBaseProps {
+	title?: string;
+	table: string;
+	parameters?: any;
+}// DataListProps;
 
 
 class DataListState {
@@ -17,30 +22,12 @@ class DataListState {
 }// DataListState;
 
 
-class DataListProps extends SelectProps {
-	parameters?: NameValueCollection<string> = null;
-}// DataListProps;
-
-
 export default class DataList extends BaseComponent<DataListProps, DataListState> {
 
 
-	static defaultProps: DataListProps = { 
-		name: null,
-		table: null,
-		disabled: false,
-		selected_item: null,
-		parameters: null
-	}// defaultProps;
+	private select_list_ref: RefObject<SelectList> = createRef ();
 
-
-	/********/
-
-
-	private select_list_reference: React.RefObject<SelectList> = React.createRef ();
-
-
-	private get title () { return this.props.table.titleCase (true) }
+	private get title () { return this.props.title ?? this.props.table.titleCase (true) ?? "Select one" }
 
 	private get control_name () { return `${this.props.name}_list` }
 
@@ -52,17 +39,29 @@ export default class DataList extends BaseComponent<DataListProps, DataListState
 			return;
 		}// if;
 
-		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.title}`, this.props.parameters).then ((response: Array<ListModel>) => {
+		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.props.table.titleCase ()}`, this.props.parameters).then ((response: Array<ListModel>) => {
 			this.setState ({ 
 				data: response,
 				loading: false
-			});
+			}, () => this.select_list_ref.current.forceUpdate ());
 		}));
 
 	}// load_data;
 
 
 	/********/
+
+
+	public static defaultProps: DataListProps = { 
+		name: null,
+		header: null,
+		selected_item: null,
+		onChange: null,
+		disabled: null,
+		title: null,
+		table: null,
+		parameters: null,
+	}// defaultProps;
 
 
 	public state: DataListState = new DataListState ();
@@ -76,9 +75,11 @@ export default class DataList extends BaseComponent<DataListProps, DataListState
 	public componentDidMount = () => this.load_data ();
 
 
-	public render = () => <div className="row-block" style={{ alignItems: "center" }}>
-		<label htmlFor={this.control_name}>{this.title}</label>
-		{this.state.loading ? <Eyecandy text="Loading..." small={true} /> : <SelectList id={this.control_name} data={this.state.data} {...this.props} ref={this.select_list_reference} />}
-	</div>
+	public render () { 
+		return <div className="row-block" style={{ alignItems: "center" }}>
+			<label htmlFor={this.control_name}>{this.title}</label>
+			{this.state.loading ? <Eyecandy text="Loading..." small={true} /> : <SelectList id={this.control_name} data={this.state.data} {...this.props} ref={this.select_list_ref} />}
+		</div>
+	}// render;
 
-}// BrokerList;
+}// DataList;

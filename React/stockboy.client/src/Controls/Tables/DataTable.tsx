@@ -1,21 +1,22 @@
-import React from "react";
+import React, { Component, CSSProperties, RefObject, createRef } from "react";
 
 import NameValueCollection, { KeyValuePair } from "Classes/Collections";
-import BaseComponent from "Controls/BaseComponent";
+import BaseComponent, { BaseProps, IBaseProps, IBaseState } from "Controls/BaseComponent";
 import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
+
 import DataTableRow from "Controls/Tables/DataTableRow";
 
 import { IBaseModel } from "Models/Abstract/BaseModel";
 
 
-class DataTableState {
+class DataTableState implements IBaseState {
 	sort_field: string = null;
 	ascending: boolean = true;
 	selected_row: IBaseModel = null;
 }// DataTableState;
 
 
-export class DataTableProperties {
+export class DataTableProperties extends BaseProps {
 	fields?: Array<string | KeyValuePair<string>> = null;
 	date_fields?: Array<string> = null;
 	numeric_fields?: Array<string> = null;
@@ -26,18 +27,17 @@ export class DataTableProperties {
 }// DataTableProperties;
 
 
-export class DataTableProps extends DataTableProperties {
-	id: String = null;
+export class DataTableProps extends DataTableProperties implements IBaseProps {
 	data: Array<IBaseModel> = null;
-	parent: React.Component = null;
+	parent: Component = null;
 }// DataTableProps;
 
 
 export default class DataTable extends BaseComponent<DataTableProps> {
 
 
-	private initial_styles: React.CSSProperties = null;
-	private reference: React.RefObject<HTMLDivElement> = React.createRef ();
+	private initial_styles: CSSProperties = null;
+	private reference: RefObject<HTMLDivElement> = createRef ();
 
 	private totals: NameValueCollection<number> = null;
 
@@ -89,7 +89,7 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 	private update_styles () {
 
 		let data_table: HTMLDivElement = this.reference.current;
-		let data_styles: React.CSSProperties = new Object ().copy (this.initial_styles);
+		let data_styles: CSSProperties = new Object ().copy (this.initial_styles);
 
 		let overflow: boolean = (data_table.scrollHeight > data_table.parentElement.clientHeight);
 
@@ -122,7 +122,7 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 				if (field_index == 0) return <div>Total</div>
 				if (this.props.total_fields.contains (field_name)) {
 
-					let border_style: React.CSSProperties = { textAlign: "right" };
+					let border_style: CSSProperties = { textAlign: "right" };
 					let total = 0;
 
 					if ((field_index == (this.props.fields.length - 1)) || (!this.props.total_fields.contains (this.props.fields [field_index + 1]))) border_style.borderRight = "none";
@@ -150,12 +150,14 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 	}// constructor;
 
 
-	public componentDidUpdate (old_props: DataTableProps, old_state: DataTableState) {
-		this.update_styles ();
+	public componentDidUpdate (previous_props: DataTableProps, previous_state: DataTableState) {
+		if (isset (this.reference.current)) this.update_styles ();
 	}// componentDidUpdate;
 
 
-	public componentDidMount = () => this.update_styles ();
+	public componentDidMount () {
+		if (isset (this.reference.current)) this.update_styles ();
+	}// componentDidMount;
 
 
 	public render () {

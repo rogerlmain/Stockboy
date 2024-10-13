@@ -1,7 +1,6 @@
-drop table if exists new_tickers;
 drop table if exists tickers;
 
-create table new_tickers (
+create table tickers (
 	id varchar (36) unique primary key not null,
 	symbol varchar (8) unique,
 	name varchar (128),
@@ -12,7 +11,7 @@ create table new_tickers (
 	last_updated datetime 
 );
 
-insert into new_tickers values
+insert into tickers values
 	('153d3e18-7168-11ef-b1e8-a4f933c45288', 'JEWL', 'Adamas One Corp', null, null, null, null, null),
 	('153d1cbf-7168-11ef-b1e8-a4f933c45288', 'ADTH', 'Adtheorent', null, null, null, null, null),
 	('153d3272-7168-11ef-b1e8-a4f933c45288', 'ALLR', 'Allarity Therapeutics', null, null, null, null, null),

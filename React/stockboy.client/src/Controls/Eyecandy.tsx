@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
+
 
 class EyecandyProps {
 	command?: Function = null;
@@ -7,7 +8,7 @@ class EyecandyProps {
 }// EyecandyProps;
 
 
-export default class Eyecandy extends React.Component<EyecandyProps> {
+export default class Eyecandy extends Component<EyecandyProps> {
 
 
 	public componentDidMount () {

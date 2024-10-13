@@ -13,6 +13,7 @@ create procedure get_transactions (broker_id varchar (36), ticker_id varchar (36
         tck.symbol as ticker,
         tac.price,
 		tac.quantity,
+        tac.price * tac.quantity as cost,
 		tac.transaction_date,
 		tac.settlement_date,
 		ttp.name as transaction_type,

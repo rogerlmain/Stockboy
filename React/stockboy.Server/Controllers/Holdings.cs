@@ -8,6 +8,13 @@ namespace Stockboy.Server.Controllers {
 	public class Holdings (DataContext context) : Controller {
 
 
+		private static class TransactionTypes {
+			public const string buy = "Buy";
+			public const string sell = "Sell";
+			public const string split = "Split";
+		}// TransactionTypes;
+
+
 		[HttpGet]
 		[Route ("GetHoldings")]
 		public IActionResult GetHoldings () {
@@ -23,6 +30,9 @@ namespace Stockboy.Server.Controllers {
 				foreach (ActivityView item in activity) {
 
 					if ((item.broker != previous_broker) || (item.company != previous_company)) {
+
+						if (item.transaction_type == TransactionTypes.split) continue; // No stocks purchased to split. Move on.
+
 						holding = new () {
 							broker_id = item.broker_id,
 							ticker_id = item.ticker_id,
@@ -39,13 +49,13 @@ namespace Stockboy.Server.Controllers {
 					holding!.last_updated = item.last_updated;
 
 					switch (item.transaction_type) {
-						case "Buy": holding.quantity += item.quantity; break;
-						case "Sell": holding.quantity -= item.quantity; break;
-						case "Split": holding.quantity *= item.quantity; break;
+						case TransactionTypes.buy: holding.quantity += item.quantity; break;
+						case TransactionTypes.sell: holding.quantity -= item.quantity; break;
+						case TransactionTypes.split: holding.quantity *= item.quantity; break;
 					}// switch;
 
-					if (item.transaction_type == "Buy") holding!.total_purchase_price += item.cost_price * item.quantity;
-					if (item.transaction_type == "Sell") holding!.total_sale_price += item.cost_price * item.quantity;
+					if (item.transaction_type == TransactionTypes.buy) holding!.total_purchase_price += item.cost_price * item.quantity;
+					if (item.transaction_type == TransactionTypes.sell) holding!.total_sale_price += item.cost_price * item.quantity;
 
 					previous_broker = item.broker;
 					previous_company = item.company;

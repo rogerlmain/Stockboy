@@ -1,6 +1,6 @@
 import BaseComponent from "Controls/BaseComponent";
 import DataPage from "Pages/DataPage";
-import TransactionModel from "Models/TransactionModel";
+import TransactionModel from "Models/Transactions";
 
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { EditTransactionForm } from "Forms/EditTransactionForm";
@@ -8,10 +8,10 @@ import { EditTransactionForm } from "Forms/EditTransactionForm";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: ["broker", "ticker", "company", "price", "quantity", "transaction_date", "settlement_date", "transaction_type"],
+	fields: ["broker", "ticker", "company", "price", "quantity", "cost", "transaction_date", "settlement_date", "transaction_type"],
 	date_fields: ["transaction_date", "settlement_date"],
 	numeric_fields: ["quantity"],
-	currency_fields: ["price"]
+	currency_fields: ["price", "cost"]
 }// properties;
 
 export default class TransactionsPage extends BaseComponent {

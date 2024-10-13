@@ -1,10 +1,11 @@
-import React from "react";
+import React, { ChangeEvent, RefObject, createRef } from "react";
 
-import HoldingsModel from "Models/HoldingsModel";
+import APIClass, { StockPriceData } from "Classes/APIClass";
 
 import LocalDate from "Classes/LocalDate";
 
-import APIClass, { StockPriceData } from "Classes/APIClass";
+import HoldingsModel from "Models/Holdings";
+
 import Eyecandy from "Controls/Eyecandy";
 import Link from "Controls/Link";
 import BrokerList from "Controls/Lists/BrokerList";
@@ -15,7 +16,7 @@ import DataTable from "Controls/Tables/DataTable";
 import TransactionsPage from "Pages/Transactions";
 
 import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControls";
-import { TickerModel, TickerPrice } from "Models/TickerModel";
+import { TickerListModel, TickerPriceModel } from "Models/Tickers";
 
 
 const one_hour = 60 * 60 * 1000;
@@ -35,7 +36,7 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	private lookup_stock = () => alert (`looking up ${this.state.active_ticker}`);
 
 
-	private data_table: React.RefObject<DataTable> = React.createRef ();
+	private data_table: RefObject<DataTable> = createRef ();
 
 
 	private holdings_list: Array<HoldingsModel> = null;
@@ -43,14 +44,14 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 	private get_outdated_tickers (holdings: Array<HoldingsModel>) {
 
-		let ticker_list: Array<TickerPrice> = null;
+		let ticker_list: Array<TickerPriceModel> = null;
 
 		holdings.forEach ((item: HoldingsModel) => {
 
-			let ticker_price = ticker_list?.find ((ticker: TickerPrice) => ticker.id == item.ticker_id);
+			let ticker_price = ticker_list?.find ((ticker: TickerPriceModel) => ticker.id == item.ticker_id);
 
 			if ((isset (ticker_price) || (Date.current_date ().timestamp () - new LocalDate (item.last_updated).timestamp ()) <= one_hour) || (item.current_price == -1)) return;
-			if (is_null (ticker_list)) ticker_list = new Array<TickerPrice> ();
+			if (is_null (ticker_list)) ticker_list = new Array<TickerPriceModel> ();
 
 			ticker_list.push ({
 				id: item.ticker_id,
@@ -65,11 +66,11 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	}// get_outdated_tickers;
 
 
-	private get_ticker_list (list: Array<TickerPrice>): string {
+	private get_ticker_list (list: Array<TickerPriceModel>): string {
 
 		let ticker_list: string = null;
 
-		list.forEach ((item: TickerPrice) => {
+		list.forEach ((item: TickerPriceModel) => {
 			if (is_null (ticker_list)) return ticker_list = item.symbol;
 			ticker_list = `${ticker_list},${item.symbol}`;
 		});
@@ -79,9 +80,9 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	}// get_ticker_list;
 
 
-	private async get_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerPrice>> { 
+	private async get_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerPriceModel>> { 
 		
-		let outdated_prices: Array<TickerPrice> = null;
+		let outdated_prices: Array<TickerPriceModel> = null;
 		let stock_prices: Array<StockPriceData> = null;
 
 		outdated_prices = this.get_outdated_tickers (holdings);
@@ -92,10 +93,10 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 		if (isset (ticker_list)) stock_prices = await APIClass.fetch_stock_prices (ticker_list);
 		if (is_null (stock_prices)) return null;
 
-		return new Promise<Array<TickerPrice>> (resolve => {
+		return new Promise<Array<TickerPriceModel>> (resolve => {
 
 			stock_prices.forEach ((stock_price: StockPriceData) => {
-				let ticker_price = outdated_prices.find ((ticker_price: TickerPrice) => ticker_price.symbol == stock_price.symbol);
+				let ticker_price = outdated_prices.find ((ticker_price: TickerPriceModel) => ticker_price.symbol == stock_price.symbol);
 				if (isset (ticker_price)) ticker_price.price = stock_price.price;
 			});
 
@@ -106,16 +107,16 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	}// get_stock_prices;
 
 
-	private async update_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerPrice>> {
+	private async update_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerPriceModel>> {
 
-		let stock_prices: Array<TickerPrice> = await this.get_stock_prices (holdings);
+		let stock_prices: Array<TickerPriceModel> = await this.get_stock_prices (holdings);
 
 		if (is_null (stock_prices)) return null;
 
-		return new Promise<Array<TickerPrice>> (resolve => {
+		return new Promise<Array<TickerPriceModel>> (resolve => {
 
-			stock_prices.forEach ((price: TickerPrice) => {
-				APIClass.fetch_data ("SaveTicker", new TickerModel ().merge ({
+			stock_prices.forEach ((price: TickerPriceModel) => {
+				APIClass.fetch_data ("SaveTicker", new TickerPriceModel ().merge ({
 					id: price.id,
 					price: price.price ?? -1,
 					last_updated: Date.current_date ()
@@ -132,10 +133,13 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	private update_holdings_list (): Promise<Array<HoldingsModel>> {
 		return new Promise (resolve => {
 			APIClass.fetch_data ("GetHoldings").then ((holdings: Array<HoldingsModel>) => {
-				this.update_stock_prices (holdings).then ((stock_prices: Array<TickerPrice>) => {
+
+				if (is_null (holdings)) return resolve (null);
+
+				this.update_stock_prices (holdings).then ((stock_prices: Array<TickerPriceModel>) => {
 					if (isset (stock_prices)) holdings.forEach ((holding: HoldingsModel) => {
 
-						let stock_price: TickerPrice = stock_prices.find ((item: TickerPrice) => holding.ticker_id == item.id);
+						let stock_price: TickerPriceModel = stock_prices.find ((item: TickerPriceModel) => holding.ticker_id == item.id);
 					
 						if (isset (stock_price)) holding.current_price = stock_price.price;
 
@@ -162,6 +166,8 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 			if (is_null (result)) result = new Array<HoldingsModel> ();
 			result.push (item);
 		}// add_stock;
+
+		if (is_null (this.holdings_list)) return this.setState ({ loading: false });
 
 		this.holdings_list.forEach ((item: HoldingsModel) => {
 			if (this.state.dead_stocks && (item.current_price == -1)) add_stock (item);
@@ -202,11 +208,11 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 			<div className="wide-column-spaced row-block">
 
 				<BrokerList header={SelectList.All} selected_item={this.state.broker_id} 
-					onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: (event.currentTarget.value == SelectList.All ? null : event.currentTarget.value) })}>
+					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: (event.currentTarget.value == SelectList.All ? null : event.currentTarget.value) })}>
 				</BrokerList>
 
 				<TickerList header={SelectList.All} broker_id={this.state.broker_id}
-					onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.currentTarget.value })}>
+					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.currentTarget.value })}>
 				</TickerList>
 
 			</div>
@@ -218,13 +224,13 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	private get checkbox_panel () {
 		return <div className="two-column-grid">
 			<label htmlFor="dead_stock_checkbox">Show live stocks</label>
-			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.live_stocks} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState ({ live_stocks: event.target.checked })} />
+			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.live_stocks} onChange={(event: ChangeEvent<HTMLInputElement>) => this.setState ({ live_stocks: event.target.checked })} />
 
 			<label htmlFor="dead_stock_checkbox">Show dead stocks</label>
-			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.dead_stocks} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState ({ dead_stocks: event.target.checked })} />
+			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.dead_stocks} onChange={(event: ChangeEvent<HTMLInputElement>) => this.setState ({ dead_stocks: event.target.checked })} />
 
 			<label htmlFor="dead_stock_checkbox">Show sold stocks</label>
-			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.sold_stocks} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState ({ sold_stocks: event.target.checked })} />
+			<input type="checkbox" id="dead_stock_checkbox" defaultChecked={this.state.sold_stocks} onChange={(event: ChangeEvent<HTMLInputElement>) => this.setState ({ sold_stocks: event.target.checked })} />
 		</div>
 	}// checkbox_panel;
 
@@ -272,17 +278,28 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	}// componentDidMount;
 
 
-	public render = () => this.state.loading ? <Eyecandy text="Loading holdings..." /> : <div className="page-layout column-centered">
+	public render () {
+	
+		if (this.state.loading) return <Eyecandy text="Loading holdings..." />;
 
-		<div className={`${isset (this.state.data) ? "horizontally-spaced-out row-centered" : "right-aligned"}`} style={{ width: "65rem" }}>
-			{this.lookup_panel}
-			{this.checkbox_panel}
+		return <div className="page-layout column-centered">
+
+			{isset (this.holdings_list) ? <div>
+
+				<div className={`${isset (this.state.data) ? "horizontally-spaced-out row-centered" : "right-aligned"}`} style={{ width: "65rem" }}>
+					{this.lookup_panel}
+					{this.checkbox_panel}
+				</div>
+
+				{isset (this.state.data) ? this.filter_panel : null}
+
+			</div> : null}
+
+			{is_null (this.state.data) ? this.empty_data_panel : this.grid_panel}
+
 		</div>
 
-		{this.filter_panel}
-		{is_null (this.state.data) ? this.empty_data_panel : this.grid_panel}
-
-	</div>
+	}// render;
 
 
 }// HomePage;
