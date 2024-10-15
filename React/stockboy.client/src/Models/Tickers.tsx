@@ -1,4 +1,4 @@
-import BaseModel from "Models/Abstract/BaseModel";
+import { BaseModel } from "Models/Abstract/BaseModel";
 
 export class TickerListModel extends BaseModel {
     symbol: string = null;

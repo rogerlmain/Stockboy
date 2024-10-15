@@ -1,21 +1,17 @@
-import React, { ComponentType, ChangeEvent, RefObject, createRef } from "react";
-
-import BaseComponent, { BaseProps, IBaseProps, IBaseState } from "Controls/BaseComponent";
-import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
-
 import APIClass from "Classes/APIClass";
-
-import BrokerList from "Controls/Lists/BrokerList";
-import SelectList from "Controls/Lists/SelectList";
-import TickerList from "Controls/Lists/TickerList";
+import TickerSelector from "Controls/TickerSelector";
 import EditForm from "Forms/EditForm";
 
+import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
+
+import { BaseComponent, BaseProps, IBaseProps, IBaseState } from "Controls/BaseComponent";
 import { DeleteForm } from "Forms/DeleteForm";
-import { IBaseModel } from "Models/Abstract/BaseModel";
+import { IBaseModel, IStockDataModel, IStockModel } from "Models/Abstract/BaseModel";
+import { ComponentType, RefObject, createRef } from "react";
 
 
 class DataPageProps extends BaseProps implements IBaseProps {
-	edit_form: ComponentType = null;
+	edit_form: ComponentType<IStockDataModel> = null;
 	table_properties: DataTableProperties = null;
 	name: string = null;
 }// DataPageProps;
@@ -24,8 +20,8 @@ class DataPageProps extends BaseProps implements IBaseProps {
 class DataPageState implements IBaseState {
 	broker_id: string = null;
 	ticker_id: string = null;
-	selected_row: IBaseModel = null;
-	data: Array<IBaseModel> = null;
+	selected_row: IStockModel = null;
+	data: Array<IStockModel> = null;
 }// TransactionState;
 
 
@@ -37,7 +33,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 	private get table () { return this.data_table_ref.current }
 
 
-	private edit_record = (row: IBaseModel = null) => main_page.popup_window.show (<EditForm data={row} body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this} />);
+	private edit_record = (row: IStockModel = null) => main_page.popup_window.show (<EditForm id={this.props.id} data={row} body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this} />);
 
 	private delete_record = () => main_page.popup_window.show (<DeleteForm key_names={["broker_id", "ticker_id"]} parent={this} record={this.state.selected_row} />);
 
@@ -48,7 +44,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 	public state: DataPageState = new DataPageState ();
 
 
-	public add_row (row: IBaseModel) {
+	public add_row (row: IStockModel) {
 
 		let item: IBaseModel = null;
 
@@ -103,7 +99,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 		if (isset (this.state.broker_id)) parameters ["broker_id"] = this.state.broker_id;
 		if (isset (this.state.ticker_id)) parameters ["ticker_id"] = this.state.ticker_id;
 
-		APIClass.fetch_data (`Get${this.props.name}s`, parameters).then ((response: Array<IBaseModel>) => {
+		APIClass.fetch_data (`Get${this.props.name}s`, parameters).then ((response: Array<IStockModel>) => {
 			this.setState ({ data: response });
 		});
 
@@ -122,15 +118,10 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 		<form>
 			<div className="wide-column-spaced row-block">
-
-				<BrokerList header={SelectList.All} selected_item={this.state.broker_id} 
-					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: (event.currentTarget.value == SelectList.All ? null : event.currentTarget.value) })}>
-				</BrokerList>
-
-				<TickerList header={SelectList.All} broker_id={this.state.broker_id}
-					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.currentTarget.value })}>
-				</TickerList>
-
+				<TickerSelector id="ticker_selector" data={this.state.data}
+					broker_id={this.state.broker_id} 
+					ticker_id={this.state.ticker_id}>
+				</TickerSelector>
 			</div>
 		</form>
 
@@ -138,7 +129,7 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 			<div className="body" style={{ flexGrow: 0 }}>
 				{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no transactions</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
-					onclick={(row: IBaseModel) => this.setState ({ selected_row: row })} ref={this.data_table_ref}
+					onclick={(row: IStockModel) => this.setState ({ selected_row: row })} ref={this.data_table_ref}
 					data={this.state.data} parent={this} {...this.props.table_properties}>
 				</DataTable>}
 			</div>

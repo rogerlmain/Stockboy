@@ -12,6 +12,7 @@ namespace Stockboy.Server.Controllers {
 		[Route ("GetSplits")]
 		public IActionResult GetSplits ([FromBody] GetParameters parameters) => GetData ("get_splits", parameters);
 
+
 		[HttpPost]
 		[Route ("SaveSplit")]
 		public IActionResult SaveSplit ([FromBody] SplitDataModel parameters) => SaveData ("get_split_by_id", parameters);

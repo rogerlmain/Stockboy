@@ -1,7 +1,8 @@
 import React, { ReactElement } from "react";
 
 import Stylesheet from "Classes/Stylesheet";
-import BaseComponent from "Controls/BaseComponent";
+
+import { BaseComponent } from "Controls/BaseComponent";
 
 
 class StylesheetListProps {}

@@ -1,24 +1,15 @@
-import { ComponentType, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
-import { IBaseModel } from "Models/Abstract/BaseModel";
-
 import APIClass from "Classes/APIClass";
-import BaseComponent from "Controls/BaseComponent";
-
 import DataPage from "Pages/DataPage";
 
+import { FormComponent } from "Controls/Abstract/FormComponent";
+import { BaseComponent } from "Controls/BaseComponent";
 
-export interface IEditFormProps {
-	broker_id?: string;
-	ticker_id?: string;
-	data?: IBaseModel;
-}// IEditFormProps
+import { IBaseModel, IStockDataModel, StockDataModel } from "Models/Abstract/BaseModel";
+import { ComponentType, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
 
 
-export class EditFormProps implements IEditFormProps {
-	broker_id?: string;
-	ticker_id?: string;
-	data?: IBaseModel;
-	body: ComponentType<IEditFormProps>;
+export class EditFormProps extends StockDataModel {
+	body: ComponentType<IStockDataModel>;
 	parent: DataPage;
 }// IEditFormProps;
 
@@ -67,7 +58,7 @@ export default class EditForm extends BaseComponent<EditFormProps, EditFormState
 
 		if (!this.required_fields_completed ()) return event.preventDefault ();
 
-		let form_data = new FormData (this.form_ref.current).remove_empties ();
+		let form_data = new FormData (this.form_ref.current).remove_empties ().round_fields ((this.props.body as unknown as FormComponent)?.rounded_fields);
 		let new_record = !form_data.has ("id");
 
 		main_page.popup_window.show (<div className="column-centered column-spaced row-block">
@@ -106,6 +97,7 @@ export default class EditForm extends BaseComponent<EditFormProps, EditFormState
 
 
 	public static defaultProps: EditFormProps = {
+		id: null,
 		broker_id: null,
 		ticker_id: null,
 		data: null,
@@ -123,7 +115,7 @@ export default class EditForm extends BaseComponent<EditFormProps, EditFormState
 
 				<div className={`${this.state.complete ? "hidden" : String.Empty} row-centered warning`}>The highlighted fields are required.</div>
 
-				<form ref={this.form_ref}><this.props.body data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} /></form>
+				<form ref={this.form_ref}><this.props.body id={this.props.id} data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} /></form>
 
 				<div className="button-bar">
 					<button id="save_button" onClick={(event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>

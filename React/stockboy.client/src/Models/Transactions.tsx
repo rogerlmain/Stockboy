@@ -1,10 +1,8 @@
-import BaseModel from "Models/Abstract/BaseModel";
+import { StockModel } from "Models/Abstract/BaseModel";
 
 
-export default class TransactionListModel extends BaseModel {
+export default class TransactionDataModel extends StockModel {
 	keys: Array<string> = null;
-	broker_id: string = null;
-    ticker_id: string = null;
     company: string = null;
 	broker: string = null;
     ticker: string = null;
@@ -15,4 +13,4 @@ export default class TransactionListModel extends BaseModel {
 	settlement_date: Date = null;
 	transaction_type: string = null;
 	transaction_type_id: string = null;
-}// TransactionListModel;
+}// TransactionDataModel;

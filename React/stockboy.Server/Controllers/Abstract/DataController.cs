@@ -1,11 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
+using System.Text;
 
 
 namespace Stockboy.Server.Controllers {
 
 	public abstract class DataController<TDataModel, TListModel> (DataContext context) : Controller where TDataModel : class, IBaseModel, new() where TListModel : class, IBaseModel, new() {
+
+		public async Task<string> GetRequestBody () {
+			if (!Request.Body.CanSeek) Request.EnableBuffering ();
+			Request.Body.Position = 0;
+			var reader = new StreamReader (Request.Body, Encoding.UTF8);
+			var body = await reader.ReadToEndAsync ().ConfigureAwait (false);
+			Request.Body.Position = 0;
+			return body;
+		}// GetRequestBody;
+
 
 		public JsonResult GetData (string command, GetParameters parameters) {
 			try {

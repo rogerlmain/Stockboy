@@ -28,10 +28,10 @@ new MutationObserver ((mutations: Array<MutationRecord>, observer: MutationObser
 
 			if (!(field.onpaste)) field.onpaste = (event: Event) => setTimeout (() => {
 
-				let value: string = field.value.strip_non_numeric ();
+				let value: string = field.value.parseNumeric ();
 
-				let decimal_places: number = (field.getAttribute ("type") == "currency") ? currency_decimals : (field.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
-				let leading_zeros: number = field.getAttribute ("leadingZeros")?.integerValue () ?? 0;
+				let decimal_places: number = (field.getAttribute ("type") == "currency") ? currency_decimals : (field.getAttribute ("decimalPlaces")?.parseInt () ?? 0);
+				let leading_zeros: number = field.getAttribute ("leadingZeros")?.parseInt () ?? 0;
 				let negative_numbers: boolean = field.getAttribute ("negativeNumbers")?.toLowerCase () == "true";
 
 				if ((value [0] == "-") && !negative_numbers) value = value.substring (1);

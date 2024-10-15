@@ -1,19 +1,15 @@
-import { ChangeEvent } from "react";
-import { IEditFormProps } from "Forms/EditForm";
-import { date_format } from "Classes/Globals";
-
-import BaseComponent from "Controls/BaseComponent";
 import InputElement from "Controls/InputElement";
-import BrokerList from "Controls/Lists/BrokerList";
-import TickerList from "Controls/Lists/TickerList";
+import TickerSelector from "Controls/TickerSelector";
 
-import SplitModel from "Models/Splits";
+import SplitDataModel from "Models/Splits";
+
+import { date_format } from "Classes/Globals";
+import { BaseComponent } from "Controls/BaseComponent";
+import { IStockDataModel, StockModel } from "Models/Abstract/BaseModel";
 
 
-class EditSplitFormProps implements IEditFormProps {
-	broker_id?: string = null;
-	ticker_id?: string = null;
-	data?: SplitModel = null;
+class EditSplitFormProps extends StockModel implements IStockDataModel {
+	data?: SplitDataModel = null;
 }// EditSplitFormProps;
 
 
@@ -25,13 +21,25 @@ class EditSplitFormState {
 export class EditSplitForm extends BaseComponent<EditSplitFormProps, EditSplitFormState> {
 
 
-	public static defaultValues = {
+	public static test_values = {
+		broker_id: "bf6be2f3-7141-11ef-b1e8-a4f933c45288",
+		ticker_id: "153d4fe6-7168-11ef-b1e8-a4f933c45288",
+		previous: 20.00,
+		current: 1.00,
+		transaction_date: "2023-09-18",
+	}// test_values;
+
+
+	public static default_values = {
 		broker_id: null,
 		ticker_id: null,
 		previous: null,
 		current: null,
 		transaction_date: null,
-	}// defaultValues;
+	}// default_values;
+
+
+	public static defaultValues = this.test_values;
 
 
 	public state: EditSplitFormState = new EditSplitFormState ();
@@ -46,19 +54,10 @@ export class EditSplitForm extends BaseComponent<EditSplitFormProps, EditSplitFo
 			<input type="hidden" id="id" value={this.props.data?.id} />
 
 			<div className="two-column-grid">
-
-				<InputElement>
-					<BrokerList selected_item={this.props.data?.broker_id ?? this.props.broker_id ?? EditSplitForm.defaultValues.broker_id} 
-						onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: event.target.value})}>
-					</BrokerList>
-				</InputElement>
-
-				<InputElement>
-					<TickerList selected_item={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditSplitForm.defaultValues.ticker_id} 
-						broker_id={this.state.broker_id}>
-					</TickerList>
-				</InputElement>
-
+				<TickerSelector id={this.props.id} data={this.props.data}
+					broker_id={this.props.broker_id} 
+					ticker_id={this.props.ticker_id}>
+				</TickerSelector>
 			</div>
 
 			<div className="compact six-column-grid with-headspace">

@@ -1,9 +1,7 @@
-import BaseModel from "Models/Abstract/BaseModel";
+import { StockModel } from "Models/Abstract/BaseModel";
 
 
-export default class HoldingsModel extends BaseModel {
-	public ticker_id: string;
-	public broker_id: string;
+export default class HoldingsListModel extends StockModel {
 	public broker: string;
 	public symbol: string;
 	public company: string;
@@ -16,4 +14,4 @@ export default class HoldingsModel extends BaseModel {
 	public value: number;
 	public profit: number;
 	public last_updated: Date;
-}// HoldingsModel;
+}// HoldingsListModel;

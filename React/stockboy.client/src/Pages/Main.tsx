@@ -2,7 +2,7 @@ import React, { ReactElement, RefObject, createRef } from "react";
 
 import StylesheetList from "Classes/StylesheetList";
 import MainMenuItem from "Controls/MainMenuItem";
-import BaseComponent from "Controls/BaseComponent";
+import { BaseComponent } from "Controls/BaseComponent";
 import PopupWindow from "Controls/PopupWindow";
 
 import BasePage from "Pages/Abstract/BasePage";
@@ -17,7 +17,7 @@ import DataPage from "Pages/DataPage";
 import { createRoot } from "react-dom/client";
 
 
-export class MainPageState { current_page: React.ReactElement = <SplitsPage /> /*<HomePage />*/ }
+export class MainPageState { current_page: React.ReactElement = <DividendsPage /> /*<HomePage />*/ }
 
 
 export const PAGES	= {

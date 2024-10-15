@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 
 namespace Stockboy.Server.Controllers {
 
 	public class Holdings (DataContext context) : Controller {
-
 
 		private static class TransactionTypes {
 			public const string buy = "Buy";

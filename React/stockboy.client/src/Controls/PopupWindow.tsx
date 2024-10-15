@@ -1,5 +1,5 @@
 import React, { ReactElement, MouseEvent } from "react";
-import BaseComponent, { BaseProps } from "Controls/BaseComponent";
+import { BaseComponent, BaseProps } from "Controls/BaseComponent";
 
 
 class PopupWindowProps extends BaseProps {

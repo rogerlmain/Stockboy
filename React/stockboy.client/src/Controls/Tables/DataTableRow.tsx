@@ -1,4 +1,4 @@
-import BaseComponent from "Controls/BaseComponent";
+import { BaseComponent } from "Controls/BaseComponent";
 import DataTable from "Controls/Tables/DataTable";
 
 import { CSSProperties, MouseEvent } from "react";
@@ -25,21 +25,22 @@ export default class DataTableRow extends BaseComponent<DataRowProps, DataRowSta
 
 		let result: CSSProperties = {}
 
-		if (this.props.data_table.props.currency_fields?.contains (key) || this.props.data_table.props.numeric_fields?.contains (key)) result ["textAlign"] = "right";
+		if (this.props.data_table.props.currency_fields?.contains (key) || this.props.data_table.props.numeric_fields?.contains (key) || this.props.data_table.props.date_fields?.contains (key)) result ["textAlign"] = "right";
 		return result;
 
 	}// styles;
 
 
-	private format (field_name: string, value: string | number): string | number {
+	private format (field_name: string, value: string | number | Date): string {
 
-		if ((field_name == "current_price") && ((value as unknown as number) == -1)) return "N/A";
+		if ((field_name == "current_price") && ((value as number) == -1)) return "N/A";
 
-		if (this.props.data_table.props.date_fields?.contains (field_name)) return Date.format (value as string);
-		if (this.props.data_table.props.currency_fields?.contains (field_name)) return (value as number)?.number_format (currency_decimals);
-		if (this.props.data_table.props.numeric_fields?.contains (field_name)) return (value as number)?.number_format (numeric_decimals);
+		if (this.props.data_table.props.date_fields?.contains (field_name)) return Date.format (value as Date);
+		if (this.props.data_table.props.currency_fields?.contains (field_name)) return (value as Number)?.number_format (currency_decimals);
+		if (this.props.data_table.props.numeric_fields?.contains (field_name)) return (value as Number)?.number_format (numeric_decimals);
 
-		return value;
+		return (value as string);
+
 	}// format;
 
 
@@ -74,7 +75,6 @@ export default class DataTableRow extends BaseComponent<DataRowProps, DataRowSta
 
 
 	public render () {
-
 		return <div key={this.next_key} className={`table-row ${this.selected_class}`}
 
 			onMouseOver={(event: MouseEvent) => this.active_row (event.target).classList.add ("highlighted")}
@@ -86,7 +86,7 @@ export default class DataTableRow extends BaseComponent<DataRowProps, DataRowSta
 
 			{this.props.field_names.map (field_name => {
 				
-				let value: (string | number) = this.props.row [field_name as keyof IBaseModel];
+				let value: string | number | Date = this.props.row [field_name as keyof IBaseModel];
 
 				return <div key={this.next_key} style={ this.styles (field_name, value) }
 
@@ -106,7 +106,6 @@ export default class DataTableRow extends BaseComponent<DataRowProps, DataRowSta
 			})}
 
 		</div>
-
 	}// render;
 
 }// DataTableRow;

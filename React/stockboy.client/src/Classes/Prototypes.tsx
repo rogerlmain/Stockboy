@@ -1,5 +1,8 @@
-import React, { Component, DOMAttributes } from "react";
+import NameValueCollection from "Classes/Collections";
+
+import { Component, DOMAttributes } from "react";
 import { date_format } from "Classes/Globals";
+import Decimal from "./Decimal";
 
 
 export {}
@@ -35,6 +38,7 @@ declare global {
 
 	interface FormData {
 		remove_empties ();
+		round_fields (rounded_fields: NameValueCollection<number>);
 	}// FormData;
 
 
@@ -93,13 +97,12 @@ declare global {
 
 	interface String {
 		contains (substring: string): boolean;
-		integerValue (): number;
 		isInteger (): boolean;
 		leadingCharacters (char: string)
 		matches (candidate: string): boolean;
+		parseInt (): number;
 		parseNumeric (): string;
 		parts (delimiter: string, minimum: number, maximum: number): Array<string>;
-		strip_non_numeric ();
 		titleCase (strip_spaces?: boolean): string;
 		trimmedEnd (value: string): string;
 	}// String;
@@ -147,10 +150,12 @@ Array.prototype.getIntegers = function (allow_non_numeric: boolean = false): Arr
 	this.forEach ((value: string) => {
 
 		if (value == String.Empty) value = "0";
-		if (!value.isInteger () && !allow_non_numeric) throw `Invalid value in Array.prototype.getNumbers: ${value}`;
+		if (!value.isInteger () && !allow_non_numeric) {
+			throw `Invalid value in Array.prototype.getIntegers: ${value}`;
+		}
 		if (is_null (result)) result = new Array<number> ();
 
-		result.push (parseInt (value));
+		result.push (value.parseInt () ?? 0);
 
 	});
 
@@ -219,6 +224,33 @@ FormData.prototype.remove_empties = function () {
 	return form_data;
 
 }// remove_empties;
+
+
+FormData.prototype.round_fields = function (rounded_fields: NameValueCollection<number>) {
+
+	for (let entry of this.entries ()) {
+
+		if (entry [1] == "true") {
+			this.delete (entry [0]);
+			this.append (entry [0], true as unknown as Blob);
+		}
+
+		if (isset (rounded_fields)) {
+			if (Object.keys (rounded_fields).contains (entry [0])) {
+
+				let field_name = entry [0];
+				let rounded_value: string = Decimal.round (parseFloat (entry [1] as string), rounded_fields [field_name]).toString ();
+
+				this.delete (field_name);
+				this.append (field_name, rounded_value);
+
+			}// if;
+		}// for;
+	}// if;
+
+	return this;
+
+}// round_fields;
 
 
 /**** HTMLElement Prototype Functions ****/
@@ -299,8 +331,8 @@ HTMLInputElement.prototype.clear_commas = function () {
 
 HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 
-	let decimal_places: number = (this.getAttribute ("type") == "currency") && !this.hasAttribute ("decimalPlaces") ? currency_decimals : (this.getAttribute ("decimalPlaces")?.integerValue () ?? 0);
-	let leading_zeros: number = this.getAttribute ("leadingZeros")?.integerValue () ?? 0;
+	let decimal_places: number = (this.getAttribute ("type") == "currency") && !this.hasAttribute ("decimalPlaces") ? currency_decimals : (this.getAttribute ("decimalPlaces")?.parseInt () ?? 0);
+	let leading_zeros: number = this.getAttribute ("leadingZeros")?.parseInt () ?? 0;
 	let negative_numbers: boolean = this.getAttribute ("negativeNumbers")?.toLowerCase () == "true";
 
 	let value = `${this.value.substring (0, this.selectionStart)}${event.key}${this.value.substring (this.selectionEnd)}`;
@@ -421,16 +453,11 @@ String.isString = function (candidate: any) { return typeof candidate == "string
 String.prototype.contains = function (substring: string) { return this.indexOf (substring) > -1 }
 
 
-String.prototype.integerValue = function () {
-	let result = parseInt (this.toString ());
-	return (result.toString () == this) ? result : 0;
-} // integer_value;
-
-
-String.prototype.isInteger = function () { 
+String.prototype.isInteger = function () {
 
 	for (let char of this) {
-		if (!digits.includes (parseInt (char))) return false;
+		if (char == "-") continue;
+		if (!digits.contains (parseInt (char))) return false;
 	}// for;
 
 	return true;
@@ -458,12 +485,19 @@ String.prototype.matches = function (candidate: string) {
 }// matches;
 
 
-String.prototype.parseNumeric = function () {
+String.prototype.parseInt = function (): number {
+	return (~~this).toString () == this ? ~~this : null;
+}// parseInt;
 
-	let result: string = String.Empty;
 
-	for (let char of this) {
-		if (digits.includes (parseInt (char))) result += char;
+String.prototype.parseNumeric = function (allow_negatives: boolean = true, allow_decimals: boolean = true) {
+
+	let result = String.Empty;
+
+	for (let index = 0; index < this.length; index++) {
+		if (allow_negatives && (this [index] == "-") && (index == 0)) { result += this [index]; continue; }
+		if (allow_decimals && (this [index] == ".") && (!result.contains ("."))) { result += this [index]; continue; }
+		if (digits.contains (parseInt (this [index]))) result += this [index];
 	}// for;
 
 	return result;
@@ -488,21 +522,6 @@ String.prototype.parts = function (delimiter: string, minimum: number = null, ma
 }// parts;
 
 
-String.prototype.strip_non_numeric = function (): String {
-
-	let result = String.Empty;
-
-	for (let index = 0; index < this.length; index++) {
-		if ((this [index] == "-") && (index == 0)) { result += this [index]; continue; }
-		if ((this [index] == ".") && (!result.contains ("."))) { result += this [index]; continue; }
-		if (digits.contains (parseInt (this [index]))) result += this [index];
-	}// for;
-
-	return result;
-
-}// strip_non_numeric;
-
-
 String.prototype.titleCase = function (strip_spaces: boolean = false): string {
 
 	let words: String [] = this.replace (underscore, String.Space).split (String.Space);
@@ -522,7 +541,10 @@ String.prototype.trimmedEnd = function (value: string): string {
 
 	let new_value = this.toString ();
 
-	while (new_value.endsWith (value)) new_value = new_value.substring (0, new_value.lastIndexOf (value) - 1);
+	while (new_value.endsWith (value)) new_value = new_value.substring (0, new_value.lastIndexOf (value));
 	return new_value;
 
 }// trimmedEnd;
+
+
+

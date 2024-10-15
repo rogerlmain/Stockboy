@@ -1,4 +1,4 @@
-import BaseComponent from "Controls/BaseComponent";
+import { BaseComponent } from "Controls/BaseComponent";
 
 
 class ErrorWindowProps { text: string = null }

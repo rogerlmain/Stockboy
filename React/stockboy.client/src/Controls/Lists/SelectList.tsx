@@ -1,11 +1,11 @@
 import React, { ChangeEvent, ChangeEventHandler, RefObject, createRef } from "react";
 
-import BaseComponent, { BaseProps } from "Controls/BaseComponent";
-import InputElement, { InputElementContext } from "Controls/InputElement";
+import ListModel from "Models/ListModel";
 
+import InputElement, { InputElementContext } from "Controls/InputElement";
 import EditForm, { EditFormContext } from "Forms/EditForm";
 
-import ListModel from "Models/ListModel";
+import { BaseComponent, BaseProps } from "Controls/BaseComponent";
 
 
 export class BaseSelectListProps extends BaseProps {

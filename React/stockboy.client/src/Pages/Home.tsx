@@ -17,6 +17,7 @@ import TransactionsPage from "Pages/Transactions";
 
 import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControls";
 import { TickerListModel, TickerPriceModel } from "Models/Tickers";
+import Decimal from "../Classes/Decimal";
 
 
 const one_hour = 60 * 60 * 1000;
@@ -132,23 +133,23 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 	private update_holdings_list (): Promise<Array<HoldingsModel>> {
 		return new Promise (resolve => {
-			APIClass.fetch_data ("GetHoldings").then ((holdings: Array<HoldingsModel>) => {
+			APIClass.fetch_data ("GetHoldings").then (async (holdings: Array<HoldingsModel>) => {
 
 				if (is_null (holdings)) return resolve (null);
 
-				this.update_stock_prices (holdings).then ((stock_prices: Array<TickerPriceModel>) => {
-					if (isset (stock_prices)) holdings.forEach ((holding: HoldingsModel) => {
+				let stock_prices: Array<TickerPriceModel> = await this.update_stock_prices (holdings);
 
-						let stock_price: TickerPriceModel = stock_prices.find ((item: TickerPriceModel) => holding.ticker_id == item.id);
+				if (isset (stock_prices)) holdings.forEach ((holding: HoldingsModel) => {
+
+					let stock_price: TickerPriceModel = stock_prices.find ((item: TickerPriceModel) => holding.ticker_id == item.id);
 					
-						if (isset (stock_price)) holding.current_price = stock_price.price;
+					if (isset (stock_price)) holding.current_price = stock_price.price;
 
-					});
 				});
 
 				holdings.forEach ((holding: HoldingsModel) => {
-					holding.value = holding.quantity * holding.current_price;
-					holding.profit = holding.total_sale_price - holding.total_purchase_price;
+					holding.value = (holding.current_price < 0) ? 0 : holding.quantity * holding.current_price;
+					holding.profit = Decimal.subtract (holding.total_sale_price, holding.total_purchase_price);
 				});
 
 				resolve (holdings);

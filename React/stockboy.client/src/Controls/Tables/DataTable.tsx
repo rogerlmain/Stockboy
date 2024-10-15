@@ -1,12 +1,13 @@
 import React, { Component, CSSProperties, RefObject, createRef } from "react";
 
 import NameValueCollection, { KeyValuePair } from "Classes/Collections";
-import BaseComponent, { BaseProps, IBaseProps, IBaseState } from "Controls/BaseComponent";
+import { BaseComponent, BaseProps, IBaseProps, IBaseState } from "Controls/BaseComponent";
 import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
 
 import DataTableRow from "Controls/Tables/DataTableRow";
 
 import { IBaseModel } from "Models/Abstract/BaseModel";
+import Decimal from "../../Classes/Decimal";
 
 
 class DataTableState implements IBaseState {
@@ -102,36 +103,45 @@ export default class DataTable extends BaseComponent<DataTableProps> {
 
 
 	private calculate_totals () {
+
+		this.totals = null;
+
 		this.props.total_fields.forEach ((field: string) => {
 			this.props.data.forEach ((item: IBaseModel) => {
 				if (is_null (item?.[field])) return;
 				if (is_null (this.totals)) this.totals = new NameValueCollection<number> ();
-			//	if (Object.keys (this.totals)
+				this.totals [field] = Decimal.add (this.totals [field], item [field]);
 			});
 		});
+
 	}// calculate_totals;
 
 
 	private show_totals () {
+
+		let field_name = (field: string | KeyValuePair<string>) => String.isString (field) ? (field as string) : Object.keys (field) [0];
+
+		let blank_field = (name: string, index: number): boolean => {
+			if (index == (this.props.fields.length - 1)) return false;
+			if (this.props.total_fields.contains (field_name (this.props.fields [index + 1]))) return false;
+			if (this.props.total_fields.contains (field_name (this.props.fields [index + 1]))) return false;
+			return true;
+		}// blank_field;
+
 		return <div style={{ fontWeight: "bold", display: "contents" }}>
 			{this.props.fields.map ((field: string | NameValueCollection<string>) => {
 
-				let field_index: number = this.props.fields.indexOf (field);
-				let field_name: string = String.isString (field) ? field : field [Object.keys (field) [0]];
+				let index: number = this.props.fields.indexOf (field);
+				let name: string = field_name (field);
+				let total = this.totals?.[name] ?? 0;
 
-				if (field_index == 0) return <div>Total</div>
-				if (this.props.total_fields.contains (field_name)) {
+				if (index == 0) return <div style={{ borderRight: "none" }}>Total</div>
+				if (!this.props.total_fields.contains (name)) return <div style={blank_field (name, index) ? { borderRight: "none" } : null}></div>
 
-					let border_style: CSSProperties = { textAlign: "right" };
-					let total = 0;
+				if (this.props.currency_fields?.contains (name)) total = Decimal.padFractions (total, currency_decimals);
+				if (this.props.numeric_fields?.contains (name)) total = Decimal.padFractions (total, numeric_decimals);
 
-					if ((field_index == (this.props.fields.length - 1)) || (!this.props.total_fields.contains (this.props.fields [field_index + 1]))) border_style.borderRight = "none";
-					this.props.data.forEach ((datum: IBaseModel) => total += datum [field_name]);
-					// calculate and show the total
-					return <div style={border_style}>{total}</div>;
-				}// if;
-
-				return <div style={{ borderRight: "none" }}></div>
+				return <div style={{ textAlign: "right", borderLeft: "solid 1px var(--table-border) !important" }}>{total}</div>
 
 			})}
 		</div>

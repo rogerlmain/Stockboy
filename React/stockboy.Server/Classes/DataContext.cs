@@ -11,6 +11,7 @@ namespace Stockboy.Server.Classes {
 		public DbSet<TransactionTypeModel> transaction_types { get; set; }
 		public DbSet<TransactionDataModel> transactions { get; set; }
 		public DbSet<SplitDataModel> splits { get; set; }
+		public DbSet<DividendDataModel> dividends { get; set; }
 
 		public DbSet<ActivityView> activity_view { get; set; }
 

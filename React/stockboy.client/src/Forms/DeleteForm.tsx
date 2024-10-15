@@ -1,4 +1,4 @@
-import BaseComponent, { BaseProps } from "Controls/BaseComponent";
+import { BaseComponent, BaseProps } from "Controls/BaseComponent";
 import APIClass from "Classes/APIClass";
 import Eyecandy from "Controls/Eyecandy";
 

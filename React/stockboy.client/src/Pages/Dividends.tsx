@@ -8,10 +8,11 @@ import { EditTransactionForm } from "Forms/EditTransactionForm";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: ["broker", "ticker", "amount_per_share", "share_quantity", {payout: "Total Payout"}, "issue_date"],
+	fields: ["broker", "ticker", "issue_date", "amount_per_share", "share_quantity", {payout: "Total Payout"}],
 	date_fields: ["issue_date"],
 	numeric_fields: ["share_quantity"],
-	currency_fields: ["amount_per_share", "payout"]
+	currency_fields: ["amount_per_share", "payout"],
+	total_fields: ["payout"]
 }// properties;
 
 export default class DividendsPage extends BasePage {

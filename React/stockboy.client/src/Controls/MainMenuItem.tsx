@@ -1,7 +1,7 @@
 import React, { ReactElement, RefObject, createRef } from "react";
 
 import MainPage from "Pages/Main";
-import BaseComponent from "Controls/BaseComponent";
+import { BaseComponent } from "Controls/BaseComponent";
 import BasePage from "Pages/Abstract/BasePage";
 
 

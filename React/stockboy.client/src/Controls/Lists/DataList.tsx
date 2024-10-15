@@ -1,12 +1,12 @@
 import APIClass from "Classes/APIClass";
 
-import BaseComponent, { IBaseProps } from "Controls/BaseComponent";
-import SelectList, { BaseSelectListProps } from "Controls/Lists/SelectList";
-
-import { createRef, RefObject } from "react";
-
 import Eyecandy from "Controls/Eyecandy";
 import ListModel from "Models/ListModel";
+
+import SelectList, { BaseSelectListProps } from "Controls/Lists/SelectList";
+
+import { BaseComponent, IBaseProps } from "Controls/BaseComponent";
+import { createRef, RefObject } from "react";
 
 
 class DataListProps extends BaseSelectListProps implements IBaseProps {
@@ -39,7 +39,7 @@ export default class DataList extends BaseComponent<DataListProps, DataListState
 			return;
 		}// if;
 
-		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.props.table.titleCase ()}`, this.props.parameters).then ((response: Array<ListModel>) => {
+		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.props.table.titleCase (true)}`, this.props.parameters).then ((response: Array<ListModel>) => {
 			this.setState ({ 
 				data: response,
 				loading: false

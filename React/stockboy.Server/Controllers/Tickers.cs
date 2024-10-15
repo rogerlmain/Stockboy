@@ -19,13 +19,23 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpGet]
 		[Route ("GetTickers")]
-		public IActionResult GetTickers () => new JsonResult (context?.tickers.SelectAll ().OrderBy ("name"));
+		public IActionResult GetTickers () {
+			var result = new JsonResult (context?.tickers.SelectAll ().OrderBy ("name"));
+			return result;
+		}
 
-
+/*
 		[HttpPost]
 		[Route ("GetTickers")]
-		public IActionResult GetTickers ([FromBody] TickerParameters parameters) => new JsonResult (Database.CallProcedure<TickerModel> ("get_transaction_tickers", parameters));
-
+		public IActionResult GetTickers ([FromBody] TickerParameters parameters) {
+			try {
+				var result = new JsonResult (Database.CallProcedure<TickerModel> ("get_tickers", parameters));
+				return result;
+			} catch (Exception except) {
+				return new JsonResult (new { error = except.Message });
+			}// try;
+		}// GetTickers;
+*/
 
 		[HttpPost]
 		[Route ("SaveTicker")]

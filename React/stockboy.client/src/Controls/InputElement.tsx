@@ -1,9 +1,9 @@
-import React, { RefObject, ReactElement, Context, createRef, cloneElement, createContext } from "react";
+import NameValueCollection from "Classes/Collections";
 
-import BaseComponent, { BaseProps } from "Controls/BaseComponent";
+import React, { RefObject, ReactElement, Context, createRef, cloneElement, createContext } from "react";
 import EditForm, { EditFormContext } from "Forms/EditForm";
 
-import NameValueCollection from "Classes/Collections";
+import { BaseComponent, BaseProps } from "Controls/BaseComponent";
 
 
 class InputElementProps extends BaseProps {

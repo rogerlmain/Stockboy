@@ -1,5 +1,6 @@
-import BaseComponent from "Controls/BaseComponent";
 import StylesheetList from "Classes/StylesheetList";
+
+import { BaseComponent } from "Controls/BaseComponent";
 
 
 export enum direction_type {
