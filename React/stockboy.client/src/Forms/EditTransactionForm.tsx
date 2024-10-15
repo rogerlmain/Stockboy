@@ -10,43 +10,33 @@ import { StockDataModel } from "Models/Abstract/BaseModel";
 
 
 class EditTransactionFormProps extends StockDataModel {
+	price: number = null;
+	quantity: number = null;
+	transaction_date: Date = null;
+	settlement_date: Date = null;
+	transaction_type_id: string = null;
 	data?: TransactionDataModel = null;
 }// EditTransactionFormProps;
 
 
-class EditTransactionFormState {
-	broker_id: string = null;
-}// EditTransactionFormState;
-
-
-export class EditTransactionForm extends BaseComponent<EditTransactionFormProps, EditTransactionFormState> {
+export class EditTransactionForm extends BaseComponent<EditTransactionFormProps> {
 
 
 	private static defaultValues = {
-		broker_id: null,
-		ticker_id: null,
-		price: null,
-		quantity: null,
-		transaction_date: null,
-		settlement_date: null,
-		transaction_type_id: null,
-	}// defaultProps;
+		broker_id: "bf6be2f3-7141-11ef-b1e8-a4f933c45288",
+		ticker_id: "153d3272-7168-11ef-b1e8-a4f933c45288",
+		price: 0.2622,
+		quantity: 50,
+		transaction_date: "2023-05-30T00:00:00",
+		settlement_date: "2023-05-30T00:00:00",
+		transaction_type_id: "f5f589b0-71ce-4fee-af61-7516f11a90e2",
+	}// defaultValues;
 
 
 	/********/
 
 
-	public static defaultProps = {
-		broker_id: null,
-		ticker_id: null,
-		data: null,
-	}// defaultProps;
-
-
-	public state: EditTransactionFormState = new EditTransactionFormState ();
-
-
-	public componentDidMount = () => this.setState ({ broker_id: this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id });
+	public static defaultProps = new EditTransactionFormProps ();
 
 
 	public render () { 
@@ -56,8 +46,8 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 
 			<div className="two-column-grid">
 				<TickerSelector id={this.props.id} data={this.props.data}
-					broker_id={this.props.broker_id} 
-					ticker_id={this.props.ticker_id}>
+					broker_id={this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id} 
+					ticker_id={this.props.ticker_id ?? EditTransactionForm.defaultValues.ticker_id}>
 				</TickerSelector>
 			</div>
 
@@ -73,13 +63,13 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps,
 
 				<InputElement id="transaction_date" label="Transaction Date">
 					<input type="date" id="transaction_date" name="transaction_date" 
-						defaultValue={Date.format (isset (this.props.data) ? this.props.data.transaction_date : EditTransactionForm.defaultValues.transaction_date, date_format.database)}>
+						defaultValue={Date.format (this.props.data?.transaction_date ?? EditTransactionForm.defaultValues.transaction_date, date_format.database)}>
 					</input>
 				</InputElement>
 
 				<InputElement id="settlement_date" label="Settlement Date">
 					<input type="date" id="settlement_date" name="settlement_date" 
-						defaultValue={Date.format (isset (this.props.data) ? this.props.data.settlement_date : EditTransactionForm.defaultValues.settlement_date, date_format.database)}>
+						defaultValue={Date.format (this.props.data?.settlement_date ?? EditTransactionForm.defaultValues.settlement_date, date_format.database)}>
 					</input>
 				</InputElement>
 			</div>

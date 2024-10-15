@@ -1,6 +1,6 @@
 /**** Interfaces ****/
 
-export interface IBaseModel { id: string }
+export interface IBaseModel { id?: string }
 
 
 export interface IStockModel extends IBaseModel {
@@ -17,15 +17,15 @@ export interface IStockDataModel extends IStockModel {
 /**** Classes ****/
 
 
-export abstract class BaseModel implements IBaseModel { public id: string = null }
+export abstract class BaseModel implements IBaseModel { public id?: string = null }
 
 
 export abstract class StockModel extends BaseModel implements IStockModel {
-	broker_id: string = null;
-	ticker_id: string = null;
+	broker_id: string;
+	ticker_id: string;
 }// StockModel;
 
 
 export abstract class StockDataModel extends StockModel implements IStockDataModel {
-	data?: IStockModel = null;
+	data?: IStockModel;
 }// StockDataModel;

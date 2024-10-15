@@ -31,6 +31,12 @@ export default class TickerSelector extends BaseComponent<StockModel, TickerSele
 	}// componentDidMount;
 
 
+	public componentDidMount = () => this.setState ({
+		broker_id: this.props.broker_id,
+		ticker_id: this.props.ticker_id,
+	});
+
+
 	public render () {
 		return <div className="container">
 			<InputElement>

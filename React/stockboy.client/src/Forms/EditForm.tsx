@@ -9,7 +9,7 @@ import { ComponentClass, ComponentType, Context, MouseEvent, ReactElement, RefOb
 
 
 export class EditFormProps extends StockDataModel {
-	body: ComponentClass<IStockDataModel>;
+	body: ComponentClass<any>;
 	parent: DataPage;
 }// IEditFormProps;
 

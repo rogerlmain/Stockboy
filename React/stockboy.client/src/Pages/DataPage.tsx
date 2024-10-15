@@ -11,7 +11,7 @@ import { ComponentClass, ComponentType, RefObject, createRef } from "react";
 
 
 class DataPageProps extends BaseProps implements IBaseProps {
-	edit_form: ComponentClass<IStockModel> = null;
+	edit_form: ComponentClass<any> = null;
 	table_properties: DataTableProperties = null;
 	name: string = null;
 }// DataPageProps;
