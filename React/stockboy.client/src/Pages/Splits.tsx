@@ -1,6 +1,6 @@
 import DataPage from "Pages/DataPage";
 import { BaseComponent } from "Controls/BaseComponent";
-import SplitModel from "Models/Splits";
+import SplitModel from "Models/Data/SplitDataModel";
 
 import { EditSplitForm } from "Forms/EditSplitForm";
 import { DataTableProperties } from "Controls/Tables/DataTable";

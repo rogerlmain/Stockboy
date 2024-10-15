@@ -22,6 +22,9 @@ export default class TickerSelector extends BaseComponent<StockModel, TickerSele
 	}// defaultProps;
 
 
+	public state: TickerSelectorState = new TickerSelectorState ();
+
+
 	public componentDidUpdate (previous_props: StockModel) {
 		if (this.props.broker_id != previous_props.broker_id) this.setState ({broker_id: this.props.broker_id});
 		if (this.props.ticker_id != previous_props.ticker_id) this.setState ({ticker_id: this.props.ticker_id});
@@ -38,7 +41,7 @@ export default class TickerSelector extends BaseComponent<StockModel, TickerSele
 
 			<InputElement>
 				<TickerList selected_item={this.state.ticker_id} 
-					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: event.target.value})}>
+					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.target.value})}>
 				</TickerList>
 			</InputElement>
 		</div>

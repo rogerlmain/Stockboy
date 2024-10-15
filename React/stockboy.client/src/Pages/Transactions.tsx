@@ -1,7 +1,6 @@
-import { BaseComponent } from "Controls/BaseComponent";
 import DataPage from "Pages/DataPage";
-import TransactionModel from "Models/Transactions";
 
+import { BaseComponent } from "Controls/BaseComponent";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { EditTransactionForm } from "Forms/EditTransactionForm";
 

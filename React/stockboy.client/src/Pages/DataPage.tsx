@@ -7,11 +7,11 @@ import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 import { BaseComponent, BaseProps, IBaseProps, IBaseState } from "Controls/BaseComponent";
 import { DeleteForm } from "Forms/DeleteForm";
 import { IBaseModel, IStockDataModel, IStockModel } from "Models/Abstract/BaseModel";
-import { ComponentType, RefObject, createRef } from "react";
+import { ComponentClass, ComponentType, RefObject, createRef } from "react";
 
 
 class DataPageProps extends BaseProps implements IBaseProps {
-	edit_form: ComponentType<IStockDataModel> = null;
+	edit_form: ComponentClass<IStockModel> = null;
 	table_properties: DataTableProperties = null;
 	name: string = null;
 }// DataPageProps;

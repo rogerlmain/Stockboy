@@ -1,7 +1,7 @@
 import InputElement from "Controls/InputElement";
 import TickerSelector from "Controls/TickerSelector";
 
-import SplitDataModel from "Models/Splits";
+import SplitDataModel from "Models/Data/SplitDataModel";
 
 import { date_format } from "Classes/Globals";
 import { BaseComponent } from "Controls/BaseComponent";

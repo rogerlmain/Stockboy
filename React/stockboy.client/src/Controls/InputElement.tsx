@@ -34,7 +34,7 @@ export default class InputElement extends BaseComponent<InputElementProps> {
 
 
 	public handle_change (element: FormItem) {
-		if ((this.context as EditForm).state.complete) return;
+		if (is_null (this.context) || (this.context as EditForm).state.complete) return;
 		if (not_defined (element.value)) return element.style.border = "solid 1px red";
 		element.style.removeProperty ("border");
 	}// handle_change;

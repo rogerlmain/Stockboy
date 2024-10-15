@@ -1,10 +1,7 @@
-import React, { ChangeEvent, RefObject, createRef } from "react";
-
-import APIClass, { StockPriceData } from "Classes/APIClass";
-
+import Decimal from "Classes/Decimal";
 import LocalDate from "Classes/LocalDate";
 
-import HoldingsModel from "Models/Holdings";
+import HoldingsModel from "Models/Lists/HoldingsListModel";
 
 import Eyecandy from "Controls/Eyecandy";
 import Link from "Controls/Link";
@@ -15,9 +12,12 @@ import DataTable from "Controls/Tables/DataTable";
 
 import TransactionsPage from "Pages/Transactions";
 
+import APIClass, { StockPriceData } from "Classes/APIClass";
+import { ChangeEvent, RefObject, createRef } from "react";
+
 import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControls";
-import { TickerListModel, TickerPriceModel } from "Models/Tickers";
-import Decimal from "../Classes/Decimal";
+import { TickerPriceModel } from "Models/Tickers";
+import TickerSelector from "../Controls/TickerSelector";
 
 
 const one_hour = 60 * 60 * 1000;
@@ -202,23 +202,14 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 
 	private get filter_panel () {
-
-		if (is_null (this.state.data)) return;
-
 		return <form>
 			<div className="wide-column-spaced row-block">
-
-				<BrokerList header={SelectList.All} selected_item={this.state.broker_id} 
-					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: (event.currentTarget.value == SelectList.All ? null : event.currentTarget.value) })}>
-				</BrokerList>
-
-				<TickerList header={SelectList.All} broker_id={this.state.broker_id}
-					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.currentTarget.value })}>
-				</TickerList>
-
+				<TickerSelector id="ticker_selector"
+					broker_id={this.state.broker_id}
+					ticker_id={this.state.ticker_id}>
+				</TickerSelector>
 			</div>
 		</form>
-
 	}// filter_panel;
 
 

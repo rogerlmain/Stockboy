@@ -4,15 +4,15 @@ import Decimal from "Classes/Decimal";
 import InputElement from "Controls/InputElement";
 import TickerSelector from "Controls/TickerSelector";
 
-import DividendDataModel from "Models/Dividends";
+import DividendDataModel from "Models/Data/DividendDataModel";
 
 import { date_format } from "Classes/Globals";
 import { FormComponent } from "Controls/Abstract/FormComponent";
-import { StockDataModel } from "Models/Abstract/BaseModel";
+import { IStockDataModel, StockDataModel } from "Models/Abstract/BaseModel";
 import { ChangeEvent, RefObject, createRef } from "react";
 
 
-class EditDividendFormProps extends StockDataModel {
+class EditDividendFormProps extends StockDataModel implements IStockDataModel {
 	data?: DividendDataModel = null;
 }// EditDividendFormProps;
 

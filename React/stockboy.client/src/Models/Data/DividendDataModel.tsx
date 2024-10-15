@@ -1,7 +1,7 @@
 import { IStockModel, StockModel } from "Models/Abstract/BaseModel";
 
 
-export default class DividendDataModel extends StockModel {
+export default class DividendDataModel extends StockModel implements IStockModel {
 	broker: string = null;
 	ticker: string = null;
 	issue_date: Date = null;

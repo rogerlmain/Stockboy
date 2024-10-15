@@ -2,7 +2,7 @@ import InputElement from "Controls/InputElement";
 import TransactionTypeList from "Controls/Lists/TransactionTypeList";
 import TickerSelector from "Controls/TickerSelector";
 
-import TransactionDataModel from "Models/Transactions";
+import TransactionDataModel from "Models/Data/TransactionDataModel";
 
 import { date_format } from "Classes/Globals";
 import { BaseComponent } from "Controls/BaseComponent";

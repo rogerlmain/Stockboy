@@ -5,11 +5,11 @@ import { FormComponent } from "Controls/Abstract/FormComponent";
 import { BaseComponent } from "Controls/BaseComponent";
 
 import { IBaseModel, IStockDataModel, StockDataModel } from "Models/Abstract/BaseModel";
-import { ComponentType, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
+import { ComponentClass, ComponentType, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
 
 
 export class EditFormProps extends StockDataModel {
-	body: ComponentType<IStockDataModel>;
+	body: ComponentClass<IStockDataModel>;
 	parent: DataPage;
 }// IEditFormProps;
 
