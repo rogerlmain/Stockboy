@@ -9,6 +9,7 @@ class BrokerListProps extends BaseProps {
 	title?: string;
 	header?: string;
 	selected_item?: string;
+	selectable_header?: Boolean;
 	onChange?: ChangeEventHandler<HTMLSelectElement>;
 }// BrokerListProps;
 
@@ -25,7 +26,7 @@ export default class BrokerList extends DataControl<BrokerListProps> {
 
 	public render () {
 		return <DataList name="broker_id" title={this.props.title ?? "Broker"} header={this.props.header} table="brokers"
-			selected_item={this.props.selected_item}
+			selected_item={this.props.selected_item} selectable_header={this.props.selectable_header}
 			onChange={this.props.onChange}>
 		</DataList>
 	}// render;

@@ -22,13 +22,13 @@ class EditTransactionFormProps extends StockDataModel {
 export class EditTransactionForm extends BaseComponent<EditTransactionFormProps> {
 
 
-	private static defaultValues = {
+	private static defaultValues: EditTransactionFormProps = {
 		broker_id: "bf6be2f3-7141-11ef-b1e8-a4f933c45288",
 		ticker_id: "153d3272-7168-11ef-b1e8-a4f933c45288",
 		price: 0.2622,
 		quantity: 50,
-		transaction_date: "2023-05-30T00:00:00",
-		settlement_date: "2023-05-30T00:00:00",
+		transaction_date: new Date ("2023-05-30T00:00:00"),
+		settlement_date: new Date ("2023-05-30T00:00:00"),
 		transaction_type_id: "f5f589b0-71ce-4fee-af61-7516f11a90e2",
 	}// defaultValues;
 
@@ -36,7 +36,10 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps>
 	/********/
 
 
-	public static defaultProps = new EditTransactionFormProps ();
+	public static defaultProps: EditTransactionFormProps = new EditTransactionFormProps ();
+
+
+	public props: EditTransactionFormProps = EditTransactionForm.defaultProps;
 
 
 	public render () { 
@@ -46,8 +49,8 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps>
 
 			<div className="two-column-grid">
 				<TickerSelector id={this.props.id} data={this.props.data}
-					broker_id={this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id} 
-					ticker_id={this.props.ticker_id ?? EditTransactionForm.defaultValues.ticker_id}>
+					broker_id={this.props.data?.broker_id ?? this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id} 
+					ticker_id={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditTransactionForm.defaultValues.ticker_id}>
 				</TickerSelector>
 			</div>
 

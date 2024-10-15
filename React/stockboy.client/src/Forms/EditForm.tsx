@@ -4,8 +4,8 @@ import DataPage from "Pages/DataPage";
 import { FormComponent } from "Controls/Abstract/FormComponent";
 import { BaseComponent } from "Controls/BaseComponent";
 
-import { IBaseModel, IStockDataModel, StockDataModel } from "Models/Abstract/BaseModel";
-import { ComponentClass, ComponentType, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
+import { StockDataModel } from "Models/Abstract/BaseModel";
+import { ComponentClass, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
 
 
 export class EditFormProps extends StockDataModel {
@@ -26,6 +26,18 @@ export const EditFormContext: Context<EditForm> = createContext (null);
 export default class EditForm extends BaseComponent<EditFormProps, EditFormState> {
 
 	private form_ref: RefObject<HTMLFormElement> = createRef ();
+	private editor_ref: RefObject<any> = createRef ();
+
+
+	private get_edit_form (form_data: FormData) {
+		let editor_data = Object.create (this.props.body.defaultProps.constructor.prototype);
+
+		for (let entry of form_data.entries ()) {
+			editor_data [entry [0]] = entry [1];
+		}// for;
+
+		return <EditForm {...this.props} data={editor_data}/>;
+	}// get_edit_form;
 
 
 	private required_fields_completed (): boolean {
@@ -77,7 +89,7 @@ export default class EditForm extends BaseComponent<EditFormProps, EditFormState
 					Transaction saved. Save another one?
 
 					<div className="button-bar">
-						<button onClick={() => main_page.popup_window.show (<EditForm {...this.props} />)}>Yes</button>
+						<button onClick={() => main_page.popup_window.show (this.get_edit_form (form_data))}>Yes</button>
 						<button onClick={() => main_page.popup_window.hide ()}>No</button>
 					</div>
 
@@ -115,7 +127,7 @@ export default class EditForm extends BaseComponent<EditFormProps, EditFormState
 
 				<div className={`${this.state.complete ? "hidden" : String.Empty} row-centered warning`}>The highlighted fields are required.</div>
 
-				<form ref={this.form_ref}><this.props.body id={this.props.id} data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} /></form>
+				<form ref={this.form_ref}><this.props.body id={this.props.id} data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} ref={this.editor_ref} /></form>
 
 				<div className="button-bar">
 					<button id="save_button" onClick={(event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>

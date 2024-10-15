@@ -56,6 +56,7 @@ export default class DataList extends BaseComponent<DataListProps, DataListState
 		name: null,
 		header: null,
 		selected_item: null,
+		selectable_header: false,
 		onChange: null,
 		disabled: null,
 		title: null,

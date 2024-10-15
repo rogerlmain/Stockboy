@@ -12,6 +12,7 @@ export class BaseSelectListProps extends BaseProps {
 	name: string;
 	header?: string;
 	selected_item?: string;
+	selectable_header?: Boolean;
 	onChange?: ChangeEventHandler<HTMLSelectElement>;
 	disabled?: boolean;
 }// BaseSelectListProps;
@@ -45,9 +46,6 @@ export default class SelectList extends BaseComponent<SelectListProps, SelectLis
 		disabled: false,
 		data: null,
 	}// defaultProps;
-
-
-	public static All: string = "All";
 
 
 	public state: SelectListState = new SelectListState ();
@@ -97,7 +95,10 @@ export default class SelectList extends BaseComponent<SelectListProps, SelectLis
 
 			disabled={this.props.disabled}>
 
-			{not_set (this.state.selected_item) || (this.props.header == SelectList.All) ? <option key={this.next_key} value={String.Empty}>{this.props.header ?? `Select ${this.props.name.replace (underscore, String.Space)}`}</option> : null}
+			{not_set (this.state.selected_item) || (this.props.selectable_header) ? <option key={this.next_key} value={String.Empty}>
+				{this.props.header ?? (this.props.selectable_header ? "All" : null) ?? `Select ${this.props.name.replace (underscore, String.Space)}`}
+			</option> : null}
+
 			{this.props.data?.map ((item: ListModel) => <option key={this.next_key} value={item.id} selected={item.id == this.state.selected_item}>{item.name}</option>)}
 
 		</select>

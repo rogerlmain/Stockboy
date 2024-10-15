@@ -7,13 +7,20 @@ import { IStockModel, StockDataModel, StockModel } from "Models/Abstract/BaseMod
 import { ChangeEvent } from "react";
 
 
+class TickerSelectorProps extends StockModel {
+	onBrokerChange?: Function = null;
+	onTickerChange?: Function = null;
+	selectable_header?: Boolean = true;
+}// TickerSelectorProps;
+
+
 class TickerSelectorState {
 	broker_id: string = null;
 	ticker_id: string = null;
 }// TickerSelectorState;
 
 
-export default class TickerSelector extends BaseComponent<StockModel, TickerSelectorState> {
+export default class TickerSelector extends BaseComponent<TickerSelectorProps, TickerSelectorState> {
 
 	public static defaultProps = {
 		broker_id: null,
@@ -40,14 +47,20 @@ export default class TickerSelector extends BaseComponent<StockModel, TickerSele
 	public render () {
 		return <div className="container">
 			<InputElement>
-				<BrokerList selected_item={this.state.broker_id}
-					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ broker_id: event.target.value})}>
+				<BrokerList selected_item={this.state.broker_id} selectable_header={this.props.selectable_header}
+					onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+						this.setState ({ broker_id: event.target.value});
+						if (isset (this.props.onBrokerChange)) this.props.onBrokerChange (event.target.value);
+					}}>
 				</BrokerList>
 			</InputElement>
 
 			<InputElement>
-				<TickerList selected_item={this.state.ticker_id} 
-					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ ticker_id: event.target.value})}>
+				<TickerList selected_item={this.state.ticker_id} selectable_header={this.props.selectable_header}
+					onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+						this.setState ({ ticker_id: event.target.value})
+						if (isset (this.props.onTickerChange)) this.props.onTickerChange (event.target.value);
+					}}>
 				</TickerList>
 			</InputElement>
 		</div>

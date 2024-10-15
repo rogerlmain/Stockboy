@@ -118,9 +118,10 @@ export default class DataPage extends BaseComponent <DataPageProps, DataPageStat
 
 		<form>
 			<div className="wide-column-spaced row-block">
-				<TickerSelector id="ticker_selector" data={this.state.data}
-					broker_id={this.state.broker_id} 
-					ticker_id={this.state.ticker_id}>
+				<TickerSelector id="ticker_selector" data={this.state.data} selectable_header={true}
+					broker_id={this.state.broker_id} ticker_id={this.state.ticker_id}
+					onBrokerChange={(value: string) => this.setState ({ broker_id: value })}
+					onTickerChange={(value: string) => this.setState ({ ticker_id: value })}>
 				</TickerSelector>
 			</div>
 		</form>
