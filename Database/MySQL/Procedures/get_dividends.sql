@@ -6,10 +6,11 @@ create procedure get_dividends (broker_id varchar (36), ticker_id varchar (36)) 
 
 	select
 		dvd.id,
-        brk.name as broker,
-        tck.name as ticker,
         dvd.broker_id,
         dvd.ticker_id,
+        brk.name as broker,
+        tck.name as company,
+        tck.symbol as ticker,
         dvd.issue_date,
         dvd.amount_per_share,
         dvd.share_quantity,

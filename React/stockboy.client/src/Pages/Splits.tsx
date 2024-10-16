@@ -8,7 +8,7 @@ import { SplitListModel } from "../Models/SplitModels";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: ["broker", "symbol", "company", "previous", "current", "split_date"],
+	fields: ["broker", "company", "ticker", "previous", "current", "split_date"],
 	date_fields: ["split_date"],
 	numeric_fields: ["previous", "current"]
 }// properties;

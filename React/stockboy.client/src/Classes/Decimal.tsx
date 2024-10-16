@@ -14,7 +14,7 @@ class DecimalValue {
 
 		let parts: Array<string> = (value?.toString () ?? "0").parts (".", 1, 2);
 		let values: Array<number> = null;
-		let sign: string = (parts [0][0] == "-") && "-";
+		let sign: string = (parts [0][0] == "-") ? "-" : String.Empty;
 
 		if (parts.length == 1) parts.push ("0");
 		

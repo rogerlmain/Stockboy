@@ -9,7 +9,7 @@ import { DividendListModel } from "Models/DividendModels";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: ["broker", "ticker", "issue_date", "amount_per_share", "share_quantity", {payout: "Total Payout"}],
+	fields: ["broker", "company", "ticker", "issue_date", "amount_per_share", "share_quantity", {payout: "Total Payout"}],
 	date_fields: ["issue_date"],
 	numeric_fields: ["share_quantity"],
 	currency_fields: ["amount_per_share", "payout"],

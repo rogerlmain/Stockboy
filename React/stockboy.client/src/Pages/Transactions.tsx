@@ -8,7 +8,7 @@ import { TransactionListModel } from "Models/TransactionModels";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: ["broker", "ticker", "company", "transaction_date", "settlement_date", "quantity", "price", "cost", "transaction_type"],
+	fields: ["broker", "company", "ticker", "transaction_date", "settlement_date", "quantity", "price", "cost", "transaction_type"],
 	date_fields: ["transaction_date", "settlement_date"],
 	numeric_fields: ["quantity"],
 	currency_fields: ["price", "cost"]

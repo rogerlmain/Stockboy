@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
-using System.Text;
 
 
 namespace Stockboy.Server.Controllers {
@@ -12,7 +10,10 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpPost]
 		[Route ("GetDividends")]
-		public IActionResult GetDividends ([FromBody] GetParameters parameters) => GetData ("get_dividends", parameters);
+		public IActionResult GetDividends ([FromBody] GetParameters parameters) {
+			var result = GetData ("get_dividends", parameters);
+			return result;
+		}
 
 
 		[HttpPost]

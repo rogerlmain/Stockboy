@@ -499,7 +499,7 @@ String.prototype.parts = function (delimiter: string, minimum: number = null, ma
 
 String.prototype.titleCase = function (strip_spaces: boolean = false): string {
 
-	let words: String [] = this.replace (underscore, String.Space).split (String.Space);
+	let words: String [] = this.replaceAll (underscore, String.Space).split (String.Space);
 	let result: String [] = new Array ();
 
 	words.forEach (word => {

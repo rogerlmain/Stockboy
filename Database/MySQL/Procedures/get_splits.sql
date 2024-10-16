@@ -8,9 +8,9 @@ create procedure get_splits (broker_id varchar (36), ticker_id varchar (36)) beg
 		spl.id,
         brk.id as broker_id,
         tck.id as ticker_id,
-		brk.name as broker,
         tck.name as company,
-        tck.symbol,
+		brk.name as broker,
+        tck.symbol as ticker,
 		previous,
         current,
         split_date

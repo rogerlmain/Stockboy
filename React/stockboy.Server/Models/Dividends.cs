@@ -17,10 +17,11 @@
 	}// DividendRequestModel;
 
 	public class DividendListModel: BaseModel {
-        public string broker { get; set; } = String.Empty;
-        public string ticker { get; set; } = String.Empty;
         public Guid broker_id { get; set; }
         public Guid ticker_id { get; set; }
+        public string broker { get; set; } = String.Empty;
+		public string company { get; set; } = String.Empty;
+        public string ticker { get; set; } = String.Empty;
         public DateTime issue_date { get; set; }
         public decimal amount_per_share { get; set; }
         public decimal share_quantity { get; set; }
