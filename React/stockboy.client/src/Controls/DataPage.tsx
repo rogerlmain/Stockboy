@@ -9,10 +9,12 @@ import { BaseProps, IBaseProps, IBaseState } from "Controls/Abstract/BasePropert
 import { DeleteForm } from "Forms/DeleteForm";
 import { IBaseModel, IStockModel } from "Models/Abstract/BaseModel";
 import { ComponentClass, RefObject, createRef } from "react";
+import { TransactionListModel } from "Models/TransactionModels";
 
 
 class DataPageProps extends BaseProps implements IBaseProps {
 	edit_form: ComponentClass<any> = null;
+	invisible_fields?: Array<string> = null;
 	table_properties: DataTableProperties = null;
 	name: string = null;
 }// DataPageProps;
@@ -36,7 +38,11 @@ export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 
 	private edit_record = (row: IStockModel = null) => main_page.popup_window.show (<EditForm id={this.props.id} data={row} body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this} />);
 
-	private delete_record = () => main_page.popup_window.show (<DeleteForm key_names={["broker_id", "ticker_id"]} parent={this} record={this.state.selected_row} />);
+
+	private delete_record = () => main_page.popup_window.show (<DeleteForm key_names={["broker_id", "ticker_id"]} parent={this}
+		invisible_fields={this.props.invisible_fields}
+		record={this.state.selected_row}>
+	</DeleteForm>);
 
 
 	/********/
@@ -100,9 +106,7 @@ export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 		if (isset (this.state.broker_id)) parameters ["broker_id"] = this.state.broker_id;
 		if (isset (this.state.ticker_id)) parameters ["ticker_id"] = this.state.ticker_id;
 
-		APIClass.fetch_data (`Get${this.props.name}s`, parameters).then ((response: Array<IStockModel>) => {
-			this.setState ({ data: response });
-		});
+		APIClass.fetch_data (`Get${this.props.name}s`, parameters).then ((response: Array<IStockModel>) => this.setState ({ data: response }));
 
 	}// fetch_data;
 

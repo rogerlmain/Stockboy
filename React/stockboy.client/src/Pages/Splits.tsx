@@ -3,6 +3,7 @@ import DataPage from "Controls/DataPage";
 
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { EditSplitForm } from "Forms/EditSplitForm";
+import { SplitListModel } from "../Models/SplitModels";
 
 
 const properties: DataTableProperties = {
@@ -14,5 +15,8 @@ const properties: DataTableProperties = {
 
 
 export default class SplitsPage extends BasePage {
-	public render = () => <DataPage table_properties={properties} edit_form={EditSplitForm} name="Split" />
+	public render = () => <DataPage name="Split" table_properties={properties}
+		invisible_fields={new SplitListModel ().constructor.prototype.invisible_fields}
+		edit_form={EditSplitForm}>
+	</DataPage>
 }// SplitsPage;

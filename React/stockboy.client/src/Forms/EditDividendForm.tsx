@@ -3,12 +3,12 @@ import Decimal from "Classes/Decimal";
 import InputElement from "Controls/InputElement";
 import TickerSelector from "Controls/TickerSelector";
 
-import DividendDataModel from "Models/Data/DividendDataModel";
-
 import { date_format } from "Classes/Globals";
 import { IStockDataModel, StockDataModel } from "Models/Abstract/BaseModel";
 import { ChangeEvent, RefObject, createRef } from "react";
-import { FormPage } from "../Pages/Abstract/FormPage";
+import { FormPage } from "Pages/Abstract/FormPage";
+import { DividendDataModel } from "Models/DividendModels";
+
 
 
 class EditDividendFormProps extends StockDataModel implements IStockDataModel {

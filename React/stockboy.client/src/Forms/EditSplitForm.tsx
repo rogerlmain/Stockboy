@@ -1,11 +1,10 @@
 import InputElement from "Controls/InputElement";
 import TickerSelector from "Controls/TickerSelector";
 
-import SplitDataModel from "Models/Data/SplitDataModel";
-
 import { date_format } from "Classes/Globals";
 import { IStockDataModel, StockModel } from "Models/Abstract/BaseModel";
 import { FormPage } from "Pages/Abstract/FormPage";
+import { SplitDataModel } from "Models/SplitModels";
 
 
 class EditSplitFormProps extends StockModel implements IStockDataModel {

@@ -1,7 +1,7 @@
 import APIClass from "Classes/APIClass";
 import DataPage from "Controls/DataPage";
 
-import { StockDataModel } from "Models/Abstract/BaseModel";
+import { BaseModel, IBaseModel, StockDataModel } from "Models/Abstract/BaseModel";
 import { FormPage } from "Pages/Abstract/FormPage";
 import { ComponentClass, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
 
@@ -21,7 +21,7 @@ class EditFormState {
 export const EditFormContext: Context<EditForm> = createContext (null);
 
 
-export default class EditForm extends FormPage<EditFormProps, EditFormState> {
+export default class EditForm<TModel = BaseModel> extends FormPage<EditFormProps, EditFormState> {
 
 	private form_ref: RefObject<HTMLFormElement> = createRef ();
 	private editor_ref: RefObject<any> = createRef ();

@@ -18,7 +18,6 @@ namespace Stockboy.Server.Controllers {
 		[HttpPost]
 		[Route ("SaveDividend")]
 		public IActionResult SaveDividend ([FromBody] DividendRequestModel parameters) {
-
 			if (parameters.reinvested) {
 				TransactionDataModel transaction = new ();
 				transaction.Merge<TransactionDataModel> (parameters).transaction_type_id = new Guid ("D6BC19B8-4BDE-4D87-9DB3-BAC3C41476B0");

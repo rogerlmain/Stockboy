@@ -4,12 +4,12 @@ import Eyecandy from "Controls/Eyecandy";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { IBaseModel } from "Models/Abstract/BaseModel";
-import { FormPage } from "Pages/Abstract/FormPage";
 import { ListPage } from "Pages/Abstract/ListPage";
 
 
 class DeleteFormProps extends BaseProps {
 	key_names: Array<string> = null;
+	invisible_fields: Array<string> = null;
 	record: IBaseModel = null;
 	parent: DataPage = null;
 }// DeleteFormProps;
@@ -31,29 +31,35 @@ export class DeleteForm extends ListPage<DeleteFormProps> {
 	}// delete_record;
 
 
-	public render = () => <div>
+	public render () {
+		return <div>
 
-		Delete<br />
+			Delete<br />
 
-		<br />
+			<br />
 
-		<div className="two-column-grid"> {
-			Object.keys (this.props.record).map (key => {
-				if (key == "id") return null;
-				return <div key={this.next_key} style={{ display: "contents" }}>
-					<label>{key.titleCase ()}:</label>
-					<div>{this.props.record [key]}</div>
-				</div>
-			})
-		} </div><br />
+			<div className="two-column-grid"> {
+				Object.keys (this.props.record).map (key => {
 
-		Are you sure?
+					//if (key == "id") return null;
+					if (this.props.invisible_fields?.contains (key)) return;
 
-		<div className="button-bar">
-			<button onClick={() => this.delete_record ()}>Yes</button>
-			<button onClick={() => main_page.popup_window.hide ()}>No</button>
+					return <div key={this.next_key} style={{ display: "contents" }}>
+						<label>{key.titleCase ()}:</label>
+						<div>{this.props.record [key]}</div>
+					</div>
+
+				})
+			} </div><br />
+
+			Are you sure?
+
+			<div className="button-bar">
+				<button onClick={() => this.delete_record ()}>Yes</button>
+				<button onClick={() => main_page.popup_window.hide ()}>No</button>
+			</div>
+
 		</div>
-
-	</div>
+	}// render;
 
 }// DeleteForm;

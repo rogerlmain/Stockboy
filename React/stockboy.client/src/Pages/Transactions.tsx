@@ -3,6 +3,7 @@ import BasePage from "Pages/Abstract/BasePage";
 
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { EditTransactionForm } from "Forms/EditTransactionForm";
+import { TransactionListModel } from "Models/TransactionModels";
 
 
 const properties: DataTableProperties = {
@@ -13,7 +14,15 @@ const properties: DataTableProperties = {
 	currency_fields: ["price", "cost"]
 }// properties;
 
+
 export default class TransactionsPage extends BasePage {
-	public render = () => <DataPage table_properties={properties} edit_form={EditTransactionForm} name="Transaction" />
+
+	public render () {
+		return <DataPage name="Transaction" table_properties={properties} 
+			invisible_fields = {new TransactionListModel ().constructor.prototype.invisible_fields}
+			edit_form={EditTransactionForm}>
+		</DataPage>
+	}// render;
+
 }// TransactionsPage;
 

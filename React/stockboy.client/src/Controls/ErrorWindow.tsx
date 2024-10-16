@@ -1,4 +1,4 @@
-import BasePage from "../Pages/Abstract/BasePage";
+import BasePage from "Pages/Abstract/BasePage";
 
 
 class ErrorWindowProps { text: string = null }

@@ -2,11 +2,11 @@ import InputElement from "Controls/InputElement";
 import TransactionTypeList from "Controls/Lists/TransactionTypeList";
 import TickerSelector from "Controls/TickerSelector";
 
-import TransactionDataModel from "Models/Data/TransactionDataModel";
-
 import { date_format } from "Classes/Globals";
 import { StockDataModel } from "Models/Abstract/BaseModel";
 import { FormPage } from "Pages/Abstract/FormPage";
+import { TransactionDataModel } from "Models/TransactionModels";
+
 
 
 class EditTransactionFormProps extends StockDataModel {

@@ -12,7 +12,7 @@ import TransactionsPage from "Pages/Transactions";
 import React, { Context, createContext, ReactElement } from "react";
 
 
-export class MainPageState { current_page: ReactElement = <DividendsPage /> }
+export class MainPageState { current_page: ReactElement = <TransactionsPage /> }
 
 
 export const pages = {
