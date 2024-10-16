@@ -283,10 +283,10 @@ HTMLInputElement.prototype.set_commas = function () {
 	if (negative) parts [0] = parts [0].substring (1);
 
 	for (let i = 0; i < parts [0].length; i++) {
-		number = `${parts [0][parts [0].length - (i + 1)]}${((i > 0) && ((i % 3) == 0)) && comma}${number}`;
+		number = `${parts [0][parts [0].length - (i + 1)]}${((i > 0) && ((i % 3) == 0)) ? comma : String.Empty}${number}`;
 	}// for;
 
-	this.value = `${negative && "-"}${number}${(parts.length > 1) && ("." + parts [1])}`;
+	this.value = `${negative ? "-" : String.Empty}${number}${(parts.length > 1) ? "." + parts [1] : String.Empty}`;
 	
 }// set_commas;
 
@@ -298,7 +298,7 @@ HTMLInputElement.prototype.clear_commas = function () {
 
 	if (negative) parts [0] = parts [0].substring (1);
 
-	this.value = `${negative && "-"}${parts [0].parseNumeric ()}${(parts.length > 1) && ("." + parts [1])}`;
+	this.value = `${negative ? "-" : String.Empty}${parts [0].parseNumeric ()}${(parts.length > 1) ? "." + parts [1] : String.Empty}`;
 
 }// clear_commas;
 
@@ -507,7 +507,7 @@ String.prototype.titleCase = function (strip_spaces: boolean = false): string {
 		result.push (`${word.substring (0, 1).toUpperCase ()}${word.substring (1).toLowerCase ()}`);
 	});
 
-	return result.join (!strip_spaces && String.Space);
+	return result.join (strip_spaces ? String.Empty : String.Space);
 
 }// titleCase;
 

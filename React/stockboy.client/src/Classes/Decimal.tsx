@@ -101,7 +101,7 @@ export default class Decimal {
 	}// multiply;
 
 
-	public static padFractions (value: string, decimal_places: number): string {
+	public static padFractions (value: number, decimal_places: number): string {
 
 		let parts: Array<string> = value.toString ().parts (".", 1, 2);
 

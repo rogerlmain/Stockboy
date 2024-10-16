@@ -138,8 +138,8 @@ export default class DataTable extends ListControl<DataTableProps> {
 				if (index == 0) return <div style={{ borderRight: "none" }}>Total</div>
 				if (!this.props.total_fields.contains (name)) return <div style={blank_field (name, index) ? { borderRight: "none" } : null}></div>
 
-				if (this.props.currency_fields?.contains (name)) total = Decimal.padFractions (total, currency_decimals);
-				if (this.props.numeric_fields?.contains (name)) total = Decimal.padFractions (total, numeric_decimals);
+				if (this.props.currency_fields?.contains (name)) total = Decimal.padFractions (Decimal.round (total, currency_decimals), currency_decimals);
+				if (this.props.numeric_fields?.contains (name)) total = Decimal.padFractions (Decimal.round (total, numeric_decimals), numeric_decimals);
 
 				return <div style={{ textAlign: "right", borderLeft: "solid 1px var(--table-border) !important" }}>{total}</div>
 
