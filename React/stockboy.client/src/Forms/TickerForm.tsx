@@ -1,7 +1,7 @@
-import { BaseComponent } from "Controls/BaseComponent";
+import { FormPage } from "Pages/Abstract/FormPage";
 
 
-export default class TickerForm extends BaseComponent {
+export default class TickerForm extends FormPage {
 
 	public render = () => <form>
 		<div className="two-column-grid">

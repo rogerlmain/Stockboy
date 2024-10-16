@@ -1,9 +1,9 @@
-import NameValueCollection from "Classes/Collections";
+import BaseControl from "Controls/Abstract/BaseControl";
 
-import React, { RefObject, ReactElement, Context, createRef, cloneElement, createContext } from "react";
-import EditForm, { EditFormContext } from "Forms/EditForm";
+import EditForm, { EditFormContext } from "Controls/EditForm";
 
-import { BaseComponent, BaseProps } from "Controls/BaseComponent";
+import { BaseProps } from "Controls/Abstract/BaseProperties";
+import { cloneElement, Context, createContext, createRef, ReactElement, RefObject } from "react";
 
 
 class InputElementProps extends BaseProps {
@@ -16,7 +16,7 @@ class InputElementProps extends BaseProps {
 export const InputElementContext: Context<InputElement> = createContext (null);
 
 
-export default class InputElement extends BaseComponent<InputElementProps> {
+export default class InputElement extends BaseControl<InputElementProps> {
 
 	private input_element_ref: RefObject<HTMLDivElement> = createRef ();
 
@@ -25,6 +25,7 @@ export default class InputElement extends BaseComponent<InputElementProps> {
 
 
 	public static contextType = EditFormContext;
+
 
 	public static defaultProps: InputElementProps = {
 		children: null,

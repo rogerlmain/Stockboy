@@ -1,10 +1,11 @@
-import { BaseComponent, BaseProps } from "Controls/BaseComponent";
 import APIClass from "Classes/APIClass";
+import DataPage from "Controls/DataPage";
 import Eyecandy from "Controls/Eyecandy";
 
-import DataPage from "Pages/DataPage";
-
+import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { IBaseModel } from "Models/Abstract/BaseModel";
+import { FormPage } from "Pages/Abstract/FormPage";
+import { ListPage } from "Pages/Abstract/ListPage";
 
 
 class DeleteFormProps extends BaseProps {
@@ -14,7 +15,7 @@ class DeleteFormProps extends BaseProps {
 }// DeleteFormProps;
 
 
-export class DeleteForm extends BaseComponent<DeleteFormProps> {
+export class DeleteForm extends ListPage<DeleteFormProps> {
 
 	public delete_record () {
 

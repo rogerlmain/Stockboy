@@ -1,5 +1,5 @@
 import BasePage from "Pages/Abstract/BasePage";
-import DataPage from "Pages/DataPage";
+import DataPage from "Controls/DataPage";
 import EditDividendForm from "Forms/EditDividendForm";
 
 import { DataTableProperties } from "Controls/Tables/DataTable";

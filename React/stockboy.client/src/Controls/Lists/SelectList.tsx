@@ -1,11 +1,10 @@
-import React, { ChangeEvent, ChangeEventHandler, RefObject, createRef } from "react";
-
-import ListModel from "Models/ListModel";
+import { BaseProps } from "Controls/Abstract/BaseProperties";
+import { ListControl } from "Controls/Abstract/ListControl";
+import { ChangeEvent, ChangeEventHandler, RefObject, createRef } from "react";
 
 import InputElement, { InputElementContext } from "Controls/InputElement";
-import EditForm, { EditFormContext } from "Forms/EditForm";
 
-import { BaseComponent, BaseProps } from "Controls/BaseComponent";
+import ListModel from "Models/ListModel";
 
 
 export class BaseSelectListProps extends BaseProps {
@@ -28,7 +27,7 @@ class SelectListState {
 }// SelectListState;
 
 
-export default class SelectList extends BaseComponent<SelectListProps, SelectListState> {
+export default class SelectList extends ListControl<SelectListProps, SelectListState> {
 
 	private update_selected_item = () => this.setState ({ selected_item: this.props.selected_item }, () => this.select_list_ref.current.dispatchEvent (new Event ("change", { bubbles: true })));
 
@@ -37,6 +36,7 @@ export default class SelectList extends BaseComponent<SelectListProps, SelectLis
 
 
 	public static contextType = InputElementContext;
+
 
 	public static defaultProps: SelectListProps = {
 		name: null,

@@ -1,6 +1,5 @@
 import StylesheetList from "Classes/StylesheetList";
-
-import { BaseComponent } from "Controls/BaseComponent";
+import BaseControl from "Controls/Abstract/BaseControl";
 
 
 export enum direction_type {
@@ -15,7 +14,7 @@ const rotated = { transform: "rotate(180deg)" }
 class GlyphArrowProps { direction: direction_type }
 
 
-export default class GlyphArrow extends BaseComponent<GlyphArrowProps> {
+export default class GlyphArrow extends BaseControl<GlyphArrowProps> {
 
 
 	private static styles: String = `

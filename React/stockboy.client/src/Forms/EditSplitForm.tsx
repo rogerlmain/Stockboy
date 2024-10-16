@@ -4,8 +4,8 @@ import TickerSelector from "Controls/TickerSelector";
 import SplitDataModel from "Models/Data/SplitDataModel";
 
 import { date_format } from "Classes/Globals";
-import { BaseComponent } from "Controls/BaseComponent";
 import { IStockDataModel, StockModel } from "Models/Abstract/BaseModel";
+import { FormPage } from "Pages/Abstract/FormPage";
 
 
 class EditSplitFormProps extends StockModel implements IStockDataModel {
@@ -18,7 +18,7 @@ class EditSplitFormState {
 }// EditSplitFormState;
 
 
-export class EditSplitForm extends BaseComponent<EditSplitFormProps, EditSplitFormState> {
+export class EditSplitForm extends FormPage<EditSplitFormProps, EditSplitFormState> {
 
 
 	public static test_values = {

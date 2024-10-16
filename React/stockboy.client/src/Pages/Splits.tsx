@@ -1,9 +1,8 @@
-import DataPage from "Pages/DataPage";
-import { BaseComponent } from "Controls/BaseComponent";
-import SplitModel from "Models/Data/SplitDataModel";
+import BasePage from "Pages/Abstract/BasePage";
+import DataPage from "Controls/DataPage";
 
-import { EditSplitForm } from "Forms/EditSplitForm";
 import { DataTableProperties } from "Controls/Tables/DataTable";
+import { EditSplitForm } from "Forms/EditSplitForm";
 
 
 const properties: DataTableProperties = {
@@ -14,6 +13,6 @@ const properties: DataTableProperties = {
 }// properties;
 
 
-export default class SplitsPage extends BaseComponent {
+export default class SplitsPage extends BasePage {
 	public render = () => <DataPage table_properties={properties} edit_form={EditSplitForm} name="Split" />
 }// SplitsPage;

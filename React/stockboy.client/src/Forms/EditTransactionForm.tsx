@@ -5,8 +5,8 @@ import TickerSelector from "Controls/TickerSelector";
 import TransactionDataModel from "Models/Data/TransactionDataModel";
 
 import { date_format } from "Classes/Globals";
-import { BaseComponent } from "Controls/BaseComponent";
 import { StockDataModel } from "Models/Abstract/BaseModel";
+import { FormPage } from "Pages/Abstract/FormPage";
 
 
 class EditTransactionFormProps extends StockDataModel {
@@ -19,7 +19,7 @@ class EditTransactionFormProps extends StockDataModel {
 }// EditTransactionFormProps;
 
 
-export class EditTransactionForm extends BaseComponent<EditTransactionFormProps> {
+export class EditTransactionForm extends FormPage<EditTransactionFormProps> {
 
 
 	private static defaultValues: EditTransactionFormProps = {
@@ -61,7 +61,7 @@ export class EditTransactionForm extends BaseComponent<EditTransactionFormProps>
 				</InputElement>
 
 				<InputElement id="quantity" label="Quantity">
-					<input type="numeric" id="quantity" name="quantity" decimalPlaces={6} defaultValue={this.props.data?.quantity ?? EditTransactionForm.defaultValues.quantity} />
+					<input type="numeric" id="quantity" name="quantity" decimalPlaces={numeric_decimals} defaultValue={this.props.data?.quantity ?? EditTransactionForm.defaultValues.quantity} />
 				</InputElement>
 
 				<InputElement id="transaction_date" label="Transaction Date">

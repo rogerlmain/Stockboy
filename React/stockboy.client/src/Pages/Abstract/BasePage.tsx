@@ -1,4 +1,5 @@
-import { BaseComponent, BaseProps, BaseState } from "Controls/BaseComponent";
+import { IBaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
+import { Component } from "react";
 
 
-export default abstract class BasePage<props_model = BaseProps, state_model = BaseState> extends BaseComponent<props_model, state_model> {}
+export default abstract class BasePage<Props = IBaseProps, State = IBaseState> extends Component<Props, State> {}

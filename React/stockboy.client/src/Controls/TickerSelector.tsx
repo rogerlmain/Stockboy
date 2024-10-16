@@ -1,9 +1,9 @@
+import BaseControl from "Controls/Abstract/BaseControl";
 import InputElement from "Controls/InputElement";
 import BrokerList from "Controls/Lists/BrokerList";
 import TickerList from "Controls/Lists/TickerList";
 
-import { BaseComponent } from "Controls/BaseComponent";
-import { IStockModel, StockDataModel, StockModel } from "Models/Abstract/BaseModel";
+import { StockModel } from "Models/Abstract/BaseModel";
 import { ChangeEvent } from "react";
 
 
@@ -20,7 +20,7 @@ class TickerSelectorState {
 }// TickerSelectorState;
 
 
-export default class TickerSelector extends BaseComponent<TickerSelectorProps, TickerSelectorState> {
+export default class TickerSelector extends BaseControl<TickerSelectorProps, TickerSelectorState> {
 
 	public static defaultProps = {
 		broker_id: null,

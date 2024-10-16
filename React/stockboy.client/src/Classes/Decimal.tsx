@@ -18,10 +18,8 @@ class DecimalValue {
 
 		if (parts.length == 1) parts.push ("0");
 		
-		parts [1] = parts [1].trimmedEnd ("0");
-
-		this.mantissa = parts [1]?.length;
-		this.value = parseFloat (`${sign}${(Math.abs (parts [0].parseInt ()) * 10**this.mantissa) + parts [1].parseInt ()}`);
+		this.mantissa = parts [1]?.trimmedEnd ("0").length;
+		this.value = parseFloat (`${sign}${(Math.abs (parts [0].parseInt ()) * 10**this.mantissa) + parts [1]?.trimmed ("0").parseInt ()}`);
 
 	}// constructor;
 
@@ -30,42 +28,7 @@ class DecimalValue {
 
 export default class Decimal {
 
-	private static calculate (operation: OperationType, ...floats: Array<number>): number {
-
-		let decimals: Array<DecimalValue> = null;
-		let total: number = null;
-		let mantissa: number = 0;
-		
-		floats.forEach ((value: number) => {
-			
-			//let decimal_value: DecimalValue = new DecimalValue (value);
-
-			if (is_null (decimals)) decimals = new Array<DecimalValue> ();
-			//if (decimal_value.mantissa > mantissa) mantissa = decimal_value.mantissa;
-
-			decimals.push (new DecimalValue (value));
-		});
-
-		decimals.forEach ((decimal: DecimalValue) => {
-
-			//let integer_value = decimal.value * (10**decimal.mantissa);
-
-			switch (operation) {
-				case OperationType.add: total = (total ?? 0) + decimal.value; break;
-				case OperationType.multiply: total = (total ?? 1) * decimal.value; break;
-				case OperationType.subtract: total = (is_null (total)) ? decimal.value : total - decimal.value; break;
-			}// switch;
-
-			mantissa += decimal.mantissa;
-
-		});
-
-		return (total == 0)? 0 : parseFloat (`${Math.floor (total / (10**mantissa))}.${total % (10**mantissa)}`);
-
-	}// calculate;
-
-
-	/********/
+	private static float_value = (value: number, mantissa: number) => (value == 0)? 0 : parseFloat (`${Math.trunc (value / (10**mantissa))}.${Math.abs (value) % (10**mantissa)}`);
 
 
 	public static add (...values: Array<number>): number {
@@ -87,7 +50,8 @@ export default class Decimal {
 			total += decimal.value * (10**(mantissa - decimal.mantissa));
 		});
 
-		return (total == 0)? 0 : parseFloat (`${Math.trunc (total / (10**mantissa))}.${Math.abs (total) % (10**mantissa)}`);
+		return Decimal.float_value (total, mantissa);
+		//return (total == 0)? 0 : parseFloat (`${Math.trunc (total / (10**mantissa))}.${Math.abs (total) % (10**mantissa)}`);
 
 	}// add;
 
@@ -111,13 +75,30 @@ export default class Decimal {
 			total = is_null (total) ? decimal.value : total - (decimal.value * (10**(mantissa - decimal.mantissa)));
 		});
 
-		return (total == 0)? 0 : parseFloat (`${Math.trunc (total / (10**mantissa))}.${Math.abs (total) % (10**mantissa)}`);
+		return Decimal.float_value (total, mantissa);
+		//return (total == 0)? 0 : parseFloat (`${Math.trunc (total / (10**mantissa))}.${Math.abs (total) % (10**mantissa)}`);
 
 	}// add;
 
 
-	public static multiply = (...values: Array<number>): number => Decimal.calculate (OperationType.multiply, ...values);
+	public static multiply (...values: Array<number>): number {
 
+		let total: number = 1;
+		let mantissa: number = 0;
+		
+		values.forEach ((value: number) => {
+
+			let decimal_value: DecimalValue = new DecimalValue (value);
+
+			total *= decimal_value.value;
+			mantissa += decimal_value.mantissa;
+
+		});
+
+		return Decimal.float_value (total, mantissa);
+		//return (total == 0)? 0 : parseFloat (`${Math.floor (total / (10**mantissa))}.${total % (10**mantissa)}`);
+
+	}// multiply;
 
 
 	public static padFractions (value: string, decimal_places: number): string {

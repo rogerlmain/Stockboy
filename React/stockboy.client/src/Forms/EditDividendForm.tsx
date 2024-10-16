@@ -1,4 +1,3 @@
-import NameValueCollection from "Classes/Collections";
 import Decimal from "Classes/Decimal";
 
 import InputElement from "Controls/InputElement";
@@ -7,9 +6,9 @@ import TickerSelector from "Controls/TickerSelector";
 import DividendDataModel from "Models/Data/DividendDataModel";
 
 import { date_format } from "Classes/Globals";
-import { FormComponent } from "Controls/Abstract/FormComponent";
 import { IStockDataModel, StockDataModel } from "Models/Abstract/BaseModel";
 import { ChangeEvent, RefObject, createRef } from "react";
+import { FormPage } from "../Pages/Abstract/FormPage";
 
 
 class EditDividendFormProps extends StockDataModel implements IStockDataModel {
@@ -19,23 +18,24 @@ class EditDividendFormProps extends StockDataModel implements IStockDataModel {
 
 class EditDividendFormState {
 	broker_id: string = null;
+	total_dividend: string = null;
 	reinvested: boolean = true;
-	total_dividend: number = null;
 }// EditDividendFormState;
 
 
-export default class EditDividendForm extends FormComponent<EditDividendFormProps, EditDividendFormState> {
+export default class EditDividendForm extends FormPage<EditDividendFormProps, EditDividendFormState> {
 
-	private static test_values = {
+	private static test_values: DividendDataModel = {
 		broker_id: "bf6be2f3-7141-11ef-b1e8-a4f933c45288",
-		ticker_id: "a68d31aa-7141-11ef-b1e8-a4f933c45288",
-		amount_per_share: 0.15,
-		share_quantity: 51.4146,
-		issue_date: "2024-01-18T00:00:00",
-		reinvested: true,
-		transaction_date: "2024-01-19T00:00:00",
-		settlement_date: "2024-01-23T00:00:00",
-		shares_purchased: 1.542,
+		ticker_id: "153d3cf3-7168-11ef-b1e8-a4f933c45288",
+		amount_per_share: 0.0825,
+		share_quantity: 6.0919,
+		issue_date: new Date ("2023-10-31T00:00:00"),
+		reinvested: false,
+		transaction_date: new Date ("2023-10-31T00:00:00"),
+		settlement_date: new Date ("2023-11-01T00:00:00"),
+		shares_purchased: 0.05144,
+		purchase_price: 9.72,
 	}// test_values;
 
 
@@ -62,8 +62,12 @@ export default class EditDividendForm extends FormComponent<EditDividendFormProp
 	private update_total_dividend = () => {
 
 		let total = Decimal.round (Decimal.multiply (parseFloat (this.per_share_textbox_ref.current.value), parseFloat (this.quantity_textbox_ref.current.value)), 2);
+		let parts = total.toString ().parts (".", 1, 2);
 
-		this.setState ({ total_dividend: total });
+		if (parts.length == 1) parts.push ("0");
+		parts [1] = parts [1].padEnd (2, "0");
+
+		this.setState ({ total_dividend: `${parts [0]}.${parts [1]}` });
 
 	}// update_total_dividend;
 
@@ -78,7 +82,6 @@ export default class EditDividendForm extends FormComponent<EditDividendFormProp
 	}// defaultProps;
 
 
-	public static rounded_fields: NameValueCollection<number> = { amount_per_share: 2 }
 	public state: EditDividendFormState = new EditDividendFormState ();
 
 
@@ -98,8 +101,8 @@ export default class EditDividendForm extends FormComponent<EditDividendFormProp
 
 			<div className="two-column-grid">
 				<TickerSelector id="ticker_selector"
-					broker_id={this.props.data?.broker_id ?? this.props.broker_id} 
-					ticker_id={this.props.data?.ticker_id ?? this.props.ticker_id}>
+					broker_id={this.props.data?.broker_id ?? this.props.broker_id ?? EditDividendForm.defaultValues.broker_id} 
+					ticker_id={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditDividendForm.defaultValues.ticker_id}>
 				</TickerSelector>
 			</div>
 
@@ -123,14 +126,17 @@ export default class EditDividendForm extends FormComponent<EditDividendFormProp
 					<input type="date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.issue_date : EditDividendForm.defaultValues.issue_date, date_format.database)} />
 				</InputElement>
 
-				<label htmlFor="reinvested">Reinvested</label>
-				<input type="checkbox" id="reinvested" name="reinvested" value={this.state.reinvested.toString ()}
-					defaultChecked={EditDividendForm.defaultValues.reinvested} 
-					onChange={(event: ChangeEvent<HTMLInputElement>) => {
-						event.target.value = event.target.checked.toString ();
-						this.setState ({ reinvested: event.target.checked })
-					}}>
-				</input>
+				<div className="row-centered right-aligned" style={{ gridColumn: "3 / span 2" }}>
+					<label htmlFor="reinvested">Reinvested</label>
+					<input type="checkbox" id="reinvested" name="reinvested" value={this.state.reinvested.toString ()}
+						style={{ width: "1rem" }}
+						defaultChecked={EditDividendForm.defaultValues.reinvested} 
+						onChange={(event: ChangeEvent<HTMLInputElement>) => {
+							event.target.value = event.target.checked.toString ();
+							this.setState ({ reinvested: event.target.checked })
+						}}>
+					</input>
+				</div>
 
 				<div className={`${is_null (this.state.total_dividend) ? "hidden" : String.Empty} full-width two-column-grid`}>
 					<label>Total payout</label>
@@ -142,18 +148,20 @@ export default class EditDividendForm extends FormComponent<EditDividendFormProp
 					<div className="full-width row-divider"></div>
 
 					<InputElement id="transaction_date" label="Transaction Date" required={this.state.reinvested}>
-						<input type="date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.reinvestment_date : EditDividendForm.defaultValues.transaction_date, date_format.database)} />
+						<input type="date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.transaction_date : EditDividendForm.defaultValues.transaction_date, date_format.database)} />
 					</InputElement>
 
 					<InputElement id="settlement_date" label="Settlement Date" required={this.state.reinvested}>
 						<input type="date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.settlement_date : EditDividendForm.defaultValues.settlement_date, date_format.database)} />
 					</InputElement>
 				
-					<div className="full-width row-block column-centered">
-						<InputElement id="shares_purchased" label="Number of shares purchased" required={this.state.reinvested}>
-							<input type="currency" commas="true" defaultValue={this.props.data?.shares_purchased ?? EditDividendForm.defaultValues.shares_purchased} />
-						</InputElement>
-					</div>
+					<InputElement id="quantity" label="Number of shares purchased" required={this.state.reinvested}>
+						<input type="numeric" commas="true" decimalPlaces={numeric_decimals} defaultValue={this.props.data?.shares_purchased ?? EditDividendForm.defaultValues.shares_purchased} />
+					</InputElement>
+
+					<InputElement id="price" label="Purchase price" required={this.state.reinvested}>
+						<input type="currency" commas="true" defaultValue={this.props.data?.purchase_price ?? EditDividendForm.defaultValues.purchase_price} />
+					</InputElement>
 
 				</div>
 

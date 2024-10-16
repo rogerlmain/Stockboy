@@ -1,10 +1,10 @@
-import { BaseComponent } from "Controls/BaseComponent";
+import BasePage from "../Pages/Abstract/BasePage";
 
 
 class ErrorWindowProps { text: string = null }
 
 
-export default class ErrorWindow extends BaseComponent<ErrorWindowProps> {
+export default class ErrorWindow extends BasePage<ErrorWindowProps> {
 
 	public render = () => <div className="row-block">
 		<img src="Images/error.png" className="eyecandy" />

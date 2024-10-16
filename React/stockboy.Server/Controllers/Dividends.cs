@@ -17,20 +17,15 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpPost]
 		[Route ("SaveDividend")]
-		public IActionResult SaveDividend ([FromBody] DividendDataModel parameters) {
+		public IActionResult SaveDividend ([FromBody] DividendRequestModel parameters) {
+
 			if (parameters.reinvested) {
-				TransactionDataModel transaction = new () {
-					broker_id = parameters.broker_id,
-					ticker_id = parameters.ticker_id,
-					price = (parameters.amount_per_share * parameters.share_quantity) / parameters.shares_purchased,
-					quantity = parameters.shares_purchased,
-					transaction_date = parameters.transaction_date,
-					settlement_date = parameters.settlement_date,
-					transaction_type_id = new Guid ("D6BC19B8-4BDE-4D87-9DB3-BAC3C41476B0")
-				};
+				TransactionDataModel transaction = new ();
+				transaction.Merge<TransactionDataModel> (parameters).transaction_type_id = new Guid ("D6BC19B8-4BDE-4D87-9DB3-BAC3C41476B0");
 				new Transactions (context).SaveData ("get_transaction_by_id", transaction);
-			}
-			return null;//SaveData ("get_dividend_by_id", parameters);
+			}// if;
+
+			return SaveData ("get_dividend_by_id", (DividendDataModel) new DividendDataModel ().Merge (parameters));
 		}// SaveDividend;
 
 	}// Dividends;

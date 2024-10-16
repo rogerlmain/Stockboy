@@ -38,7 +38,6 @@ declare global {
 
 	interface FormData {
 		remove_empties ();
-		round_fields (rounded_fields: NameValueCollection<number>);
 	}// FormData;
 
 
@@ -104,7 +103,9 @@ declare global {
 		parseNumeric (): string;
 		parts (delimiter: string, minimum: number, maximum: number): Array<string>;
 		titleCase (strip_spaces?: boolean): string;
-		trimmedEnd (value: string): string;
+		trimmedStart (value: string);
+		trimmedEnd (value: string);
+		trimmed (value: string): string;
 	}// String;
 
 }// declare global;
@@ -224,33 +225,6 @@ FormData.prototype.remove_empties = function () {
 	return form_data;
 
 }// remove_empties;
-
-
-FormData.prototype.round_fields = function (rounded_fields: NameValueCollection<number>) {
-
-	for (let entry of this.entries ()) {
-
-		if (entry [1] == "true") {
-			this.delete (entry [0]);
-			this.append (entry [0], true as unknown as Blob);
-		}
-
-		if (isset (rounded_fields)) {
-			if (Object.keys (rounded_fields).contains (entry [0])) {
-
-				let field_name = entry [0];
-				let rounded_value: string = Decimal.round (parseFloat (entry [1] as string), rounded_fields [field_name]).toString ();
-
-				this.delete (field_name);
-				this.append (field_name, rounded_value);
-
-			}// if;
-		}// for;
-	}// if;
-
-	return this;
-
-}// round_fields;
 
 
 /**** HTMLElement Prototype Functions ****/
@@ -486,6 +460,7 @@ String.prototype.matches = function (candidate: string) {
 
 
 String.prototype.parseInt = function (): number {
+	let value = this.trimmed ("0");
 	return (~~this).toString () == this ? ~~this : null;
 }// parseInt;
 
@@ -537,7 +512,17 @@ String.prototype.titleCase = function (strip_spaces: boolean = false): string {
 }// titleCase;
 
 
-String.prototype.trimmedEnd = function (value: string): string {
+String.prototype.trimmedStart = function (value: string = String.Empty): string {
+
+	let new_value = this.toString ();
+
+	while (new_value.startsWith (value)) new_value = new_value.substring (1);
+	return new_value;
+
+}// trimmedStart;
+
+
+String.prototype.trimmedEnd = function (value: string = String.Empty): string {
 
 	let new_value = this.toString ();
 
@@ -545,6 +530,11 @@ String.prototype.trimmedEnd = function (value: string): string {
 	return new_value;
 
 }// trimmedEnd;
+
+
+String.prototype.trimmed = function (value: string = String.Empty) {
+	return this.trimmedStart (value).trimmedEnd (value);
+}// trimmed;
 
 
 

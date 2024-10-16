@@ -1,5 +1,8 @@
-import React, { ReactElement, MouseEvent } from "react";
-import { BaseComponent, BaseProps } from "Controls/BaseComponent";
+import { BaseProps } from "Controls/Abstract/BaseProperties";
+
+import { MouseEvent, ReactElement } from "react";
+
+import BaseControl from "Controls/Abstract/BaseControl";
 
 
 class PopupWindowProps extends BaseProps {
@@ -13,7 +16,7 @@ class PopupWindowState {
 }// PopupWindowState;
 
 
-export default class PopupWindow extends BaseComponent<PopupWindowProps> {
+export default class PopupWindow extends BaseControl<PopupWindowProps> {
 
 	public state: PopupWindowState = new PopupWindowState ();
 

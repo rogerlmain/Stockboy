@@ -5,28 +5,25 @@ import HoldingsModel from "Models/Lists/HoldingsListModel";
 
 import Eyecandy from "Controls/Eyecandy";
 import Link from "Controls/Link";
-import BrokerList from "Controls/Lists/BrokerList";
-import SelectList from "Controls/Lists/SelectList";
-import TickerList from "Controls/Lists/TickerList";
 import DataTable from "Controls/Tables/DataTable";
+import TickerSelector from "Controls/TickerSelector";
 
 import TransactionsPage from "Pages/Transactions";
 
 import APIClass, { StockPriceData } from "Classes/APIClass";
-import { ChangeEvent, RefObject, createRef } from "react";
 
-import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControls";
+import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControl";
 import { TickerPriceModel } from "Models/Tickers";
-import TickerSelector from "../Controls/TickerSelector";
+import { ChangeEvent, RefObject, createRef } from "react";
 
 
 const one_hour = 60 * 60 * 1000;
 
 class HomeState extends DataState<HoldingsModel> {
 	active_ticker: String = null;
-	dead_stocks: boolean = true; //false;
+	live_stocks: boolean = true;
+	dead_stocks: boolean = false;
 	sold_stocks: boolean = false;
-	live_stocks: boolean = false; //true;
 	loading: boolean = true;
 }// HomeState;
 
@@ -239,7 +236,7 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	private get grid_panel () {
 		return <div className="body">
 			<DataTable id="holdings-table" data={this.state.data} ref={this.data_table} parent={this}
-				fields={["broker", "symbol", "company", "current_price", "quantity", 
+				fields={["broker", "symbol", "company", "quantity", "current_price", 
 					{ total_purchase_price: "Purchase Price"}, 
 					{ total_sale_price: "Sale Price"}, 
 					{ value: "Current Value" }, 

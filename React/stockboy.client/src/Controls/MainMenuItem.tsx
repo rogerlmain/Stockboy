@@ -1,22 +1,19 @@
-import React, { ReactElement, RefObject, createRef } from "react";
+import BaseControl from "Controls/Abstract/BaseControl";
 
-import MainPage from "Pages/Main";
-import { BaseComponent } from "Controls/BaseComponent";
-import BasePage from "Pages/Abstract/BasePage";
+import { ReactElement, RefObject, createRef } from "react";
 
 
 export class MenuItemProps {
 	public text: String = null;
 	public page: ReactElement = null;
-	public selected_page: ReactElement = null;
+	public selected_item: ReactElement = null;
 }// MenuItemProps;
 
 
 export class MenuItemState { selected: Boolean = false }
 
 
-export default class MainMenuItem extends BaseComponent<MenuItemProps> {
-
+export default class MainMenuItem extends BaseControl<MenuItemProps> {
 
 	private control: RefObject<HTMLDivElement> = createRef ();
 
@@ -24,16 +21,19 @@ export default class MainMenuItem extends BaseComponent<MenuItemProps> {
 	/********/
 
 
-	public render = () => <div className="main-menu-item" ref={this.control} onClick={() => {
-		main_page.popup_window.hide ();
-		main_page.change_page (this.props.page);
-	}}>{this.props.text}</div>
+	public render () {
+		return <div ref={this.control} 
 
-
-	public componentDidUpdate = () => this.control.current.setClass ("selected", this.props.page.type == this.props.selected_page.type);
-
-
-	public componentDidMount = this.componentDidUpdate;
-
+			className={`${(this.props.page.type == this.props.selected_item.type) ? "selected" : String.Empty} main-menu-item`}
+		
+			onClick={() => {
+				main_page.popup_window.hide ();
+				main_page.change_page (this.props.page);
+			}}>
+		
+			{this.props.text}
+		
+		</div>
+	}// render;
 
 }// MainMenuItem;

@@ -1,8 +1,5 @@
-import React, { ReactElement } from "react";
-
-import Stylesheet from "Classes/Stylesheet";
-
-import { BaseComponent } from "Controls/BaseComponent";
+import { ListControl } from "Controls/Abstract/ListControl";
+import { ReactElement } from "react";
 
 
 class StylesheetListProps {}
@@ -13,7 +10,7 @@ class StylesheetListState {
 }// StylesheetListState;
 
 
-export default class StylesheetList extends BaseComponent<StylesheetListProps> {
+export default class StylesheetList extends ListControl<StylesheetListProps> {
 
 
 	private static instance: StylesheetList = null;

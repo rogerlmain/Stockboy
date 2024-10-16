@@ -6,11 +6,15 @@
 		public DateTime issue_date { get; set; }
 		public decimal amount_per_share { get; set; }
 		public decimal share_quantity { get; set; }
+	}// DividendsDataModel;
+
+	public class DividendRequestModel: DividendDataModel {
 		public Boolean reinvested { get; set; }
 		public DateTime transaction_date { get; set; }
 		public DateTime settlement_date { get; set; }
-		public decimal shares_purchased { get; set; }
-	}// Dividends;
+		public decimal quantity { get; set; }
+		public decimal price { get; set; }
+	}// DividendRequestModel;
 
 	public class DividendListModel: BaseModel {
         public string broker { get; set; } = String.Empty;

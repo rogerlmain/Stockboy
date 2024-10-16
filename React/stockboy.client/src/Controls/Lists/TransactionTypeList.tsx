@@ -1,7 +1,7 @@
-import DataList from "./DataList";
+import DataList from "Controls/Lists/DataList";
 
-import { DataControl } from "Controls/Abstract/DataControls";
-import { BaseProps } from "Controls/BaseComponent";
+import { BaseProps } from "Controls/Abstract/BaseProperties";
+import { DataControl } from "Controls/Abstract/DataControl";
 
 
 class TransactionTypeListProps extends BaseProps {

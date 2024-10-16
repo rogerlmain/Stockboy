@@ -1,8 +1,8 @@
-import { BaseComponent } from "Controls/BaseComponent";
 import DataTable from "Controls/Tables/DataTable";
 
-import { CSSProperties, MouseEvent } from "react";
+import { ListControl } from "Controls/Abstract/ListControl";
 import { IBaseModel } from "Models/Abstract/BaseModel";
+import { CSSProperties, MouseEvent } from "react";
 
 
 class DataRowProps {
@@ -16,7 +16,7 @@ class DataRowProps {
 class DataRowState {}
 
 
-export default class DataTableRow extends BaseComponent<DataRowProps, DataRowState> {
+export default class DataTableRow extends ListControl<DataRowProps, DataRowState> {
 
 	private active_row = (element: EventTarget) => (element as HTMLDivElement).parentNode as HTMLDivElement;
 

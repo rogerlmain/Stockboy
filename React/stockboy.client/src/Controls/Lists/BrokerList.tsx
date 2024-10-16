@@ -1,8 +1,8 @@
 import DataList from "Controls/Lists/DataList";
 
+import { BaseProps } from "Controls/Abstract/BaseProperties";
+import { DataControl } from "Controls/Abstract/DataControl";
 import { ChangeEventHandler } from "react";
-import { DataControl } from "Controls/Abstract/DataControls";
-import { BaseProps } from "Controls/BaseComponent";
 
 
 class BrokerListProps extends BaseProps {

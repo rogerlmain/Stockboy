@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -9,7 +10,6 @@ using static Mysqlx.Expect.Open.Types.Condition.Types;
 
 
 namespace Stockboy.Server.Classes {
-
 
 	public static class DataExtensions {
 
@@ -85,17 +85,19 @@ namespace Stockboy.Server.Classes {
 
 	public static class ObjectExtensions {
 
-		public static void Merge (this Object source, Object model, Boolean copy_nulls = false) {
-			
+		public static TModel Merge<TModel> ([NotNull] this TModel source, Object model, Boolean copy_nulls = false) {
+
 			List<String>? keys = source.GetKeys ();
 
-			if (source.GetType () != model.GetType ()) throw new Exception ("Cannot copy fields. Incompatible types.");
 			if (is_null (keys)) throw new Exception ("Cannot copy fields. Nothing to copy.");
 
 			foreach (String key in keys!) {
+				if (!model.HasKey (key)) continue;
 				if (is_null (model.GetValue (key)) && !copy_nulls) continue;
 				source.GetType ().GetProperty (key)?.SetValue (source, model.GetValue (key));
 			}// foreach;
+
+			return source;
 
 		}// Merge;
 
@@ -117,6 +119,19 @@ namespace Stockboy.Server.Classes {
 
 
 		public static Object? GetValue (this Object source, String field) => source.GetType ().GetProperty (field)?.GetValue (source);
+
+
+		public static Boolean HasKey (this Object source, String key) {
+
+			List<String>? keys = source.GetKeys ();
+
+			foreach (String source_key in keys) {
+				if (source_key == key) return true;
+			}// foreach;
+
+			return false;
+
+		}// GetKeys;
 
 
 		public static Boolean IsGuid (this Object source) => source.GetType () == typeof (Guid);

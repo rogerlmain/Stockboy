@@ -1,4 +1,5 @@
-import { BaseComponent } from "Controls/BaseComponent";
+import BaseControl from "Controls/Abstract/BaseControl";
+
 import { MouseEvent } from "react";
 
 
@@ -8,7 +9,7 @@ class LinkProps {
 }// LinkProps;
 
 
-export default class Link extends BaseComponent<LinkProps> {
+export default class Link extends BaseControl<LinkProps> {
 
 	public render = () => <a href="about:blank" onClick={(event: MouseEvent<HTMLAnchorElement>) => {
 		event.preventDefault ();

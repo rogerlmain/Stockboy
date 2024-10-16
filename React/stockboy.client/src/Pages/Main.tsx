@@ -1,35 +1,34 @@
-import React, { ReactElement, RefObject, createRef } from "react";
-
-import StylesheetList from "Classes/StylesheetList";
+import BasePage from "Pages/Abstract/BasePage";
 import MainMenuItem from "Controls/MainMenuItem";
-import { BaseComponent } from "Controls/BaseComponent";
 import PopupWindow from "Controls/PopupWindow";
 
-import BasePage from "Pages/Abstract/BasePage";
-import HomePage from "Pages/Home";
-import TransactionsPage from "Pages/Transactions";
+import BrokersPage from "Pages/Brokers";
 import DividendsPage from "Pages/Dividends";
-import StocksPage from "Pages/Stocks";
+import HomePage from "Pages/Home";
 import SplitsPage from "Pages/Splits";
+import TickersPage from "Pages/Tickers";
+import TransactionsPage from "Pages/Transactions";
 
-import DataPage from "Pages/DataPage";
-
-import { createRoot } from "react-dom/client";
-
-
-export class MainPageState { current_page: React.ReactElement = <TransactionsPage /> /*<HomePage />*/ }
+import React, { Context, createContext, ReactElement } from "react";
 
 
-export const PAGES	= {
-	home: "Home",
-	transactions: "Transactions",
-	stocks: "Stocks",
-	dividends: "Dividends",
-	splits: "Splits"
-}// PAGES;
+export class MainPageState { current_page: ReactElement = <DividendsPage /> }
 
 
-export default class MainPage extends BaseComponent {
+export const pages = {
+	home: HomePage,
+	transactions: TransactionsPage,
+	dividends: DividendsPage,
+	splits: SplitsPage,
+	brokers: BrokersPage,
+	tickers: TickersPage,
+}// pages;
+
+
+export const MenuContext: Context<ReactElement> = createContext (null);
+
+
+export default class MainPage extends BasePage {
 
 
 	private popup_ref: React.RefObject<PopupWindow> = React.createRef ();
@@ -55,11 +54,10 @@ export default class MainPage extends BaseComponent {
 
 		<div className="header">
 			<div className="main-menu">
-				<MainMenuItem text={ PAGES.home } page={<HomePage />} selected_page={this.state.current_page} />
-				<MainMenuItem text={ PAGES.transactions } page={<TransactionsPage />} selected_page={this.state.current_page} />
-				<MainMenuItem text={ PAGES.dividends } page={<DividendsPage />} selected_page={this.state.current_page} />
-				<MainMenuItem text={ PAGES.stocks} page={<StocksPage />} selected_page={this.state.current_page} />
-				<MainMenuItem text={ PAGES.splits } page={<SplitsPage />} selected_page={this.state.current_page} />
+				{Object.keys (pages).map ((key: string) => {
+					const PageName = pages [key];
+					return <MainMenuItem text={key.titleCase ()} page={<PageName />} selected_item={this.state.current_page} />
+				})}
 			</div>
 		</div>
 

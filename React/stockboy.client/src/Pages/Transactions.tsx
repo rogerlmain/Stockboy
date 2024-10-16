@@ -1,6 +1,6 @@
-import DataPage from "Pages/DataPage";
+import DataPage from "Controls/DataPage";
+import BasePage from "Pages/Abstract/BasePage";
 
-import { BaseComponent } from "Controls/BaseComponent";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { EditTransactionForm } from "Forms/EditTransactionForm";
 
@@ -13,7 +13,7 @@ const properties: DataTableProperties = {
 	currency_fields: ["price", "cost"]
 }// properties;
 
-export default class TransactionsPage extends BaseComponent {
+export default class TransactionsPage extends BasePage {
 	public render = () => <DataPage table_properties={properties} edit_form={EditTransactionForm} name="Transaction" />
 }// TransactionsPage;
 

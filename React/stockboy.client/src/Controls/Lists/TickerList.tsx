@@ -2,9 +2,8 @@ import NameValueCollection from "Classes/Collections";
 import DataList from "Controls/Lists/DataList";
 
 import { ChangeEventHandler } from "react";
-import { DataControl } from "Controls/Abstract/DataControls";
-import { BaseProps } from "Controls/BaseComponent";
-
+import { DataControl } from "Controls/Abstract/DataControl";
+import { BaseProps } from "Controls/Abstract/BaseProperties";
 
 
 class TickerListProps extends BaseProps {
@@ -14,6 +13,7 @@ class TickerListProps extends BaseProps {
 	selectable_header?: Boolean;
 	onChange?: ChangeEventHandler<HTMLSelectElement>;
 }// TickerListProps;
+
 
 export default class TickerList extends DataControl<TickerListProps> {
 

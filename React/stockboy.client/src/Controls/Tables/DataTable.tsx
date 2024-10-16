@@ -1,13 +1,13 @@
-import React, { Component, CSSProperties, RefObject, createRef } from "react";
-
-import NameValueCollection, { KeyValuePair } from "Classes/Collections";
-import { BaseComponent, BaseProps, IBaseProps, IBaseState } from "Controls/BaseComponent";
-import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
-
+import Decimal from "Classes/Decimal";
 import DataTableRow from "Controls/Tables/DataTableRow";
 
+import NameValueCollection, { KeyValuePair } from "Classes/Collections";
+import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
+
+import { BaseProps, IBaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
+import { ListControl } from "Controls/Abstract/ListControl";
 import { IBaseModel } from "Models/Abstract/BaseModel";
-import Decimal from "../../Classes/Decimal";
+import { Component, createRef, CSSProperties, RefObject } from "react";
 
 
 class DataTableState implements IBaseState {
@@ -34,7 +34,7 @@ export class DataTableProps extends DataTableProperties implements IBaseProps {
 }// DataTableProps;
 
 
-export default class DataTable extends BaseComponent<DataTableProps> {
+export default class DataTable extends ListControl<DataTableProps> {
 
 
 	private initial_styles: CSSProperties = null;
