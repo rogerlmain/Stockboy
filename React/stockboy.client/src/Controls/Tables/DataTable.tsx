@@ -95,8 +95,8 @@ export default class DataTable extends ListControl<DataTableProps> {
 		let overflow: boolean = (data_table.scrollHeight > data_table.parentElement.clientHeight);
 
 		data_table.style.copy (data_styles, {
-			height: overflow ? "100%" : String.Empty,
-			overflowY: overflow ? "scroll" : String.Empty
+			height: overflow && "100%",
+			overflowY: overflow && "scroll"
 		});
 
 	}// update_styles;

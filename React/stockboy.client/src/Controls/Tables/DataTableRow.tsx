@@ -71,7 +71,7 @@ export default class DataTableRow extends ListControl<DataRowProps, DataRowState
 	public state: DataRowState = new DataRowState ();
 
 
-	public get selected_class (): string { return (this.props.row == this.props.data_table.state.selected_row) ? " selected" : String.Empty; }
+	public get selected_class (): string { return (this.props.row == this.props.data_table.state.selected_row) && " selected" }
 
 
 	public render () {

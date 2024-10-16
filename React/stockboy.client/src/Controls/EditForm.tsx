@@ -123,7 +123,7 @@ export default class EditForm extends FormPage<EditFormProps, EditFormState> {
 		return <EditFormContext.Provider value={this}>
 			<div>
 
-				<div className={`${this.state.complete ? "hidden" : String.Empty} row-centered warning`}>The highlighted fields are required.</div>
+				<div className={`${this.state.complete && "hidden"} row-centered warning`}>The highlighted fields are required.</div>
 
 				<form ref={this.form_ref}><this.props.body id={this.props.id} data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} ref={this.editor_ref} /></form>
 

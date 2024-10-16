@@ -53,9 +53,9 @@ export default class InputElement extends BaseControl<InputElementProps> {
 		let child_list = Array.isArray (this.props.children) ? this.props.children : [this.props.children];
 
 		return <InputElementContext.Provider value={this}>
-			<div name="input_element" className={`${this.props.required ? "required" : String.Empty} container`} ref={this.input_element_ref}>
+			<div name="input_element" className={`${this.props.required && "required"} container`} ref={this.input_element_ref}>
 
-				{isset (this.props.label) ? <label htmlFor={this.props.id}>{this.props.label}</label> : String.Empty}
+				{isset (this.props.label) && <label htmlFor={this.props.id}>{this.props.label}</label>}
 
 				{child_list.map ((child: ReactElement) => {
 				

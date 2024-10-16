@@ -24,7 +24,7 @@ export default class MainMenuItem extends BaseControl<MenuItemProps> {
 	public render () {
 		return <div ref={this.control} 
 
-			className={`${(this.props.page.type == this.props.selected_item.type) ? "selected" : String.Empty} main-menu-item`}
+			className={`${(this.props.page.type == this.props.selected_item.type) && "selected"} main-menu-item`}
 		
 			onClick={() => {
 				main_page.popup_window.hide ();
