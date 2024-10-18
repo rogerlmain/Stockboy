@@ -1,10 +1,12 @@
 import APIClass from "Classes/APIClass";
 import DataPage from "Controls/DataPage";
 import Eyecandy from "Controls/Eyecandy";
+import DataTableControl from "Controls/DataTableControl";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { IBaseModel } from "Models/Abstract/BaseModel";
 import { ListPage } from "Pages/Abstract/ListPage";
+import { DataTableContext } from "Controls/Tables/DataTable";
 
 
 class DeleteFormProps extends BaseProps {
@@ -17,11 +19,15 @@ class DeleteFormProps extends BaseProps {
 
 export class DeleteForm extends ListPage<DeleteFormProps> {
 
+
+	private contextType = DataTableContext;
+
+
 	public delete_record () {
 
 		main_page.popup_window.show (<Eyecandy text={"Deleting transaction"}
 			command={() => APIClass.fetch_data (`Delete${this.props.parent.props.name.titleCase ()}`, this.props.parent.state.selected_row).then (() => {
-				this.props.parent.remove_row ();
+				(this.context as DataTableControl).remove_row ();
 				main_page.popup_window.hide ();
 			})}>
 		</Eyecandy>);

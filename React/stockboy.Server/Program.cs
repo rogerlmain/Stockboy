@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Stockboy.Server.Classes;
 
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder (args);
 
 builder.Services.AddControllers ().AddNewtonsoftJson ();
 builder.Services.AddEndpointsApiExplorer ();

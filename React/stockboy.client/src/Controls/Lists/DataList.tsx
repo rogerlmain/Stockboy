@@ -1,24 +1,24 @@
 import APIClass from "Classes/APIClass";
 import Eyecandy from "Controls/Eyecandy";
-import ListModel from "Models/ListModel";
 
 import SelectList, { BaseSelectListProps } from "Controls/Lists/SelectList";
 
+import { ListItem, ListItemArray } from "Classes/Collections";
 import { IBaseProps } from "Controls/Abstract/BaseProperties";
 import { ListControl } from "Controls/Abstract/ListControl";
 import { createRef, RefObject } from "react";
 
 
 class DataListProps extends BaseSelectListProps implements IBaseProps {
-	title?: string;
-	table: string;
-	parameters?: any;
+	public title?: string;
+	public table: string;
+	public parameters?: any;
 }// DataListProps;
 
 
 class DataListState {
-	loading: boolean = false;
-	data?: Array<ListModel> = null;
+	public loading: boolean = false;
+	public data?: ListItemArray = null;
 }// DataListState;
 
 
@@ -39,7 +39,7 @@ export default class DataList extends ListControl<DataListProps, DataListState> 
 			return;
 		}// if;
 
-		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.props.table.titleCase (true)}`, this.props.parameters).then ((response: Array<ListModel>) => {
+		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.props.table.titleCase (true)}`, this.props.parameters).then ((response: ListItemArray) => {
 			this.setState ({ 
 				data: response,
 				loading: false

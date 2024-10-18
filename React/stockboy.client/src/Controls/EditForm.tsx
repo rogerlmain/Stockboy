@@ -1,5 +1,8 @@
 import APIClass from "Classes/APIClass";
 import DataPage from "Controls/DataPage";
+import DataTableControl from "Controls/DataTableControl";
+
+import DataTable, { DataTableContext } from "./Tables/DataTable";
 
 import { BaseModel, IBaseModel, StockDataModel } from "Models/Abstract/BaseModel";
 import { FormPage } from "Pages/Abstract/FormPage";
@@ -25,6 +28,8 @@ export default class EditForm<TModel = BaseModel> extends FormPage<EditFormProps
 
 	private form_ref: RefObject<HTMLFormElement> = createRef ();
 	private editor_ref: RefObject<any> = createRef ();
+
+	private contextType = DataTableContext;
 
 
 	private get_edit_form (form_data: FormData) {
@@ -80,7 +85,7 @@ export default class EditForm<TModel = BaseModel> extends FormPage<EditFormProps
 
 			if (new_record) {
 
-				this.props.parent.add_row (response);
+				(this.context as DataTableControl).add_row (response);
 
 				return main_page.popup_window.show (<div>
 
@@ -95,7 +100,7 @@ export default class EditForm<TModel = BaseModel> extends FormPage<EditFormProps
 
 			}// if;
 
-			this.props.parent.update_row (response);
+			(this.context as DataTableControl).update_row (response);
 			main_page.popup_window.hide ();
 			
 		});

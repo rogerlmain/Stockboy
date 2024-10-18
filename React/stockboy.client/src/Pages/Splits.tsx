@@ -3,7 +3,7 @@ import DataPage from "Controls/DataPage";
 
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { EditSplitForm } from "Forms/EditSplitForm";
-import { SplitListModel } from "../Models/SplitModels";
+import { SplitListModel } from "Models/SplitModels";
 
 
 const properties: DataTableProperties = {

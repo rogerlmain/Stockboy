@@ -10,6 +10,12 @@ export function invisible (target: any, key: any) {
 }// invisible;
 
 
+/**** Types ****/
+
+
+export type StockModelArray = Array<IStockModel>
+
+
 /**** Interfaces ****/
 
 

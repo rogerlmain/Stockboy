@@ -1,3 +1,18 @@
+/**** Types ****/
+
+
+export type ListItemArray = Array<ListItem>
+
+
+/**** Classes ****/
+
+
+export class ListItem {
+	public id: string = null;
+	public name: string = null;
+}// ListModelItem;
+
+
 export class KeyValuePair<IModel> { [key: string]: any }
 
 

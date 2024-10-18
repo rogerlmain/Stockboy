@@ -1,10 +1,9 @@
+import { ListItem, ListItemArray } from "Classes/Collections";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { ListControl } from "Controls/Abstract/ListControl";
 import { ChangeEvent, ChangeEventHandler, RefObject, createRef } from "react";
 
 import InputElement, { InputElementContext } from "Controls/InputElement";
-
-import ListModel from "Models/ListModel";
 
 
 export class BaseSelectListProps extends BaseProps {
@@ -18,7 +17,7 @@ export class BaseSelectListProps extends BaseProps {
 
 
 class SelectListProps extends BaseSelectListProps {
-	data: Array<ListModel>;
+	data: ListItemArray;
 }// SelectListProps;
 
 
@@ -99,7 +98,7 @@ export default class SelectList extends ListControl<SelectListProps, SelectListS
 				{this.props.header ?? (this.props.selectable_header ? "All" : null) ?? `Select ${this.props.name.replace (underscore, String.Space)}`}
 			</option> : null}
 
-			{this.props.data?.map ((item: ListModel) => <option key={this.next_key} value={item.id} selected={item.id == this.state.selected_item}>{item.name}</option>)}
+			{this.props.data?.map ((item: ListItem) => <option key={this.next_key} value={item.id} selected={item.id == this.state.selected_item}>{item.name}</option>)}
 
 		</select>
 
