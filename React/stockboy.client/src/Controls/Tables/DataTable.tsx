@@ -179,9 +179,7 @@ export default class DataTable extends ListControl<DataTableProps> {
 		if (is_null (this.props.data) || (this.props.data.length == 0)) return <div>No data</div>;
 		
 		return <DataTableContext.Provider value={this}>
-			<div className="data-table" ref={this.reference}
-
-				style={this.initial_styles}>
+			<div className="data-table" ref={this.reference} style={this.initial_styles}>
 	
 				<div className="table-header">
 					{this.props.fields.map ((field: string | NameValueCollection<string>) => {

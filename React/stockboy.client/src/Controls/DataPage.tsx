@@ -32,9 +32,7 @@ class DataPageState implements IBaseState {
 
 export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 
-	private data_table_ref: RefObject<DataTable> = createRef ();
-
-	private get table () { return this.data_table_ref.current }
+	private table_control_ref: RefObject<DataTableControl> = createRef ();
 
 
 	private edit_record = (row: IStockModel = null) => main_page.popup_window.show (<EditForm id={this.props.id} data={row} 
@@ -42,9 +40,9 @@ export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 	</EditForm>);
 
 
-	private delete_record = (row: IStockModel = null) => main_page.popup_window.show (<DeleteForm key_names={["broker_id", "ticker_id"]} parent={this}
-		invisible_fields={this.props.invisible_fields}
-		record={row}>
+	private delete_record = (row: IStockModel = null) => main_page.popup_window.show (<DeleteForm table_name={this.props.name} record={row}
+		table={this.table_control_ref.current}
+		invisible_fields={this.props.invisible_fields}>
 	</DeleteForm>);
 
 
@@ -69,7 +67,7 @@ export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 	public render = () => <div className="page-layout">
 
 		<form>
-			<div className="wide-column-spaced row-block">
+			<div className="wide-column-spaced column-margin row-block">
 				<TickerSelector id="ticker_selector" data={this.state.data} selectable_header={true}
 					broker_id={this.state.broker_id} ticker_id={this.state.ticker_id}
 					onBrokerChange={(value: string) => this.setState ({ broker_id: value })}
@@ -78,14 +76,13 @@ export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 			</div>
 		</form>
 
-		<div className="body with-headspace">
-			<DataTableControl name={this.props.name} table_properties={this.props.table_properties}
-				procedure_name={`Get${this.props.name}s`} parameters={this.fetch_parameters ()}
-				onCreate={this.edit_record}
-				onEdit={(selected_row: IStockModel) => this.edit_record (selected_row)}
-				onDelete={(selected_row: IStockModel) => this.delete_record (selected_row)}>
-			</DataTableControl>
-		</div>
+		<DataTableControl name={this.props.name} ref={this.table_control_ref}
+			table_properties={this.props.table_properties}
+			procedure_name={`Get${this.props.name}s`} parameters={this.fetch_parameters ()}
+			onCreate={this.edit_record}
+			onEdit={(selected_row: IStockModel) => this.edit_record (selected_row)}
+			onDelete={(selected_row: IStockModel) => this.delete_record (selected_row)}>
+		</DataTableControl>
 
 	</div>
 

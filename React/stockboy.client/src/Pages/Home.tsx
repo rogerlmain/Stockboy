@@ -225,7 +225,7 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 
 	private get empty_data_panel () {
-		return <div className="column-centered column-block">
+		return <div className="column-centered">
 			No stock information available<br />
 			<br />
 			<div className="row-centered">To add stock purchases,&nbsp;<Link command={() => main_page.change_page (<TransactionsPage />)} text="click here" /></div>

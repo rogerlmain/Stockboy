@@ -6,33 +6,23 @@ namespace Stockboy.Server.Models {
 	public interface IBaseModel {
 		[Key]
 		public Guid? id { get; set; }
-	}
+	}// IBaseModel;
 
 
-	public class BaseModel : IBaseModel {
+	public interface IDataModel: IBaseModel {
+		public Boolean deleted { get; set; }
+	}// IDataModel;
+
+
+	public class BaseModel: IBaseModel {
 		[Key]
 		public Guid? id { get; set; } = null;
-	}
+	}// BaseModel;
 
 
-    public class  OptionsData : BaseModel {
-        public string description { get; set; } = String.Empty;
-    }
+	public class DataModel: BaseModel, IDataModel {
+		public Boolean deleted { get; set; } = false;
+	}// DataModel;
 
-
-    public class  StringData {
-        public string text { get; set; } = String.Empty;
-    }
-
-
-    public class  TableData {
-        public string []? sort_fields { get; set; } = null;
-		public string []? filters { get; set; } = null;
-    }
-
-	public class TableModel {
-		public IEnumerable<Object>? list { get; set; }
-		public TableData? data_fields { get; set; }
-	}
 
 }// Stockboy.Server.Models;

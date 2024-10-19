@@ -14,7 +14,7 @@ create procedure get_dividends (broker_id varchar (36), ticker_id varchar (36)) 
         dvd.issue_date,
         dvd.amount_per_share,
         dvd.share_quantity,
-        dvd.amount_per_share * dvd.share_quantity as payout
+        round(dvd.amount_per_share * dvd.share_quantity, 2) as payout
 	from
 		dividends as dvd
 	join

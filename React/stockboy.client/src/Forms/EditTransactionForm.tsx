@@ -43,7 +43,7 @@ export class EditTransactionForm extends FormPage<EditTransactionFormProps> {
 
 
 	public render () { 
-		return <div className="column-block">
+		return <div>
 
 			<input type="hidden" id="id" name="id" value={this.props.data?.id} />
 

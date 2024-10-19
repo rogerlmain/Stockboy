@@ -1,67 +1,64 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
+using Stockboy.Server.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Mysqlx.Expect.Open.Types.Condition.Types;
 
 
 namespace Stockboy.Server.Classes {
 
+
+	public static class ControllerExtensions {
+		
+		public static JsonResult DeleteRecord<TModel> (this Controller controller, DbSet<TModel> dataset, TModel parameters) where TModel: DataModel {
+			try {
+				parameters.deleted = true;
+				dataset.Update (parameters);
+				dataset.GetContext ()?.SaveChanges ();
+				return new JsonResult (new { success = true });
+			} catch (Exception except) {
+				return new JsonResult (new { error = except.Message });
+			}// try;
+		}// DeleteBroker;
+
+	}// ControllerExtensions;
+
+
 	public static class DataExtensions {
 
 
-		public static TModel? FindRecord<TModel> (this DbSet<TModel> source, TModel model) where TModel : class {
-
-			IEnumerable<PropertyInfo>? keys = model.GetKeyFields ();
-			if (is_null (keys) || is_null (model)) return null;
-
-			Boolean KeyValuesMatch (TModel item) {
-
-				foreach (PropertyInfo key in keys!) {
-					if (is_null (item.GetValue (key.Name))) return false;
-					if (!item.GetValue (key.Name)!.Matches (model.GetValue (key.Name))) return false;
-				}// foreach;
-
-				return true;
-
-			}// KeyValuesMatch;
-
-			foreach (TModel item in source) {
-				if (KeyValuesMatch (item)) return item;
-			}// foreach;
-
-			return null;
-
-		}// FindRecord;
+		public static DbContext? GetContext<TModel> (this DbSet<TModel> dataset) where TModel : class {
+			return ((dataset as IInfrastructure<IServiceProvider>).Instance.GetService (typeof (ICurrentDbContext)) as ICurrentDbContext)?.Context;
+		}// GetContext;
 
 		public static List<TModel> SelectAll<TModel> (this DbSet<TModel> dataset) where TModel : class => dataset.ToList ();
 
-		public static Boolean UpdateRow<TModel> (this DbSet<TModel> dataset, TModel values, Boolean copy_nulls = false) where TModel : class {
-			try {
-				IEnumerable<PropertyInfo>? key_fields = values.GetKeyFields ();
-				TModel? record = dataset.FindRecord (values);
 
-				if (is_null (key_fields) || is_null (record)) {
-					dataset.Add (values);
-					return true;
-				}// if;
+		public static TModel Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : class {
 
-				record!.Merge (values, copy_nulls);
-				return true;
+			var key_fields = parameters.GetKeyFields ();
 
-			} catch {
-				return false;
-			}// try;
-		}// SaveChanged;
+			switch (isset (parameters.GetKeyFields ()?.Find (next => isset (parameters.GetValue (next))))) {
+				case true: dataset.Update (parameters); break;
+				default: dataset.Add (parameters); break;
+			}// switch;
+
+			dataset.GetContext ()?.SaveChanges ();
+			return parameters;
+
+		}// Save;
 
 	}// DataExtensions;
 
 
 	public static class ListExtensions {
+
+
+		public static TModel? Find<TModel> (this IEnumerable<TModel> list, Func<TModel, Boolean> predicate) => list.FirstOrDefault<TModel> (next => predicate (next));
+
 
 		public static List<Model>? OrderBy<Model> (this List<Model> source, String sort_list) {
 
@@ -105,16 +102,33 @@ namespace Stockboy.Server.Classes {
 		public static Model? Export<Model> (this Object model) => JsonConvert.DeserializeObject<Model> (JsonConvert.SerializeObject (model));
 
 
-		public static IEnumerable<PropertyInfo>? GetKeyFields (this Object source) => source.GetType ().GetProperties ().Where (property => Attribute.IsDefined (property, typeof (KeyAttribute)));
+		public static List<string>? GetKeyFields (this Object source) {
+
+			List<string>? result = null;
+
+			IEnumerable<PropertyInfo> keys = source.GetType ().GetProperties ().Where (property => Attribute.IsDefined (property, typeof (KeyAttribute)));
+
+			foreach (PropertyInfo item in keys) {
+				result ??= new ();
+				result.Add (item.Name);
+			}// foreach;
+
+			return result;
+
+		}// GetKeyFields;
 
 
 		public static List<String>? GetKeys (this Object source) {
+
 			List<String>? result = null;
+
 			foreach (PropertyInfo property in source.GetType ().GetProperties ()) {
 				result ??= new ();
 				result.Add (property.Name);
-			}
+			}// foreach;
+
 			return result;
+
 		}// GetKeys;
 
 
@@ -125,7 +139,9 @@ namespace Stockboy.Server.Classes {
 
 			List<String>? keys = source.GetKeys ();
 
-			foreach (String source_key in keys) {
+			if (is_null (keys)) return false;
+
+			foreach (String source_key in keys!) {
 				if (source_key == key) return true;
 			}// foreach;
 
@@ -148,7 +164,7 @@ namespace Stockboy.Server.Classes {
 
 
 	public static class PropertyInfoExtensions {
- 		public static Boolean KeyAttribute (this PropertyInfo source) => Attribute.IsDefined (source, typeof (KeyAttribute));
+		public static Boolean KeyAttribute (this PropertyInfo source) => Attribute.IsDefined (source, typeof (KeyAttribute));
 
 	}// PropertyInfoExtensions;
 

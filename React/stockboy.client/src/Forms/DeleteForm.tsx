@@ -6,28 +6,27 @@ import DataTableControl from "Controls/DataTableControl";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { IBaseModel } from "Models/Abstract/BaseModel";
 import { ListPage } from "Pages/Abstract/ListPage";
-import { DataTableContext } from "Controls/Tables/DataTable";
+import DataTable, { DataTableContext } from "Controls/Tables/DataTable";
+
+
+const key_names: Array<string> = ["id", "broker_id", "ticker_id", "deleted"];
 
 
 class DeleteFormProps extends BaseProps {
-	key_names: Array<string> = null;
-	invisible_fields: Array<string> = null;
+	table_name: string = null;
+	invisible_fields?: Array<string> = null;
 	record: IBaseModel = null;
-	parent: DataPage = null;
+	additional_text?: string = null;
+	table: DataTableControl = null;
 }// DeleteFormProps;
 
 
 export class DeleteForm extends ListPage<DeleteFormProps> {
 
-
-	private contextType = DataTableContext;
-
-
 	public delete_record () {
-
 		main_page.popup_window.show (<Eyecandy text={"Deleting transaction"}
-			command={() => APIClass.fetch_data (`Delete${this.props.parent.props.name.titleCase ()}`, this.props.parent.state.selected_row).then (() => {
-				(this.context as DataTableControl).remove_row ();
+			command={() => APIClass.fetch_data (`Delete${this.props.table_name}`, this.props.record).then (() => {
+				this.props.table.remove_row ();
 				main_page.popup_window.hide ();
 			})}>
 		</Eyecandy>);
@@ -47,7 +46,7 @@ export class DeleteForm extends ListPage<DeleteFormProps> {
 			<div className="two-column-grid"> {
 				Object.keys (this.props.record).map (key => {
 
-					//if (key == "id") return null;
+					if (key_names?.contains (key)) return;
 					if (this.props.invisible_fields?.contains (key)) return;
 
 					return <div key={this.next_key} style={{ display: "contents" }}>
@@ -57,6 +56,8 @@ export class DeleteForm extends ListPage<DeleteFormProps> {
 
 				})
 			} </div><br />
+
+			{this.props.additional_text}{conditional (isset (this.props.additional_text), <br />)}
 
 			Are you sure?
 

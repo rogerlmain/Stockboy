@@ -9,6 +9,10 @@
 
 		public static Boolean not_null (object? value) => !is_null (value);
 
+		public static Boolean isset (object? value) => !not_set (value);
+
+		public static Boolean not_set (object? value) => is_null (value) || ((value is string) && (value.ToString () == String.Empty)) || ((value is Array) && ((value as Array)!.Length == 0));
+
 		public static ConfigurationRoot AppSettings () => (ConfigurationRoot) new ConfigurationBuilder ().SetBasePath (Directory.GetCurrentDirectory()).AddJsonFile ("appsettings.json", true, true).Build ();
 
 	}// Globals;

@@ -12,7 +12,7 @@ import TransactionsPage from "Pages/Transactions";
 import React, { Context, createContext, ReactElement } from "react";
 
 
-export class MainPageState { current_page: ReactElement = <TransactionsPage /> }
+export class MainPageState { current_page: ReactElement = <BrokersPage /> }
 
 
 export const pages = {
@@ -52,8 +52,8 @@ export default class MainPage extends BasePage {
 
 		<PopupWindow id="popup_window" ref={this.popup_ref}>{"Default Value"}</PopupWindow>
 
-		<div className="header">
-			<div className="main-menu">
+		<div className="full-width left-aligned margin">
+			<div className="row-block main-menu">
 				{Object.keys (pages).map ((key: string) => {
 					const PageName = pages [key];
 					return <MainMenuItem text={key.titleCase ()} page={<PageName />} selected_item={this.state.current_page} />
@@ -61,9 +61,9 @@ export default class MainPage extends BasePage {
 			</div>
 		</div>
 
-		<div id="main_body" className="row-centered body">{this.state.current_page}</div>
+		<div id="main_body" className="full-page body">{this.state.current_page}</div>
 
-		<div className="row-centered footer">
+		<div className="column-margin footer">
 			Stockboy Stock Ledger - &copy; Copyright 2024 - The Roger Main Programming Company
 		</div>
 

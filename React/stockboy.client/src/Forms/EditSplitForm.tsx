@@ -48,7 +48,7 @@ export class EditSplitForm extends FormPage<EditSplitFormProps, EditSplitFormSta
 
 
 	public render () {
-		return <div className="column-block">
+		return <div>
 
 			<input type="hidden" id="id" value={this.props.data?.id} />
 

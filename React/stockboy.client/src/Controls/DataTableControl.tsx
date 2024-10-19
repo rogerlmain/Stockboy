@@ -1,23 +1,19 @@
 import APIClass from "Classes/APIClass";
-import EditForm from "Controls/EditForm";
-import TickerSelector from "Controls/TickerSelector";
-import BasePage from "Pages/Abstract/BasePage";
 import NameValueCollection from "Classes/Collections";
+import BasePage from "Pages/Abstract/BasePage";
 
 import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { BaseProps, IBaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
-import { DeleteForm } from "Forms/DeleteForm";
-import { IBaseModel, IStockModel, StockModelArray } from "Models/Abstract/BaseModel";
-import { ComponentClass, RefObject, createRef } from "react";
-import { TransactionListModel } from "Models/TransactionModels";
-import { MouseEvent } from "react";
+import { BaseModelArray, IBaseModel, IStockModel, StockModelArray } from "Models/Abstract/BaseModel";
+import { CSSProperties, MouseEvent, ReactElement, RefObject, createRef } from "react";
 
 
 class DataPageProps extends BaseProps implements IBaseProps {
+	children?: ReactElement = null;
 	table_properties: DataTableProperties = null;
 	procedure_name: string = null;
-	parameters: NameValueCollection<any> = null;
+	parameters?: NameValueCollection<any> = null;
 	name: string = null;
 	onCreate?: Function = null;
 	onEdit?: Function = null;
@@ -27,25 +23,26 @@ class DataPageProps extends BaseProps implements IBaseProps {
 
 class DataPageState implements IBaseState {
 	selected_row: IStockModel = null;
-	data: StockModelArray = null;
+	data: BaseModelArray = null;
 }// TransactionState;
 
 
 export default class DataTableControl extends BasePage <DataPageProps, DataPageState> {
 
-	private data_table_ref: RefObject<DataTable> = createRef ();
-
-
 	private get table () { return this.data_table_ref.current }
+	private get with_child () { return isset (this.props.children) }
 
 
 	/********/
 
 
+	public data_table_ref: RefObject<DataTable> = createRef ();
+
+
 	public state: DataPageState = new DataPageState ();
 
 
-	public add_row (row: IStockModel) {
+	public add_row (row: IBaseModel) {
 
 		let item: IBaseModel = null;
 
@@ -101,42 +98,56 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 	public componentDidMount = () => this.fetch_data ();
 
 
-	public render = () => <div className="page-layout">
+	public render () {
 
-		<div className="body page-layout with-headspace">
+		let table_style: CSSProperties = { width: "auto" }
 
-			<div className="body" style={{ flexGrow: 0 }}>
+		if (this.with_child) table_style.flexDirection = "row";
+
+		return <div className="top-aligned page-layout with-headspace" style={table_style}>
+
+			<div className="body" style={this.with_child ? { overflow: "visible" } : null}>
 				{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no transactions</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
 					onclick={(row: IStockModel) => this.setState ({ selected_row: row })} ref={this.data_table_ref}
 					data={this.state.data} parent={this} {...this.props.table_properties}>
 				</DataTable>}
 			</div>
 
-			<div className="button-bar">
+			<div className={`${conditional (this.with_child, "left-margin")} full-width`}>
 
-				<button id="add_button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
-					event.preventDefault ();
-					if (isset (this.props.onCreate)) return this.props.onCreate (); 
-					throw "No create handler defined";
-				}}>Add</button>
+				<div className={`${conditional (this.with_child, "left-aligned")} button-bar`} 
+					style={{ marginTop: conditional (this.with_child, "0") }}>
 
-				<div style={{display: isset (this.state.selected_row) ? null : "none"}}>
-					<button id="edit_button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
+					<button id="add_button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
 						event.preventDefault ();
-						if (isset (this.props.onEdit)) return this.props.onEdit (this.state.selected_row);
-						throw ("No edit handler defined");
-					}}>Edit</button>
-					<button id="delete_button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
-						event.preventDefault ();
-						if (isset (this.props.onDelete)) return this.props.onDelete (this.state.selected_row);
-						throw ("No delete handler defined");
-					}}>Delete</button>
+						if (isset (this.props.onCreate)) return this.props.onCreate (); 
+						throw "No create handler defined";
+					}}>Add</button>
+
+					<div className="row-block" style={{display: isset (this.state.selected_row) ? null : "none"}}>
+
+						<button id="edit_button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
+							event.preventDefault ();
+							if (isset (this.props.onEdit)) return this.props.onEdit (this.state.selected_row);
+							throw ("No edit handler defined");
+						}}>Edit</button>
+
+						<button id="delete_button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
+							event.preventDefault ();
+							if (isset (this.props.onDelete)) return this.props.onDelete (this.state.selected_row);
+							throw ("No delete handler defined");
+						}}>Delete</button>
+
+					</div>
+
 				</div>
+
+				{this.with_child ? <div className="top-margin">{this.props.children}</div> : String.Empty}
 
 			</div>
 
 		</div>
 
-	</div>
+	}// render;
 
 }// DataTableControl;

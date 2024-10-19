@@ -1,15 +1,20 @@
-﻿namespace Stockboy.Server.Models {
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Stockboy.Server.Models {
 
 
-	public class LookupModel: BaseModel {
+	public interface IDataTableModel: IDataModel {
+		public string name { get; set; }
+	}// ITableModel;
+
+
+	public class DataTableModel: DataModel, IDataModel, IDataTableModel {
 		public string name { get; set; } = String.Empty;
-	}// LookupModel;
+	}// DataTableModel;
 
 
-	public class BrokerModel: LookupModel {}
-
-
-	public class TransactionTypeModel: LookupModel {
+	public class TransactionTypeModel: BaseModel {
+		public string name { get; set; } = String.Empty;
 		public int sort_order { get; set; }
 	}// TransactionTypeModel;
 

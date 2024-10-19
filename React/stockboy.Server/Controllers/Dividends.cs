@@ -13,7 +13,7 @@ namespace Stockboy.Server.Controllers {
 		public IActionResult GetDividends ([FromBody] GetParameters parameters) {
 			var result = GetData ("get_dividends", parameters);
 			return result;
-		}
+		}// GetDividends;
 
 
 		[HttpPost]

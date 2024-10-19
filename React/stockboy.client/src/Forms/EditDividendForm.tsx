@@ -95,7 +95,7 @@ export default class EditDividendForm extends FormPage<EditDividendFormProps, Ed
 
 	public render () {
 
-		return <div className="column-block">
+		return <div>
 
 			<input type="hidden" id="id" name="id" value={this.props.data?.id} />
 

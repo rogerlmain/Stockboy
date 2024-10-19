@@ -21,23 +21,11 @@
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   box-sizing: border-box;
   white-space: nowrap;
-}
-
-/**** Text Styles ****/
-div.warning {
-  font-weight: bold;
-  font-size: 9pt;
-  margin-bottom: 1rem;
-}
-
-/**** Tag Styles ****/
-html, body, *.full-page, *.page-layout {
-  width: 100%;
-  height: 100%;
   margin: 0;
   padding: 0;
 }
 
+/**** Tag Styles ****/
 body {
   display: flex;
   flex-direction: column;
@@ -49,12 +37,66 @@ label {
   margin-right: 0.5rem;
 }
 
-/**** Layout Styles ****/
+div, div.blackout {
+  display: flex;
+  flex-direction: column;
+}
+div.row-centered {
+  justify-content: center;
+}
+div.column-centered {
+  align-items: center;
+}
+div.wide-row-spaced {
+  row-gap: 2rem;
+}
+div.wide-column-spaced {
+  column-gap: 2rem;
+}
+div.row-spaced {
+  row-gap: 0.5rem;
+}
+div.column-spaced {
+  column-gap: 0.5rem;
+}
+
+/**** Text Styles ****/
+div.warning {
+  font-weight: bold;
+  font-size: 9pt;
+  margin-bottom: 1rem;
+}
+
 div.row-divider {
   height: 0;
   margin: 1rem 0;
   border: none;
   border-top: solid 1px var(--border-color);
+}
+
+/**** Layout Styles ****/
+*.full-width, html, body, .full-page {
+  width: 100%;
+}
+
+*.full-height, .page-layout, html, body, .full-page {
+  height: 100%;
+}
+
+*.left-margin, .row-margin, *.margin {
+  margin-left: 1rem;
+}
+
+*.right-margin, .row-margin, *.margin {
+  margin-right: 1rem;
+}
+
+*.top-margin, .column-margin, *.margin {
+  margin-top: 1rem;
+}
+
+*.bottom-margin, .column-margin, *.margin {
+  margin-bottom: 1rem;
 }
 
 *.container {
@@ -66,40 +108,41 @@ div.row-divider {
 }
 
 *.page-layout {
-  display: flex;
-  flex-direction: column;
   position: relative;
-  overflow-y: hidden;
-}
-*.page-layout > * {
-  margin: 1em;
+  overflow: hidden;
+  align-items: center;
 }
 *.page-layout *.body {
-  flex-grow: 1;
-  overflow-y: hidden;
-  width: min-content;
-  align-self: center;
+  overflow: hidden;
 }
 
 *.row-centered {
-  display: flex;
   justify-content: center;
 }
 
 *.column-centered {
-  display: flex;
   align-items: center;
 }
 
 *.centered {
-  display: flex;
   align-items: center;
   justify-content: center;
 }
 
+*.left-aligned {
+  justify-content: flex-start !important;
+}
+
 *.right-aligned {
-  display: flex;
-  justify-content: flex-end;
+  align-items: flex-start !important;
+}
+
+*.top-aligned {
+  align-items: flex-start !important;
+}
+
+*.bottom-aligned {
+  justify-content: flex-start !important;
 }
 
 *.maximum-size {
@@ -119,7 +162,6 @@ div.row-divider {
 }
 
 *.row-block {
-  display: flex;
   flex-direction: row;
 }
 *.row-block.row-centered {
@@ -129,32 +171,7 @@ div.row-divider {
   justify-content: center;
 }
 
-*.column-block {
-  display: flex;
-  flex-direction: column;
-}
-*.column-block.row-centered {
-  justify-content: center;
-}
-*.column-block.column-centered {
-  align-items: center;
-}
-
-*.row-block.wide-row-spaced, *.column-block.wide-row-spaced {
-  row-gap: 2rem;
-}
-*.row-block.wide-column-spaced, *.column-block.wide-column-spaced {
-  column-gap: 2rem;
-}
-*.row-block.row-spaced, *.column-block.row-spaced {
-  row-gap: 0.5rem;
-}
-*.row-block.column-spaced, *.column-block.column-spaced {
-  column-gap: 0.5rem;
-}
-
 *.horizontally-spaced-out {
-  display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
@@ -171,13 +188,14 @@ div.full-screen, div.blackout {
 
 /**** Button Styles ****/
 div.button-bar {
-  display: flex;
+  flex-direction: row;
   column-gap: 0.25rem;
   justify-content: flex-end;
   margin-top: 1rem;
+  width: 100%;
+  height: min-content;
 }
 div.button-bar div {
-  display: flex;
   column-gap: 0.25rem;
 }
 
@@ -228,7 +246,7 @@ div[class*=-column-grid] label {
   align-items: center;
   justify-content: flex-end;
 }
-div[class*=-column-grid] *.full-width {
+div[class*=-column-grid] *.full-width, div[class*=-column-grid] html, div[class*=-column-grid] body, div[class*=-column-grid] .full-page {
   grid-column: 1/-1;
 }
 
@@ -247,7 +265,6 @@ div.form-table {
   row-gap: 0.5em;
 }
 div.form-table label {
-  display: flex;
   align-items: center;
   justify-content: flex-end;
 }

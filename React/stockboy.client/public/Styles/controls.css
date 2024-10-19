@@ -45,7 +45,7 @@ div.checkbox-select-list div.list {
 }
 
 /**** Form Styles ****/
-form input, form select {
+form input, form select, form.linear button {
   height: 1.2rem;
   padding: 0 10px !important;
   border-radius: 1rem !important;

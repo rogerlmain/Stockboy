@@ -7,6 +7,7 @@ create table dividends (
 	issue_date date not null,
 	amount_per_share decimal (14,6) not null,
     share_quantity decimal (14,6) not null,
+    deleted boolean not null default false,
 
 	constraint FK_dividends_to_brokers foreign key (broker_id) references brokers (id),
 	constraint FK_dividends_to_tickers foreign key (ticker_id) references tickers (id)

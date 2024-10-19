@@ -13,6 +13,7 @@ export function invisible (target: any, key: any) {
 /**** Types ****/
 
 
+export type BaseModelArray = Array<IBaseModel>
 export type StockModelArray = Array<IStockModel>
 
 
@@ -42,7 +43,7 @@ export abstract class BaseModel implements IBaseModel {
 }// BaseModel;
 
 
-export /*abstract*/ class StockModel extends BaseModel {
+export abstract class StockModel extends BaseModel {
 
 	@invisible
 	public broker_id: string;
@@ -53,6 +54,6 @@ export /*abstract*/ class StockModel extends BaseModel {
 }// StockModel;
 
 
-export /*abstract*/ class StockDataModel extends StockModel {
+export abstract class StockDataModel extends StockModel {
 	public data?: IStockModel;
 }// StockDataModel;
