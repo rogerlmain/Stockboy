@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
+using System.Data.Entity;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 
@@ -22,7 +23,7 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpPost]
 		[Route ("DeleteTransaction")]
-		public IActionResult DeleteTransaction ([FromBody] DeleteParameters parameters) => new JsonResult (new { success = Database.ExecuteProcedure ("delete_transaction", parameters) });
+		public IActionResult DeleteTransaction ([FromBody] DataModel parameters) => this.DeleteRecord (context.transactions, parameters);
 
 
 		[HttpPost]

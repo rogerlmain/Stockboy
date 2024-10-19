@@ -41,12 +41,6 @@ div, div.blackout {
   display: flex;
   flex-direction: column;
 }
-div.row-centered {
-  justify-content: center;
-}
-div.column-centered {
-  align-items: center;
-}
 div.wide-row-spaced {
   row-gap: 2rem;
 }
@@ -117,11 +111,11 @@ div.row-divider {
 }
 
 *.row-centered {
-  justify-content: center;
+  align-items: center;
 }
 
 *.column-centered {
-  align-items: center;
+  justify-content: center;
 }
 
 *.centered {
@@ -163,12 +157,6 @@ div.row-divider {
 
 *.row-block {
   flex-direction: row;
-}
-*.row-block.row-centered {
-  align-items: center;
-}
-*.row-block.column-centered {
-  justify-content: center;
 }
 
 *.horizontally-spaced-out {

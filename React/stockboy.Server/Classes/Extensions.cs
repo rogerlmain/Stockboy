@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using Stockboy.Server.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity.Core.Objects;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 
 
@@ -13,11 +15,9 @@ namespace Stockboy.Server.Classes {
 
 	public static class ControllerExtensions {
 		
-		public static JsonResult DeleteRecord<TModel> (this Controller controller, DbSet<TModel> dataset, TModel parameters) where TModel: DataModel {
+		public static JsonResult DeleteRecord<TModel> (this Controller controller, DbSet<TModel> dataset, IDataModel parameters) where TModel: DataModel {
 			try {
-				parameters.deleted = true;
-				dataset.Update (parameters);
-				dataset.GetContext ()?.SaveChanges ();
+				dataset.Where (item => item.id == parameters.id).ExecuteUpdate<IDataModel> (property => property.SetProperty (item => item.deleted, true));
 				return new JsonResult (new { success = true });
 			} catch (Exception except) {
 				return new JsonResult (new { error = except.Message });

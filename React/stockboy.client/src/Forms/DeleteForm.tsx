@@ -24,15 +24,23 @@ class DeleteFormProps extends BaseProps {
 export class DeleteForm extends ListPage<DeleteFormProps> {
 
 	public delete_record () {
-		main_page.popup_window.show (<Eyecandy text={"Deleting transaction"}
+		main_page.popup_window.show (<Eyecandy text={`Deleting ${this.props.table_name}...`}
 			command={() => APIClass.fetch_data (`Delete${this.props.table_name}`, this.props.record).then (() => {
+
 				this.props.table.remove_row ();
-				main_page.popup_window.hide ();
+
+				main_page.popup_window.show (<div>
+
+					{this.props.table_name} deleted.
+
+					<div className="row-centered with-some-headspace">
+						<button onClick={() => main_page.popup_window.hide ()}>Close</button>
+					</div>
+
+				</div>);
+
 			})}>
 		</Eyecandy>);
-
-		main_page.popup_window.hide ();
-
 	}// delete_record;
 
 

@@ -55,9 +55,6 @@ div {
 	display: flex;
 	flex-direction: column;
 
-	&.row-centered { justify-content: center }
-	&.column-centered { align-items: center }
-
 	&.wide-row-spaced { row-gap: 2rem }
 	&.wide-column-spaced { column-gap: 2rem }
 
@@ -117,8 +114,22 @@ div.row-divider {
 }
 
 
-*.row-centered { justify-content: center }
-*.column-centered { align-items: center }
+*.row-centered {
+	@if (flex-direction == "row") {
+		justify-content: center;
+	} @else {
+		align-items: center 
+	}
+}
+
+
+*.column-centered {
+	@if (flex-direction == "row") {
+		align-items: center 
+	} @else {
+		justify-content: center;
+	}
+}
 
 
 *.centered {
@@ -171,12 +182,7 @@ div.row-divider {
 *.with-lotsa-headspace { margin-top: 2rem }
 
 
-*.row-block {
-	flex-direction: row;
-
-	&.row-centered { align-items: center }
-	&.column-centered { justify-content: center }
-}
+*.row-block { flex-direction: row }
 
 
 *.horizontally-spaced-out {

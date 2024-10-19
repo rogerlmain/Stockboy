@@ -21,7 +21,7 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpPost]
 		[Route ("DeleteBroker")]
-		public IActionResult DeleteBroker ([FromBody] DataTableModel parameters) => this.DeleteRecord (context.brokers, parameters);
+		public IActionResult DeleteBroker ([FromBody] DataModel parameters) => this.DeleteRecord (context.brokers, parameters);
 
 	}// Brokers;
 

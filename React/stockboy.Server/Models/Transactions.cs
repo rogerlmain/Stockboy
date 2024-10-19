@@ -1,6 +1,6 @@
 ﻿namespace Stockboy.Server.Models {
 
-	public class TransactionDataModel: BaseModel {
+	public class TransactionDataModel: DataModel, IDataModel {
 		public Guid broker_id { get; set; }
         public Guid ticker_id { get; set; }
 		public decimal price { get; set; }
