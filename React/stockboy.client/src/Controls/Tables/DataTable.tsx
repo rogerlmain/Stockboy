@@ -1,5 +1,6 @@
 import Decimal from "Classes/Decimal";
 import DataTableRow from "Controls/Tables/DataTableRow";
+import ScrollBlock from "Controls/ScrollBlock";
 
 import NameValueCollection, { KeyValuePair } from "Classes/Collections";
 import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
@@ -18,7 +19,7 @@ class DataTableState implements IBaseState {
 
 
 export class DataTableProperties extends BaseProps {
-	fields?: Array<string | KeyValuePair<string>> = null;
+	fields?: Array<DataKey> = null;
 	date_fields?: Array<string> = null;
 	numeric_fields?: Array<string> = null;
 	currency_fields?: Array<string> = null;
@@ -40,9 +41,7 @@ export const DataTableContext: Context<DataTable> = createContext (null)
 export default class DataTable extends ListControl<DataTableProps> {
 
 
-	private initial_styles: CSSProperties = null;
 	private reference: RefObject<HTMLDivElement> = createRef ();
-
 	private totals: NameValueCollection<number> = null;
 
 
@@ -65,7 +64,7 @@ export default class DataTable extends ListControl<DataTableProps> {
 
 		let result: Array<string> = null;
 
-		this.props.fields.forEach ((field: string | NameValueCollection<string>) => {
+		this.props.fields.forEach ((field: DataKey) => {
 			if (is_null (result)) result = new Array<string> ();
 			result.push (this.field_name (field));
 		});
@@ -90,21 +89,6 @@ export default class DataTable extends ListControl<DataTableProps> {
 	}// sort_table;
 
 
-	private update_styles () {
-
-		let data_table: HTMLDivElement = this.reference.current;
-		let data_styles: CSSProperties = new Object ().copy (this.initial_styles);
-
-		let overflow: boolean = (data_table.scrollHeight > data_table.parentElement.clientHeight);
-
-		data_table.style.copy (data_styles, {
-			height: overflow && "100%",
-			overflowY: overflow && "scroll"
-		});
-
-	}// update_styles;
-
-
 	private calculate_totals () {
 
 		this.totals = null;
@@ -122,20 +106,19 @@ export default class DataTable extends ListControl<DataTableProps> {
 
 	private show_totals () {
 
-		let field_name = (field: string | KeyValuePair<string>) => String.isString (field) ? (field as string) : Object.keys (field) [0];
-
 		let blank_field = (name: string, index: number): boolean => {
 			if (index == (this.props.fields.length - 1)) return false;
-			if (this.props.total_fields.contains (field_name (this.props.fields [index + 1]))) return false;
-			if (this.props.total_fields.contains (field_name (this.props.fields [index + 1]))) return false;
+			if (this.props.total_fields.contains (key_name (this.props.fields [index + 1]))) return false;
+			if (this.props.total_fields.contains (key_name (this.props.fields [index + 1]))) return false;
 			return true;
 		}// blank_field;
+
 
 		return <div style={{ fontWeight: "bold", display: "contents" }}>
 			{this.props.fields.map ((field: string | NameValueCollection<string>) => {
 
 				let index: number = this.props.fields.indexOf (field);
-				let name: string = field_name (field);
+				let name: string = key_name (field);
 				let total = this.totals?.[name] ?? 0;
 
 				if (index == 0) return <div style={{ borderRight: "none" }}>Total</div>
@@ -157,19 +140,8 @@ export default class DataTable extends ListControl<DataTableProps> {
 	public state = new DataTableState ();
 
 
-	public constructor (props: DataTableProps) {
-		super (props);
-		this.initial_styles = { gridTemplateColumns: `repeat(${this.field_count}, min-content)` }
-	}// constructor;
-
-
-	public componentDidUpdate (previous_props: DataTableProps, previous_state: DataTableState) {
-		if (isset (this.reference.current)) this.update_styles ();
-	}// componentDidUpdate;
-
-
 	public componentDidMount () {
-		if (isset (this.reference.current)) this.update_styles ();
+		this.reference.current.style.gridTemplateColumns = `repeat(${this.field_count}, min-content)`;
 	}// componentDidMount;
 
 
@@ -179,27 +151,29 @@ export default class DataTable extends ListControl<DataTableProps> {
 		if (is_null (this.props.data) || (this.props.data.length == 0)) return <div>No data</div>;
 		
 		return <DataTableContext.Provider value={this}>
-			<div className="data-table" ref={this.reference} style={this.initial_styles}>
+			<ScrollBlock>
+				<div className="data-table" ref={this.reference}>
 	
-				<div className="table-header">
-					{this.props.fields.map ((field: string | NameValueCollection<string>) => {
+					<div className="table-header">
+						{this.props.fields.map ((field: string | NameValueCollection<string>) => {
 					
-						let name = this.field_name (field);
-						let title = this.field_title (field);
+							let name = this.field_name (field);
+							let title = this.field_title (field);
 
-						return <div key={this.next_key} onClick={() => this.sort_table (name)}>
-							{title}
-							{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
-						</div>
+							return <div key={this.next_key} onClick={() => this.sort_table (name)}>
+								{title}
+								{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
+							</div>
 
-					})}
+						})}
+					</div>
+
+					{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} field_names={this.field_name_list ()} onclick={this.props.onclick} data_table={this} />)}
+
+					{isset (this.props.total_fields) ? this.show_totals () : null}
+
 				</div>
-
-				{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} field_names={this.field_name_list ()} onclick={this.props.onclick} data_table={this} />)}
-
-				{isset (this.props.total_fields) ? this.show_totals () : null}
-
-			</div>
+			</ScrollBlock>
 		</DataTableContext.Provider>
 	}// render;
 	

@@ -12,8 +12,13 @@
 }
 
 /**** Debugging Styles ****/
-*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined > * {
+*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined {
   border: solid 1px red;
+}
+
+div.test-grid div {
+  align-items: center;
+  width: 200px;
 }
 
 /**** Global Styles ****/
@@ -39,6 +44,7 @@ label {
 
 div, div.blackout {
   display: flex;
+  position: relative;
   flex-direction: column;
 }
 div.wide-row-spaced {
@@ -102,7 +108,6 @@ div.row-divider {
 }
 
 *.page-layout {
-  position: relative;
   overflow: hidden;
   align-items: center;
 }
@@ -110,33 +115,32 @@ div.row-divider {
   overflow: hidden;
 }
 
-*.row-centered {
-  align-items: center;
-}
-
-*.column-centered {
-  justify-content: center;
-}
-
-*.centered {
-  align-items: center;
-  justify-content: center;
-}
-
 *.left-aligned {
-  justify-content: flex-start !important;
+  align-items: flex-start;
 }
 
 *.right-aligned {
-  align-items: flex-start !important;
+  align-items: flex-end;
 }
 
 *.top-aligned {
-  align-items: flex-start !important;
+  justify-content: flex-start;
 }
 
 *.bottom-aligned {
-  justify-content: flex-start !important;
+  justify-content: flex-end;
+}
+
+*.row-centered, .centered {
+  align-items: center;
+}
+
+*.column-centered, .centered {
+  justify-content: center;
+}
+
+*.self-centered {
+  align-self: center;
 }
 
 *.maximum-size {
@@ -271,10 +275,6 @@ form div.compact input, form div.compact select {
 img.eyecandy {
   height: 1.2rem;
   width: auto;
-  /*
-  	position: relative;
-  	top: -0.2rem;
-  */
   margin-right: 0.3rem;
 }
 img.eyecandy .small {

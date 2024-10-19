@@ -15,7 +15,12 @@
 /**** Debugging Styles ****/
 
 
-*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined > * { border: solid 1px red }
+*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined { border: solid 1px red }
+
+div.test-grid div { 
+	align-items: center;
+	width: 200px;
+}
 
 
 /**** Global Styles ****/
@@ -53,6 +58,7 @@ label {
 
 div { 
 	display: flex;
+	position: relative;
 	flex-direction: column;
 
 	&.wide-row-spaced { row-gap: 2rem }
@@ -98,7 +104,6 @@ div.row-divider {
 
 *.margin { @extend .row-margin, .column-margin }
 
-
 *.container { display: contents }
 
 *.hidden { display: none !important }
@@ -106,7 +111,6 @@ div.row-divider {
 
 *.page-layout {
 	@extend .full-height;
-	position: relative;
 	overflow: hidden;
 	align-items: center;
 
@@ -114,64 +118,23 @@ div.row-divider {
 }
 
 
-*.row-centered {
-	@if (flex-direction == "row") {
-		justify-content: center;
-	} @else {
-		align-items: center 
-	}
-}
+*.left-aligned { align-items: flex-start }
+*.right-aligned { align-items: flex-end }
+*.top-aligned { justify-content: flex-start }
+*.bottom-aligned { justify-content: flex-end }
 
 
-*.column-centered {
-	@if (flex-direction == "row") {
-		align-items: center 
-	} @else {
-		justify-content: center;
-	}
-}
+*.row-centered { align-items: center }
+*.column-centered {justify-content: center }
 
 
 *.centered {
-	align-items: center;
-	justify-content: center;
+	@extend .row-centered;
+	@extend .column-centered;
 }
 
 
-*.left-aligned { 
-	@if (flex-direction == "row") {
-		align-items: flex-start !important
-	} @else {
-		justify-content: flex-start !important
-	}
-}
-
-
-*.right-aligned { 
-	@if (flex-direction == "row") {
-		justify-content: flex-start !important
-	} @else {
-		align-items: flex-start !important
-	}
-}
-
-
-*.top-aligned { 
-	@if (flex-direction == "row") {
-		justify-content: flex-start !important
-	} @else {
-		align-items: flex-start !important
-	}
-}
-
-
-*.bottom-aligned { 
-	@if (flex-direction == "row") {
-		align-items: flex-start !important
-	} @else {
-		justify-content: flex-start !important
-	}
-}
+*.self-centered { align-self: center }
 
 
 *.maximum-size { flex-grow: 1 }
@@ -302,10 +265,6 @@ form div.compact {
 img.eyecandy {
 	height: 1.2rem;
 	width: auto;
-/*
-	position: relative;
-	top: -0.2rem;
-*/
 	margin-right: 0.3rem;
 
 	.small { height: 0.8rem }

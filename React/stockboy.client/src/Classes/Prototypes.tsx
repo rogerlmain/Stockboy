@@ -1,6 +1,6 @@
 import NameValueCollection from "Classes/Collections";
 
-import { Component, DOMAttributes } from "react";
+import { Component, DOMAttributes, HTMLAttributes } from "react";
 import { date_format } from "Classes/Globals";
 import Decimal from "./Decimal";
 
@@ -535,6 +535,3 @@ String.prototype.trimmedEnd = function (value: string = String.Empty): string {
 String.prototype.trimmed = function (value: string = String.Empty) {
 	return this.trimmedStart (value).trimmedEnd (value);
 }// trimmed;
-
-
-

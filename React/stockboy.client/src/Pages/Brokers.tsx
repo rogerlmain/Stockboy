@@ -10,8 +10,9 @@ import { ListItemArray } from "Classes/Collections";
 import { IBaseModel } from "Models/Abstract/BaseModel";
 import { MouseEvent, RefObject, createRef } from "react";
 import { DeleteForm } from "../Forms/DeleteForm";
+import LookupPage from "../Controls/LookupPage";
 
-
+/*
 const data_table_properties: DataTableProperties = {
 	keys: ["id"],
 	fields: ["name"]
@@ -22,10 +23,10 @@ class BrokersState {
 	public form_visible: boolean = false;
 	public selected_item: IBaseModel = null;
 }// BrokersState;
+*/
 
-
-export default class BrokersPage extends BasePage<BaseProps, BrokersState> {
-
+export default class BrokersPage extends BasePage {
+/*
 	private edit_form_ref: RefObject<HTMLFormElement> = createRef ();
 	private table_control_ref: RefObject<DataTableControl> = createRef ();
 
@@ -54,16 +55,18 @@ export default class BrokersPage extends BasePage<BaseProps, BrokersState> {
 	}// save_form;
 
 
-	/********/
+	*//********//*
 
 
 	public static default_value = "TDAmeritrade";
 
 
 	public state: BrokersState = new BrokersState ();
-
+*/
 
 	public render () {
+		return <LookupPage name="broker" />
+/*
 		return <div className="page-layout">
 			<DataTableControl id="brokers_list" name="broker" ref={this.table_control_ref}
 
@@ -95,6 +98,7 @@ export default class BrokersPage extends BasePage<BaseProps, BrokersState> {
 
 			</DataTableControl>
 		</div>
+*/
 	}// render;
 
 }// BrokersPage;

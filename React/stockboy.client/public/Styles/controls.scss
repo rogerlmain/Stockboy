@@ -25,10 +25,8 @@ input, select, textarea { outline: none }
 /**** Checkbox Select List ****/
 
 
-div.checkbox-select-list {
-	display: inline-flex;
-	position: relative;
-}
+div.checkbox-select-list { display: inline-flex }
+
 
 div.checkbox-select-list div.list-header {
 	display: flex;
@@ -38,6 +36,7 @@ div.checkbox-select-list div.list-header {
 	padding: 0.5rem 1rem;
 	width: 100%;
 }
+
 
 div.checkbox-select-list div.list {
 	position: absolute;
@@ -53,7 +52,7 @@ div.checkbox-select-list div.list {
 /**** Form Styles ****/
 
 
-form input, form select, form.linear button {
+form input, form select, div.linear-form button {
 	height: 1.2rem;
 	padding: 0 10px !important;
 	border-radius: 1rem !important;
@@ -61,10 +60,10 @@ form input, form select, form.linear button {
 }
 
 
-form select {
-	position: relative;
-	padding: 0 6px !important;
-}
+div.linear-form { column-gap: 0.25rem }
+
+
+form select { padding: 0 6px !important }
 
 
 input[type=numeric], input[type=currency] { text-align: right }

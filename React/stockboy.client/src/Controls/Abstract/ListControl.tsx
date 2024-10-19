@@ -12,4 +12,4 @@ export class ListControl<Props = IBaseProps, State = IBaseState> extends BaseCon
 
 	protected get next_key () { return this.key++ }
 
-}// BaseComponent;
+}// BaseControl;

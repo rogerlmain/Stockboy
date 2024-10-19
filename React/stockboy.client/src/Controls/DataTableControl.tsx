@@ -6,7 +6,7 @@ import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { BaseProps, IBaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
 import { BaseModelArray, IBaseModel, IStockModel, StockModelArray } from "Models/Abstract/BaseModel";
-import { CSSProperties, MouseEvent, ReactElement, RefObject, createRef } from "react";
+import { MouseEvent, ReactElement, RefObject, createRef } from "react";
 
 
 class DataPageProps extends BaseProps implements IBaseProps {
@@ -29,8 +29,31 @@ class DataPageState implements IBaseState {
 
 export default class DataTableControl extends BasePage <DataPageProps, DataPageState> {
 
+	private control_ref: RefObject<HTMLDivElement> = createRef ();
+
 	private get table () { return this.data_table_ref.current }
 	private get with_child () { return isset (this.props.children) }
+
+
+	private set_styles () {
+
+		let control: HTMLDivElement = this.control_ref.current;
+		let button_container: HTMLDivElement = control.querySelector ("[id='button_container']");
+		let button_bar: HTMLDivElement = control.querySelector ("div.button-bar");
+
+		control.style.merge ({
+			flexDirection: this.with_child ? "row" : "column",
+			alignItems: this.with_child ? "flex-start" : "flex-end",
+		});
+
+		if (this.with_child) {
+			control.classList.add ("row-block");
+			button_container.classList.add ("left-margin");
+			button_bar.style.marginTop = "unset";
+			button_bar.style.justifyContent = "flex-start";
+		}// if;
+
+	}// set_styles;
 
 
 	/********/
@@ -90,33 +113,26 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 	public remove_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
 
-	public fetch_data () {
-		APIClass.fetch_data (this.props.procedure_name, this.props.parameters).then ((response: StockModelArray) => this.setState ({ data: response }));
-	}// fetch_data;
-
-
-	public componentDidMount = () => this.fetch_data ();
+	public componentDidMount () {
+		APIClass.fetch_data (this.props.procedure_name, this.props.parameters).then ((response: StockModelArray) => {
+			this.setState ({ data: response }, this.set_styles);
+		});
+	}// componentDidMount;
 
 
 	public render () {
+		return <div className={`page-layout with-headspace`} ref={this.control_ref}>
 
-		let table_style: CSSProperties = { width: "auto" }
-
-		if (this.with_child) table_style.flexDirection = "row";
-
-		return <div className="top-aligned page-layout with-headspace" style={table_style}>
-
-			<div className="body" style={this.with_child ? { overflow: "visible" } : null}>
-				{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no transactions</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
+			<div className="body" style={this.with_child ? { overflowX: "visible" } : null}>
+				{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no {this.props.name}s</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
 					onclick={(row: IStockModel) => this.setState ({ selected_row: row })} ref={this.data_table_ref}
 					data={this.state.data} parent={this} {...this.props.table_properties}>
 				</DataTable>}
 			</div>
 
-			<div className={`${conditional (this.with_child, "left-margin")} full-width`}>
+			<div id="button_container">
 
-				<div className={`${conditional (this.with_child, "left-aligned")} button-bar`} 
-					style={{ marginTop: conditional (this.with_child, "0") }}>
+				<div className="button-bar"> 
 
 					<button id="add_button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
 						event.preventDefault ();
@@ -147,7 +163,6 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 			</div>
 
 		</div>
-
 	}// render;
 
 }// DataTableControl;

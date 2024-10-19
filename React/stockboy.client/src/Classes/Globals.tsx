@@ -1,3 +1,5 @@
+import { KeyValuePair } from "./Collections";
+
 export {};
 
 
@@ -7,6 +9,8 @@ declare global {
 	type FormItem = (FormInputItem | HTMLSelectElement);
 
 	type FormItemList = NodeListOf<FormItem>;
+
+	type DataKey = string | KeyValuePair<string>
 
 
 	/********/
@@ -23,6 +27,8 @@ declare global {
 	var digits: Array<number>;
 	var action_keys: Array<string>;
 	var control_keys: Array<string>;
+
+	var key_name: Function;
 
 	var is_empty: Function;
 	var not_empty: Function;
@@ -58,6 +64,10 @@ globalThis.underscore = "_";
 globalThis.digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 globalThis.action_keys = ["Enter", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Backspace", "Delete", "Escape"];
 globalThis.control_keys = ["c", "v", "a"]; // use in conjunction with ctrl key
+
+
+globalThis.key_name =  (field: DataKey) => String.isString (field) ? (field as string) : Object.keys (field) [0];
+
 
 globalThis.is_empty = (value: any): boolean => isset (value) && ((String.isString (value) && (value == String.Empty)) || (Array.isArray (value) && (value.length == 0)));
 globalThis.not_empty = (value: any): boolean => !is_empty (value);
