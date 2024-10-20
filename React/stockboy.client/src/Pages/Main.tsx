@@ -13,7 +13,7 @@ import React, { Context, createContext, ReactElement } from "react";
 import Placeholder from "./Placeholder";
 
 
-export class MainPageState { current_page: ReactElement = <TickersPage /> }
+export class MainPageState { current_page: ReactElement = <DividendsPage /> }
 
 
 export const pages = {

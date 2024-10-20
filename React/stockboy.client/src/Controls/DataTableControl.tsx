@@ -43,7 +43,7 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 
 		control.style.merge ({
 			flexDirection: this.with_child ? "row" : "column",
-			alignItems: this.with_child ? "flex-start" : "flex-end",
+			alignItems: this.with_child ? "flex-start" : (is_defined (this.state.data) ? "flex-end" : "center"),
 		});
 
 		if (this.with_child) {
@@ -124,7 +124,7 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 		return <div className={`page-layout with-headspace`} ref={this.control_ref}>
 
 			<div className="body" style={this.with_child ? { overflowX: "visible" } : null}>
-				{is_null (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no {this.props.name}s</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
+				{not_defined (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no {this.props.name}s</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
 					onclick={(row: IStockModel) => this.setState ({ selected_row: row })} ref={this.data_table_ref}
 					data={this.state.data} parent={this} {...this.props.table_properties}>
 				</DataTable>}

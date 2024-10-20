@@ -141,6 +141,7 @@ export default class DataTable extends ListControl<DataTableProps> {
 
 
 	public componentDidMount () {
+		if (not_set (this.reference.current)) return;
 		this.reference.current.style.gridTemplateColumns = `repeat(${this.field_count}, min-content)`;
 	}// componentDidMount;
 
