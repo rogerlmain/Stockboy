@@ -105,12 +105,13 @@ export default class LookupPage extends BasePage<LookupProps, LookupState> {
 				additional_text={`All tickers and transactions for ${this.data_table.state.selected_row?.["name"]} will be deleted.`}>
 			</DeleteForm>)}>
 
-			<form id={`${this.props.name}_form`} className="linear-form" ref={this.edit_form_ref}>
-				<div className="row-block linear-form" style={{ display: `${this.state.form_visible ? "flex" : "none"}` }}>
+			<form id={`${this.props.name}_form`} ref={this.edit_form_ref}>
+				<div style={{ display: `${this.state.form_visible ? "flex" : "none"}` }}>
 					<input type="hidden" name="id" value={this.state.selected_item?.["id"]} />
-					<input type="text" name="name" placeholder="Name" />
 					{this.props?.children}
-					<button onClick={this.save_form}>Save</button>
+					<div className="linear-form button-bar">
+						<button onClick={this.save_form}>Save</button>
+					</div>
 				</div>
 			</form>
 
