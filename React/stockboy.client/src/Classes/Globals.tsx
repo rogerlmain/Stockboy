@@ -52,6 +52,12 @@ export enum date_format {
 	database
 }// date_format;
 
+export enum tag_types {
+	select = "select",
+	text = "text",
+	textarea = "textarea",
+	date = "date",
+}// tag_types;
 
 globalThis.form_items = "input, select, textarea";
 

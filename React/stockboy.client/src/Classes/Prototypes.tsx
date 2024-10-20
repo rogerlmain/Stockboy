@@ -1,11 +1,8 @@
-import NameValueCollection from "Classes/Collections";
-
-import { Component, DOMAttributes, HTMLAttributes } from "react";
 import { date_format } from "Classes/Globals";
-import Decimal from "./Decimal";
+import { Component } from "react";
 
 
-export {}
+export { };
 
 
 declare global {
@@ -42,9 +39,9 @@ declare global {
 
 
 	interface HTMLElement {
-		hasClass (class_name: string): boolean;
 		numericInput (): boolean;
 		setClass (value: String, condition: Boolean);
+		tagType: string;
 	}// HTMLElement;
 
 
@@ -230,7 +227,7 @@ FormData.prototype.remove_empties = function () {
 /**** HTMLElement Prototype Functions ****/
 
 
-HTMLElement.prototype.numericInput = function () {
+HTMLElement.prototype.numericInput = function (): boolean {
 	return (this.tagName.toLowerCase () == "input") && (["numeric", "currency"].contains (this.getAttribute ("type")));
 }// numericInput;
 
@@ -239,6 +236,14 @@ HTMLElement.prototype.setClass = function (value: string, condition: Boolean) {
 	if (condition) return this.classList.add (value);
 	this.classList.remove (value);
 }// setClass;
+
+
+Object.defineProperty (HTMLElement.prototype, "tagType", {
+	get: function (): string {
+		if (this.tagName == "INPUT") return this.getAttribute ("type").toLowerCase ();
+		return this.tagName.toLowerCase ();
+	}// tagType;
+})
 
 
 /**** HTMLDivElement Prototype Functions ****/

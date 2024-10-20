@@ -10,6 +10,7 @@ import { ListItemArray } from "Classes/Collections";
 import { DeleteForm } from "Forms/DeleteForm";
 import { IBaseModel } from "Models/Abstract/BaseModel";
 import { MouseEvent, ReactElement, RefObject, createRef } from "react";
+import { tag_types } from "../Classes/Globals";
 
 
 class LookupProps extends BaseProps { 
@@ -96,8 +97,20 @@ export default class LookupPageControl extends BasePage<LookupProps, LookupState
 				form_visible: true,
 				selected_item: this.data_table.state.selected_row
 			}, () => Object.keys (this.state.selected_item).forEach (key => {
-				let edit_field: HTMLInputElement = this.edit_form_ref.current.querySelector (`[name=${key}]`);
-				if (isset (edit_field)) edit_field.defaultValue = this.state.selected_item [key];
+
+				let edit_field: FormItem = this.edit_form_ref.current.querySelector (`[name=${key}]`);
+
+				if (isset (edit_field)) {
+
+					let item = this.state.selected_item [key];
+
+					switch  (edit_field.tagType) {
+						case tag_types.date: return edit_field.value = item.substring (0, item.indexOf ("T"));
+						default: edit_field.value = item;
+					}// switch;
+
+				}// if;
+
 			}))}
 				
 			onDelete={() => main_page.popup_window.show (<DeleteForm table_name={this.props.name.titleCase ()} 
