@@ -9,14 +9,12 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpGet]
 		[Route ("GetBrokers")]
-		public IActionResult GetBrokers () { 
-			JsonResult result = new JsonResult (context?.brokers.SelectAll ().OrderBy ("ticker")?.Where (broker => !broker.deleted));
-			return result;
-		}
+		public IActionResult GetBrokers () => new JsonResult (context?.brokers.SelectAll ().OrderBy ("ticker")?.Where (broker => !broker.deleted));
+
 
 		[HttpPost]
 		[Route ("SaveBroker")]
-		public IActionResult SaveBroker ([FromBody] DataTableModel parameters) => new JsonResult (context.brokers.Save (parameters));
+		public IActionResult SaveBroker ([FromBody] BrokerModel parameters) => context.brokers.Save (parameters);
 
 
 		[HttpPost]

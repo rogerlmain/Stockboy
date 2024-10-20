@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Stockboy.Server.Models {
 
@@ -19,9 +20,11 @@ namespace Stockboy.Server.Models {
 	}// TransactionTypeModel;
 
 
-	public class TickerModel: BaseModel {
+	public class BrokerModel: DataTableModel {}
+
+
+	public class TickerModel: DataTableModel {
 		public String? symbol { get; set; }
-		public String? name { get; set; }
 		public Decimal? price { get; set; }
 		public int? volume { get; set; }
 		public DateTime? dividend_date { get; set; }

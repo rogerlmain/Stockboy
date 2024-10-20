@@ -6,7 +6,7 @@ namespace Stockboy.Server.Classes {
 
 	public class DataContext: DbContext {
 
-		public DbSet<DataTableModel> brokers { get; set; }
+		public DbSet<BrokerModel> brokers { get; set; }
 		public DbSet<TickerModel> tickers { get; set; }
 		public DbSet<TransactionTypeModel> transaction_types { get; set; }
 		public DbSet<TransactionDataModel> transactions { get; set; }

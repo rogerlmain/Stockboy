@@ -13,7 +13,7 @@ import React, { Context, createContext, ReactElement } from "react";
 import Placeholder from "./Placeholder";
 
 
-export class MainPageState { current_page: ReactElement = <BrokersPage /> }
+export class MainPageState { current_page: ReactElement = <TickersPage /> }
 
 
 export const pages = {
@@ -62,7 +62,7 @@ export default class MainPage extends BasePage {
 			</div>
 		</div>
 
-		<div id="main_body" className="full-page page-layout" style={{ border: "solid 1px black" }}>{this.state.current_page}</div>
+		<div id="main_body" className="full-page page-layout">{this.state.current_page}</div>
 
 		<div className="column-margin footer">
 			Stockboy Stock Ledger - &copy; Copyright 2024 - The Roger Main Programming Company

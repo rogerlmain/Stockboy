@@ -5,35 +5,21 @@ using Stockboy.Server.Models;
 
 namespace Stockboy.Server.Controllers {
 
-
-	public class TickerParameters {
-		public Guid broker_id { get; set; }
-	}// TickerParameters;
-
-
 	public class Tickers (DataContext context) : Controller {
-
-
-		/********/
-
 
 		[HttpGet]
 		[Route ("GetTickers")]
-		public IActionResult GetTickers () {
-			var result = new JsonResult (context?.tickers.SelectAll ().OrderBy ("name"));
-			return result;
-		}
+		public IActionResult GetTickers () => new JsonResult (context?.tickers.SelectAll ().OrderBy ("name")?.Where (ticker => !ticker.deleted));
 
 
 		[HttpPost]
 		[Route ("SaveTicker")]
-		public IActionResult SaveTicker ([FromBody] TickerModel ticker) {
-			try {
-				return new JsonResult (context.tickers.Save (ticker));
-			} catch (Exception except) {
-				return new JsonResult (new { error = except.Message });
-			}// try;
-		}// SaveTicker;
+		public IActionResult SaveTicker ([FromBody] TickerModel ticker) => context.tickers.Save (ticker);
+
+
+		[HttpPost]
+		[Route ("DeleteTicker")]
+		public IActionResult DeleteBroker ([FromBody] DataModel parameters) => this.DeleteRecord (context.tickers, parameters);
 
 	}// Tickers;
 

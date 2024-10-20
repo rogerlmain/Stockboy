@@ -37,17 +37,21 @@ namespace Stockboy.Server.Classes {
 		public static List<TModel> SelectAll<TModel> (this DbSet<TModel> dataset) where TModel : class => dataset.ToList ();
 
 
-		public static TModel Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : class {
+		public static JsonResult Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : class {
 
 			var key_fields = parameters.GetKeyFields ();
 
-			switch (isset (parameters.GetKeyFields ()?.Find (next => isset (parameters.GetValue (next))))) {
-				case true: dataset.Update (parameters); break;
-				default: dataset.Add (parameters); break;
-			}// switch;
+			try {
+				switch (isset (parameters.GetKeyFields ()?.Find (next => isset (parameters.GetValue (next))))) {
+					case true: dataset.Update (parameters); break;
+					default: dataset.Add (parameters); break;
+				}// switch;
 
-			dataset.GetContext ()?.SaveChanges ();
-			return parameters;
+				dataset.GetContext ()?.SaveChanges ();
+				return new JsonResult (parameters);
+			} catch (Exception except) {
+				return new JsonResult (new { error = except.Message });
+			}
 
 		}// Save;
 
