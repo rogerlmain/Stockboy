@@ -68,8 +68,8 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 
 		let item: IBaseModel = null;
 
-		let sort_field: string = this.table.state.sort_field;
-		let ascending: boolean = this.table.state.ascending;
+		let sort_field: string = this.table?.state.sort_field;
+		let ascending: boolean = this.table?.state.ascending;
 
 		if (isset (row [sort_field])) {
 			for (let index = 0; index < this.state.data.length; index++) {
