@@ -21,8 +21,7 @@ export default class ScrollBlock extends Component<ScrollBlockProps, ScrollBlock
 
 	public componentDidMount () {
 
-		this.scrollbox.parentElement.style.position = "relative";
-		this.scrollbox.parentElement.style.height = "100%";
+		//this.scrollbox.parentElement.style.height = "100%";
 
 		new ResizeObserver (() => {
 			if (not_set (this.scrollbox)) return;
@@ -33,7 +32,9 @@ export default class ScrollBlock extends Component<ScrollBlockProps, ScrollBlock
 
 
 	public render () {
-		return <div ref={this.scrollbox_ref} style={{ overflowY: this.state.scrolling ? "scroll" : "visible" }}>{this.props.children}</div>
+		return <div style={{ height: "100%" }}>
+			<div ref={this.scrollbox_ref} style={{ overflowY: this.state.scrolling ? "scroll" : "visible" }}>{this.props.children}</div>
+		</div>
 	}// render;
 
 }// ScrollBlock;

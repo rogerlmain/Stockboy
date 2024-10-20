@@ -42,7 +42,6 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 		let button_bar: HTMLDivElement = control.querySelector ("div.button-bar");
 
 		control.style.merge ({
-			flexDirection: this.with_child ? "row" : "column",
 			alignItems: this.with_child ? "flex-start" : (is_defined (this.state.data) ? "flex-end" : "center"),
 		});
 
@@ -123,7 +122,7 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 	public render () {
 		return <div className={`page-layout with-headspace`} ref={this.control_ref}>
 
-			<div className="body" style={this.with_child ? { overflowX: "visible" } : null}>
+			<div className="body" style={{ height: this.with_child ? "100%" : "auto"}}>
 				{not_defined (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no {this.props.name}s</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
 					onclick={(row: IStockModel) => this.setState ({ selected_row: row })} ref={this.data_table_ref}
 					data={this.state.data} parent={this} {...this.props.table_properties}>
