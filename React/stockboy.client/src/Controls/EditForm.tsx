@@ -57,7 +57,10 @@ export default class EditForm<TModel = BaseModel> extends FormPage<EditFormProps
 
 			if (container.hasClass ("required")) {
 				complete = false;
-				return field.style.border = "solid 1px red";
+				return field.style.merge ({
+					backgroundColor: "var(--required-field-color)",
+					border: "solid 1px red"
+				});
 			}// if;
 			
 		});

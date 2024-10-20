@@ -45,14 +45,15 @@ export default class EditDividendForm extends FormPage<EditDividendFormProps, Ed
 		amount_per_share: null,
 		share_quantity: null,
 		issue_date: null,
-		reinvested: true,
+		reinvested: false,
 		transaction_date: null,
 		settlement_date: null,
-		share_price: null,
+		shares_purchased: null,
+		purchase_price: null,
 	}// default_values;
 
 
-	private static defaultValues = this.test_values;
+	private static defaultValues = this.default_values;
 
 
 	private per_share_textbox_ref: RefObject<HTMLInputElement> = createRef ();
@@ -122,23 +123,29 @@ export default class EditDividendForm extends FormPage<EditDividendFormProps, Ed
 					</input>
 				</InputElement>
 
-				<div className={this.edit_mode && "two-column-grid"} style={{ gridColumn: (this.edit_mode && "1 / -1") }}>
+				<div className={this.edit_mode ? "two-column-grid" : null} style={{ 
+					gridColumn: (this.edit_mode ? "1 / -1" : null),
+					display: (this.edit_mode ? null : "contents")
+				}}>
 					<InputElement id="issue_date" label="Issue Date">
 						<input type="date" defaultValue={Date.format (isset (this.props.data) ? this.props.data.issue_date : EditDividendForm.defaultValues.issue_date, date_format.database)} />
 					</InputElement>
 				</div>
 
-				{!this.edit_mode && <div className="container">
-					<div className="row-centered right-aligned" style={{ gridColumn: "3 / span 2" }}>
-						<label htmlFor="reinvested">Reinvested</label>
-						<input type="checkbox" id="reinvested" name="reinvested" value={this.state.reinvested.toString ()}
-							style={{ width: "1rem" }}
-							defaultChecked={EditDividendForm.defaultValues.reinvested} 
-							onChange={(event: ChangeEvent<HTMLInputElement>) => {
-								event.target.value = event.target.checked.toString ();
-								this.setState ({ reinvested: event.target.checked })
-							}}>
-						</input>
+				{this.edit_mode ? null : <div className="container">
+					<div className="right-aligned" style={{ gridColumn: "3 / span 2" }}>
+						<div className="two-column-grid">
+							<InputElement id="reinvested" label="Reinvested">
+								<input type="checkbox" value={this.state.reinvested.toString ()}
+									style={{ width: "1rem" }}
+									defaultChecked={EditDividendForm.defaultValues.reinvested} 
+									onChange={(event: ChangeEvent<HTMLInputElement>) => {
+										event.target.value = event.target.checked.toString ();
+										this.setState ({ reinvested: event.target.checked })
+									}}>
+								</input>
+							</InputElement>
+						</div>
 					</div>
 
 					<div className={`${is_null (this.state.total_dividend) && "hidden"} full-width two-column-grid`}>
