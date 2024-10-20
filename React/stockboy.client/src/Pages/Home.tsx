@@ -200,7 +200,7 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 	private get filter_panel () {
 		return <form>
-			<div className="wide-column-spaced row-block">
+			<div className="wide-column-spaced column-centered row-block margin">
 				<TickerSelector id="ticker_selector"
 					broker_id={this.state.broker_id}
 					ticker_id={this.state.ticker_id}>
@@ -271,7 +271,7 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	
 		if (this.state.loading) return <Eyecandy text="Loading holdings..." />;
 
-		return <div className="page-layout column-centered">
+		return <div className="page-layout">
 
 			{isset (this.holdings_list) ? <div>
 

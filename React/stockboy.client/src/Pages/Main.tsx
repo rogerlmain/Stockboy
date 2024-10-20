@@ -53,8 +53,8 @@ export default class MainPage extends BasePage {
 
 		<PopupWindow id="popup_window" ref={this.popup_ref}>{"Default Value"}</PopupWindow>
 
-		<div className="full-width left-aligned margin">
-			<div className="row-block main-menu">
+		<div className="full-width left-aligned">
+			<div className="row-block main-menu margin">
 				{Object.keys (pages).map ((key: string) => {
 					const PageName = pages [key];
 					return <MainMenuItem text={key.titleCase ()} page={<PageName />} selected_item={this.state.current_page} />
