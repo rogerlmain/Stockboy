@@ -1,12 +1,12 @@
 import BasePage from "Pages/Abstract/BasePage";
-import LookupPage from "Controls/LookupPage";
+import LookupPageControl from "Controls/LookupPageControl";
 
 
 export default class BrokersPage extends BasePage {
 	public render () {
-		return <LookupPage name="broker">
+		return <LookupPageControl name="broker">
 			<input type="text" name="name" placeholder="Name" />
-		</LookupPage>
+		</LookupPageControl>
 	}// render;
 
 }// BrokersPage;

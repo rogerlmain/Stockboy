@@ -18,7 +18,7 @@ const properties: DataTableProperties = {
 export default class TransactionsPage extends BasePage {
 
 	public render () {
-		return <DataPage name="Transaction" table_properties={properties} 
+		return <DataPage name="transaction" table_properties={properties} 
 			invisible_fields = {new TransactionListModel ().constructor.prototype.invisible_fields}
 			edit_form={EditTransactionForm}>
 		</DataPage>

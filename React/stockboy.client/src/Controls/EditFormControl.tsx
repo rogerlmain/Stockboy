@@ -1,10 +1,7 @@
 import APIClass from "Classes/APIClass";
 import DataPage from "Controls/DataPage";
-import DataTableControl from "Controls/DataTableControl";
 
-import DataTable, { DataTableContext } from "./Tables/DataTable";
-
-import { BaseModel, IBaseModel, StockDataModel } from "Models/Abstract/BaseModel";
+import { BaseModel, StockDataModel } from "Models/Abstract/BaseModel";
 import { FormPage } from "Pages/Abstract/FormPage";
 import { ComponentClass, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
 
@@ -29,7 +26,7 @@ export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFo
 	private form_ref: RefObject<HTMLFormElement> = createRef ();
 	private editor_ref: RefObject<any> = createRef ();
 
-	private contextType = DataTableContext;
+	private get data_table () { return this.props.parent.table_control_ref.current }
 
 
 	private get_edit_form (form_data: FormData) {
@@ -79,7 +76,7 @@ export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFo
 		let form_data = new FormData (this.form_ref.current).remove_empties ();
 		let new_record = !form_data.has ("id");
 
-		main_page.popup_window.show (<div className="column-centered column-spaced row-block">
+		main_page.popup_window.show (<div className="centered column-spaced row-block">
 			<img src="Images/eyecandy.gif" />
 			Saving {this.props.parent.props.name}. One moment, please.
 		</div>);
@@ -88,7 +85,7 @@ export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFo
 
 			if (new_record) {
 
-				(this.context as DataTableControl).add_row (response);
+				this.data_table.add_row (response);
 
 				return main_page.popup_window.show (<div>
 
@@ -103,7 +100,7 @@ export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFo
 
 			}// if;
 
-			(this.context as DataTableControl).update_row (response);
+			this.data_table.update_row (response);
 			main_page.popup_window.hide ();
 			
 		});

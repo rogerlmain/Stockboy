@@ -15,7 +15,7 @@ const properties: DataTableProperties = {
 
 
 export default class SplitsPage extends BasePage {
-	public render = () => <DataPage name="Split" table_properties={properties}
+	public render = () => <DataPage name="split" table_properties={properties}
 		invisible_fields={new SplitListModel ().constructor.prototype.invisible_fields}
 		edit_form={EditSplitForm}>
 	</DataPage>

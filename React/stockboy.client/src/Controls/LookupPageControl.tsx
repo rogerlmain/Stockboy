@@ -26,7 +26,7 @@ class LookupState {
 }// LookupState;
 
 
-export default class LookupPage extends BasePage<LookupProps, LookupState> {
+export default class LookupPageControl extends BasePage<LookupProps, LookupState> {
 
 	private data_table_properties: DataTableProperties = {
 		keys: ["id"],
@@ -47,13 +47,13 @@ export default class LookupPage extends BasePage<LookupProps, LookupState> {
 		let id_field: HTMLInputElement = this.edit_form_ref.current.querySelector ("[name='id']") as HTMLInputElement;
 
 		APIClass.fetch_data (`Save${this.props.name.titleCase ()}`, form_data).then ((result: IBaseModel) => { 
-			this.setState ({ selected_item: result }, () => {
 				
-				switch (is_defined (id_field.value)) {
-					case true: this.table_control.update_row (result); break;
-					default: this.table_control.add_row (result); break;
-				}// switch;
+			switch (is_defined (id_field.value)) {
+				case true: this.table_control.update_row (result); break;
+				default: this.table_control.add_row (result); break;
+			}// switch;
 
+			this.setState ({ selected_item: result }, () => {
 				main_page.popup_window.show (<div>
 
 					{key_name (this.state.selected_item ["name"]).titleCase ()} saved.<br />
@@ -63,8 +63,8 @@ export default class LookupPage extends BasePage<LookupProps, LookupState> {
 					</div>
 
 				</div>)
-			
 			});
+			
 		});
 
 		event.preventDefault ();
@@ -118,4 +118,4 @@ export default class LookupPage extends BasePage<LookupProps, LookupState> {
 		</DataTableControl>
 	}// render;
 
-}// LookupPage;
+}// LookupPageControl;

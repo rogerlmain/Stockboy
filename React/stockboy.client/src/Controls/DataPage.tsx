@@ -32,9 +32,6 @@ class DataPageState implements IBaseState {
 
 export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 
-	private table_control_ref: RefObject<DataTableControl> = createRef ();
-
-
 	private edit_record = (row: IStockModel = null) => main_page.popup_window.show (<EditFormControl id={this.props.id} data={row} 
 		body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this}>
 	</EditFormControl>);
@@ -50,6 +47,7 @@ export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 
 
 	public state: DataPageState = new DataPageState ();
+	public table_control_ref: RefObject<DataTableControl> = createRef ();
 
 
 	public fetch_parameters (): NameValueCollection<any> {

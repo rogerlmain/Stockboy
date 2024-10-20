@@ -35,9 +35,6 @@ export class DataTableProps extends DataTableProperties implements IBaseProps {
 }// DataTableProps;
 
 
-export const DataTableContext: Context<DataTable> = createContext (null)
-
-
 export default class DataTable extends ListControl<DataTableProps> {
 
 
@@ -151,31 +148,29 @@ export default class DataTable extends ListControl<DataTableProps> {
 		if (isset (this.props.total_fields)) this.calculate_totals ();
 		if (is_null (this.props.data) || (this.props.data.length == 0)) return <div>No data</div>;
 		
-		return <DataTableContext.Provider value={this}>
-			<ScrollBlock>
-				<div className="data-table" ref={this.reference}>
+		return <ScrollBlock>
+			<div className="data-table" ref={this.reference}>
 	
-					<div className="table-header">
-						{this.props.fields.map ((field: string | NameValueCollection<string>) => {
+				<div className="table-header">
+					{this.props.fields.map ((field: string | NameValueCollection<string>) => {
 					
-							let name = this.field_name (field);
-							let title = this.field_title (field);
+						let name = this.field_name (field);
+						let title = this.field_title (field);
 
-							return <div key={this.next_key} onClick={() => this.sort_table (name)}>
-								{title}
-								{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
-							</div>
+						return <div key={this.next_key} onClick={() => this.sort_table (name)}>
+							{title}
+							{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
+						</div>
 
-						})}
-					</div>
-
-					{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} field_names={this.field_name_list ()} onclick={this.props.onclick} data_table={this} />)}
-
-					{isset (this.props.total_fields) ? this.show_totals () : null}
-
+					})}
 				</div>
-			</ScrollBlock>
-		</DataTableContext.Provider>
+
+				{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} field_names={this.field_name_list ()} onclick={this.props.onclick} data_table={this} />)}
+
+				{isset (this.props.total_fields) ? this.show_totals () : null}
+
+			</div>
+		</ScrollBlock>
 	}// render;
 	
 

@@ -1,10 +1,10 @@
 import BasePage from "Pages/Abstract/BasePage";
-import LookupPage from "Controls/LookupPage";
+import LookupPageControl from "Controls/LookupPageControl";
 
 export default class TickersPage extends BasePage {
 
 	public render () {
-		return <LookupPage name="ticker" fields={["symbol"]}>
+		return <LookupPageControl name="ticker" fields={["symbol"]}>
 			<div className="two-column-grid">
 				<input type="text" name="name" placeholder="Name" />
 				<input type="text" name="symbol" placeholder="Symbol" style={{ width: "4rem" }} />
@@ -16,7 +16,7 @@ export default class TickersPage extends BasePage {
 				</select>
 				<input type="date" name="dividend_date" placeholder="Dividend Date" />
 			</div>
-		</LookupPage>
+		</LookupPageControl>
 	}// render;
 
 }// TickersPage;
