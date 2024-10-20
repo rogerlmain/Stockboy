@@ -1,6 +1,6 @@
 import BaseControl from "Controls/Abstract/BaseControl";
 
-import EditForm, { EditFormContext } from "Controls/EditForm";
+import EditFormControl, { EditFormContext } from "Controls/EditFormControl";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { cloneElement, Context, createContext, createRef, ReactElement, RefObject } from "react";
@@ -35,7 +35,7 @@ export default class InputElement extends BaseControl<InputElementProps> {
 
 
 	public handle_change (element: FormItem) {
-		if (is_null (this.context) || (this.context as EditForm).state.complete) return;
+		if (is_null (this.context) || (this.context as EditFormControl).state.complete) return;
 		if (not_defined (element.value)) return element.style.border = "solid 1px red";
 		element.style.removeProperty ("border");
 	}// handle_change;

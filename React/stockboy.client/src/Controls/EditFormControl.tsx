@@ -21,10 +21,10 @@ class EditFormState {
 }// EditFormState;
 
 
-export const EditFormContext: Context<EditForm> = createContext (null);
+export const EditFormContext: Context<EditFormControl> = createContext (null);
 
 
-export default class EditForm<TModel = BaseModel> extends FormPage<EditFormProps, EditFormState> {
+export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFormProps, EditFormState> {
 
 	private form_ref: RefObject<HTMLFormElement> = createRef ();
 	private editor_ref: RefObject<any> = createRef ();
@@ -39,7 +39,7 @@ export default class EditForm<TModel = BaseModel> extends FormPage<EditFormProps
 			editor_data [entry [0]] = entry [1];
 		}// for;
 
-		return <EditForm {...this.props} data={editor_data}/>;
+		return <EditFormControl {...this.props} data={editor_data}/>;
 	}// get_edit_form;
 
 
@@ -144,4 +144,4 @@ export default class EditForm<TModel = BaseModel> extends FormPage<EditFormProps
 		</EditFormContext.Provider>
 	}// render;
 
-}// EditForm;
+}// EditFormControl;

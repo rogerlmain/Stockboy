@@ -1,6 +1,6 @@
 import NameValueCollection from "Classes/Collections";
 import DataTableControl from "Controls/DataTableControl";
-import EditForm from "Controls/EditForm";
+import EditFormControl from "Controls/EditFormControl";
 import TickerSelector from "Controls/TickerSelector";
 import BasePage from "Pages/Abstract/BasePage";
 
@@ -35,9 +35,9 @@ export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 	private table_control_ref: RefObject<DataTableControl> = createRef ();
 
 
-	private edit_record = (row: IStockModel = null) => main_page.popup_window.show (<EditForm id={this.props.id} data={row} 
+	private edit_record = (row: IStockModel = null) => main_page.popup_window.show (<EditFormControl id={this.props.id} data={row} 
 		body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this}>
-	</EditForm>);
+	</EditFormControl>);
 
 
 	private delete_record = (row: IStockModel = null) => main_page.popup_window.show (<DeleteForm table_name={this.props.name} record={row}
