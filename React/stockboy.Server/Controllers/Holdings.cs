@@ -32,7 +32,7 @@ namespace Stockboy.Server.Controllers {
 
 					if ((item.broker != previous_broker) || (item.company != previous_company)) {
 
-						if (item.transaction_type == TransactionTypes.split) continue; // No stocks purchased to split. Move on.
+						if (item.transaction_type == TransactionTypes.split) continue; // Not a split. Move on.
 
 						holding = new () {
 							broker_id = item.broker_id,
@@ -52,7 +52,7 @@ namespace Stockboy.Server.Controllers {
 					switch (item.transaction_type) {
 						case TransactionTypes.buy: holding.quantity += item.quantity; break;
 						case TransactionTypes.sell: holding.quantity -= item.quantity; break;
-						case TransactionTypes.split: holding.quantity *= item.quantity; break;
+						case TransactionTypes.split: holding.quantity = Math.Round (holding.quantity * item.quantity, 6, MidpointRounding.AwayFromZero); break;
 					}// switch;
 
 					if (item.transaction_type == TransactionTypes.buy) holding!.total_purchase_price += item.cost_price * item.quantity;
