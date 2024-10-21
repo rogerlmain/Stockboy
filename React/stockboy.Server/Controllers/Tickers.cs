@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
+using System.Collections;
 
 
 namespace Stockboy.Server.Controllers {
@@ -9,7 +10,12 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpGet]
 		[Route ("GetTickers")]
-		public IActionResult GetTickers () => new JsonResult (context?.tickers.SelectAll ().OrderBy ("name")?.Where (ticker => !ticker.deleted));
+		public IActionResult GetTickers () => new JsonResult (context?.tickers.Where (ticker => !ticker.deleted).ToList ().OrderBy ("name"));
+
+
+		[HttpPost]
+		[Route ("GetTickersById")]
+		public IActionResult GetTickersById ([FromBody] Guid [] ids) => new JsonResult (context?.tickers.Where (item => ((IList) ids).Contains (item.id)));
 
 
 		[HttpPost]

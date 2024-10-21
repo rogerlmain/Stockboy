@@ -12,6 +12,7 @@ declare global {
 		append (value: T): Array<T>;
 		contains (value: any): boolean;
 		empty (): boolean;
+		getDates (fieldname: string): Array<Date>;
 		getIntegers (allow_non_numeric?: boolean): Array<number>;
 	}// Array<T>;
 
@@ -20,11 +21,14 @@ declare global {
 		format (date_value: string | Date, format?: date_format): string;
 		today (format?: date_format): string;
 		current_date (): Date;
+		earlier (value: Date);
+		later (value: Date);
 	}// DateConstructor;
 
 
 	interface Date {
 		timestamp (): number;
+		toUnix (): number;
 	}// Date;
 
 
@@ -72,7 +76,9 @@ declare global {
 
 
 	interface Object {
+		assign (template: any): any;
 		copy (...candidates: Object []): Object;
+		isDate (): boolean;
 		isCurrency (): boolean;
 		isNumeric (): boolean;
 		matches (candidate: Object): boolean;
@@ -141,6 +147,22 @@ Array.prototype.append = function<T> (value: T): Array<T> {
 Array.prototype.contains = function (value: any) { return this.indexOf (value) > -1 };
 
 
+Array.prototype.getDates = function (fieldname: string): Array<Date> {
+
+	let result: Array<Date> = null;
+
+	this.forEach (item => {
+		if (not_set (item [fieldname])) return;
+		if (is_null (result)) result = new Array<Date> ();
+		if (!["string", "Date"].contains (typeof item [fieldname])) throw ("Invalid data type in getDates");
+		result.push ((typeof (item [fieldname]) == "string") ? new Date (item [fieldname]) : item [fieldname]);
+	});
+
+	return result;
+
+}// getDates;
+
+
 Array.prototype.getIntegers = function (allow_non_numeric: boolean = false): Array<number> {
 
 	let result: Array<number> = null;
@@ -173,7 +195,7 @@ Component.prototype.setState = function (state: any, callback?: () => void): boo
 }// setState;
 
 
-/**** Date Prototype Functions ****/
+/**** Date Extension Functions ****/
 
 
 Date.format = function (date_value: string | Date, format: date_format = date_format.readable): string {
@@ -196,7 +218,27 @@ Date.today = function (format: date_format = date_format.readable): string { ret
 Date.current_date = function (): Date { return new Date () }
 
 
+Date.earlier = function (value: String | Date): boolean {
+	if (typeof value == "string") value = new Date (value as string);
+	let result: boolean = (value as Date) < new Date ();
+	return result;
+}// earlier;
+
+
+Date.later = function (value: String | Date): boolean {
+	if (typeof value == "string") value = new Date (value as string);
+	let result: boolean = (value as Date) > new Date ();
+	return result;
+}// later;
+
+
+/**** Date Prototype Functions ****/
+
+
 Date.prototype.timestamp = function (): number { return this.valueOf () }
+
+
+Date.prototype.toUnix = function (): number { return this.getTime () / 1000 }
 
 
 /**** Element Prototype Functions ****/
@@ -372,6 +414,11 @@ Number.prototype.truncate_to = function (decimal_places: number): number {
 
 
 /**** Object Prototype Functions ****/
+
+
+Object.prototype.assign = function (template: any) {
+	return Object.assign (this, template);
+}// assign;
 
 
 Object.prototype.copy = function (...candidates: Object []): Object {

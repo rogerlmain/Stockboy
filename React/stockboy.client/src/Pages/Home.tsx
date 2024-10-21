@@ -10,10 +10,10 @@ import TickerSelector from "Controls/TickerSelector";
 
 import TransactionsPage from "Pages/Transactions";
 
-import APIClass, { StockPriceData } from "Classes/APIClass";
+import APIClass, { DividendData, DividendDataItem, DividendDataSet, StockPriceData } from "Classes/APIClass";
 
 import { DataControl, DataProps, DataState } from "Controls/Abstract/DataControl";
-import { TickerPriceModel } from "Models/Tickers";
+import { TickerDataModel } from "Models/Tickers";
 import { ChangeEvent, RefObject, createRef } from "react";
 
 
@@ -40,35 +40,32 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	private holdings_list: Array<HoldingsModel> = null;
 
 
-	private get_outdated_tickers (holdings: Array<HoldingsModel>) {
+	private async get_outdated_tickers (holdings: Array<HoldingsModel>): Promise <Array<TickerDataModel>> {
 
-		let ticker_list: Array<TickerPriceModel> = null;
+		let ticker_list: Array<TickerDataModel> = null;
+		let id_list: Array<string> = null;
 
 		holdings.forEach ((item: HoldingsModel) => {
 
-			let ticker_price = ticker_list?.find ((ticker: TickerPriceModel) => ticker.id == item.ticker_id);
+			let ticker_price = ticker_list?.find ((ticker: TickerDataModel) => ticker.id == item.ticker_id);
 
 			if ((isset (ticker_price) || (Date.current_date ().timestamp () - new LocalDate (item.last_updated).timestamp ()) <= one_hour) || (item.current_price == -1)) return;
-			if (is_null (ticker_list)) ticker_list = new Array<TickerPriceModel> ();
+			if (is_null (id_list)) id_list = new Array<string> ();
 
-			ticker_list.push ({
-				id: item.ticker_id,
-				symbol: item.symbol,
-				price: null
-			});
+			id_list.push (item.ticker_id);
 
 		});
 
-		return ticker_list;
+		return is_null (id_list) ? null : APIClass.fetch_data ("GetTickersById", id_list);
 
 	}// get_outdated_tickers;
 
 
-	private get_ticker_list (list: Array<TickerPriceModel>): string {
+	private get_ticker_list (list: Array<TickerDataModel>): string {
 
 		let ticker_list: string = null;
 
-		list.forEach ((item: TickerPriceModel) => {
+		list.forEach ((item: TickerDataModel) => {
 			if (is_null (ticker_list)) return ticker_list = item.symbol;
 			ticker_list = `${ticker_list},${item.symbol}`;
 		});
@@ -78,25 +75,44 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	}// get_ticker_list;
 
 
-	private async get_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerPriceModel>> { 
+	private async get_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerDataModel>> { 
 		
-		let outdated_prices: Array<TickerPriceModel> = null;
+		let outdated_prices: Array<TickerDataModel> = null;
 		let stock_prices: Array<StockPriceData> = null;
+		let dividend_data: DividendDataSet = null;
 
-		outdated_prices = this.get_outdated_tickers (holdings);
+		outdated_prices = await this.get_outdated_tickers (holdings);
 		if (is_null (outdated_prices)) return null;
 
 		let ticker_list: string = this.get_ticker_list (outdated_prices);
 
-		if (isset (ticker_list)) stock_prices = await APIClass.fetch_stock_prices (ticker_list);
-		if (is_null (stock_prices)) return null;
+		if (isset (ticker_list)) {
+			stock_prices = await APIClass.fetch_stock_prices (ticker_list);
+			dividend_data = await APIClass.fetch_dividend_details (ticker_list);
+		}// if;
 
-		return new Promise<Array<TickerPriceModel>> (resolve => {
+		return new Promise<Array<TickerDataModel>> (resolve => {
 
-			stock_prices.forEach ((stock_price: StockPriceData) => {
-				let ticker_price = outdated_prices.find ((ticker_price: TickerPriceModel) => ticker_price.symbol == stock_price.symbol);
-				if (isset (ticker_price)) ticker_price.price = stock_price.price;
-			});
+			if (isset (stock_prices)) {
+				stock_prices.forEach ((stock_price: StockPriceData) => {
+					let ticker = outdated_prices.find ((ticker: TickerDataModel) => ticker.symbol == stock_price.symbol);
+					if (isset (ticker)) ticker.merge (stock_price);
+				});
+			}// if;
+
+			if (isset (dividend_data)) {
+				dividend_data.historicalStockList.forEach ((item: DividendDataItem) => {
+
+					let ticker = outdated_prices.find ((ticker: TickerDataModel) => ticker.symbol == item.symbol);
+					let date_list = item.historical.getDates ("paymentDate")?.toSorted ((first, second) => second.getTime () - first.getTime ());
+
+					if (is_null (date_list)) return;
+
+					ticker.last_payment_date = date_list.find ((date: Date) => Date.earlier (date));
+					ticker.next_payment_date = date_list.toSorted ((first, second) => first.getTime () - second.getTime ()).find ((date: Date) => Date.later (date));
+
+				});
+			}// if;
 
 			resolve (outdated_prices);
 
@@ -105,20 +121,18 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	}// get_stock_prices;
 
 
-	private async update_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerPriceModel>> {
+	private async update_stock_prices (holdings: Array<HoldingsModel>): Promise<Array<TickerDataModel>> {
 
-		let stock_prices: Array<TickerPriceModel> = await this.get_stock_prices (holdings);
+		let stock_prices: Array<TickerDataModel> = await this.get_stock_prices (holdings);
 
 		if (is_null (stock_prices)) return null;
 
-		return new Promise<Array<TickerPriceModel>> (resolve => {
+		return new Promise<Array<TickerDataModel>> (resolve => {
 
-			stock_prices.forEach ((price: TickerPriceModel) => {
-				APIClass.fetch_data ("SaveTicker", new TickerPriceModel ().merge ({
-					id: price.id,
-					price: price.price ?? -1,
-					last_updated: Date.current_date ()
-				}));
+			stock_prices.forEach ((stock_price: TickerDataModel) => {
+				stock_price.last_updated = Date.current_date ();
+				if (is_null (stock_price.price)) stock_price.price = -1;
+				APIClass.fetch_data ("SaveTicker", stock_price);
 			});
 
 			resolve (stock_prices);
@@ -134,11 +148,11 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 				if (is_null (holdings)) return resolve (null);
 
-				let stock_prices: Array<TickerPriceModel> = await this.update_stock_prices (holdings);
+				let stock_prices: Array<TickerDataModel> = await this.update_stock_prices (holdings);
 
 				if (isset (stock_prices)) holdings.forEach ((holding: HoldingsModel) => {
 
-					let stock_price: TickerPriceModel = stock_prices.find ((item: TickerPriceModel) => holding.ticker_id == item.id);
+					let stock_price: TickerDataModel = stock_prices.find ((item: TickerDataModel) => holding.ticker_id == item.id);
 					
 					if (isset (stock_price)) holding.current_price = stock_price.price;
 

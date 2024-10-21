@@ -1,5 +1,7 @@
 delete from transactions;
 
+select * from transactions;
+
 insert into transactions values
 	('5b081641-7172-11ef-b1e8-a4f933c45288', 'bf6be2f3-7141-11ef-b1e8-a4f933c45288', '153d4589-7168-11ef-b1e8-a4f933c45288', 0.000000, 1.000000, '2020-05-07 00:00:00', '2020-05-07 00:00:00', 'F5F589B0-71CE-4FEE-AF61-7516F11A90E2', false),
 	('5b081ed5-7172-11ef-b1e8-a4f933c45288', 'bf6be2f3-7141-11ef-b1e8-a4f933c45288', '153d35c6-7168-11ef-b1e8-a4f933c45288', 0.120000, 35.000000, '2023-06-09 00:00:00', '2023-06-13 00:00:00', '8d3196f9-715a-11ef-b1e8-a4f933c45288', false),

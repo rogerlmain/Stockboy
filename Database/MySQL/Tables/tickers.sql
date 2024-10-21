@@ -5,10 +5,10 @@ create table tickers (
 	symbol varchar (8) unique,
 	name varchar (128),
 	price decimal (14,6),
-	volume int,
-	dividend_date date,
-	dividend_frequency int,
-	last_updated datetime,
+	volume int default null,
+	last_payment_date date default null,
+    next_payment_date date default null,
+	last_updated datetime default null,
     deleted boolean not null default false
 );
 

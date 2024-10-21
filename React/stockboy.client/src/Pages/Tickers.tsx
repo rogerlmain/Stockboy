@@ -14,7 +14,7 @@ export default class TickersPage extends BasePage {
 					<option value="3">Quarterly</option>
 					<option value="12">Annually</option>
 				</select>
-				<input type="date" name="dividend_date" placeholder="Dividend Date" />
+				<input type="date" name="last_paid" placeholder="Last paid" />
 			</div>
 		</LookupPageControl>
 	}// render;

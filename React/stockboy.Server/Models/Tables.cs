@@ -27,8 +27,8 @@ namespace Stockboy.Server.Models {
 		public String? symbol { get; set; }
 		public Decimal? price { get; set; }
 		public int? volume { get; set; }
-		public DateTime? dividend_date { get; set; }
-		public int? dividend_frequency { get; set; }
+		public DateTime? last_payment_date { get; set; }
+		public DateTime? next_payment_date { get; set; }
 		public DateTime? last_updated { get; set; }
 	}// TickerModel;
 

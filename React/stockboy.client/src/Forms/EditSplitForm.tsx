@@ -21,11 +21,11 @@ export class EditSplitForm extends FormPage<EditSplitFormProps, EditSplitFormSta
 
 
 	public static test_values = {
-		broker_id: "bf6be2f3-7141-11ef-b1e8-a4f933c45288",
-		ticker_id: "153d4fe6-7168-11ef-b1e8-a4f933c45288",
-		previous: 20.00,
+		broker_id: "80e43ec8-016a-453d-b4ff-80d9d79a2bc7",
+		ticker_id: "4676d995-5c5b-4bd9-b1b7-26532e391c42",
+		previous: 2.00,
 		current: 1.00,
-		transaction_date: "2023-09-18",
+		transaction_date: "2024-04-04",
 	}// test_values;
 
 
@@ -38,7 +38,7 @@ export class EditSplitForm extends FormPage<EditSplitFormProps, EditSplitFormSta
 	}// default_values;
 
 
-	public static defaultValues = this.test_values;
+	public static defaultValues = this.default_values;
 
 
 	public state: EditSplitFormState = new EditSplitFormState ();
@@ -50,23 +50,23 @@ export class EditSplitForm extends FormPage<EditSplitFormProps, EditSplitFormSta
 	public render () {
 		return <div>
 
-			<input type="hidden" id="id" value={this.props.data?.id} />
+			<input type="hidden" id="id" name="id" value={this.props.data?.id} />
 
 			<div className="two-column-grid">
 				<TickerSelector id={this.props.id} data={this.props.data}
-					broker_id={this.props.broker_id} 
-					ticker_id={this.props.ticker_id}>
+					broker_id={this.props.data?.broker_id ?? this.props.broker_id ?? EditSplitForm.defaultValues.broker_id} 
+					ticker_id={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditSplitForm.defaultValues.ticker_id}>
 				</TickerSelector>
 			</div>
 
 			<div className="compact six-column-grid with-headspace">
 
 				<InputElement id="previous" label="Previous">
-					<input type="numeric" id="previous" name="previous" decimal-places={1} defaultValue={this.props.data?.previous ?? EditSplitForm.defaultValues.previous} />
+					<input type="numeric" decimal-places={1} defaultValue={this.props.data?.previous ?? EditSplitForm.defaultValues.previous} />
 				</InputElement>
 
-				<InputElement id="previous" label="Current">
-					<input type="numeric" id="current" name="current" decimal-places={1} defaultValue={this.props.data?.current ?? EditSplitForm.defaultValues.current} />
+				<InputElement id="current" label="Current">
+					<input type="numeric" decimal-places={1} defaultValue={this.props.data?.current ?? EditSplitForm.defaultValues.current} />
 				</InputElement>
 
 				<div className="full-width row-centered">

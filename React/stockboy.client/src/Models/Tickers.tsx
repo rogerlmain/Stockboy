@@ -5,14 +5,18 @@ export class TickerListModel extends BaseModel {
     name: string = null;
 	price: number = null;
 	volume: number = null;
-	dividend_date: number = null;
 	dividend_frequency: number = null;
+	last_paid: number = null;
 	last_updated: Date = null;
 }// TickerListModel;
 
 
-export class TickerPriceModel {
-	id: string = null;
+export class TickerDataModel extends BaseModel {
+	name: string = null;
 	symbol: string = null;
-	price: number = null;
-}// TickerPriceModel;
+	price?: number = null;
+	volume?: number = null;
+	last_payment_date?: Date = null;
+	next_payment_date?: Date = null;
+	last_updated?: Date = null;
+}// TickerDataModel;

@@ -9,7 +9,7 @@ import { BaseModelArray, IBaseModel, IStockModel, StockModelArray } from "Models
 import { MouseEvent, ReactElement, RefObject, createRef } from "react";
 
 
-class DataPageProps extends BaseProps implements IBaseProps {
+class DataTableControlProps extends BaseProps implements IBaseProps {
 	children?: ReactElement = null;
 	table_properties: DataTableProperties = null;
 	procedure_name: string = null;
@@ -18,16 +18,16 @@ class DataPageProps extends BaseProps implements IBaseProps {
 	onCreate?: Function = null;
 	onEdit?: Function = null;
 	onDelete?: Function = null;
-}// DataPageProps;
+}// DataTableControlProps;
 
 
-class DataPageState implements IBaseState {
+class DataTableControlState implements IBaseState {
 	selected_row: IStockModel = null;
 	data: BaseModelArray = null;
 }// TransactionState;
 
 
-export default class DataTableControl extends BasePage <DataPageProps, DataPageState> {
+export default class DataTableControl extends BasePage <DataTableControlProps, DataTableControlState> {
 
 	private control_ref: RefObject<HTMLDivElement> = createRef ();
 
@@ -61,7 +61,7 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 	public data_table_ref: RefObject<DataTable> = createRef ();
 
 
-	public state: DataPageState = new DataPageState ();
+	public state: DataTableControlState = new DataTableControlState ();
 
 
 	public add_row (row: IBaseModel) {
@@ -112,10 +112,16 @@ export default class DataTableControl extends BasePage <DataPageProps, DataPageS
 	public remove_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
 
-	public componentDidMount () {
+	public componentDidUpdate (previous_props: DataTableControlProps) {
+		if ((this.props.parameters == previous_props?.parameters) && (not_null (previous_props))) return;
 		APIClass.fetch_data (this.props.procedure_name, this.props.parameters).then ((response: StockModelArray) => {
 			this.setState ({ data: response }, this.set_styles);
 		});
+	}// componentDidUpdate;
+
+
+	public componentDidMount () {
+		this.componentDidUpdate (null);
 	}// componentDidMount;
 
 
