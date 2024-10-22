@@ -93,6 +93,7 @@ div.data-table {
 			background-color: var(--table-header-background);
 			cursor: pointer;
 			position: sticky;
+			z-index: 1;
 			top: 0;
 		}
 	}
@@ -108,10 +109,7 @@ div.data-table {
 	div.table-row { display: contents }
 
 
-	div.table-row > div { 
-		cursor: pointer; 
-		z-index: -1;
-	}
+	div.table-row > div { cursor: pointer }
 
 
 	div.table-row > div:nth-child(2) { border-left: var(--table-border) }

@@ -281,7 +281,7 @@ div.blackout {
 	@extend div, .full-screen;
 	background-color: black;
 	opacity: 0.4;
-	z-index: 1;
+	z-index: 5;
 }
 
 
@@ -296,5 +296,5 @@ div.popup-window {
 	filter: drop-shadow(0.15em 0.15em 0.1em #666);
 	background-color: #FFFFFD;
 	transition: opacity 0.25s ease-in-out;
-	z-index: 1;
+	z-index: 10;
 }

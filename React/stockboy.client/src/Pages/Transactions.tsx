@@ -12,7 +12,7 @@ const properties: DataTableProperties = {
 	date_fields: ["transaction_date", "settlement_date"],
 	numeric_fields: ["quantity"],
 	currency_fields: ["price", "cost"],
-	rounded_fields: [{ price: 2 }, { cost: 2 }]
+	rounded_fields: [{ cost: 2 }]
 }// properties;
 
 
