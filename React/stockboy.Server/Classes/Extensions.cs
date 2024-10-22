@@ -4,13 +4,17 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using Stockboy.Server.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Entity.Core.Objects;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
 
 
 namespace Stockboy.Server.Classes {
+
+	public static class DecimalExtensions {
+
+		public static Decimal round (this Decimal value, int decimal_places) => Math.Round (value, decimal_places, MidpointRounding.AwayFromZero);
+
+	}// DecimalExtensions;
 
 
 	public static class ControllerExtensions {

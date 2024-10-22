@@ -9,9 +9,9 @@ export default class HoldingsListModel extends StockModel {
 	public current_price: number;
 	public quantity: number;
 	public volume: number;
-	public total_purchase_price: number;
-	public total_sale_price: number;
+	public total_purchase_cost: number;
+	public current_purchase_cost: number;
+	public total_sales_amount: number;
 	public value: number;
-	public profit: number;
 	public last_updated: Date;
 }// HoldingsListModel;

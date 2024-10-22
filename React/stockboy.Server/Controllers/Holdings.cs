@@ -49,14 +49,30 @@ namespace Stockboy.Server.Controllers {
 
 					holding!.last_updated = item.last_updated;
 
-					switch (item.transaction_type) {
-						case TransactionTypes.buy: holding.quantity += item.quantity; break;
-						case TransactionTypes.sell: holding.quantity -= item.quantity; break;
-						case TransactionTypes.split: holding.quantity = Math.Round (holding.quantity * item.quantity, 6, MidpointRounding.AwayFromZero); break;
-					}// switch;
+					if (item.transaction_type == TransactionTypes.buy) {
 
-					if (item.transaction_type == TransactionTypes.buy) holding!.total_purchase_price += item.cost_price * item.quantity;
-					if (item.transaction_type == TransactionTypes.sell) holding!.total_sale_price += item.cost_price * item.quantity;
+						Decimal purchase_price = (item.cost_price * item.quantity).round (2);
+
+						holding.total_purchase_cost += purchase_price;
+						holding.current_purchase_cost += purchase_price;
+						holding.quantity += item.quantity;
+
+					}// if;
+					if (item.transaction_type == TransactionTypes.sell) {
+
+						Decimal per_stock_cost = (holding.current_purchase_cost / holding.quantity);
+						Decimal sale_price = (item.cost_price * item.quantity).round (2);
+						Decimal shares_remaining = (holding.quantity - item.quantity).round (6);
+						Decimal sold_stock_cost = (per_stock_cost * item.quantity);
+
+						holding.sales_profit += (sale_price - sold_stock_cost).round (2);
+						holding.total_sales_amount += sale_price.round (2);
+						holding.current_purchase_cost -= sold_stock_cost.round (2);
+						holding.quantity = shares_remaining;
+
+					}// if;
+
+					if (item.transaction_type == TransactionTypes.split) holding.quantity = (holding.quantity * item.quantity).round (6);
 
 					previous_broker = item.broker;
 					previous_company = item.company;

@@ -160,7 +160,6 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 				holdings.forEach ((holding: HoldingsModel) => {
 					holding.value = (holding.current_price < 0) ? 0 : holding.quantity * holding.current_price;
-					holding.profit = Decimal.subtract (holding.total_sale_price, holding.total_purchase_price);
 				});
 
 				resolve (holdings);
@@ -251,14 +250,12 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 		return <div className="body">
 			<DataTable id="holdings-table" data={this.state.data} ref={this.data_table} parent={this}
 				fields={["broker", "symbol", "company", "quantity", "current_price", 
-					{ total_purchase_price: "Purchase Price"}, 
-					{ total_sale_price: "Sale Price"}, 
-					{ value: "Current Value" }, 
-					{ profit: "Profit / Loss" }
+					{ current_purchase_cost: "Purchase Price"}, 
+					{ value: "Current Value" }
 				]}
 				numeric_fields={["quantity"]}
-				currency_fields={["current_price", "total_purchase_price", "total_sale_price", "value", "profit"]}
-				total_fields={["cost", "value", "profit"]}
+				currency_fields={["current_price", "current_purchase_cost", "value"]}
+				total_fields={["cost", "value"]}
 				keys={["ticker_id", "broker_id"]}>
 			</DataTable>
 		</div>
