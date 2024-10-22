@@ -13,7 +13,10 @@ namespace Stockboy.Server.Controllers {
 
 		[HttpPost]
 		[Route ("GetTransactions")]
-		public IActionResult GetTransactions ([FromBody] GetParameters parameters) => GetData ("get_transactions", parameters);
+		public IActionResult GetTransactions ([FromBody] GetParameters parameters) {
+			var result = GetData ("get_transactions", parameters);
+			return result;
+		}// GetTransactions;
 
 
 		[HttpGet]

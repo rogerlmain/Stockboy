@@ -69,7 +69,7 @@ declare global {
 
 	interface Number {
 		length: number;
-		number_format (decimal_places: number): string;
+		format (decimal_places: number): string;
 		round_to (decimal_places: number): number;
 		truncate_to (decimal_places: number): number;
 	}// Number;
@@ -78,7 +78,7 @@ declare global {
 	interface Object {
 		assign (template: any): any;
 		copy (...candidates: Object []): Object;
-		isDate (): boolean;
+		hasKey (key_name: string): boolean;
 		isCurrency (): boolean;
 		isNumeric (): boolean;
 		matches (candidate: Object): boolean;
@@ -395,12 +395,12 @@ Number.isNumber = function (candidate: any) {
 }// isNumber;
 
 
-Number.prototype.number_format = function (decimal_places: number): string {
+Number.prototype.format = function (decimal_places: number): string {
 	let parts = this.toString ().split (".");
 	if (parts.length == 1) parts.push ("00");
 	parts [1] = parts [1].padEnd (decimal_places, "0").substring (0, decimal_places).toString ();
 	return parts.join (".");
-}// number_format;
+}// format;
 
 
 Number.prototype.round_to = function (decimal_places: number): number {
@@ -430,6 +430,11 @@ Object.prototype.copy = function (...candidates: Object []): Object {
 	return this;
 
 }// copy;
+
+
+Object.prototype.hasKey = function (key_name: string): boolean {
+	return Object.keys (this).contains (key_name);
+}// hasKey;
 
 
 Object.prototype.matches = function (candidate: Object) { return JSON.stringify (this) == JSON.stringify (candidate) }

@@ -1,14 +1,14 @@
 import Decimal from "Classes/Decimal";
-import DataTableRow from "Controls/Tables/DataTableRow";
 import ScrollBlock from "Controls/ScrollBlock";
+import DataTableRow from "Controls/Tables/DataTableRow";
+import BaseControl from "Controls/Abstract/BaseControl";
 
-import NameValueCollection, { KeyValuePair } from "Classes/Collections";
+import NameValueCollection, { RoundingRecord } from "Classes/Collections";
 import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
 
 import { BaseProps, IBaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
-import { ListControl } from "Controls/Abstract/ListControl";
 import { IBaseModel } from "Models/Abstract/BaseModel";
-import { Component, Context, CSSProperties, RefObject, createRef, createContext } from "react";
+import { Component, createRef, RefObject } from "react";
 
 
 class DataTableState implements IBaseState {
@@ -24,6 +24,7 @@ export class DataTableProperties extends BaseProps {
 	numeric_fields?: Array<string> = null;
 	currency_fields?: Array<string> = null;
 	total_fields?: Array<string> = null;
+	rounded_fields?: Array<RoundingRecord> = null;
 	keys?: Array<string> = null;
 	onclick?: Function;
 }// DataTableProperties;
@@ -35,7 +36,7 @@ export class DataTableProps extends DataTableProperties implements IBaseProps {
 }// DataTableProps;
 
 
-export default class DataTable extends ListControl<DataTableProps> {
+export default class DataTable extends BaseControl<DataTableProps> {
 
 
 	private reference: RefObject<HTMLDivElement> = createRef ();
@@ -112,22 +113,22 @@ export default class DataTable extends ListControl<DataTableProps> {
 
 
 		return <div style={{ fontWeight: "bold", display: "contents" }}>
+
 			{this.props.fields.map ((field: string | NameValueCollection<string>) => {
 
 				let index: number = this.props.fields.indexOf (field);
 				let name: string = key_name (field);
 				let total = this.totals?.[name] ?? 0;
 
-				if (index == 0) return <div style={{ borderRight: "none" }}>Total</div>
-				if (!this.props.total_fields.contains (name)) return <div style={blank_field (name, index) ? { borderRight: "none" } : null}></div>
+				if (index == 0) return <div key="total" style={{ borderRight: "none" }}>Total</div>
+				if (!this.props.total_fields.contains (name)) return <div key={name} style={blank_field (name, index) ? { borderRight: "none" } : null}></div>
 
-				if (this.props.currency_fields?.contains (name)) total = Decimal.padFractions (Decimal.round (total, currency_decimals), currency_decimals);
-				if (this.props.numeric_fields?.contains (name)) total = Decimal.padFractions (Decimal.round (total, numeric_decimals), numeric_decimals);
-
-				return <div style={{ textAlign: "right", borderLeft: "solid 1px var(--table-border) !important" }}>{total}</div>
+				return <div key={name} style={{ textAlign: "right", borderLeft: "solid 1px var(--table-border) !important" }}>{this.format (name, total)}</div>
 
 			})}
+
 		</div>
+
 	}// show_totals;
 
 
@@ -135,6 +136,23 @@ export default class DataTable extends ListControl<DataTableProps> {
 
 
 	public state = new DataTableState ();
+
+
+	public format (field_name: string, value: FieldValue): string {
+
+		let number_format = (decimal_places: number) => Decimal.padFractions (Decimal.round ((value as number), decimal_places), decimal_places);
+		let rounded_field = this.props.rounded_fields?.find ((item: RoundingRecord) => item.hasKey (field_name));
+
+		if ((field_name == "current_price") && ((value as number) == -1)) return "N/A";
+
+		if (isset (rounded_field)) return number_format (rounded_field [field_name]);
+		if (this.props.currency_fields?.contains (field_name)) return number_format (currency_decimals);
+		if (this.props.numeric_fields?.contains (field_name)) return number_format (numeric_decimals);
+		if (this.props.date_fields?.contains (field_name)) return Date.format (value as Date);
+
+		return (value as string);
+
+	}// format;
 
 
 	public componentDidMount () {
@@ -149,6 +167,7 @@ export default class DataTable extends ListControl<DataTableProps> {
 		if (is_null (this.props.data) || (this.props.data.length == 0)) return <div>No data</div>;
 		
 		return <ScrollBlock>
+
 			<div className="data-table" ref={this.reference}>
 	
 				<div className="table-header">
@@ -157,7 +176,7 @@ export default class DataTable extends ListControl<DataTableProps> {
 						let name = this.field_name (field);
 						let title = this.field_title (field);
 
-						return <div key={this.next_key} onClick={() => this.sort_table (name)}>
+						return <div key={name} onClick={() => this.sort_table (name)}>
 							{title}
 							{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
 						</div>
@@ -165,7 +184,10 @@ export default class DataTable extends ListControl<DataTableProps> {
 					})}
 				</div>
 
-				{this.props.data.map (row => <DataTableRow key={this.next_key} row={row} field_names={this.field_name_list ()} onclick={this.props.onclick} data_table={this} />)}
+				{this.props.data.map (row => <DataTableRow key={this.get_key (row)} row={row} 
+					field_names={this.field_name_list ()} 
+					onclick={this.props.onclick} data_table={this}>
+				</DataTableRow>)}
 
 				{isset (this.props.total_fields) ? this.show_totals () : null}
 

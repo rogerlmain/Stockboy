@@ -1,6 +1,7 @@
-import DataTable from "Controls/Tables/DataTable";
+import BaseControl from "Controls/Abstract/BaseControl";
 
-import { ListControl } from "Controls/Abstract/ListControl";
+import DataTable, { DataTableProps } from "Controls/Tables/DataTable";
+
 import { IBaseModel } from "Models/Abstract/BaseModel";
 import { CSSProperties, MouseEvent } from "react";
 
@@ -16,32 +17,20 @@ class DataRowProps {
 class DataRowState {}
 
 
-export default class DataTableRow extends ListControl<DataRowProps, DataRowState> {
+export default class DataTableRow extends BaseControl<DataRowProps, DataRowState> {
 
 	private active_row = (element: EventTarget) => (element as HTMLDivElement).parentNode as HTMLDivElement;
+	private table_props: DataTableProps = null;
 
 
 	private styles (key: string, value: any): CSSProperties {
 
 		let result: CSSProperties = {}
 
-		if (this.props.data_table.props.currency_fields?.contains (key) || this.props.data_table.props.numeric_fields?.contains (key) || this.props.data_table.props.date_fields?.contains (key)) result ["textAlign"] = "right";
+		if (this.table_props.currency_fields?.contains (key) || this.props.data_table.props.numeric_fields?.contains (key) || this.props.data_table.props.date_fields?.contains (key)) result ["textAlign"] = "right";
 		return result;
 
 	}// styles;
-
-
-	private format (field_name: string, value: string | number | Date): string {
-
-		if ((field_name == "current_price") && ((value as number) == -1)) return "N/A";
-
-		if (this.props.data_table.props.date_fields?.contains (field_name)) return Date.format (value as Date);
-		if (this.props.data_table.props.currency_fields?.contains (field_name)) return (value as Number)?.number_format (currency_decimals);
-		if (this.props.data_table.props.numeric_fields?.contains (field_name)) return (value as Number)?.number_format (numeric_decimals);
-
-		return (value as string);
-
-	}// format;
 
 
 	private get_selected_row (event: MouseEvent): IBaseModel {
@@ -68,6 +57,12 @@ export default class DataTableRow extends ListControl<DataRowProps, DataRowState
 	/********/
 
 
+	public constructor (props: DataRowProps) {
+		super (props);
+		this.table_props = props.data_table.props;
+	}// constructor;
+
+
 	public state: DataRowState = new DataRowState ();
 
 
@@ -75,20 +70,20 @@ export default class DataTableRow extends ListControl<DataRowProps, DataRowState
 
 
 	public render () {
-		return <div key={this.next_key} className={`table-row ${this.selected_class}`}
+		return <div className={`table-row ${this.selected_class}`}
 
 			onMouseOver={(event: MouseEvent) => this.active_row (event.target).classList.add ("highlighted")}
 			onMouseOut={(event: MouseEvent) => this.active_row (event.target).classList.remove ("highlighted")}>
 
 			{isset (this.props.data_table.props.keys) ? <div name="keys" style={{ display: "none" }}>
-				{this.props.data_table.props.keys.map (key => <input key={this.next_key} type="hidden" name={key.toString ()} value={this.props.row [key as keyof IBaseModel].toString ()} />)}
+				{this.props.data_table.props.keys.map (key => <input key={key} type="hidden" name={key.toString ()} value={this.props.row [key as keyof IBaseModel].toString ()} />)}
 			</div> : null}
 
 			{this.props.field_names.map (field_name => {
 				
-				let value: string | number | Date = this.props.row [field_name as keyof IBaseModel];
+				let value: FieldValue = this.props.row [field_name as keyof IBaseModel];
 
-				return <div key={this.next_key} style={ this.styles (field_name, value) }
+				return <div key={field_name} style={ this.styles (field_name, value) }
 
 					onClick={(event: MouseEvent) => {
 
@@ -100,7 +95,7 @@ export default class DataTableRow extends ListControl<DataRowProps, DataRowState
 
 					}}>
 
-					{this.format (field_name, value)}
+					{this.props.data_table.format (field_name, value)}
 				</div>
 
 			})}

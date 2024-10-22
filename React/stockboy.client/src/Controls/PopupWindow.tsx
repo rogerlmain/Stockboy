@@ -38,9 +38,11 @@ export default class PopupWindow extends BaseControl<PopupWindowProps> {
 	public hide = () => this.setState ({ visible: false }, () => this.setState ({contents: null}));
 
 
-	public render = () => <div className="full-screen" style={{ display: (this.state.visible ? "flex" : "none") }}>
-		<div className="blackout"></div>
-		<div className="popup-window">{this.state.contents}</div>
-	</div>
+	public render () {
+		return <div className="full-screen" style={{ display: (this.state.visible ? "flex" : "none") }}>
+			<div className="blackout"></div>
+			<div className="popup-window">{this.state.contents}</div>
+		</div>
+	}// render;
 
 }// PopupWindow;

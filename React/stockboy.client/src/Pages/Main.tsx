@@ -1,6 +1,6 @@
-import BasePage from "Pages/Abstract/BasePage";
 import MainMenuItem from "Controls/MainMenuItem";
 import PopupWindow from "Controls/PopupWindow";
+import BasePage from "Pages/Abstract/BasePage";
 
 import BrokersPage from "Pages/Brokers";
 import DividendsPage from "Pages/Dividends";
@@ -10,10 +10,11 @@ import TickersPage from "Pages/Tickers";
 import TransactionsPage from "Pages/Transactions";
 
 import React, { Context, createContext, ReactElement } from "react";
-import Placeholder from "./Placeholder";
 
 
-export class MainPageState { current_page: ReactElement = <TickersPage /> }
+export class MainPageState { 
+	current_page: ReactElement = <TransactionsPage />;
+}// MainPageState;
 
 
 export const pages = {
@@ -46,7 +47,9 @@ export default class MainPage extends BasePage {
 	public change_page = (new_page: React.ReactElement) => this.setState ({ current_page: new_page });
 
 
-	public componentDidMount = () => main_page = this;
+	public componentDidMount () {
+		main_page = this;
+	}// componentDidMount;
 
 
 	public render = () => <div className="page-layout">
@@ -57,7 +60,7 @@ export default class MainPage extends BasePage {
 			<div className="row-block main-menu margin">
 				{Object.keys (pages).map ((key: string) => {
 					const PageName = pages [key];
-					return <MainMenuItem text={key.titleCase ()} page={<PageName />} selected_item={this.state.current_page} />
+					return <MainMenuItem key={key} text={key.titleCase ()} page={<PageName />} selected_item={this.state.current_page} />
 				})}
 			</div>
 		</div>

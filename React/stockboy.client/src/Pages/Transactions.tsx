@@ -11,7 +11,8 @@ const properties: DataTableProperties = {
 	fields: ["broker", "company", "ticker", "transaction_date", "settlement_date", "quantity", "price", "cost", "transaction_type"],
 	date_fields: ["transaction_date", "settlement_date"],
 	numeric_fields: ["quantity"],
-	currency_fields: ["price", "cost"]
+	currency_fields: ["price", "cost"],
+	rounded_fields: [{ price: 2 }, { cost: 2 }]
 }// properties;
 
 

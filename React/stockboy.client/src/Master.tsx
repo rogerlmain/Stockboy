@@ -1,7 +1,7 @@
 import "Classes/Globals";
-import "Classes/References";
-import "Classes/Prototypes";
 import "Classes/Handlers";
+import "Classes/Prototypes";
+import "Classes/References";
 
 import { createRoot } from "react-dom/client";
 

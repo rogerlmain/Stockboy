@@ -115,13 +115,15 @@ export default class Decimal {
 
 	public static round (value: number, decimal_places: number): number {
 
+		return Math.round (value * 10**decimal_places) / 10**decimal_places;
+/*
 		if (is_null (value)) return null;
 
 		let decimal = new DecimalValue (value);
 		let fraction = decimal.value % (10**decimal.mantissa);
 
 		return parseFloat (`${Math.floor (decimal.value / (10**decimal.mantissa))}.${Math.round (fraction / 10**(fraction.length - decimal_places))}`);
-
+*/
 	}// round;
 
 }// Decimal;

@@ -1,11 +1,11 @@
 import APIClass from "Classes/APIClass";
+import BaseControl from "Controls/Abstract/BaseControl";
 import Eyecandy from "Controls/Eyecandy";
 
 import SelectList, { BaseSelectListProps } from "Controls/Lists/SelectList";
 
-import { ListItem, ListItemArray } from "Classes/Collections";
+import { ListItemArray } from "Classes/Collections";
 import { IBaseProps } from "Controls/Abstract/BaseProperties";
-import { ListControl } from "Controls/Abstract/ListControl";
 import { createRef, RefObject } from "react";
 
 
@@ -22,7 +22,7 @@ class DataListState {
 }// DataListState;
 
 
-export default class DataList extends ListControl<DataListProps, DataListState> {
+export default class DataList extends BaseControl<DataListProps, DataListState> {
 
 
 	private select_list_ref: RefObject<SelectList> = createRef ();

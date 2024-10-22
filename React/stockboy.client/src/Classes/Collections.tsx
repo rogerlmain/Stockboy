@@ -16,6 +16,9 @@ export class ListItem {
 export class KeyValuePair<IModel> { [key: string]: any }
 
 
+export class RoundingRecord { [key: string]: number }
+
+
 export default class NameValueCollection<IModel> extends KeyValuePair<IModel> {
 
 	public hasKey? = (key: string): boolean => Object.keys (this).contains (key);

@@ -1,6 +1,7 @@
+import BaseControl from "Controls/Abstract/BaseControl";
+
 import { ListItem, ListItemArray } from "Classes/Collections";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
-import { ListControl } from "Controls/Abstract/ListControl";
 import { ChangeEvent, ChangeEventHandler, RefObject, createRef } from "react";
 
 import InputElement, { InputElementContext } from "Controls/InputElement";
@@ -26,7 +27,7 @@ class SelectListState {
 }// SelectListState;
 
 
-export default class SelectList extends ListControl<SelectListProps, SelectListState> {
+export default class SelectList extends BaseControl<SelectListProps, SelectListState> {
 
 	private update_selected_item = () => this.setState ({ selected_item: this.props.selected_item }, () => this.select_list_ref.current.dispatchEvent (new Event ("change", { bubbles: true })));
 
@@ -85,7 +86,7 @@ export default class SelectList extends ListControl<SelectListProps, SelectListS
 
 	public render () {
 
-		return <select id={this.props.id} name={this.props.name} ref={this.select_list_ref}
+		return <select id={this.props.id} name={this.props.name} ref={this.select_list_ref} value={this.state.selected_item ?? String.Empty}
 
 			onChange={(event: ChangeEvent<HTMLSelectElement>) => {
 				this.setState ({ selected_item: event.currentTarget.value });
@@ -94,11 +95,11 @@ export default class SelectList extends ListControl<SelectListProps, SelectListS
 
 			disabled={this.props.disabled}>
 
-			{not_set (this.state.selected_item) || (this.props.selectable_header) ? <option key={this.next_key} value={String.Empty}>
+			{not_set (this.state.selected_item) || (this.props.selectable_header) ? <option key={"header"} value={String.Empty}>
 				{this.props.header ?? (this.props.selectable_header ? "All" : null) ?? `Select ${this.props.name.replace (underscore, String.Space)}`}
 			</option> : null}
 
-			{this.props.data?.map ((item: ListItem) => <option key={this.next_key} value={item.id} selected={item.id == this.state.selected_item}>{item.name}</option>)}
+			{this.props.data?.map ((item: ListItem) => <option key={item.id} value={item.id}>{item.name}</option>)}
 
 		</select>
 

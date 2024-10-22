@@ -256,6 +256,7 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 				numeric_fields={["quantity"]}
 				currency_fields={["current_price", "current_purchase_cost", "value"]}
 				total_fields={["cost", "value"]}
+				rounded_fields={[{ value: 2 }]}
 				keys={["ticker_id", "broker_id"]}>
 			</DataTable>
 		</div>
