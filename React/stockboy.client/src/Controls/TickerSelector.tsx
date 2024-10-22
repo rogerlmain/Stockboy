@@ -46,8 +46,9 @@ export default class TickerSelector extends BaseControl<TickerSelectorProps, Tic
 
 	public render () {
 		return <div className="container">
+
 			<InputElement>
-				<BrokerList selected_item={this.state.broker_id} selectable_header={this.props.selectable_header}
+				<BrokerList key="broker_list" selected_item={this.state.broker_id} selectable_header={this.props.selectable_header}
 					onChange={(event: ChangeEvent<HTMLSelectElement>) => {
 						this.setState ({ broker_id: event.target.value});
 						if (isset (this.props.onBrokerChange)) this.props.onBrokerChange (event.target.value);
@@ -56,13 +57,14 @@ export default class TickerSelector extends BaseControl<TickerSelectorProps, Tic
 			</InputElement>
 
 			<InputElement>
-				<TickerList selected_item={this.state.ticker_id} selectable_header={this.props.selectable_header}
+				<TickerList key="ticker_list" selected_item={this.state.ticker_id} selectable_header={this.props.selectable_header}
 					onChange={(event: ChangeEvent<HTMLSelectElement>) => {
 						this.setState ({ ticker_id: event.target.value})
 						if (isset (this.props.onTickerChange)) this.props.onTickerChange (event.target.value);
 					}}>
 				</TickerList>
 			</InputElement>
+
 		</div>
 	}// render;
 

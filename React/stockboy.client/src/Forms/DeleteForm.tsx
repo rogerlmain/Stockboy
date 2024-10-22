@@ -55,7 +55,7 @@ export class DeleteForm extends ListPage<DeleteFormProps> {
 					if (key_names?.contains (key)) return;
 					if (this.props.invisible_fields?.contains (key)) return;
 
-					return <div style={{ display: "contents" }}>
+					return <div key={key} style={{ display: "contents" }}>
 						<label>{key.titleCase ()}:</label>
 						<div>{this.props.record [key]}</div>
 					</div>

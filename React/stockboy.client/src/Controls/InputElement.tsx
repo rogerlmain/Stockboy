@@ -62,6 +62,7 @@ export default class InputElement extends BaseControl<InputElementProps> {
 					let element: ReactElement = cloneElement (child, {...child.props,
 						id: this.props.id,
 						name: this.props.id,
+						key: this.props.id,
 					});
 
 					return element;
