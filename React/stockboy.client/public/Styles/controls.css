@@ -66,13 +66,12 @@ input[type=numeric], input[type=currency] {
 /**** Data Table Styles ****/
 div.data-table {
   display: inline-grid;
-  border-top: var(--table-border);
-  border-left: var(--table-border);
 }
 div.data-table div.table-header {
   display: contents;
 }
 div.data-table div.table-header > div {
+  flex-direction: row;
   font-weight: bold;
   min-width: 5em;
   display: flex;
@@ -80,6 +79,7 @@ div.data-table div.table-header > div {
   justify-content: space-between;
   padding: 0.25rem 2em;
   border: var(--table-border);
+  border-top: solid 2px var(--element-border-color);
   border-bottom: solid 2px var(--element-border-color);
   background-color: var(--table-header-background);
   cursor: pointer;
@@ -96,6 +96,10 @@ div.data-table div.table-row {
 }
 div.data-table div.table-row > div {
   cursor: pointer;
+  z-index: -1;
+}
+div.data-table div.table-row > div:nth-child(2) {
+  border-left: var(--table-border);
 }
 div.data-table div.table-row.selected > div {
   background-color: var(--selected-color);
