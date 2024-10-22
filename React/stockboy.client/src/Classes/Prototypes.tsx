@@ -94,6 +94,7 @@ declare global {
 	interface StringConstructor {
 		Empty: string;
 		Space: string;
+		Comma: string;
 	}// StringConstructor;
 
 
@@ -476,6 +477,7 @@ Object.defineProperties (Object.prototype, {
 
 String.Empty = "";
 String.Space = " ";
+String.Comma = ",";
 
 
 String.isString = function (candidate: any) { return typeof candidate == "string" }

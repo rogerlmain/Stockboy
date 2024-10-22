@@ -93,26 +93,22 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 		return new Promise<Array<TickerDataModel>> (resolve => {
 
-			if (isset (stock_prices)) {
-				stock_prices.forEach ((stock_price: StockPriceData) => {
-					let ticker = outdated_prices.find ((ticker: TickerDataModel) => ticker.symbol == stock_price.symbol);
-					if (isset (ticker)) ticker.merge (stock_price);
-				});
-			}// if;
+			ticker_list.split (String.Comma).forEach ((symbol: string) => {
 
-			if (isset (dividend_data)) {
-				dividend_data.historicalStockList.forEach ((item: DividendDataItem) => {
+				let price = stock_prices?.find ((stock_price: StockPriceData) => stock_price.symbol == symbol);
+				let ticker = outdated_prices.find ((ticker: TickerDataModel) => ticker.symbol == symbol);
+				let dividend = dividend_data.historicalStockList?.find ((item: DividendDataItem) => item.symbol == symbol);
+				let date_list = dividend?.historical.getDates ("paymentDate")?.toSorted ((first, second) => second.getTime () - first.getTime ());
 
-					let ticker = outdated_prices.find ((ticker: TickerDataModel) => ticker.symbol == item.symbol);
-					let date_list = item.historical.getDates ("paymentDate")?.toSorted ((first, second) => second.getTime () - first.getTime ());
+				ticker.price = -1;
 
-					if (is_null (date_list)) return;
+				if (isset (price)) ticker.merge (price);
+				if (not_set (date_list)) return;
 
-					ticker.last_payment_date = date_list.find ((date: Date) => Date.earlier (date));
-					ticker.next_payment_date = date_list.toSorted ((first, second) => first.getTime () - second.getTime ()).find ((date: Date) => Date.later (date));
+				ticker.last_payment_date = date_list.find ((date: Date) => Date.earlier (date));
+				ticker.next_payment_date = date_list.toSorted ((first, second) => first.getTime () - second.getTime ()).find ((date: Date) => Date.later (date));
 
-				});
-			}// if;
+			});
 
 			resolve (outdated_prices);
 
