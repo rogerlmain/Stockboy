@@ -1,7 +1,7 @@
 import BaseControl from "Controls/Abstract/BaseControl";
+import EditFormControl from "Controls/EditFormControl";
 
-import EditFormControl, { EditFormContext } from "Controls/EditFormControl";
-
+import { EditFormContext } from "Classes/Contexts";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { cloneElement, Context, createContext, createRef, ReactElement, RefObject } from "react";
 

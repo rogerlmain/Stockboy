@@ -55,12 +55,12 @@ export default class LookupPageControl extends BasePage<LookupProps, LookupState
 			}// switch;
 
 			this.setState ({ selected_item: result }, () => {
-				main_page.popup_window.show (<div>
+				popup_window.show (<div>
 
 					{key_name (this.state.selected_item ["name"]).titleCase ()} saved.<br />
 
 					<div className="row-centered with-some-headspace">
-						<button onClick={() => main_page.popup_window.hide ()}>Close</button>
+						<button onClick={() => popup_window.hide ()}>Close</button>
 					</div>
 
 				</div>)
@@ -113,7 +113,7 @@ export default class LookupPageControl extends BasePage<LookupProps, LookupState
 
 			}))}
 				
-			onDelete={() => main_page.popup_window.show (<DeleteForm table_name={this.props.name.titleCase ()} 
+			onDelete={() => popup_window.show (<DeleteForm table_name={this.props.name.titleCase ()} 
 				record={this.data_table.state.selected_row} table={this.table_control_ref.current}
 				additional_text={`All tickers and transactions for ${this.data_table.state.selected_row?.["name"]} will be deleted.`}>
 			</DeleteForm>)}>

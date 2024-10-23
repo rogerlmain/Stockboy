@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\Models\Abstract\" />
+    <Folder Include="src\NewFolder\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 </Project>

@@ -16,7 +16,7 @@ export default class Eyecandy extends Component<EyecandyProps> {
 	}// componentDidMount;
 
 
-	public render = () => <div className="row-block column-centered">
+	public render = () => <div className="row-block centered">
 		<img src="Images/eyecandy.gif" className={`eyecandy ${this.props.small ? "small" : null}`} />
 		<div className="linear-text">{this.props.text}</div>
 	</div>

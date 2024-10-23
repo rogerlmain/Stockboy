@@ -32,12 +32,12 @@ class DataPageState implements IBaseState {
 
 export default class DataPage extends BasePage <DataPageProps, DataPageState> {
 
-	private edit_record = (row: IStockModel = null) => main_page.popup_window.show (<EditFormControl id={this.props.id} data={row} 
+	private edit_record = (row: IStockModel = null) => popup_window.show (<EditFormControl id={this.props.id} data={row} 
 		body={this.props.edit_form} broker_id={this.state.broker_id} ticker_id={this.state.ticker_id} parent={this}>
 	</EditFormControl>);
 
 
-	private delete_record = (row: IStockModel = null) => main_page.popup_window.show (<DeleteForm table_name={this.props.name} record={row}
+	private delete_record = (row: IStockModel = null) => popup_window.show (<DeleteForm table_name={this.props.name} record={row}
 		table={this.table_control_ref.current}
 		invisible_fields={this.props.invisible_fields}>
 	</DeleteForm>);

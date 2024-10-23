@@ -60,7 +60,7 @@ export default abstract class APIClass {
 			return response.json ();
 		}).then (response => {
 			if (is_null (response)) return resolve (null);
-			if (isset (response ["error"])) return main_page.popup_window.show (<ErrorWindow text={response ["error"]} />);
+			if (isset (response ["error"])) return popup_window.show (<ErrorWindow text={response ["error"]} />);
 			resolve (response);
 		});
 

@@ -1,10 +1,11 @@
 import BaseControl from "Controls/Abstract/BaseControl";
 
 import { ReactElement, RefObject, createRef } from "react";
+import { MainPageContext } from "Classes/Contexts";
 
 
 export class MenuItemProps {
-	public text: String = null;
+	public text: string = null;
 	public page: ReactElement = null;
 	public selected_item: ReactElement = null;
 }// MenuItemProps;
@@ -22,18 +23,17 @@ export default class MainMenuItem extends BaseControl<MenuItemProps> {
 
 
 	public render () {
-		return <div ref={this.control} 
+		return <MainPageContext.Consumer>
+			{main_page => <div ref={this.control}
 
-			className={`${(this.props.page.type == this.props.selected_item.type) && "selected"} main-menu-item`}
+				className={`${(this.props.page.type == this.props.selected_item.type) && "selected"} main-menu-item`}
+				onClick={() => main_page.change_page (this.props.page)}>
 		
-			onClick={() => {
-				main_page.popup_window.hide ();
-				main_page.change_page (this.props.page);
-			}}>
+				{this.props.text}
 		
-			{this.props.text}
-		
-		</div>
+			</div>}
+		</MainPageContext.Consumer>
+
 	}// render;
 
 }// MainMenuItem;

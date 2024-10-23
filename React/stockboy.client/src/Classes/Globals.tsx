@@ -1,6 +1,23 @@
 import { KeyValuePair } from "Classes/Collections";
+import PopupWindow from "../Controls/PopupWindow";
 
 export {};
+
+
+/**** Application Specific Definitions ****/
+
+
+declare global {
+
+	var popup_window: PopupWindow;
+
+}// global;
+
+
+globalThis.popup_window = null;
+
+
+/**** Generic Global Definitions ****/
 
 
 declare global {

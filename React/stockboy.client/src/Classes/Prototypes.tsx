@@ -14,6 +14,7 @@ declare global {
 		empty (): boolean;
 		getDates (fieldname: string): Array<Date>;
 		getIntegers (allow_non_numeric?: boolean): Array<number>;
+		remove (value: T): Array<T>;
 	}// Array<T>;
 
 
@@ -183,6 +184,12 @@ Array.prototype.getIntegers = function (allow_non_numeric: boolean = false): Arr
 	return result;
 
 }// getIntegers;
+
+
+Array.prototype.remove = function<T> (value: T): Array<T> {
+	this.splice (this.indexOf (value), 1);
+	return this;
+}// remove;
 
 
 /**** React Component Prototype Functions ****/

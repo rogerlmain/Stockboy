@@ -1,7 +1,10 @@
+import HoldingsData from "Classes/HoldingsData";
+
+import Eyecandy from "Controls/Eyecandy";
 import MainMenuItem from "Controls/MainMenuItem";
 import PopupWindow from "Controls/PopupWindow";
-import BasePage from "Pages/Abstract/BasePage";
 
+import BasePage from "Pages/Abstract/BasePage";
 import BrokersPage from "Pages/Brokers";
 import DividendsPage from "Pages/Dividends";
 import HomePage from "Pages/Home";
@@ -9,25 +12,28 @@ import SplitsPage from "Pages/Splits";
 import TickersPage from "Pages/Tickers";
 import TransactionsPage from "Pages/Transactions";
 
-import React, { Context, createContext, ReactElement } from "react";
+import React, { ReactElement } from "react";
+
+import { HoldingsDataContext, MainPageContext } from "Classes/Contexts";
+
+import { BaseProps } from "Controls/Abstract/BaseProperties";
 
 
-export class MainPageState { 
-	current_page: ReactElement = <TransactionsPage />;
-}// MainPageState;
-
-
-export const pages = {
-	home: HomePage,
-	transactions: TransactionsPage,
-	dividends: DividendsPage,
-	splits: SplitsPage,
-	brokers: BrokersPage,
-	tickers: TickersPage,
+const pages = {
+	home: <HomePage />,
+	transactions: <TransactionsPage />,
+	dividends: <DividendsPage />,
+	splits: <SplitsPage />,
+	brokers: <BrokersPage />,
+	tickers: <TickersPage />,
 }// pages;
 
 
-export const MenuContext: Context<ReactElement> = createContext (null);
+export class MainPageState {
+	page_name: string = null;
+	holdings_data: HoldingsData = new HoldingsData ();
+	page: ReactElement = <div className="full-page centered"><Eyecandy text="Loading holdings..." /></div>
+}// MainPageState;
 
 
 export default class MainPage extends BasePage {
@@ -41,37 +47,43 @@ export default class MainPage extends BasePage {
 
 	public state: MainPageState = new MainPageState ();
 
-	public get popup_window (): PopupWindow { return this.popup_ref.current }
 
-
-	public change_page = (new_page: React.ReactElement) => this.setState ({ current_page: new_page });
+	public change_page = (new_page: ReactElement) => this.setState ({ page: new_page });
 
 
 	public componentDidMount () {
-		main_page = this;
+		popup_window = this.popup_ref.current;
 	}// componentDidMount;
 
 
-	public render = () => <div className="page-layout">
+	public render = () => <HoldingsDataContext.Provider value={this.state.holdings_data}>
+		<div className="page-layout">
 
-		<PopupWindow id="popup_window" ref={this.popup_ref}>{"Default Value"}</PopupWindow>
+			<PopupWindow id="popup_window" ref={this.popup_ref} />
 
-		<div className="full-width left-aligned">
-			<div className="row-block main-menu margin">
-				{Object.keys (pages).map ((key: string) => {
-					const PageName = pages [key];
-					return <MainMenuItem key={key} text={key.titleCase ()} page={<PageName />} selected_item={this.state.current_page} />
-				})}
+			{isset (this.state.holdings_data) ? <div className="full-width left-aligned">
+				<div className="row-block main-menu margin">
+					<MainPageContext.Provider value={this}>
+						{Object.keys (pages).map ((key: string) => {
+							return <MainMenuItem key={key} text={key.titleCase ()} page={pages [key]} selected_item={this.state.page} />
+						})}
+					</MainPageContext.Provider>
+				</div>
+			</div> : String.Empty}
+
+			<div id="main_body" className="full-page page-layout">{this.state.page}</div>
+
+			<div className="column-margin footer">
+				Stockboy Stock Ledger - &copy; Copyright 2024 - The Roger Main Programming Company
 			</div>
+
 		</div>
+	</HoldingsDataContext.Provider>
 
-		<div id="main_body" className="full-page page-layout">{this.state.current_page}</div>
 
-		<div className="column-margin footer">
-			Stockboy Stock Ledger - &copy; Copyright 2024 - The Roger Main Programming Company
-		</div>
-
-	</div>
-
+	constructor (props: BaseProps) {
+		super (props);
+		this.state.holdings_data.load_holdings ().then (() => this.change_page (pages.home));
+	}// constructor;
 
 }// MainPage;

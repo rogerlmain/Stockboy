@@ -1,9 +1,10 @@
 import APIClass from "Classes/APIClass";
 import DataPage from "Controls/DataPage";
 
+import { EditFormContext } from "Classes/Contexts";
 import { BaseModel, StockDataModel } from "Models/Abstract/BaseModel";
 import { FormPage } from "Pages/Abstract/FormPage";
-import { ComponentClass, Context, MouseEvent, ReactElement, RefObject, createContext, createRef } from "react";
+import { ComponentClass, MouseEvent, ReactElement, RefObject, createRef } from "react";
 
 
 export class EditFormProps extends StockDataModel {
@@ -16,9 +17,6 @@ class EditFormState {
 	contents: ReactElement = null;
 	complete: boolean = true;
 }// EditFormState;
-
-
-export const EditFormContext: Context<EditFormControl> = createContext (null);
 
 
 export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFormProps, EditFormState> {
@@ -76,7 +74,7 @@ export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFo
 		let form_data = new FormData (this.form_ref.current).remove_empties ();
 		let new_record = !form_data.has ("id");
 
-		main_page.popup_window.show (<div className="centered column-spaced row-block">
+		popup_window.show (<div className="centered column-spaced row-block">
 			<img src="Images/eyecandy.gif" />
 			Saving {this.props.parent.props.name}. One moment, please.
 		</div>);
@@ -87,13 +85,13 @@ export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFo
 
 				this.data_table.add_row (response);
 
-				return main_page.popup_window.show (<div>
+				return popup_window.show (<div>
 
 					Transaction saved. Save another one?
 
 					<div className="button-bar">
-						<button onClick={() => main_page.popup_window.show (this.get_edit_form (form_data))}>Yes</button>
-						<button onClick={() => main_page.popup_window.hide ()}>No</button>
+						<button onClick={() => popup_window.show (this.get_edit_form (form_data))}>Yes</button>
+						<button onClick={() => popup_window.hide ()}>No</button>
 					</div>
 
 				</div>);
@@ -101,7 +99,7 @@ export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFo
 			}// if;
 
 			this.data_table.update_row (response);
-			main_page.popup_window.hide ();
+			popup_window.hide ();
 			
 		});
 
@@ -134,7 +132,7 @@ export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFo
 
 				<div className="button-bar">
 					<button id="save_button" onClick={(event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>
-					{main_page.popup_window.close_button}
+					{popup_window.close_button}
 				</div>
 
 			</div>
