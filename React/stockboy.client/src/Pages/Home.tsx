@@ -14,7 +14,7 @@ import InputElement from "../Controls/InputElement";
 
 class HomeState extends DataState<HoldingsModel> {
 	active_ticker: String = null;
-	filters: HoldingsFilterList = null;//new Array<HoldingsFilter> (HoldingsFilter.live);
+	filters: HoldingsFilterList = new Array<HoldingsFilter> (HoldingsFilter.live);
 }// HomeState;
 
 
@@ -41,7 +41,10 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 	}// lookup_panel;
 
 
-	private get filter_panel () {
+	private get selector_panel () {
+
+		if (is_null (this.state.data)) return;
+
 		return <form>
 			<div className="wide-column-spaced column-centered row-block margin">
 				<TickerSelector id="ticker_selector"
@@ -50,10 +53,14 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 				</TickerSelector>
 			</div>
 		</form>
-	}// filter_panel;
+
+	}// selector_panel;
 
 
 	private get checkbox_panel () {
+
+		if (!this.holdings.has_data) return;
+
 		return <div className="two-column-grid">
 			<InputElement id="live_stock_checkbox" label="Show live stocks">
 				<input type="checkbox"
@@ -84,11 +91,17 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 		return <div className="column-centered">
 			No stock information available<br />
 			<br />
-			<div className="row-centered">To add stock purchases,&nbsp;
+
+			{!this.holdings.has_data ? <div className="row-centered">
+
+				To add stock purchases,&nbsp;
+
 				<MainPageContext.Consumer>
 					{main_page => <Link command={() => main_page.change_page (<TransactionsPage />)} text="click here" />}
 				</MainPageContext.Consumer>
-			</div>
+
+			</div> : null}
+
 		</div>
 	}// empty_data_panel;
 
@@ -148,16 +161,14 @@ export default class HomePage extends DataControl<DataProps, HomeState> {
 
 		return <div className="page-layout">
 
-			{isset (this.holdings.list) ? <div>
+			<div className="title">Overview</div>
 
-				<div className={`${isset (this.state.data) ? "horizontally-spaced-out row-centered" : "right-aligned"}`} style={{ width: "65rem" }}>
-					{this.lookup_panel}
-					{this.checkbox_panel}
-				</div>
+			<div className={`${isset (this.state.data) ? "horizontally-spaced-out row-centered" : "right-aligned"}`} style={{ width: "65rem" }}>
+				{this.lookup_panel}
+				{this.checkbox_panel}
+			</div>
 
-				{isset (this.state.data) ? this.filter_panel : null}
-
-			</div> : null}
+			{this.selector_panel}
 
 			{is_null (this.state.data) ? this.empty_data_panel : this.grid_panel}
 

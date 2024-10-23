@@ -62,6 +62,12 @@ div.column-spaced {
 }
 
 /**** Text Styles ****/
+div.title {
+  font-weight: bold;
+  font-size: 11pt;
+  margin-bottom: 1rem;
+}
+
 div.warning {
   font-weight: bold;
   font-size: 9pt;

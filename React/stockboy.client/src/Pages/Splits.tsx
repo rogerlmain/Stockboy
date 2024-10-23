@@ -15,8 +15,16 @@ const properties: DataTableProperties = {
 
 
 export default class SplitsPage extends BasePage {
-	public render = () => <DataPage name="split" table_properties={properties}
-		invisible_fields={new SplitListModel ().constructor.prototype.invisible_fields}
-		edit_form={EditSplitForm}>
-	</DataPage>
+	public render () {
+		return <div className="page-layout">
+
+			<div className="title">Splits</div>
+
+			<DataPage name="split" table_properties={properties}
+				invisible_fields={new SplitListModel ().constructor.prototype.invisible_fields}
+				edit_form={EditSplitForm}>
+			</DataPage>
+
+		</div>
+	}// render;
 }// SplitsPage;

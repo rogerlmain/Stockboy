@@ -172,11 +172,14 @@ export default class HoldingsData {
 	/********/
 
 
+	public get has_data () { return isset (this.master_list) }
+
+
 	public list (filters: HoldingsFilterList = null) {
 
 		let result: HoldingsArray = null;
 
-		this.master_list.forEach ((item: HoldingsModel) => {
+		if (isset (this.master_list)) this.master_list.forEach ((item: HoldingsModel) => {
 
 			function include_item (item: HoldingsModel) {
 				if (is_null (result)) result = new Array<HoldingsModel> ();

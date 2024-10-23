@@ -8,6 +8,7 @@ import BasePage from "Pages/Abstract/BasePage";
 import BrokersPage from "Pages/Brokers";
 import DividendsPage from "Pages/Dividends";
 import HomePage from "Pages/Home";
+import ProfitLossPage from "Pages/ProfitLoss";
 import SplitsPage from "Pages/Splits";
 import TickersPage from "Pages/Tickers";
 import TransactionsPage from "Pages/Transactions";
@@ -26,6 +27,10 @@ const pages = {
 	splits: <SplitsPage />,
 	brokers: <BrokersPage />,
 	tickers: <TickersPage />,
+	profit_loss: { 
+		title: "Profit and Loss",
+		page: <ProfitLossPage />
+	},
 }// pages;
 
 
@@ -65,7 +70,12 @@ export default class MainPage extends BasePage {
 				<div className="row-block main-menu margin">
 					<MainPageContext.Provider value={this}>
 						{Object.keys (pages).map ((key: string) => {
-							return <MainMenuItem key={key} text={key.titleCase ()} page={pages [key]} selected_item={this.state.page} />
+
+							let title: string = (isset (pages [key].title)) ? pages [key]["title"] : key;
+							let page: ReactElement = (isset (pages [key].page)) ? pages [key]["page"] : pages [key];
+
+							return <MainMenuItem key={title} text={title.titleCase ()} page={page} selected_item={this.state.page} />
+
 						})}
 					</MainPageContext.Provider>
 				</div>

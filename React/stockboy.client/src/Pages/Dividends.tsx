@@ -18,10 +18,16 @@ const properties: DataTableProperties = {
 export default class DividendsPage extends BasePage {
 
 	public render () {
-		return <DataPage name="dividend" table_properties={properties} 
-			invisible_fields={new DividendListModel ().constructor.prototype.invisible_fields}
-			edit_form={EditDividendForm}>
-		</DataPage>
+		return <div className="page-layout">
+
+			<div className="title">Dividends</div>
+
+			<DataPage name="dividend" table_properties={properties} 
+				invisible_fields={new DividendListModel ().constructor.prototype.invisible_fields}
+				edit_form={EditDividendForm}>
+			</DataPage>
+
+		</div>
 	}// render;
 
 }// DividendsPage;
