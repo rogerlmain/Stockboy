@@ -19,7 +19,7 @@ class EditFormState {
 }// EditFormState;
 
 
-export default class EditFormControl<TModel = BaseModel> extends FormPage<EditFormProps, EditFormState> {
+export default class EditFormControl extends FormPage<EditFormProps, EditFormState> {
 
 	private form_ref: RefObject<HTMLFormElement> = createRef ();
 	private editor_ref: RefObject<any> = createRef ();

@@ -96,7 +96,7 @@ export default class DataTable extends BaseControl<DataTableProps> {
 			this.props.data.forEach ((item: IBaseModel) => {
 				if (is_null (item?.[field])) return;
 				if (is_null (this.totals)) this.totals = new NameValueCollection<number> ();
-				this.totals [field] = Decimal.add (this.totals [field], item [field]);
+				this.totals [field] = (this.totals [field] ?? 0) + (item [field] ?? 0);
 			});
 		});
 

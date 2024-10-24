@@ -8,6 +8,7 @@ import { HoldingsDataContext } from "Classes/Contexts";
 import { DataState } from "Controls/Abstract/DataControl";
 import { Context } from "react";
 import ProfitLossData, { ProfitLossModel } from "../Classes/ProfitLossData";
+import ScrollBlock from "../Controls/ScrollBlock";
 
 
 class ProfitLossState extends DataState<HoldingsModel> {}
@@ -30,19 +31,21 @@ export default class ProfitLossPage extends HoldingsPage<HoldingsProps, ProfitLo
 				<CheckboxPanel visible={true} parent={this} ref={this.checkbox_panel} />
 			</div>
 
-			{isset (this.state.data) ? <DataTable id="holdings-table" data={this.state.data} parent={this}
-				fields={["broker", "symbol", "company", 
-					{ sales_profit: "Sales Profit/Loss"}, 
-					{ dividend_payout: "Dividend Payout" },
-					"value_profit",
-					{ overall_profit: "Overall Profit/Loss" }
-				]}
-				currency_fields={["sales_profit", "dividend_payout", "value_profit", "overall_profit"]}
-				total_fields={["sales_profit", "dividend_payout", "value_profit", "overall_profit"]}
-				highlighted_fields={["sales_profit", "dividend_payout", "value_profit", "overall_profit"]}
-				rounded_fields={[{ value: 2 }]}
-				keys={["ticker_id", "broker_id"]}>
-			</DataTable> : <div>No options chosen</div>}
+			<div className="body">
+				{isset (this.state.data) ? <DataTable id="holdings-table" data={this.state.data} parent={this}
+					fields={["broker", "symbol", "company", 
+						{ sales_profit: "Sales Profit/Loss"}, 
+						{ dividend_payout: "Dividend Payout" },
+						"value_profit",
+						{ overall_profit: "Overall Profit/Loss" }
+					]}
+					currency_fields={["sales_profit", "dividend_payout", "value_profit", "overall_profit"]}
+					total_fields={["sales_profit", "dividend_payout", "value_profit", "overall_profit"]}
+					highlighted_fields={["sales_profit", "dividend_payout", "value_profit", "overall_profit"]}
+					rounded_fields={[{ sales_profit: 2 }, { dividend_payout: 2 }, { value_profit: 2 }, { overall_profit: 2 }]}
+					keys={["ticker_id", "broker_id"]}>
+				</DataTable> : <div>No options chosen</div>}
+			</div>
 
 		</div>
 	}// render;

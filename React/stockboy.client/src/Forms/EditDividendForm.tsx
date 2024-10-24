@@ -62,7 +62,7 @@ export default class EditDividendForm extends FormPage<EditDividendFormProps, Ed
 
 	private update_total_dividend = () => {
 
-		let total = Decimal.round (Decimal.multiply (parseFloat (this.per_share_textbox_ref.current.value), parseFloat (this.quantity_textbox_ref.current.value)), 2);
+		let total = Decimal.round (parseFloat (this.per_share_textbox_ref.current.value) * parseFloat (this.quantity_textbox_ref.current.value), 2);
 		let parts = total.toString ().parts (".", 1, 2);
 
 		if (parts.length == 1) parts.push ("0");
