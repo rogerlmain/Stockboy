@@ -2,6 +2,7 @@
 
 export interface IBaseProps { id?: string }
 
+export interface IHoldingsProps extends IBaseProps { filters: HoldingsFilterList }
 
 export interface IBaseState {}
 

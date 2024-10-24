@@ -25,6 +25,7 @@ export class DataTableProperties extends BaseProps {
 	currency_fields?: Array<string> = null;
 	total_fields?: Array<string> = null;
 	rounded_fields?: Array<RoundingRecord> = null;
+	highlighted_fields?: Array<string> = null;
 	keys?: Array<string> = null;
 	onclick?: Function;
 }// DataTableProperties;
@@ -123,7 +124,11 @@ export default class DataTable extends BaseControl<DataTableProps> {
 				if (index == 0) return <div key="total" style={{ borderRight: "none" }}>Total</div>
 				if (!this.props.total_fields.contains (name)) return <div key={name} style={blank_field (name, index) ? { borderRight: "none" } : null}></div>
 
-				return <div key={name} style={{ textAlign: "right", borderLeft: "solid 1px var(--table-border) !important" }}>{this.format (name, total)}</div>
+				return <div key={name} style={{ textAlign: "right", 
+					color: this.highlighted_color (name, total),
+					borderLeft: "solid 1px var(--table-border) !important" }}>
+					{this.format (name, total)}
+				</div>
 
 			})}
 
@@ -153,6 +158,12 @@ export default class DataTable extends BaseControl<DataTableProps> {
 		return (value as string);
 
 	}// format;
+
+
+	public highlighted_color (field: string, value: number) {
+		if (not_set (value)) return null;
+		return this.props.highlighted_fields?.contains (field) && (value != 0) ? ((value > 0) ? "#080" : "#A00") : null;
+	}// highlighted_color;
 
 
 	public componentDidMount () {

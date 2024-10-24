@@ -10,9 +10,7 @@
 		public Guid transaction_type_id { get; set; }
 	}// TransactionDataModel;
 
-	public class TransactionListModel: BaseModel {
-		public Guid broker_id { get; set; }
-		public Guid ticker_id { get; set; }
+	public class TransactionListModel: StockModel {
 		public string broker { get; set; } = String.Empty;
         public string ticker { get; set; } = String.Empty;
         public string company { get; set; } = String.Empty;

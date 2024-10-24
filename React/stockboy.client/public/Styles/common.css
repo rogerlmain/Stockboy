@@ -166,6 +166,18 @@ div.row-divider {
   margin-top: 2rem;
 }
 
+*.with-some-legroom {
+  margin-bottom: 0.5rem;
+}
+
+*.with-legroom {
+  margin-bottom: 1rem;
+}
+
+*.with-lotsa-legroom {
+  margin-bottom: 2rem;
+}
+
 *.row-block {
   flex-direction: row;
 }
@@ -258,6 +270,10 @@ div.nested div.nested label {
 }
 
 /**** Form Styles ****/
+div.checkbox-list label {
+  justify-content: flex-start;
+}
+
 div.form-table {
   display: inline-grid;
   grid-template-columns: min-content 1fr;

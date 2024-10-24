@@ -28,6 +28,7 @@ export default class DataTableRow extends BaseControl<DataRowProps, DataRowState
 		let result: CSSProperties = {}
 
 		if (this.table_props.currency_fields?.contains (key) || this.props.data_table.props.numeric_fields?.contains (key) || this.props.data_table.props.date_fields?.contains (key)) result ["textAlign"] = "right";
+		result ["color"] = this.props.data_table.highlighted_color (key, value);
 		return result;
 
 	}// styles;
@@ -95,7 +96,7 @@ export default class DataTableRow extends BaseControl<DataRowProps, DataRowState
 
 					}}>
 
-					{this.props.data_table.format (field_name, value)}
+					{isset (value) ? this.props.data_table.format (field_name, value) : "N/A"}
 				</div>
 
 			})}

@@ -1,6 +1,8 @@
 import { KeyValuePair } from "Classes/Collections";
+import { HoldingsFilter, HoldingsModel } from "Classes/HoldingsData";
+import { ProfitLossModel } from "Classes/ProfitLossData";
 
-export {}
+export { };
 
 declare global {
 
@@ -12,5 +14,12 @@ declare global {
 	type DataKey = string | KeyValuePair<string>
 
 	type FieldValue = string | number | Date;
+
+	type HoldingsFilterList = Array<HoldingsFilter>;
+
+	type HoldingsArray = Array<HoldingsModel>
+	type ProfitLossArray = Array<ProfitLossModel>;
+
+	type FinancialDataList = HoldingsArray | ProfitLossArray;
 
 }// global;

@@ -57,7 +57,7 @@ export default class LookupPageControl extends BasePage<LookupProps, LookupState
 			this.setState ({ selected_item: result }, () => {
 				popup_window.show (<div>
 
-					{key_name (this.state.selected_item ["name"]).titleCase ()} saved.<br />
+					{key_name (this.state.selected_item ["name"])} saved.<br />
 
 					<div className="row-centered with-some-headspace">
 						<button onClick={() => popup_window.hide ()}>Close</button>

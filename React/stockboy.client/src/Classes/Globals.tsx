@@ -50,6 +50,8 @@ declare global {
 
 	var conditional: Function;
 
+	var event_handler: EventTarget;
+
 }// global;
 
 
@@ -94,3 +96,8 @@ globalThis.is_defined = (value: any): boolean => isset (value) && not_empty (val
 globalThis.not_defined = (value: any): boolean => !is_defined (value);
 
 globalThis.conditional = (condition: boolean, output: any): string => condition ? output : String.Empty;
+
+
+globalThis.event_handler = new EventTarget ();
+
+

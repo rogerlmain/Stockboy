@@ -25,4 +25,10 @@ namespace Stockboy.Server.Models {
 	}// DataModel;
 
 
+	public class StockModel: BaseModel {
+        public Guid broker_id { get; set; } = Guid.Empty;
+        public Guid ticker_id { get; set; } = Guid.Empty;
+	}// StockModel;
+
+
 }// Stockboy.Server.Models;

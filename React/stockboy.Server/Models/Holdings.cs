@@ -25,9 +25,7 @@ namespace Stockboy.Server.Models {
 
 
 	[Keyless]
-	public class ActivityView: BaseModel {
-		public Guid broker_id { get; set; } = Guid.Empty;
-		public Guid ticker_id { get; set; } = Guid.Empty;
+	public class ActivityView: StockModel {
 		public string broker { get; set; } = String.Empty;
 		public string symbol { get; set; } = String.Empty;
 		public string company { get; set; } = String.Empty;

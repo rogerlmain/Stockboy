@@ -1,5 +1,6 @@
+import { IBaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
 import { Component } from "react";
-import { IBaseProps, IBaseState } from "./BaseProperties";
+
 
 export default class BaseControl<Props = IBaseProps, State = IBaseState> extends Component<Props, State> {
 

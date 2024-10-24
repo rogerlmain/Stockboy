@@ -153,6 +153,11 @@ div.row-divider {
 *.with-lotsa-headspace { margin-top: 2rem }
 
 
+*.with-some-legroom { margin-bottom: 0.5rem }
+*.with-legroom { margin-bottom: 1rem }
+*.with-lotsa-legroom { margin-bottom: 2rem }
+
+
 *.row-block { flex-direction: row }
 
 
@@ -241,6 +246,9 @@ div.nested {
 
 
 /**** Form Styles ****/
+
+
+div.checkbox-list label { justify-content: flex-start }
 
 
 div.form-table {

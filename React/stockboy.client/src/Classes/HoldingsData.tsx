@@ -5,6 +5,7 @@ import APIClass, { DividendDataItem, DividendDataSet, StockPriceData } from "Cla
 
 import { StockModel } from "Models/Abstract/BaseModel";
 import { TickerDataModel } from "Models/Tickers";
+import ProfitLossData from "./ProfitLossData";
 
 
 const one_hour = 60 * 60 * 1000;
@@ -15,9 +16,6 @@ export enum HoldingsFilter {
 	dead = "dead",
 	defunct = "defunct",
 }// HoldingsFilter;
-
-
-export type HoldingsFilterList = Array<HoldingsFilter>;
 
 
 export class HoldingsModel extends StockModel {
@@ -33,16 +31,11 @@ export class HoldingsModel extends StockModel {
 	public total_sales_amount: number;
 	public value: number;
 	public last_updated: Date;
+	public sales_profit: number;
 }// HoldingsModel;
 
 
-export type HoldingsArray = Array<HoldingsModel>
-
-
 export default class HoldingsData {
-
-	private master_list: HoldingsArray = null;
-
 
 	private async get_outdated_tickers (holdings: HoldingsArray): Promise <Array<TickerDataModel>> {
 
@@ -172,6 +165,12 @@ export default class HoldingsData {
 	/********/
 
 
+	protected master_list: HoldingsArray = null;
+
+
+	/********/
+
+
 	public get has_data () { return isset (this.master_list) }
 
 
@@ -196,15 +195,12 @@ export default class HoldingsData {
 
 	}// filter_holdings_list;
 
-
-	public load_holdings (): Promise<HoldingsData> {
-		return new Promise (resolve => {
-			this.get_holdings_list ().then (result => {
-				this.master_list = result;
-				resolve (this);
-			});
+	constructor (is_parent: boolean = true) {
+		if (is_parent) this.get_holdings_list ().then (result => {
+			this.master_list = result;
+			event_handler.dispatchEvent (new Event ("holdings"));
 		});
-	}// load_holdings;
+	}// constructor;
 
 
 }// HoldingsData;
