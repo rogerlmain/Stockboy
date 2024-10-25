@@ -8,7 +8,7 @@ import { ChangeEvent } from "react";
 
 class CheckboxPanelProps {
 	visible: boolean = false;
-	parent: HoldingsPage<HoldingsProps, DataState<HoldingsModel>> = null;
+	parent: HoldingsPage = null;
 }// CheckboxPanelProps;
 
 

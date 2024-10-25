@@ -174,7 +174,7 @@ export default class HoldingsData {
 	public get has_data () { return isset (this.master_list) }
 
 
-	public list (filters: HoldingsFilterList = null) {
+	public list (filters: HoldingsFilterList = null, broker_id: string, ticker_id: string) {
 
 		let result: HoldingsArray = null;
 
@@ -184,6 +184,9 @@ export default class HoldingsData {
 				if (is_null (result)) result = new Array<HoldingsModel> ();
 				result.push (Object.assign (item));
 			}// include_item;
+
+			if (isset (broker_id) && (item.broker_id != broker_id)) return;
+			if (isset (ticker_id) && (item.ticker_id != ticker_id)) return;
 
 			if (filters?.contains (HoldingsFilter.live) && (item.current_price != -1) && (item.quantity > 0)) return include_item (item);
 			if (filters?.contains (HoldingsFilter.dead) && (item.current_price != -1) && (item.quantity == 0)) return include_item (item);
@@ -195,8 +198,8 @@ export default class HoldingsData {
 
 	}// filter_holdings_list;
 
-	constructor (is_parent: boolean = true) {
-		if (is_parent) this.get_holdings_list ().then (result => {
+	constructor (update_master: boolean = true) {
+		if (update_master) this.get_holdings_list ().then (result => {
 			this.master_list = result;
 			event_handler.dispatchEvent (new Event ("holdings"));
 		});
