@@ -24,4 +24,9 @@
 	}// TransactionListModel;
 
 
+	public class UpdateTransactionModel: BaseModel {
+		public string type { get; set; } = String.Empty;
+	}// UpdateTransactionModel;
+
+
 }// Stockboy.Server.Models;

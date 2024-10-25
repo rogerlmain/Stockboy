@@ -4,10 +4,13 @@ import InputElement from "Controls/InputElement";
 import TickerSelector from "Controls/TickerSelector";
 
 import { date_format } from "Classes/Globals";
-import { IStockDataModel, StockDataModel } from "Models/Abstract/BaseModel";
+import { BaseModel, IStockDataModel, StockDataModel } from "Models/Abstract/BaseModel";
 import { ChangeEvent, RefObject, createRef } from "react";
 import { FormPage } from "Pages/Abstract/FormPage";
 import { DividendDataModel } from "Models/DividendModels";
+import { PromptResponse } from "../Controls/EditFormControl";
+import APIClass from "../Classes/APIClass";
+import Eyecandy from "../Controls/Eyecandy";
 
 
 
@@ -25,17 +28,22 @@ class EditDividendFormState {
 
 export default class EditDividendForm extends FormPage<EditDividendFormProps, EditDividendFormState> {
 
+	private form: RefObject<HTMLDivElement> = createRef ();
+
+
 	private static test_values: DividendDataModel = {
-		broker_id: "bf6be2f3-7141-11ef-b1e8-a4f933c45288",
-		ticker_id: "153d3cf3-7168-11ef-b1e8-a4f933c45288",
+		broker_id: "80e43ec8-016a-453d-b4ff-80d9d79a2bc7",
+		ticker_id: "4676d995-5c5b-4bd9-b1b7-26532e391c42",
 		amount_per_share: 0.0825,
 		share_quantity: 6.0919,
 		issue_date: new Date ("2023-10-31T00:00:00"),
 		reinvested: false,
+
 		transaction_date: new Date ("2023-10-31T00:00:00"),
 		settlement_date: new Date ("2023-11-01T00:00:00"),
 		shares_purchased: 0.05144,
 		purchase_price: 9.72,
+
 	}// test_values;
 
 
@@ -53,7 +61,7 @@ export default class EditDividendForm extends FormPage<EditDividendFormProps, Ed
 	}// default_values;
 
 
-	private static defaultValues = this.default_values;
+	private static defaultValues = this.test_values;
 
 
 	private per_share_textbox_ref: RefObject<HTMLInputElement> = createRef ();
@@ -86,6 +94,43 @@ export default class EditDividendForm extends FormPage<EditDividendFormProps, Ed
 	public state: EditDividendFormState = new EditDividendFormState ();
 
 
+	public onSave (): Promise<PromptResponse> {
+		return new Promise (resolve => {
+
+			let values = {
+				broker_id: (this.form.current.querySelector ("select#broker_id_list") as HTMLSelectElement).value,
+				ticker_id: (this.form.current.querySelector ("select#ticker_id_list") as HTMLSelectElement).value,
+				amount_per_share: (this.form.current.querySelector ("input#amount_per_share") as HTMLInputElement).value,
+				share_quantity: (this.form.current.querySelector ("input#share_quantity") as HTMLInputElement).value,
+				issue_date: (this.form.current.querySelector ("input#issue_date") as HTMLInputElement).value,
+			}// values;
+
+			APIClass.fetch_data ("GetDividendTransaction", values).then ((response: BaseModel) => {
+				if (isset (response.id)) return popup_window.show (<div>
+
+					A stock purchase was found on the same date for the same broker,<br />
+					ticker and amount. Would you like to update that transaction<br />
+					as a reinvestment?
+				
+					<div className="button-bar">
+						<button onClick={() => {
+							popup_window.show (<Eyecandy text="Updating transaction. One moment, please." />);
+							APIClass.fetch_data ("UpdateTransactionType", { id: response.id, type: "reinvestment" }).then (response => {
+								resolve (PromptResponse.Proceed);
+							});
+						}}>Yes</button>
+						<button onClick={() => resolve (PromptResponse.Proceed)}>No</button>
+						<button onClick={() => resolve (PromptResponse.Cancel)}>Cancel</button>
+					</div>
+
+				</div>);
+
+				resolve (PromptResponse.Proceed);
+			});
+		});
+	}// onSave;
+
+
 	public componentDidMount () { 
 		return this.setState ({
 			broker_id: this.props.broker_id ?? EditDividendForm.defaultValues.broker_id,
@@ -96,7 +141,7 @@ export default class EditDividendForm extends FormPage<EditDividendFormProps, Ed
 
 	public render () {
 
-		return <div>
+		return <div ref={this.form}>
 
 			<input type="hidden" id="id" name="id" value={this.props.data?.id} />
 

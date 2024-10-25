@@ -1,8 +1,10 @@
 import APIClass from "Classes/APIClass";
+
 import DataPage from "Controls/DataPage";
+import Eyecandy from "Controls/Eyecandy";
 
 import { EditFormContext } from "Classes/Contexts";
-import { BaseModel, StockDataModel } from "Models/Abstract/BaseModel";
+import { StockDataModel } from "Models/Abstract/BaseModel";
 import { FormPage } from "Pages/Abstract/FormPage";
 import { ComponentClass, MouseEvent, ReactElement, RefObject, createRef } from "react";
 
@@ -19,12 +21,16 @@ class EditFormState {
 }// EditFormState;
 
 
+export enum PromptResponse { Proceed, Cancel, Abort }
+
+
 export default class EditFormControl extends FormPage<EditFormProps, EditFormState> {
 
 	private form_ref: RefObject<HTMLFormElement> = createRef ();
 	private editor_ref: RefObject<any> = createRef ();
 
 	private get data_table () { return this.props.parent.table_control_ref.current }
+	private get eyecandy () { return <Eyecandy text={`Saving ${this.props.parent.props.name}. One moment, please.`} /> }
 
 
 	private get_edit_form (form_data: FormData) {
@@ -67,17 +73,23 @@ export default class EditFormControl extends FormPage<EditFormProps, EditFormSta
 	}// required_fields_completed;
 
 
-	private save_record (event: MouseEvent<HTMLButtonElement>) {
+	private async save_record (event: MouseEvent<HTMLButtonElement>) {
 
 		if (!this.required_fields_completed ()) return event.preventDefault ();
 
-		let form_data = new FormData (this.form_ref.current).remove_empties ();
-		let new_record = !form_data.has ("id");
+		let form_data: FormData = new FormData (this.form_ref.current).remove_empties ();
+		let new_record: boolean = !form_data.has ("id");
 
-		popup_window.show (<div className="centered column-spaced row-block">
-			<img src="Images/eyecandy.gif" />
-			Saving {this.props.parent.props.name}. One moment, please.
-		</div>);
+		popup_window.show (this.eyecandy);
+
+		if (isset (this.editor_ref.current.onSave)) {
+			let response = await this.editor_ref.current.onSave ();
+			switch (response) {
+				case PromptResponse.Cancel: return popup_window.show (this.get_edit_form (form_data));
+				case PromptResponse.Abort: return popup_window.hide ();
+				case PromptResponse.Proceed: popup_window.show (this.eyecandy);
+			}// switch;
+		}// if;
 
 		APIClass.fetch_data (`Save${this.props.parent.props.name.titleCase ()}`, form_data).then (response => {
 
@@ -131,12 +143,13 @@ export default class EditFormControl extends FormPage<EditFormProps, EditFormSta
 				<form ref={this.form_ref}><this.props.body id={this.props.id} data={this.props.data} broker_id={this.props.broker_id} ticker_id={this.props.ticker_id} ref={this.editor_ref} /></form>
 
 				<div className="button-bar">
-					<button id="save_button" onClick={(event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>
+					<button id="save_button" onClick={async (event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>
 					{popup_window.close_button}
 				</div>
 
 			</div>
 		</EditFormContext.Provider>
 	}// render;
+
 
 }// EditFormControl;

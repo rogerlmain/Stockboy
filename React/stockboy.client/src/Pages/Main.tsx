@@ -112,7 +112,7 @@ export default class MainPage extends BasePage {
 
 		super (props);
 
-		event_handler.addEventListener ("holdings", () => this.change_page (PageType.home));
+		event_handler.addEventListener ("holdings", () => this.change_page (PageType.dividends /*.home*/));
 		event_handler.addEventListener ("dividends", ((event: CustomEvent<ProfitLossData>) => this.setState ({ profits: event.detail })) as EventListener);
 
 	}// constructor;
