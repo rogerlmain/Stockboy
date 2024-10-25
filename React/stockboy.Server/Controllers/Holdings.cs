@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stockboy.Server.Classes;
 using Stockboy.Server.Models;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 
 
 namespace Stockboy.Server.Controllers {
@@ -13,6 +11,7 @@ namespace Stockboy.Server.Controllers {
 			public const string buy = "Buy";
 			public const string sell = "Sell";
 			public const string split = "Split";
+			public const string reinvestment = "Reinvestment";
 		}// TransactionTypes;
 
 
@@ -32,7 +31,7 @@ namespace Stockboy.Server.Controllers {
 
 					if ((item.broker != previous_broker) || (item.company != previous_company)) {
 
-						if (item.transaction_type == TransactionTypes.split) continue; // Not a split. Move on.
+						if (item.transaction_type != TransactionTypes.buy) continue; // Initial buy required. None registered. Move on.
 
 						holding = new () {
 							broker_id = item.broker_id,
@@ -49,7 +48,7 @@ namespace Stockboy.Server.Controllers {
 
 					holding!.last_updated = item.last_updated;
 
-					if (item.transaction_type == TransactionTypes.buy) {
+					if ((item.transaction_type == TransactionTypes.buy) || (item.transaction_type == TransactionTypes.reinvestment)) {
 
 						Decimal purchase_price = (item.cost_price * item.quantity).round (2);
 
@@ -58,6 +57,7 @@ namespace Stockboy.Server.Controllers {
 						holding.quantity += item.quantity;
 
 					}// if;
+
 					if (item.transaction_type == TransactionTypes.sell) {
 
 						Decimal per_stock_cost = (holding.current_purchase_cost / holding.quantity);
