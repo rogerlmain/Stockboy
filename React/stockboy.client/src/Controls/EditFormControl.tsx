@@ -29,7 +29,7 @@ export default class EditFormControl extends FormPage<EditFormProps, EditFormSta
 	private form_ref: RefObject<HTMLFormElement> = createRef ();
 	private editor_ref: RefObject<any> = createRef ();
 
-	private get data_table () { return this.props.parent.table_control_ref.current }
+	private get data_table () { return this.props.parent.data_table_control.current }
 	private get eyecandy () { return <Eyecandy text={`Saving ${this.props.parent.props.name}. One moment, please.`} /> }
 
 

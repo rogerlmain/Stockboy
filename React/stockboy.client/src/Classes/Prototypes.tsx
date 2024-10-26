@@ -88,14 +88,13 @@ declare global {
 
 
 	interface StringConstructor {
-		isString (candidate: any): boolean;
-	}// StringConstructor;
 
-
-	interface StringConstructor {
 		Empty: string;
 		Space: string;
 		Comma: string;
+
+		isString (candidate: any): boolean;
+
 	}// StringConstructor;
 
 
@@ -107,6 +106,7 @@ declare global {
 		parseInt (): number;
 		parseNumeric (): string;
 		parts (delimiter: string, minimum: number, maximum: number): Array<string>;
+		plural (count: number): string;
 		titleCase (strip_spaces?: boolean): string;
 		trimmedStart (value: string);
 		trimmedEnd (value: string);
@@ -561,6 +561,9 @@ String.prototype.parts = function (delimiter: string, minimum: number = null, ma
 	return result;
 
 }// parts;
+
+
+String.prototype.plural = function (count: number): string { return (count != 1 ? `${this}s` : this.toString ()) }
 
 
 String.prototype.titleCase = function (strip_spaces: boolean = false): string {

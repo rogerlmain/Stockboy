@@ -14,10 +14,13 @@ class DataTableControlProps extends BaseProps implements IBaseProps {
 	table_properties: DataTableProperties = null;
 	procedure_name: string = null;
 	parameters?: NameValueCollection<any> = null;
+	blank_label?: string = null;
+	editable?: boolean = true;
 	name: string = null;
 	onCreate?: Function = null;
 	onEdit?: Function = null;
 	onDelete?: Function = null;
+	onChange?: DataTableControlChangeFunction = null;
 }// DataTableControlProps;
 
 
@@ -27,18 +30,21 @@ class DataTableControlState implements IBaseState {
 }// TransactionState;
 
 
+export type DataTableControlChangeFunction = (data: BaseModelArray) => void;
+
+
 export default class DataTableControl extends BasePage <DataTableControlProps, DataTableControlState> {
 
 	private control_ref: RefObject<HTMLDivElement> = createRef ();
 
-	private get table () { return this.data_table_ref.current }
+	private get table () { return this.data_table.current }
 	private get with_child () { return isset (this.props.children) }
 
 
 	private set_styles () {
 
 		let control: HTMLDivElement = this.control_ref.current;
-		let button_container: HTMLDivElement = control.querySelector ("[id='button_container']");
+		let sidebar: HTMLDivElement = control.querySelector ("#sidebar");
 		let button_bar: HTMLDivElement = control.querySelector ("div.button-bar");
 
 		control.style.merge ({
@@ -46,10 +52,15 @@ export default class DataTableControl extends BasePage <DataTableControlProps, D
 		});
 
 		if (this.with_child) {
+
 			control.classList.add ("row-block");
-			button_container.classList.add ("left-margin");
-			button_bar.style.marginTop = "unset";
-			button_bar.style.justifyContent = "flex-start";
+			sidebar.classList.add ("left-margin");
+
+			if (this.props.editable) {
+				button_bar.style.marginTop = "unset";
+				button_bar.style.justifyContent = "flex-start";
+			}// if;
+
 		}// if;
 
 	}// set_styles;
@@ -58,10 +69,24 @@ export default class DataTableControl extends BasePage <DataTableControlProps, D
 	/********/
 
 
-	public data_table_ref: RefObject<DataTable> = createRef ();
+	public data_table: RefObject<DataTable> = createRef ();
 
 
 	public state: DataTableControlState = new DataTableControlState ();
+
+
+	public static defaultProps: DataTableControlProps = {
+		children: null,
+		table_properties: null,
+		procedure_name: null,
+		parameters: null,
+		blank_label: null,
+		editable: true,
+		name: null,
+		onCreate: null,
+		onEdit: null,
+		onDelete: null,
+	}// defaultProps;
 
 
 	public add_row (row: IBaseModel) {
@@ -112,10 +137,14 @@ export default class DataTableControl extends BasePage <DataTableControlProps, D
 	public remove_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
 
-	public componentDidUpdate (previous_props: DataTableControlProps) {
-		if ((this.props.parameters == previous_props?.parameters) && (not_null (previous_props))) return;
+	public componentDidUpdate (props: DataTableControlProps) {
+		if (is_null (props?.parameters) && is_null (this.props.parameters)) return;
+		if (isset (props?.parameters) && (props.parameters?.matches (this.props.parameters))) return;
 		APIClass.fetch_data (this.props.procedure_name, this.props.parameters).then ((response: StockModelArray) => {
-			this.setState ({ data: response }, this.set_styles);
+			this.setState ({ data: response }, () => {
+				this.set_styles ();
+				if (isset (this.props.onChange)) this.props.onChange (this.state.data);
+			});
 		});
 	}// componentDidUpdate;
 
@@ -129,15 +158,17 @@ export default class DataTableControl extends BasePage <DataTableControlProps, D
 		return <div className={`page-layout with-headspace`} ref={this.control_ref}>
 
 			<div className="body" style={{ height: this.with_child ? "100%" : "auto"}}>
-				{not_defined (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>There are no {this.props.name}s</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
-					onclick={(row: IStockModel) => this.setState ({ selected_row: row })} ref={this.data_table_ref}
+				{not_defined (this.state.data) ? <div style={{ whiteSpace: "nowrap" }}>
+					{isset (this.props.blank_label) ? this.props.blank_label : `There are no ${this.props.name}s`}
+				</div> : <DataTable id={`${this.props.name.toLowerCase ()}_table`} 
+					onclick={(row: IStockModel) => this.setState ({ selected_row: row })} ref={this.data_table}
 					data={this.state.data} parent={this} {...this.props.table_properties}>
 				</DataTable>}
 			</div>
 
-			<div id="button_container">
+			<div id="sidebar">
 
-				<div className="button-bar"> 
+				{this.props.editable ? <div className="button-bar"> 
 
 					<button id="add_button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
 						event.preventDefault ();
@@ -161,7 +192,7 @@ export default class DataTableControl extends BasePage <DataTableControlProps, D
 
 					</div>
 
-				</div>
+				</div> : null}
 
 				{this.with_child ? <div className="top-margin">{this.props.children}</div> : String.Empty}
 

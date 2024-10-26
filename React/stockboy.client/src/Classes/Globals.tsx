@@ -89,7 +89,7 @@ globalThis.not_empty = (value: any): boolean => !is_empty (value);
 globalThis.isset = (value: any): boolean => not_null (value) && (value != undefined);
 globalThis.not_set = (value: any): boolean => !isset (value);
 
-globalThis.is_null = (value: any): boolean => (value == null);
+globalThis.is_null = (value: any): boolean => (value === null);
 globalThis.not_null = (value: any): boolean => !is_null (value);
 
 globalThis.is_defined = (value: any): boolean => isset (value) && not_empty (value);

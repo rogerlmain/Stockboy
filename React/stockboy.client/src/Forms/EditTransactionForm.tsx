@@ -48,7 +48,7 @@ export class EditTransactionForm extends FormPage<EditTransactionFormProps> {
 			<input type="hidden" id="id" name="id" value={this.props.data?.id} />
 
 			<div className="two-column-grid">
-				<TickerSelector id={this.props.id} data={this.props.data}
+				<TickerSelector id={this.props.id}
 					broker_id={this.props.data?.broker_id ?? this.props.broker_id ?? EditTransactionForm.defaultValues.broker_id} 
 					ticker_id={this.props.data?.ticker_id ?? this.props.ticker_id ?? EditTransactionForm.defaultValues.ticker_id}>
 				</TickerSelector>

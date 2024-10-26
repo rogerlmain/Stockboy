@@ -36,10 +36,10 @@ export default class LookupPageControl extends BasePage<LookupProps, LookupState
 
 
 	private edit_form_ref: RefObject<HTMLFormElement> = createRef ();
-	private table_control_ref: RefObject<DataTableControl> = createRef ();
+	private data_table_control: RefObject<DataTableControl> = createRef ();
 
-	private get table_control () { return this.table_control_ref.current }
-	private get data_table () { return this.table_control.data_table_ref.current }
+	private get table_control () { return this.data_table_control.current }
+	private get data_table () { return this.table_control.data_table.current }
 
 
 	private save_form = (event: MouseEvent<HTMLButtonElement>) => {
@@ -83,7 +83,7 @@ export default class LookupPageControl extends BasePage<LookupProps, LookupState
 
 
 	public render () {
-		return <DataTableControl id={`${this.props.name}_list`} name={this.props.name} ref={this.table_control_ref}
+		return <DataTableControl id={`${this.props.name}_list`} name={this.props.name} ref={this.data_table_control}
 
 			procedure_name={`Get${this.props.name.titleCase ()}s`}
 			table_properties={this.data_table_properties}
@@ -114,7 +114,7 @@ export default class LookupPageControl extends BasePage<LookupProps, LookupState
 			}))}
 				
 			onDelete={() => popup_window.show (<DeleteForm table_name={this.props.name.titleCase ()} 
-				record={this.data_table.state.selected_row} table={this.table_control_ref.current}
+				record={this.data_table.state.selected_row} table={this.data_table_control.current}
 				additional_text={`All tickers and transactions for ${this.data_table.state.selected_row?.["name"]} will be deleted.`}>
 			</DeleteForm>)}>
 

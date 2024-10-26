@@ -25,7 +25,6 @@ export default class TickerSelector extends BaseControl<TickerSelectorProps, Tic
 	public static defaultProps = {
 		broker_id: null,
 		ticker_id: null,
-		data: null,
 	}// defaultProps;
 
 

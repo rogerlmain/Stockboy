@@ -177,33 +177,43 @@ export default class DataTable extends BaseControl<DataTableProps> {
 		if (isset (this.props.total_fields)) this.calculate_totals ();
 		if (is_null (this.props.data) || (this.props.data.length == 0)) return <div>No data</div>;
 		
-		return <ScrollBlock>
+		return <div className="full-page">
 
-			<div className="data-table" ref={this.reference}>
+			<div className="page-layout">
+				<div className="body">
+					<ScrollBlock>
+						<div className="data-table" ref={this.reference}>
 	
-				<div className="table-header">
-					{this.props.fields.map ((field: string | NameValueCollection<string>) => {
+							<div className="table-header">
+								{this.props.fields.map ((field: string | NameValueCollection<string>) => {
 					
-						let name = this.field_name (field);
-						let title = this.field_title (field);
+									let name = this.field_name (field);
+									let title = this.field_title (field);
 
-						return <div key={name} onClick={() => this.sort_table (name)}>
-							{title}
-							{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
+									return <div key={name} onClick={() => this.sort_table (name)}>
+										{title}
+										{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
+									</div>
+
+								})}
+							</div>
+
+							{this.props.data.map (row => <DataTableRow key={this.get_key (row)} row={row} 
+								field_names={this.field_name_list ()} 
+								onclick={this.props.onclick} data_table={this}>
+							</DataTableRow>)}
+
+							{isset (this.props.total_fields) ? this.show_totals () : null}
+
 						</div>
-
-					})}
+					</ScrollBlock>
 				</div>
-
-				{this.props.data.map (row => <DataTableRow key={this.get_key (row)} row={row} 
-					field_names={this.field_name_list ()} 
-					onclick={this.props.onclick} data_table={this}>
-				</DataTableRow>)}
-
-				{isset (this.props.total_fields) ? this.show_totals () : null}
-
 			</div>
-		</ScrollBlock>
+
+			<div className="right-aligned bold-text with-some-headspace">Total: {this.props.data.length} {"record".plural (this.props.data.length)}</div>
+		
+		</div>
+
 	}// render;
 	
 

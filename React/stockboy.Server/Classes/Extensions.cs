@@ -10,15 +10,11 @@ using System.Reflection;
 
 namespace Stockboy.Server.Classes {
 
-	public static class DecimalExtensions {
-
-		public static Decimal round (this Decimal value, int decimal_places) => Math.Round (value, decimal_places, MidpointRounding.AwayFromZero);
-
-	}// DecimalExtensions;
-
-
 	public static class ControllerExtensions {
-		
+
+		public static JsonResult error_message (this Controller controller, string message) => new (new { error = message });
+
+
 		public static JsonResult DeleteRecord<TModel> (this Controller controller, DbSet<TModel> dataset, IDataModel parameters) where TModel: DataModel {
 			try {
 				dataset.Where (item => item.id == parameters.id).ExecuteUpdate<IDataModel> (property => property.SetProperty (item => item.deleted, true));
@@ -60,6 +56,13 @@ namespace Stockboy.Server.Classes {
 		}// Save;
 
 	}// DataExtensions;
+
+
+	public static class DecimalExtensions {
+
+		public static Decimal round (this Decimal value, int decimal_places) => Math.Round (value, decimal_places, MidpointRounding.AwayFromZero);
+
+	}// DecimalExtensions;
 
 
 	public static class ListExtensions {

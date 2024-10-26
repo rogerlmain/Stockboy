@@ -6,16 +6,13 @@ using System.Text;
 
 namespace Stockboy.Server.Controllers {
 
-	public abstract class DataController<TDataModel, TListModel> (DataContext context) : Controller where TDataModel : class, IBaseModel, new() where TListModel : class, IBaseModel, new() {
-
-		protected JsonResult error_message (string message) => new JsonResult (new { error = message });
-
+	public abstract class DataController<TDataModel, TListModel> (DataContext context): Controller where TDataModel : class, IBaseModel, new() where TListModel : class, IBaseModel, new() {
 
 		public JsonResult GetData (string command, GetParameters parameters) {
 			try {
 				return new JsonResult (Database.CallProcedure<TListModel> (command, parameters));
 			} catch (Exception except) {
-				return error_message (except.Message);
+				return this.error_message (except.Message);
 			}// try;
 		}// GetData;
 

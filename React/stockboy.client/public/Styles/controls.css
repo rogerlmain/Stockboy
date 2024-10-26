@@ -1,13 +1,14 @@
-﻿/**** Button Styles ****/
-button, input[type=text] {
-  border: solid 1px var(--border-color);
-  border-radius: 100px;
+﻿/**** Control Styles ****/
+input, select, button {
   background-color: white;
-  padding: 0.5em 0.75em;
-  min-width: 4.5rem;
+  border: solid 1px var(--border-color);
+  border-radius: 1rem !important;
+  height: 1.2rem;
+  padding: 0 0.6rem !important;
 }
 
 button {
+  min-width: 4.5rem;
   cursor: pointer;
 }
 button:hover {
@@ -44,13 +45,6 @@ div.checkbox-select-list div.list {
 }
 
 /**** Form Styles ****/
-form input, form select, div.linear-form button {
-  height: 1.2rem;
-  padding: 0 10px !important;
-  border-radius: 1rem !important;
-  border: solid 1px black;
-}
-
 div.linear-form {
   column-gap: 0.25rem;
 }

@@ -81,6 +81,10 @@ div.row-divider {
   border-top: solid 1px var(--border-color);
 }
 
+div.bold-text {
+  font-weight: bold;
+}
+
 /**** Layout Styles ****/
 *.full-width, html, body, .full-page {
   width: 100%;

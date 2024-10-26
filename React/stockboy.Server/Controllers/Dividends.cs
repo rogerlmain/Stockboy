@@ -61,7 +61,7 @@ namespace Stockboy.Server.Controllers {
 				DividendDataModel? dividend = SaveData (new DividendDataModel ().Merge (parameters));
 				return new JsonResult (DividendQueries.get_dividend_by_id (context, dividend!.id!.Value));
 			} catch (Exception except) {
-				return error_message (except.Message);
+				return this.error_message (except.Message);
 			}// try;
 
 		}// SaveDividend;

@@ -6,6 +6,8 @@ import MainMenuItem from "Controls/MainMenuItem";
 import PopupWindow from "Controls/PopupWindow";
 
 import BasePage from "Pages/Abstract/BasePage";
+
+import ActivityPage from "Pages/Activity";
 import BrokersPage from "Pages/Brokers";
 import DividendsPage from "Pages/Dividends";
 import HomePage from "Pages/Home";
@@ -22,6 +24,7 @@ import { BaseProps } from "Controls/Abstract/BaseProperties";
 
 export enum PageType {
 	home = "Home",
+	activity = "Activity",
 	transactions = "Transactions",
 	dividends = "Dividends",
 	splits = "Splits",
@@ -48,6 +51,7 @@ export default class MainPage extends BasePage {
 	private get active_page () {
 		switch (this.state.page) {
 			case PageType.home: return <HomePage holdings={this.state.holdings} />;
+			case PageType.activity: return <ActivityPage />;
 			case PageType.transactions: return <TransactionsPage />;
 			case PageType.dividends: return <DividendsPage />;
 			case PageType.splits: return <SplitsPage />;
@@ -112,7 +116,7 @@ export default class MainPage extends BasePage {
 
 		super (props);
 
-		event_handler.addEventListener ("holdings", () => this.change_page (PageType.home));
+		event_handler.addEventListener ("holdings", () => this.change_page (PageType.activity/*.home*/));
 		event_handler.addEventListener ("dividends", ((event: CustomEvent<ProfitLossData>) => this.setState ({ profits: event.detail })) as EventListener);
 
 	}// constructor;
