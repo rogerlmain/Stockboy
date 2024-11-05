@@ -1,0 +1,16 @@
+{
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.app.json" },
+        { "path": "./tsconfig.node.json" }
+    ],
+    "compilerOptions": {
+        "lib": ["ES2023"],
+        "baseUrl": "src",
+        "paths": {
+            "src/*": [ "./src/*" ]
+        },
+        "strictNullChecks": false,
+        "noImplicitAny": false
+    }
+}
