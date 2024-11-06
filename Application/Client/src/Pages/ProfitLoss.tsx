@@ -3,7 +3,7 @@ import APIClass from "Classes/APIClass";
 import DataPageControl from "Controls/DataPageControl";
 import StockStatusFilters from "Controls/StockStatusFilters";
 
-import { ProfitLossModel } from "Classes/ProfitLossData";
+import { ProfitLossModel } from "Models/Holdings";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { Component, createRef, RefObject } from "react";
@@ -58,9 +58,8 @@ export default class ProfitLossPage extends Component<BaseProps, ProfitLossPageS
 	constructor (props: BaseProps) {
 		super (props);
 		APIClass.fetch_data ("GetProfitAndLoss").then ((result: ProfitLossList) => {
-			this.setState ({ data: new Array ().assign (result, ProfitLossModel) });
+			this.setState ({ data: new Array<ProfitLossModel> ().assign (result, ProfitLossModel) });
 		});
 	}// constructor;
-
 
 }// ProfitLossPage;

@@ -1,0 +1,8 @@
+https://financialmodelingprep.com/api/v3/historical-price-full/stock_dividend/BDN,M,GLAD,PCFBY,ALLR,SQFT,AGNC,EFTR,LGSXY,LBUY?apikey=GWL8VaOub1b403hrhY0RGpKUnUl5yRhP
+
+
+BDN,M,GLAD,PCFBY,ALLR,SQFT,AGNC,EFTR,LGSXY,LBUY
+
+
+
+$.historicalStockList[2].historical[7].recordDate

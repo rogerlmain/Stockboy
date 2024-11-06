@@ -49,7 +49,7 @@ export default class DividendsPage extends Component<BaseProps, DividendsPageSta
 	constructor (props: BaseProps) {
 		super (props);
 		APIClass.fetch_data ("GetDividends").then ((result: DividendList) => {
-			this.setState ({ data: new Array ().assign (result, DividendListModel) })
+			this.setState ({ data: new Array<DividendListModel> ().assign (result, DividendListModel) })
 		});
 	}// constructor;
 

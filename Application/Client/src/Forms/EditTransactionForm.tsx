@@ -1,7 +1,7 @@
 import TransactionTypeList from "Controls/Lists/TransactionTypeList";
 import TickerSelector from "Controls/TickerSelector";
 
-import { date_format } from "Classes/Globals";
+import { DateFormats } from "Classes/Globals";
 import { IBaseState, IFormProps } from "Controls/Abstract/BaseProperties";
 import { TransactionDataModel } from "Models/Transactions";
 import { Component } from "react";
@@ -30,10 +30,10 @@ export default class EditTransactionForm extends Component<EditTransactionFormPr
 				<input id="quantity" type="numeric" decimalPlaces={numeric_decimals} defaultValue={this.props.data?.quantity} />
 
 				<label htmlFor="transaction_date">Transaction Date</label>
-				<input id="transaction_date" type="date" defaultValue={Date.format (this.props.data?.transaction_date, date_format.database)} />
+				<input id="transaction_date" type="date" defaultValue={Date.format (this.props.data?.transaction_date, DateFormats.database)} />
 
 				<label htmlFor="settlement_date">Settlement Date</label>
-				<input id="settlement_date" type="date" defaultValue={Date.format (this.props.data?.settlement_date, date_format.database)} />
+				<input id="settlement_date" type="date" defaultValue={Date.format (this.props.data?.settlement_date, DateFormats.database)} />
 
 			</div>
 

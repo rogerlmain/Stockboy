@@ -22,7 +22,7 @@ button {
 input, select, textarea { outline: none }
 
 
-/**** Checkbox Select List ****/
+/**** Checkbox Select List Styles ****/
 
 
 div.checkbox-select-list { display: inline-flex }
@@ -115,7 +115,6 @@ div.data-table {
 	div[field] { justify-content: space-between }
 	div[field] *:not(.glyph-arrow) { border: none }
 }
-/* div.data-table */
 
 
 div.table-row > div.keys { display: none }
@@ -146,4 +145,18 @@ div.main-menu-item.selected {
 
 div.main-menu-item.selected:hover {
 	cursor: auto
+}
+
+
+/**** Glyph Arrow Style ****/
+
+
+div.glyph-arrow {
+	width: 0;
+	height: 0;
+	border: solid 0.5rem transparent;
+	border-bottom-width: solid 0.5rem var(--glyph-arrow-color);
+	border-top-color: var(--sort-arrow-color);
+	cursor: pointer;
+	margin-left: 0.5rem;
 }

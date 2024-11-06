@@ -1,4 +1,5 @@
 import APIClass from "Classes/APIClass";
+import EditBrokerForm from "Forms/EditBrokerForm";
 
 import DataPageControl, { ButtonAlignment } from "Controls/DataPageControl";
 
@@ -6,7 +7,7 @@ import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { BrokersModel } from "Models/Brokers";
-import { Component } from "react";
+import { Component, RefObject, createRef } from "react";
 
 
 const properties: DataTableProperties = {
@@ -26,6 +27,9 @@ class BrokersPageState {
 
 
 export default class BrokersPage extends Component<BaseProps, BrokersPageState> {
+
+	private data_page: RefObject<DataPageControl> = createRef ();
+
 
 	private save_form () {
 	//	let form_data: FormData = new FormData (this.edit_form_ref.current);
@@ -71,16 +75,8 @@ export default class BrokersPage extends Component<BaseProps, BrokersPageState> 
 			<div className="title">Brokers</div>
 
 			<DataPageControl data={this.state.data} properties={properties} align_buttons={ButtonAlignment.center}
-				search_filter={true} stock_filters={false} table_buttons={true}
-				save_command="SaveSplit" delete_command="DeleteSplit" data_type="Brokers">
-
-				<form style={{ display: `${this.state.form_visible ? "flex" : "none"}` }}>
-					<input type="hidden" name="id" value={this.state.selected_item?.["id"]} />
-					<div className="linear-form button-bar">
-						<button onClick={this.save_form}>Save</button>
-					</div>
-				</form>
-
+				search_filter={true} stock_filters={false} table_buttons={true} 
+				ref={this.data_page} data_type="Brokers" form={EditBrokerForm}>
 			</DataPageControl>
 
 		</div>

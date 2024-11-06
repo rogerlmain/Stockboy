@@ -1,5 +1,6 @@
 import APIClass from "Classes/APIClass";
 import DataPageControl from "Controls/DataPageControl";
+import EditTickersForm from "Forms/EditTickersForm";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
@@ -36,23 +37,8 @@ export default class TickersPage extends Component<BaseProps, TickersPageState> 
 			<div className="title">Tickers</div>
 
 			<DataPageControl data={this.state.data} properties={properties} 
-				search_filter={true} table_buttons={true}
+				search_filter={true} table_buttons={true} form={EditTickersForm}
 				save_command="SaveTicker" delete_command="DeleteTicker" data_type="Tickers">
-
-				<form style={{ display: `${this.state.form_visible ? "flex" : "none"}` }}>
-					<div className="two-column-grid">
-						<input type="text" name="name" placeholder="Name" />
-						<input type="text" name="symbol" placeholder="Symbol" style={{ width: "4rem" }} />
-						<select name="dividend_frequency">
-							<option value={String.Empty}>Dividend Frequency</option>
-							<option value="1">Monthly</option>
-							<option value="3">Quarterly</option>
-							<option value="12">Annually</option>
-						</select>
-						<input type="date" name="last_paid" placeholder="Last paid" />
-					</div>
-				</form>
-
 			</DataPageControl>
 
 		</div>

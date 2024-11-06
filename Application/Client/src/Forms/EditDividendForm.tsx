@@ -3,7 +3,7 @@ import Decimal from "Classes/Decimal";
 import Eyecandy from "Controls/Eyecandy";
 import TickerSelector from "Controls/TickerSelector";
 
-import { date_format } from "Classes/Globals";
+import { DateFormats } from "Classes/Globals";
 import { IFormProps } from "Controls/Abstract/BaseProperties";
 import { PromptResponse } from "Controls/EditFormControl";
 import { BaseModel } from "Models/Abstract/BaseModels";
@@ -135,7 +135,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 				}}>
 					<label htmlFor="issue_date">Issue Date</label>
 					<input id="issue_date" type="date" required={true}
-						defaultValue={Date.format (this.props.data?.issue_date, date_format.database)}>
+						defaultValue={Date.format (this.props.data?.issue_date, DateFormats.database)}>
 					</input>
 				</div>
 
@@ -161,12 +161,12 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 
 						<label htmlFor="transaction_date">Transaction Date</label>
 						<input id="transaction_date" type="date" required={this.state.reinvested} 
-							defaultValue={Date.format (this.props.data?.transaction_date, date_format.database)}>
+							defaultValue={Date.format (this.props.data?.transaction_date, DateFormats.database)}>
 						</input>
 
 						<label htmlFor="settlement_date">Settlement Date</label>
 						<input id="settlement_date" type="date" required={this.state.reinvested} 
-							defaultValue={Date.format (this.props.data?.settlement_date, date_format.database)}>
+							defaultValue={Date.format (this.props.data?.settlement_date, DateFormats.database)}>
 						</input>
 				
 						<label htmlFor="quantity">Number of shares purchased</label>

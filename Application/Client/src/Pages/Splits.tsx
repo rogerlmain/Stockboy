@@ -37,8 +37,7 @@ export default class SplitsPage extends Component<BaseProps, SplitsPageState> {
 
 			<DataPageControl data={this.state.data} properties={properties} form={EditSplitForm}
 				search_filter={true} stock_filters={true} table_buttons={true}
-				save_command="SaveSplit" delete_command="DeleteSplit" data_type="Splits"
-				invisible_fields={new SplitListModel ().constructor.prototype.invisible_fields}>
+				save_command="SaveSplit" delete_command="DeleteSplit" data_type="Splits">
 			</DataPageControl>
 
 		</div>

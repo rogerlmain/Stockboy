@@ -1,4 +1,4 @@
-import { date_format } from "Classes/Globals";
+import { DateFormats } from "Classes/Globals";
 import { Component } from "react";
 
 
@@ -11,21 +11,22 @@ declare global {
 
 		add (value: T): Array<T>
 		append (value: T): Array<T>
+		assign (template: Array<any>, data_type: any): Array<T>
 		contains (value: any): boolean
 		getDates (fieldname: string): Array<Date>
 		getIntegers (allow_non_numeric?: boolean): Array<number>
 		remove (value: T): Array<T>
 		sorted (fieldname: string): Array<T>
 
-		get duplicate (): Array<T>
+		//get duplicate (): Array<T>
 		get empty (): boolean
 
 	}// Array<T>;
 
 
 	interface DateConstructor {
-		format (date_value: string | Date, format?: date_format): string;
-		today (format?: date_format): string;
+		format (date_value: string | Date, format?: DateFormats): string;
+		today (format?: DateFormats): string;
 		current_date (): Date;
 		earlier (value: Date);
 		later (value: Date);
@@ -44,13 +45,14 @@ declare global {
 
 
 	interface FormData {
-		get_data ();
+		get_data (): FormData;
 	}// FormData;
 
 
 	interface HTMLElement {
 
-		setClass (value: String, condition: Boolean);
+		setClass (value: String, condition: Boolean): void;
+		styleSelector (style: string, value: string): HTMLElement;
 
 		get tagType (): string;
 		get totalWidth (): number;
@@ -82,14 +84,17 @@ declare global {
 
 	interface Object {
 
-		assign (template: any, type: any): any;
+		assign (template: any): any;
 		copy (...candidates: Object []): Object;
 		hasKey (key_name: string): boolean;
-		matches (candidate: Object): boolean;
+		matches (candidate: any): boolean;
 		merge (...candidates: Object []): Object;
 
+		get Duplicate (): any;
+		get GetType (): string;
 		get Keys (): StringArray;
 		get NoData (): boolean;
+		get Replica (): any;
 
 	}// Object;
 
@@ -147,10 +152,24 @@ Array.prototype.add = function<T> (value: T): Array<T> {
 
 
 Array.prototype.append = function<T> (value: T): Array<T> {
-	let new_array = this.duplicate;
+	let new_array = this.Duplicate;
 	new_array.push (value);
 	return new_array;
 }// append;
+
+
+Array.prototype.assign = function (template: Array<any>, data_type: any): Array<any> {
+
+	let result: Array<any> = null;
+
+	template.forEach (item => {
+		if (is_null (result)) result = new Array<any> ();
+		result.push (new data_type ().assign (item));
+	});
+
+	return result;
+
+}// assign;
 
 
 Array.prototype.contains = function (value: any) { return this.indexOf (value) > -1 };
@@ -206,7 +225,7 @@ Array.prototype.sorted = function<T> (fieldname: string): Array<T> {
 
 
 Object.defineProperties (Array.prototype, {
-	duplicate: { get: function () { return JSON.parse (JSON.stringify (this)) } },
+	//duplicate: { get: function () { return JSON.parse (JSON.stringify (this)) } },
 	empty: { get: function () { return this.length == 0 } },
 });
 
@@ -225,21 +244,21 @@ Component.prototype.setState = function (state: any, callback?: () => void): boo
 /**** Date Extension Functions ****/
 
 
-Date.format = function (date_value: string | Date, format: date_format = date_format.readable): string {
+Date.format = function (date_value: string | Date, format: DateFormats = DateFormats.readable): string {
 
 	if (is_null (date_value)) return null;
 
 	let date: Date = (date_value instanceof Date) ? date_value : new Date (date_value);
 
-	if (format == date_format.readable) return `${(date.getMonth () + 1).toString ().padStart (2, "0")}-${date.getDate ().toString ().padStart (2, "0")}-${date.getFullYear ()}`;
-	if (format == date_format.database) return `${date.getFullYear ()}-${(date.getMonth () + 1).toString ().padStart (2, "0")}-${date.getDate ().toString ().padStart (2, "0")}`;
+	if (format == DateFormats.readable) return `${(date.getMonth () + 1).toString ().padStart (2, "0")}-${date.getDate ().toString ().padStart (2, "0")}-${date.getFullYear ()}`;
+	if (format == DateFormats.database) return `${date.getFullYear ()}-${(date.getMonth () + 1).toString ().padStart (2, "0")}-${date.getDate ().toString ().padStart (2, "0")}`;
 
 	return date.toDateString ();
 
 }// Date.format;
 
 
-Date.today = function (format: date_format = date_format.readable): string { return Date.format (new Date (), format); }
+Date.today = function (format: DateFormats = DateFormats.readable): string { return Date.format (new Date (), format); }
 
 
 Date.current_date = function (): Date { return new Date () }
@@ -277,7 +296,8 @@ Element.prototype.hasClass = function (class_name: string): boolean { return thi
 /**** FormData Prototype Functions ****/
 
 
-FormData.prototype.get_data = function () {
+// Removes empty elements from FormData
+FormData.prototype.get_data = function (): FormData {
 
 	let form_data = null;
 
@@ -300,6 +320,22 @@ HTMLElement.prototype.setClass = function (value: string, condition: Boolean) {
 	if (condition) return this.classList.add (value);
 	this.classList.remove (value);
 }// setClass;
+
+
+HTMLElement.prototype.styleSelector = function (style: string, value: string): HTMLElement {
+
+	for (let child of this.childNodes) {
+
+		let next_child: HTMLElement = (child as HTMLElement);
+
+		if (next_child.style [style].matches (value)) return next_child;
+		return next_child.styleSelector (style, value);
+
+	}// for;
+
+	return null;
+
+}// styleSelector;
 
 
 Object.defineProperties (HTMLElement.prototype, {
@@ -380,15 +416,8 @@ Object.defineProperties (Number.prototype, {
 /**** Object Prototype Functions ****/
 
 
-Object.prototype.assign = function (template: Array<any>, model: any) {
-
-	if (not_defined (template)) return null;
-
-	let result: Array<typeof model> = new Array<typeof model> ();
-
-	template.forEach ((item: typeof model) => result.push (Object.assign (new model (), item)));
-	return result;
-
+Object.prototype.assign = function (template: any): any {
+	return Object.assign (this, template);
 }// assign;
 
 
@@ -408,7 +437,7 @@ Object.prototype.hasKey = function (key_name: string): boolean {
 }// hasKey;
 
 
-Object.prototype.matches = function (candidate: Object) { return JSON.stringify (this) == JSON.stringify (candidate) }
+Object.prototype.matches = function (candidate: any) { return JSON.stringify (this) == JSON.stringify (candidate) }
 
 
 Object.prototype.merge = function (...candidates: Object []): Object {
@@ -427,13 +456,11 @@ Object.prototype.merge = function (...candidates: Object []): Object {
 
 Object.defineProperties (Object.prototype, {
 
-	Keys: {
-		get: function (): StringArray { return Object.keys (this) }
-	},// keys;
-
-	NoData: {
-		get: function (): boolean { return this.hasKey ("data") && (this.data == no_data) }
-	}
+	Duplicate: { get: function (): any { return this.Replica.assign (this) } },
+	GetType: { get: function (): string { return Object.getPrototypeOf (this).constructor.name } },
+	Keys: { get: function (): StringArray { return Object.keys (this) } },
+	NoData: { get: function (): boolean { return this.hasKey ("data") && (this.data == no_data) } },
+	Replica: { get: function (): any { return Object.create (Object.getPrototypeOf (this)) } },
 
 });
 

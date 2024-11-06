@@ -1,4 +1,4 @@
-import { MainPageContext } from "Classes/Contexts";
+import { MainPageContext } from "Pages/Main";
 import { Component, RefObject, createRef } from "react";
 
 import { PageType } from "Pages/Main";

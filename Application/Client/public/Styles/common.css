@@ -184,51 +184,51 @@ div.bold-text {
 }
 
 /**** Margin Styles ****/
-*.small-left-margin, .small-row-margin, *.small-margin {
+*.with-some-left-space, .with-some-row-space, *.with-some-space {
   margin-left: 0.5rem;
 }
 
-*.left-margin, .row-margin, *.with-margin {
+*.with-left-space, .with-row-space, *.with-with-space {
   margin-left: 1rem;
 }
 
-*.big-left-margin, .big-row-margin, *.big-margin {
+*.with-lotsa-left-space, .with-lotsa-row-space, *.with-lotsa-space {
   margin-left: 2rem;
 }
 
-*.small-right-margin, .small-row-margin, *.small-margin {
+*.with-some-right-space, .with-some-row-space, *.with-some-space {
   margin-right: 0.5rem;
 }
 
-*.right-margin, .row-margin, *.with-margin {
+*.with-right-space, .with-row-space, *.with-with-space {
   margin-right: 1rem;
 }
 
-*.big-right-margin, .big-row-margin, *.big-margin {
+*.with-lotsa-right-space, .with-lotsa-row-space, *.with-lotsa-space {
   margin-right: 2rem;
 }
 
-*.with-some-headspace, div.button-bar, .with-some-room, *.small-margin {
+*.with-some-headspace, div.button-bar, .with-some-room, *.with-some-space {
   margin-top: 0.5rem;
 }
 
-*.with-headspace, .with-room, *.with-margin {
+*.with-headspace, .with-room, *.with-with-space {
   margin-top: 1rem;
 }
 
-*.with-lotsa-headspace, .with-lotsa-room, *.big-margin {
+*.with-lotsa-headspace, .with-lotsa-room, *.with-lotsa-space {
   margin-top: 2rem;
 }
 
-*.with-some-legroom, .with-some-room, *.small-margin {
+*.with-some-legroom, .with-some-room, *.with-some-space {
   margin-bottom: 0.5rem;
 }
 
-*.with-legroom, .with-room, *.with-margin {
+*.with-legroom, .with-room, *.with-with-space {
   margin-bottom: 1rem;
 }
 
-*.with-lotsa-legroom, .with-lotsa-room, *.big-margin {
+*.with-lotsa-legroom, .with-lotsa-room, *.with-lotsa-space {
   margin-bottom: 2rem;
 }
 

@@ -1,6 +1,6 @@
 import TickerSelector from "Controls/TickerSelector";
 
-import { date_format } from "Classes/Globals";
+import { DateFormats } from "Classes/Globals";
 import { IBaseState, IFormProps } from "Controls/Abstract/BaseProperties";
 import { SplitDataModel } from "Models/Splits";
 import { Component } from "react";
@@ -55,7 +55,7 @@ export class EditSplitForm extends Component<EditSplitFormProps, IBaseState> {
 				<div className="full-width row-centered">
 					<div className="two-column-grid">
 						<label htmlFor="split_date">Split Date</label>
-						<input id="split_date" type="date" defaultValue={Date.format (this.props.data.split_date, date_format.database)} />
+						<input id="split_date" type="date" defaultValue={Date.format (this.props.data.split_date, DateFormats.database)} />
 					</div>
 				</div>
 

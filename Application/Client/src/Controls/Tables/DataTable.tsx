@@ -182,7 +182,7 @@ export default class DataTable extends Component<DataTableProps> {
 		if (is_null (this.props.data) || (this.props.data.length == 0)) return <div className="row-centered with-headspace">{no_data}</div>;
 		if (isset (this.props.properties.total_fields)) this.calculate_totals ();
 		
-		return <div className="scrollable column-block">
+		return <div className="scrollable right-aligned column-block">
 
 			<ScrollBlock>
 				<div className="data-table" ref={this.data_block}>

@@ -11,7 +11,6 @@ const baseFolder = env.APPDATA !== undefined && env.APPDATA !== '' ? `${env.APPD
 const certificateName = "template.client";
 const certFilePath = path.join (baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join (baseFolder, `${certificateName}.key`);
-const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` : env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split (";")[0] : "https://localhost:7006";
 
 
 if (!fs.existsSync (certFilePath) || !fs.existsSync (keyFilePath)) {
@@ -41,12 +40,6 @@ export default defineConfig ({
 		}
 	},
 	server: {
-		proxy: {
-			"^/weatherforecast": {
-				target,
-				secure: false
-			}
-		},
 		port: 5173,
 		https: {
 			key: fs.readFileSync (keyFilePath),

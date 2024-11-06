@@ -20,11 +20,11 @@ class DataPageControlProps {
 	dataType: any;
 
 	properties: DataTableProperties;
-	invisible_fields?: StringArray;
 	save_command: string;
 	delete_command: string;
 
-	children: ReactElementList;
+	children: ChildElement;
+
 	search_filter: boolean;
 	stock_filters: boolean;
 	table_buttons: boolean;
@@ -50,12 +50,25 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	private table_filters: RefObject<TableFilters> = createRef ();
 	private data_table: RefObject<DataTable> = createRef ();
 	private grid_block: RefObject<HTMLDivElement> = createRef ();
+	private side_panel: RefObject<HTMLDivElement> = createRef ();
 
 
 	private deleted_filter (name: string, value: string): DataFilterList {
 		let active_filter: DataFilter = this.state.filters?.find ((item: DataFilter) => ((item.field == name) && (item.value == value)));
 		return this.state.filters.toSpliced (this.state.filters.indexOf (active_filter), 1);
 	}// deleted_filter;
+
+
+	private show_form (data?: IBaseModel) {
+		popup_window.show (<EditFormControl form={this.props.form} 
+			save_command={this.props.save_command}
+			data={isset (data) ? data : this.props.stock_filters ? new StockModel ().merge ({ 
+				broker_id: this.table_filters.current.state.broker_id,
+				ticker_id: this.table_filters.current.state.ticker_id,
+			}) : null}
+			data_page_control={this}>
+		</EditFormControl>);
+	}// show_form;
 
 
 	/********/
@@ -67,7 +80,6 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 		dataType: null,
 
 		properties: null,
-		invisible_fields: null,
 		save_command: null,
 		delete_command: null,
 
@@ -160,10 +172,6 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 					filtered_data.push (item);
 				}// if;
 
-				//if ((filter.type == FilterType.exclusive) && ) continue;
-				//	default: if (item [filter.field].matches (filter.value)) return; break;
-				//}// switch;
-
 			});
 		});
 		
@@ -200,25 +208,12 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 					{this.props.table_buttons ? <div className={`button-bar ${this.props.align_buttons == ButtonAlignment.center ? "column-centered" : null}`}>
 						<TableButtons selected_row={this.state.selected_row}
 
-							onCreate={() => popup_window.show (<EditFormControl form={this.props.form} 
-								save_command={this.props.save_command}
-								data={this.props.stock_filters ? new StockModel ().merge ({ 
-									broker_id: this.table_filters.current.state.broker_id,
-									ticker_id: this.table_filters.current.state.ticker_id,
-								}) : null}
-								data_page_control={this}>
-							</EditFormControl>)}
-
-							onEdit={() => popup_window.show (<EditFormControl form={this.props.form} 
-								save_command={this.props.save_command}
-								data={this.state.selected_row} 
-								data_page_control={this}>
-							</EditFormControl>)}
+							onCreate={() => this.show_form ()}
+							onEdit={() => this.show_form (this.state.selected_row)}
 
 							onDelete={() => popup_window.show (<DeleteForm delete_command={this.props.delete_command}
 								data={this.state.selected_row}
-								data_page_control={this}
-								invisible_fields={this.props.invisible_fields}>
+								data_page_control={this}>
 							</DeleteForm>)}>
 
 						</TableButtons>
@@ -226,7 +221,7 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 				</div>
 
-				{isset (this.props.children) ? <div id="side_panel">{this.props.children}</div> : null}
+				{isset (this.props.children) ? <div id="side_panel" ref={this.side_panel}>{this.props.children}</div> : null}
 
 			</div>
 

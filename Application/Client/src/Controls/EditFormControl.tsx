@@ -8,7 +8,8 @@ import { Component, ComponentClass, createRef, MouseEvent, RefObject } from "rea
 
 
 export class EditFormControlProps {
-	form: ComponentClass<any>;
+	form?: ComponentClass<any>;
+	children?: ChildElement;
 	data: IBaseModel;
 	data_page_control: DataPageControl;
 	save_command: string;
@@ -94,6 +95,7 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 	public static defaultProps: EditFormControlProps = {
 		form: null,
+		children: null,
 		data: null,
 		data_page_control: null,
 		save_command: null,
@@ -138,13 +140,14 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 		return <div>
 
 			<form ref={this.form}>
-				<this.props.form data={this.props.data} ref={this.form_body} />
+				{isset (this.props.form) ? <this.props.form data={this.props.data} ref={this.form_body} /> : null}
+				{isset (this.props.children) ? this.props.children : null}
 			</form>
 
 			<div className="with-headspace">
 				<div className="button-bar">
 					<button id="save_button" onClick={async (event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>
-					{popup_window.close_button}
+					{isset (this.props.form) ? popup_window.close_button : null}
 				</div>
 			</div>
 

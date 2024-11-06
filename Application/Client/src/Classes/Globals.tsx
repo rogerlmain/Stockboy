@@ -56,17 +56,17 @@ declare global {
 }// global;
 
 
-export enum date_format {
+export enum DateFormats {
 	readable,
 	database
-}// date_format;
+}// DateFormats;
 
-export enum tag_types {
-	select = "select",
-	text = "text",
-	textarea = "textarea",
-	date = "date",
-}// tag_types;
+
+export enum HoldingsFilters {
+	live = "live",
+	dead = "dead",
+	defunct = "defunct",
+}// HoldingsFilters;
 
 
 globalThis.form_items = "input, select, textarea";

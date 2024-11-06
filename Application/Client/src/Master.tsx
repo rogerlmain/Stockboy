@@ -5,8 +5,15 @@ import "Classes/Prototypes";
 
 import { createRoot } from "react-dom/client";
 
-import StylesheetList from "Classes/StylesheetList";
 import MainPage from "Pages/Main";
+import TestPage from "Pages/Test";
 
-createRoot (document.getElementById ("stylesheets")).render (<StylesheetList />);
-createRoot (document.getElementById ("main")).render (<MainPage />);
+
+let testing: boolean = false;
+
+
+switch (testing) {
+	case true: createRoot (document.getElementById ("main")).render (<TestPage />); break;
+	default: createRoot (document.getElementById ("main")).render (<MainPage />); break;
+}// switch;
+

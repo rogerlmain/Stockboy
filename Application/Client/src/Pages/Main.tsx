@@ -1,6 +1,3 @@
-import HoldingsData from "Classes/HoldingsData";
-import ProfitLossData from "Classes/ProfitLossData";
-
 import MainMenuItem from "Controls/MainMenuItem";
 import PopupWindow from "Controls/PopupWindow";
 
@@ -13,9 +10,8 @@ import SplitsPage from "Pages/Splits";
 import TickersPage from "Pages/Tickers";
 import TransactionsPage from "Pages/Transactions";
 
-import { MainPageContext } from "Classes/Contexts";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
-import { Component, createRef, RefObject } from "react";
+import { Component, Context, createContext, createRef, RefObject } from "react";
 
 
 export enum PageType {
@@ -33,10 +29,10 @@ export enum PageType {
 export class MainPageState {
 	page_name: string = null;
 	page: PageType = null;
-	holdings: HoldingsData = new HoldingsData ();
-	profits: ProfitLossData = null;
 }// MainPageState;
 
+
+export const MainPageContext: Context<MainPage> = createContext (null);
 
 export default class MainPage extends Component {
 
@@ -64,10 +60,7 @@ export default class MainPage extends Component {
 	public state: MainPageState = new MainPageState ();
 
 
-	public change_page = (new_page: PageType) => {
-		if (new_page == PageType.profits) event_handler.dispatchEvent (new CustomEvent<HoldingsData> ("profit-loss", { detail: this.state.holdings }));
-		this.setState ({ page: new_page });
-	}// change_page;
+	public change_page = (new_page: PageType) => this.setState ({ page: new_page });
 
 
 	public componentDidMount () {
@@ -75,7 +68,7 @@ export default class MainPage extends Component {
 	}// componentDidMount;
 
 
-	public render = () => <div className="centered full-page column-block">
+	public render = () => <div className="centered full-page column-block with-row-space">
 
 		<PopupWindow id="popup_window" ref={this.popup_ref} />
 
@@ -103,7 +96,7 @@ export default class MainPage extends Component {
 
 	constructor (props: BaseProps) {
 		super (props);
-		this.state.page = PageType.transactions;
+		this.state.page = PageType.home;
 	}// constructor;
 
 }// MainPage;

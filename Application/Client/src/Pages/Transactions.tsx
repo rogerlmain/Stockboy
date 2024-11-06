@@ -37,7 +37,7 @@ export default class TransactionsPage extends Component<BaseProps, TransactionsP
 
 			<div className="title">Transactions</div>
 
-			<DataPageControl data={this.state.data} dataType={TransactionListModel} properties={properties} form={EditTransactionForm}
+			<DataPageControl data={this.state.data} properties={properties} form={EditTransactionForm}
 				search_filter={true} stock_filters={true} table_buttons={true} 
 				save_command="SaveTransaction" delete_command="DeleteTransaction" data_type="Transactions">
 			</DataPageControl>
@@ -49,7 +49,7 @@ export default class TransactionsPage extends Component<BaseProps, TransactionsP
 	constructor (props: BaseProps) {
 		super (props);
 		APIClass.fetch_data ("GetTransactions").then ((result: TransactionList) => {
-			this.setState ({ data: new Array ().assign (result, TransactionListModel) });
+			this.setState ({ data: new Array<TransactionListModel> ().assign (result, TransactionListModel) });
 		});
 	}// constructor;
 

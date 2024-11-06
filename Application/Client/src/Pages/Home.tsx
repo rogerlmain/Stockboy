@@ -3,7 +3,7 @@ import APIClass from "Classes/APIClass";
 import DataPageControl from "Controls/DataPageControl";
 import StockStatusFilters from "Controls/StockStatusFilters";
 
-import { HoldingsModel } from "Classes/HoldingsData";
+import { HoldingsModel } from "Models/Holdings";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 
