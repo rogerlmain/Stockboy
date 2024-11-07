@@ -41,7 +41,6 @@ class DataPageControlProps {
 class DataPageControlState {
 	data: DataArray = null;
 	selected_row: IBaseModel = null;
-	filters: DataFilterList = null;
 }// DataPageControlState;
 
 
@@ -52,11 +51,14 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	private grid_block: RefObject<HTMLDivElement> = createRef ();
 	private side_panel: RefObject<HTMLDivElement> = createRef ();
 
+	private filters: DataFilterList = null;
 
-	private deleted_filter (name: string, value: string): DataFilterList {
-		let active_filter: DataFilter = this.state.filters?.find ((item: DataFilter) => ((item.field == name) && (item.value == value)));
-		return this.state.filters.toSpliced (this.state.filters.indexOf (active_filter), 1);
-	}// deleted_filter;
+	private delete_filter (name: string, value: string = null): void {
+		let filters: DataFilterList = this.filters?.filter ((item: DataFilter) => ((item.field == name) && ((item.value == value) || is_null (value))));
+		filters.forEach ((filter: DataFilter) => {
+			this.filters?.splice (this.filters.indexOf (filter), 1);
+		});
+	}// delete_filter;
 
 
 	private show_form (data?: IBaseModel) {
@@ -147,47 +149,53 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 
 	public add_filter (filter: DataFilter) {
-		if (is_null (this.state.filters)) this.state.filters = new Array<DataFilter> ();
-		if (filter.type == FilterType.exclusive) this.state.filters = this.deleted_filter (filter.field, filter.value);
-		this.state.filters.push (filter);
-		this.setState ({ filters: this.state.filters }, this.filter_data);
+
+		if (is_null (this.filters)) this.filters = new Array<DataFilter> ();
+		if (filter.type == FilterType.exclusive) this.delete_filter (filter.field);
+
+		this.filters.push (filter);
+		this.filter_data ();
+
 	}// add_filter;
 
 
-	public remove_filter = (name: string, value: string) => this.setState ({ filters: this.deleted_filter (name, value) }, this.filter_data);
+	public remove_filter (name: string, value: string): void { 
+		this.delete_filter (name, value);
+		this.filter_data ();
+	}// remove_filter;
 
 
 	public filter_data () {
 
-		let filtered_data: DataArray = null;
+		function add_data (data: DataArray, filters: DataFilterList) {
 
-		this.props.data.forEach ((item: IBaseModel) => {
-			this.state.filters.forEach ((filter: DataFilter) => {
+			let filtered_data: DataArray = null;
 
-				if (not_set (item [filter.field])) return;
+			if (not_defined (filters)) return data;
 
-				if (item [filter.field].matches (filter.value)) {
-					if (isset (filtered_data?.find ((item: IBaseModel) => item [filter.type] == filter.value))) return;
-					if (is_null (filtered_data)) filtered_data = new Array<IBaseModel> ();
-					filtered_data.push (item);
-				}// if;
-
+			filters.forEach ((filter: DataFilter) => {
+				data.forEach ((item: IBaseModel) => {
+					if (item?.[filter.field] == filter.value) {
+						if (is_null (filtered_data)) filtered_data = new Array<IBaseModel> ();
+						filtered_data.push (item);
+					}// if;
+				});
 			});
-		});
-		
-		this.setState ({ data: filtered_data });
+
+			return filtered_data;
+
+		}// add_data;
+
+		let data_list = add_data (this.props.data, this.filters.filter ((filter: DataFilter) => filter.type == FilterType.inclusive));
+		data_list = add_data (data_list, this.filters.filter ((filter: DataFilter) => filter.type == FilterType.exclusive));
+
+		this.setState ({ data: data_list });
 
 	}// filter_data;
 
 
-	public componentDidUpdate (props: DataPageControlProps) {
-		if (isset (this.props.data) && !props.data?.matches (this.props.data)) this.setState ({ data: this.props.data });
-	}// componentDidUpdate;
-
-
 	public componentDidMount () {
-		let side_panel = this.grid_block.current.querySelector<HTMLDivElement> ("#side_panel");
-		if (isset (side_panel)) this.grid_block.current.style.marginLeft = `${side_panel.totalWidth}px`;
+		this.setState ({ data: this.props.data });
 	}// componentDidMount;
 
 

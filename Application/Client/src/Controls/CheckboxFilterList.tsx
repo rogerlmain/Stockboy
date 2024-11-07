@@ -72,6 +72,7 @@ export class CheckboxFilter extends Component<CheckboxFilterProps> {
 
 	public componentDidMount () {
 		this.checkbox.current.update_filter = () => this.update_filter (this.checkbox.current);
+		this.checkbox.current.update_filter ();
 	}// componentDidMount;
 
 

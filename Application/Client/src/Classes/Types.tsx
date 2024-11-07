@@ -2,7 +2,7 @@ import { KeyValuePair } from "Classes/Collections";
 
 import { IBaseModel } from "Models/Abstract/BaseModels";
 import { ReactElement } from "react";
-import { HoldingsFilters } from "Classes/Globals";
+import { HoldingsStatus } from "Classes/Globals";
 
 export { };
 
@@ -15,7 +15,7 @@ declare global {
 
 	type FieldValue = string | number | Date
 
-	type HoldingsFilterList = Array<HoldingsFilters>
+	type HoldingsFilterList = Array<HoldingsStatus>
 
 	type DataArray = Array<IBaseModel>
 	type StringArray = Array<string>

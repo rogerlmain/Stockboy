@@ -3,6 +3,14 @@
 
 namespace Stockboy.Models {
 
+
+	struct HoldingStatus {
+		public const string live = "live";
+		public const string dead = "dead";
+		public const string defunct = "defunct";
+	}// HoldingStatus;
+
+
 	[Keyless]
 	public class HoldingsModel: StockDataModel {
 		public string broker { get; set; } = String.Empty;
@@ -17,6 +25,7 @@ namespace Stockboy.Models {
 		public decimal? value { get; set; } = null;
 		public decimal sales_profit { get; set; } = Decimal.Zero;
 		public DateTime? last_updated { get; set; } = null;
+		public string status { get; set; } = HoldingStatus.live;
 	}// HoldingsModel;
 
 
@@ -29,6 +38,7 @@ namespace Stockboy.Models {
 		public Decimal dividend_payout { get; set; } = 0;
 		public Decimal value_profit { get; set; } = 0;
 		public Decimal overall_profit { get; set; } = 0;
+		public string status { get; set; } = HoldingStatus.live;
 	}// ProfitLossModel;
 
 

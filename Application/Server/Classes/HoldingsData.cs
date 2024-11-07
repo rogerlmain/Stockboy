@@ -166,6 +166,7 @@ namespace Stockboy.Classes {
 				TickersTable? stock_price = stock_prices?.Find ((TickersTable item) => holding.ticker_id == item.id);
 				if (isset (stock_price)) holding.current_price = stock_price?.price;
 				holding.value = (holding.current_price < 0) ? 0 : holding.quantity * holding.current_price;
+				holding.status = (holding.current_price == -1) ? HoldingStatus.defunct : ((holding.quantity == 0) ? HoldingStatus.dead : HoldingStatus.live);
 			});
 
 			return holdings;

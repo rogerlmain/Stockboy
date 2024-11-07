@@ -62,11 +62,11 @@ export enum DateFormats {
 }// DateFormats;
 
 
-export enum HoldingsFilters {
+export enum HoldingsStatus {
 	live = "live",
 	dead = "dead",
 	defunct = "defunct",
-}// HoldingsFilters;
+}// HoldingsStatus;
 
 
 globalThis.form_items = "input, select, textarea";

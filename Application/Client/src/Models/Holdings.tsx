@@ -1,3 +1,4 @@
+import { HoldingsStatus } from "Classes/Globals";
 import { StockModel } from "Models/Abstract/BaseModels";
 
 
@@ -15,6 +16,7 @@ export class HoldingsModel extends StockModel {
 	public value: number;
 	public last_updated: Date;
 	public sales_profit: number;
+	public status: HoldingsStatus;
 }// HoldingsModel;
 
 

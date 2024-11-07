@@ -158,7 +158,7 @@ Array.prototype.append = function<T> (value: T): Array<T> {
 }// append;
 
 
-Array.prototype.assign = function (template: Array<any>, data_type: any): Array<any> {
+Array.prototype.assign = function (template: Array<any>, data_type: any = Object): Array<any> {
 
 	let result: Array<any> = null;
 
