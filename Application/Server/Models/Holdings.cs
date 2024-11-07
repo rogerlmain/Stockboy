@@ -5,9 +5,9 @@ namespace Stockboy.Models {
 
 
 	struct HoldingStatus {
-		public const string live = "live";
-		public const string dead = "dead";
-		public const string defunct = "defunct";
+		public const string live = "Live";
+		public const string dead = "Dead";
+		public const string defunct = "Defunct";
 	}// HoldingStatus;
 
 

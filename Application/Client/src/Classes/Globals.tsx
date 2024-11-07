@@ -63,9 +63,9 @@ export enum DateFormats {
 
 
 export enum HoldingsStatus {
-	live = "live",
-	dead = "dead",
-	defunct = "defunct",
+	live = "Live",
+	dead = "Dead",
+	defunct = "Defunct",
 }// HoldingsStatus;
 
 

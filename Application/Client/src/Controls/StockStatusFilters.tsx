@@ -13,9 +13,9 @@ export default class StockStatusFilters extends Component<StockStatusFiltersProp
 
 	public render () {
 		return <CheckboxFilterList id="checkbox_list">
-			<CheckboxFilter text="Show live stocks" data_page={this.props.data_page} field_name="status" field_value="live" />
-			<CheckboxFilter text="Show dead stocks" data_page={this.props.data_page} checked={false} field_name="status" field_value="dead" />
-			<CheckboxFilter text="Show defunct stocks" data_page={this.props.data_page} checked={false} field_name="status" field_value="defunct" />
+			<CheckboxFilter text="Show live stocks" data_page={this.props.data_page} field_name="status" field_value="Live" />
+			<CheckboxFilter text="Show dead stocks" data_page={this.props.data_page} checked={false} field_name="status" field_value="Dead" />
+			<CheckboxFilter text="Show defunct stocks" data_page={this.props.data_page} checked={false} field_name="status" field_value="Defunct" />
 		</CheckboxFilterList>
 	}// render;
 

@@ -35,7 +35,7 @@ union select
     tck.id as ticker_id,
 	brk.name as broker,
 	tck.symbol,
-	concat(tck.name, if(tck.price = -1, " (Defunct)", "")) as company,
+	tck.name,
 	0 as cost_price,
     tck.price as current_price,
     tck.last_updated,   
