@@ -93,8 +93,8 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 						this.props.parent.props.onFilterChange (this.state.broker_id, this.state.ticker_id);
 						return;
 					}// if;
-					if (isset (broker_id)) this.props.parent.add_filter (new DataFilter ("broker_id", broker_id));
-					if (isset (ticker_id)) this.props.parent.add_filter (new DataFilter ("ticker_id", ticker_id));
+					isset (broker_id) ? this.props.parent.add_filter (new DataFilter ("broker_id", broker_id)) : this.props.parent.remove_filter ("broker_id");
+					isset (ticker_id) ? this.props.parent.add_filter (new DataFilter ("ticker_id", ticker_id)) : this.props.parent.remove_filter ("ticker_id");
 				})}>
 			</TickerSelector> : null}
 

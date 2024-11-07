@@ -159,7 +159,7 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	}// add_filter;
 
 
-	public remove_filter (name: string, value: string): void { 
+	public remove_filter (name: string, value: string = null): void { 
 		this.delete_filter (name, value);
 		this.filter_data ();
 	}// remove_filter;
