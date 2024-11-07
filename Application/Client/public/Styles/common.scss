@@ -137,7 +137,7 @@ div.bold-text { font-weight: bold }
 }/* column-block */
 
 
-*.row-block {
+*.row-block, *.flex-block {
 
 	display: flex;
 	flex-direction: row; 

@@ -6,6 +6,8 @@ import TableFilters from "Controls/TableFilters";
 import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { DataFilter, DataFilterList, FilterType } from "Classes/Collections";
+import { DataKeyArray } from "Classes/DataKeys";
+
 import { DeleteForm } from "Forms/DeleteForm";
 import { IBaseModel, StockModel } from "Models/Abstract/BaseModels";
 import { Component, ComponentClass, createRef, RefObject } from "react";
@@ -25,7 +27,7 @@ class DataPageControlProps {
 
 	children: ChildElement;
 
-	search_filter: boolean;
+	search_filters: DataKeyArray;
 	stock_filters: boolean;
 	table_buttons: boolean;
 
@@ -53,12 +55,65 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 	private filters: DataFilterList = null;
 
-	private delete_filter (name: string, value: string = null): void {
-		let filters: DataFilterList = this.filters?.filter ((item: DataFilter) => ((item.field == name) && ((item.value == value) || is_null (value))));
+
+	private inclusive_data (data: DataArray, filters: DataFilterList) {
+
+		let filtered_data: DataArray = null;
+
+		if (not_defined (filters) || not_defined (data)) return data;
+
 		filters.forEach ((filter: DataFilter) => {
-			this.filters?.splice (this.filters.indexOf (filter), 1);
+			data.forEach ((item: IBaseModel) => {
+				if (item?.[filter.field] == filter.value) {
+					if (isset (filtered_data) && filtered_data.contains (item)) return;
+					if (is_null (filtered_data)) filtered_data = new Array<IBaseModel> ();
+					filtered_data.push (item);
+				}// if;
+			});
 		});
-	}// delete_filter;
+
+		return filtered_data;
+
+	}// inclusive_data;
+
+
+	private exclusive_data (data: DataArray, filters: DataFilterList) {
+
+		if (not_defined (filters) || not_defined (data)) return data;
+
+		let filtered_data: DataArray = data.Duplicate;
+
+		filters.forEach ((filter: DataFilter) => {
+
+			let data_list: DataArray = Object.assign (filtered_data.Replica, filtered_data);
+	
+			data_list.forEach ((item: IBaseModel) => {
+
+				if (filter.partial) {
+
+					let found: boolean = false;
+					let fields = (is_null (filter.field) ? this.props.search_filters.ids : [filter.field]);
+
+					for (let field of fields) {
+						if (item?.[field].toString ()?.includes (filter.value)) {
+							found = true;
+							break;
+						}// if;
+					}// for;
+
+					return (found ? null : filtered_data.remove (item));
+
+				}// if;
+
+				if (item?.[filter.field] != filter.value) filtered_data.remove (item);
+
+			});
+
+		});
+
+		return filtered_data;
+
+	}// exclusive_data;
 
 
 	private show_form (data?: IBaseModel) {
@@ -86,7 +141,7 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 		delete_command: null,
 
 		children: null,
-		search_filter: false,
+		search_filters: null,
 		stock_filters: false,
 		table_buttons: false,
 
@@ -147,11 +202,10 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	public remove_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
 
-
 	public add_filter (filter: DataFilter) {
 
 		if (is_null (this.filters)) this.filters = new Array<DataFilter> ();
-		if (filter.type == FilterType.exclusive) this.delete_filter (filter.field);
+		if (filter.type == FilterType.exclusive) this.filters.remove (this.filters.find ((item: DataFilter) => item.field == filter.field));
 
 		this.filters.push (filter);
 		this.filter_data ();
@@ -160,34 +214,27 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 
 	public remove_filter (name: string, value: string = null): void { 
-		this.delete_filter (name, value);
-		this.filter_data ();
+
+		let filter: DataFilter = this.filters.find ((filter: DataFilter) => (filter.field == name) && (is_null (value) || (filter.value == value)));
+
+		if (isset (filter)) {
+			this.filters.remove (filter);
+			this.filter_data ();
+		}// if;
+
 	}// remove_filter;
+
+
+	public remove_partial_filters () {
+		let filters = this.filters.filter ((filter: DataFilter) => filter.partial);
+		filters.forEach ((filter: DataFilter) => this.filters.remove (filter));
+	}// remove_partial_filters;
 
 
 	public filter_data () {
 
-		function add_data (data: DataArray, filters: DataFilterList) {
-
-			let filtered_data: DataArray = null;
-
-			if (not_defined (filters)) return data;
-
-			filters.forEach ((filter: DataFilter) => {
-				data.forEach ((item: IBaseModel) => {
-					if (item?.[filter.field] == filter.value) {
-						if (is_null (filtered_data)) filtered_data = new Array<IBaseModel> ();
-						filtered_data.push (item);
-					}// if;
-				});
-			});
-
-			return filtered_data;
-
-		}// add_data;
-
-		let data_list = add_data (this.props.data, this.filters.filter ((filter: DataFilter) => filter.type == FilterType.inclusive));
-		data_list = add_data (data_list, this.filters.filter ((filter: DataFilter) => filter.type == FilterType.exclusive));
+		let data_list = this.inclusive_data (this.props.data, this.filters.filter ((filter: DataFilter) => filter.type == FilterType.inclusive));
+		data_list = this.exclusive_data (data_list, this.filters.filter ((filter: DataFilter) => filter.type == FilterType.exclusive));
 
 		this.setState ({ data: data_list });
 
@@ -202,9 +249,9 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	public render () {
 		return <div className="full-size column-block">
 
-			{(this.props.search_filter || this.props.stock_filters) ? <TableFilters data={this.props.data} 
-				dataType={this.props.dataType} parent={this} ref={this.table_filters}
-				search_filter={this.props.search_filter} stock_filters={this.props.stock_filters}>
+			{(this.props.search_filters || this.props.stock_filters) ? <TableFilters data={this.props.data} 
+				search_filters={this.props.search_filters} stock_filters={this.props.stock_filters}
+				parent={this} ref={this.table_filters}>
 			</TableFilters> : null}
 
 			<div className="full-size column-centered row-block" ref={this.grid_block}>

@@ -15,10 +15,10 @@ declare global {
 		contains (value: any): boolean
 		getDates (fieldname: string): Array<Date>
 		getIntegers (allow_non_numeric?: boolean): Array<number>
+		list (fieldname: string): Array<any>
 		remove (value: T): Array<T>
 		sorted (fieldname: string): Array<T>
 
-		//get duplicate (): Array<T>
 		get empty (): boolean
 
 	}// Array<T>;
@@ -89,9 +89,11 @@ declare global {
 		hasKey (key_name: string): boolean;
 		matches (candidate: any): boolean;
 		merge (...candidates: Object []): Object;
+		toJson (): string;
 
 		get Duplicate (): any;
-		get GetType (): string;
+		get GetType (): Function;
+		get GetTypeName (): string;
 		get Keys (): StringArray;
 		get NoData (): boolean;
 		get Replica (): any;
@@ -112,7 +114,6 @@ declare global {
 
 	interface String {
 
-		contains (substring: string): boolean;
 		isInteger (): boolean;
 		leadingCharacters (char: string)
 		matches (candidate: string): boolean;
@@ -212,8 +213,22 @@ Array.prototype.getIntegers = function (allow_non_numeric: boolean = false): Arr
 }// getIntegers;
 
 
+Array.prototype.list = function (fieldname: string): Array<any> {
+
+	let result = null;
+
+	this.forEach ((item: any) => {
+		if (is_null (result)) result = new Array<any> ();
+		result.push (item [fieldname]);
+	});
+
+	return result;
+
+}// list;
+
+
 Array.prototype.remove = function<T> (value: T): Array<T> {
-	this.splice (this.indexOf (value), 1);
+	if (isset (value)) this.splice (this.indexOf (value), 1);
 	return this;
 }// remove;
 
@@ -225,7 +240,6 @@ Array.prototype.sorted = function<T> (fieldname: string): Array<T> {
 
 
 Object.defineProperties (Array.prototype, {
-	//duplicate: { get: function () { return JSON.parse (JSON.stringify (this)) } },
 	empty: { get: function () { return this.length == 0 } },
 });
 
@@ -454,13 +468,17 @@ Object.prototype.merge = function (...candidates: Object []): Object {
 }// merge;
 
 
+Object.prototype.toJson = function () { return JSON.stringify (this) }
+
+
 Object.defineProperties (Object.prototype, {
 
 	Duplicate: { get: function (): any { return this.Replica.assign (this) } },
-	GetType: { get: function (): string { return Object.getPrototypeOf (this).constructor.name } },
+	GetType: { get: function (): Function { return Object.getPrototypeOf (this).constructor } },
+	GetTypeName: { get: function (): string { return Object.getPrototypeOf (this).constructor.name } },
 	Keys: { get: function (): StringArray { return Object.keys (this) } },
 	NoData: { get: function (): boolean { return this.hasKey ("data") && (this.data == no_data) } },
-	Replica: { get: function (): any { return Object.create (Object.getPrototypeOf (this)) } },
+	Replica: { get: function (): any { return new (Object.getPrototypeOf (this).constructor) () } },
 
 });
 
@@ -474,9 +492,6 @@ String.Comma = ",";
 
 
 String.isString = function (candidate: any) { return typeof candidate == "string" }
-
-
-String.prototype.contains = function (substring: string) { return this.indexOf (substring) > -1 }
 
 
 String.prototype.isInteger = function () {
@@ -522,7 +537,7 @@ String.prototype.parseNumeric = function (allow_negatives: boolean = true, allow
 
 	for (let index = 0; index < this.length; index++) {
 		if (allow_negatives && (this [index] == "-") && (index == 0)) { result += this [index]; continue; }
-		if (allow_decimals && (this [index] == ".") && (!result.contains ("."))) { result += this [index]; continue; }
+		if (allow_decimals && (this [index] == ".") && (!result.includes ("."))) { result += this [index]; continue; }
 		if (digits.contains (parseInt (this [index]))) result += this [index];
 	}// for;
 
@@ -557,8 +572,7 @@ String.prototype.titleCase = function (strip_spaces: boolean = false): string {
 	let result: String [] = new Array ();
 
 	words.forEach (word => {
-		word = word.trim ();
-		result.push (`${word.substring (0, 1).toUpperCase ()}${word.substring (1).toLowerCase ()}`);
+		result.push (`${word.trim ().substring (0, 1).toUpperCase ()}${word.substring (1).toLowerCase ()}`);
 	});
 
 	return result.join (strip_spaces ? String.Empty : String.Space);

@@ -142,38 +142,38 @@ div.bold-text {
 }
 
 /* column-block */
-*.row-block, div.button-bar {
+*.row-block, div.button-bar, *.flex-block {
   display: flex;
   flex-direction: row;
 }
-*.row-block.a-little-spaced-out, div.button-bar {
+*.row-block.a-little-spaced-out, div.button-bar, *.flex-block.a-little-spaced-out {
   column-gap: 0.25rem;
 }
-*.row-block.somewhat-spaced-out, div.somewhat-spaced-out.button-bar {
+*.row-block.somewhat-spaced-out, div.somewhat-spaced-out.button-bar, *.flex-block.somewhat-spaced-out {
   column-gap: 0.5rem;
 }
-*.row-block.spaced-out, div.spaced-out.button-bar {
+*.row-block.spaced-out, div.spaced-out.button-bar, *.flex-block.spaced-out {
   column-gap: 1rem;
 }
-*.row-block.very-spaced-out, div.very-spaced-out.button-bar {
+*.row-block.very-spaced-out, div.very-spaced-out.button-bar, *.flex-block.very-spaced-out {
   column-gap: 2rem;
 }
-*.row-block.left-aligned, div.left-aligned.button-bar {
+*.row-block.left-aligned, div.left-aligned.button-bar, *.flex-block.left-aligned {
   justify-content: flex-start;
 }
-*.row-block.right-aligned, div.button-bar {
+*.row-block.right-aligned, div.button-bar, *.flex-block.right-aligned {
   justify-content: flex-end;
 }
-*.row-block.column-centered, div.column-centered.button-bar {
+*.row-block.column-centered, div.column-centered.button-bar, *.flex-block.column-centered {
   justify-content: center;
 }
-*.row-block.row-centered, div.row-centered.button-bar {
+*.row-block.row-centered, div.row-centered.button-bar, *.flex-block.row-centered {
   align-items: center;
 }
-*.row-block.top-aligned, div.top-aligned.button-bar {
+*.row-block.top-aligned, div.top-aligned.button-bar, *.flex-block.top-aligned {
   align-items: flex-start;
 }
-*.row-block.bottom-aligned, div.bottom-aligned.button-bar {
+*.row-block.bottom-aligned, div.bottom-aligned.button-bar, *.flex-block.bottom-aligned {
   align-items: flex-end;
 }
 

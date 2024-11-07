@@ -5,6 +5,7 @@ import DataTableRow from "Controls/Tables/DataTableRow";
 import NameValueCollection, { RoundingRecord } from "Classes/Collections";
 import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
 
+import { DataKey, DataKeyArray } from "Classes/DataKeys";
 import { BaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
 import { IBaseModel } from "Models/Abstract/BaseModels";
 import { Component, createRef, RefObject } from "react";
@@ -18,7 +19,7 @@ class DataTableState implements IBaseState {
 
 
 export class DataTableProperties extends BaseProps {
-	fields?: Array<DataKey> = null;
+	fields?: DataKeyArray = null;
 	date_fields?: StringArray = null;
 	numeric_fields?: StringArray = null;
 	currency_fields?: StringArray = null;
@@ -48,32 +49,6 @@ export default class DataTable extends Component<DataTableProps> {
 
 
 	private get_key = (value: any):string => Object.values (value).join ().replace (/\W/g, String.Empty);
-
-
-	private field_name (field: string | NameValueCollection<string>): string {
-		if (String.isString (field)) return field.toString ();
-		return Object.keys (field) [0];
-	}// field_name;
-
-
-	private field_title (field: string | NameValueCollection<string>): string {
-		if (String.isString (field)) return (field as string).titleCase ();
-		return field [this.field_name (field)].titleCase ();
-	}// field_title;
-
-
-	private field_name_list (): StringArray {
-
-		let result: StringArray = null;
-
-		this.props.properties.fields.forEach ((field: DataKey) => {
-			if (is_null (result)) result = new Array<string> ();
-			result.push (this.field_name (field));
-		});
-
-		return result;
-
-	}// field_name_list
 
 
 	private sort_table (sort_field: string) {
@@ -110,17 +85,17 @@ export default class DataTable extends Component<DataTableProps> {
 
 		let blank_field = (index: number): boolean => {
 			if (index == (this.props.properties.fields.length - 1)) return false;
-			if (this.props.properties.total_fields.contains (key_name (this.props.properties.fields [index + 1]))) return false;
+			if (this.props.properties.total_fields.contains (this.props.properties.fields.names [index + 1])) return false;
 			return true;
 		}// blank_field;
 
+		let field_names = this.props.properties.fields.names;
 
 		return <div style={{ fontWeight: "bold", display: "contents" }}>
 
-			{this.props.properties.fields.map ((field: string | NameValueCollection<string>) => {
+			{field_names.map ((name: string) => {
 
-				let index: number = this.props.properties.fields.indexOf (field);
-				let name: string = key_name (field);
+				let index: number = field_names.indexOf (name);
 				let total = this.totals?.[name] ?? 0;
 
 				if (index == 0) return <div key="total" style={{ borderRight: "none" }}>Total</div>
@@ -178,7 +153,7 @@ export default class DataTable extends Component<DataTableProps> {
 
 
 	public render () {
-		
+
 		if (is_null (this.props.data) || (this.props.data.length == 0)) return <div className="row-centered with-headspace">{no_data}</div>;
 		if (isset (this.props.properties.total_fields)) this.calculate_totals ();
 		
@@ -186,23 +161,16 @@ export default class DataTable extends Component<DataTableProps> {
 
 			<ScrollBlock>
 				<div className="data-table" ref={this.data_block}>
-	
+
 					<div className="table-header">
-						{this.props.properties.fields.map ((field: string | NameValueCollection<string>) => {
-					
-							let name = this.field_name (field);
-							let title = this.field_title (field);
-
-							return <div key={name} onClick={() => this.sort_table (name)}>
-								{title}
-								{(name == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
-							</div>
-
-						})}
+						{this.props.properties.fields.map ((field: DataKey) => <div key={field.id} onClick={() => this.sort_table (field.id)}>
+							{field.name.titleCase ()}
+							{(field.id == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
+						</div>)}
 					</div>
 
 					{this.props.data.map (row => <DataTableRow key={this.get_key (row)} row={row} data_table={this} 
-						field_names={this.field_name_list ()} 
+						field_ids={this.props.properties.fields.ids} 
 						onclick={this.props.properties.onclick}>
 					</DataTableRow>)}
 

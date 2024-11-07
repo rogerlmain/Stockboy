@@ -6,7 +6,7 @@ import { Component, CSSProperties, MouseEvent } from "react";
 
 class DataRowProps {
 	row: IBaseModel = null;
-	field_names: StringArray = null;
+	field_ids: StringArray = null;
 	data_table: DataTable = null;
 	onclick: Function = null;
 }// DataRowProps;
@@ -78,18 +78,18 @@ export default class DataTableRow extends Component<DataRowProps, DataRowState> 
 				{this.props.data_table.props.properties.keys.map (key => <input key={key} type="hidden" name={key.toString ()} value={this.props.row [key as keyof IBaseModel].toString ()} />)}
 			</div> : null}
 
-			{this.props.field_names.map (field_name => {
+			{this.props.field_ids.map (field_id => {
 				
-				let value: FieldValue = this.props.row [field_name as keyof IBaseModel];
+				let value: FieldValue = this.props.row [field_id as keyof IBaseModel];
 
-				return <div key={field_name} style={ this.styles (field_name, value) }
+				return <div key={field_id} style={ this.styles (field_id, value) }
 
 					onClick={(event: MouseEvent) => {
 						let row: IBaseModel = this.get_selected_row (event);
 						this.props.data_table.setState ({ selected_row: row }, () => event_handler.dispatchEvent (new CustomEvent ("row-selected", { detail: row })));
 					}}>
 
-					{isset (value) ? this.props.data_table.format (field_name, value) : "N/A"}
+					{isset (value) ? this.props.data_table.format (field_id, value) : "N/A"}
 				</div>
 
 			})}

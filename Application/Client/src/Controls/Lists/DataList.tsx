@@ -1,7 +1,7 @@
 import APIClass from "Classes/APIClass";
 import Eyecandy from "Controls/Eyecandy";
 
-import SelectList, { BaseSelectListProps, ListItemArray } from "Controls/Lists/SelectList";
+import SelectList, { BaseSelectListProps, DataKeyArray } from "Controls/Lists/SelectList";
 
 import { Component, createRef, RefObject } from "react";
 
@@ -15,7 +15,7 @@ class DataListProps extends BaseSelectListProps {
 
 class DataListState {
 	public loading: boolean = false;
-	public data?: ListItemArray = null;
+	public data?: DataKeyArray = null;
 }// DataListState;
 
 
@@ -34,7 +34,7 @@ export default class DataList extends Component<DataListProps, DataListState> {
 			return;
 		}// if;
 
-		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.props.table.titleCase (true)}`, this.props.parameters).then ((response: ListItemArray) => {
+		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.props.table.titleCase (true)}`, this.props.parameters).then ((response: DataKeyArray) => {
 			this.setState ({ 
 				data: response,
 				loading: false

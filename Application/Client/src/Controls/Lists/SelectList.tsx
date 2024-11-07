@@ -1,3 +1,4 @@
+import { DataKey, DataKeyArray } from "Classes/DataKeys";
 import { InputElementContext } from "Controls/InputElement";
 import { ChangeEvent, Component, RefObject, createRef } from "react";
 
@@ -14,30 +15,13 @@ export class BaseSelectListProps {
 
 
 class SelectListProps extends BaseSelectListProps {
-	data: ListItemArray;
+	data: DataKeyArray;
 }// SelectListProps;
 
 
 class SelectListState {
 	selected_item?: string = null;
 }// SelectListState;
-
-
-export type ListItemArray = Array<ListItem>
-
-
-export class ListItem {
-
-	public id: string = null;
-	public name: string = null;
-
-	constructor (id: string, name: string = null) {
-		if (is_null (name)) name = id;
-		this.id = id;
-		this.name = name;
-	}// constructor;
-
-}// ListModelItem;
 
 
 export default class SelectList extends Component<SelectListProps, SelectListState> {
@@ -89,10 +73,10 @@ export default class SelectList extends Component<SelectListProps, SelectListSta
 			}}>
 
 			{not_set (this.state.selected_item) || (this.props.allow_all) ? <option key={"header"} value={String.Empty}>
-				{this.props.header ?? (this.props.allow_all ? "All" : null) ?? `Select ${this.props.id.replace (underscore, String.Space)}`}
+				{this.props.header ?? (this.props.allow_all ? "All" : null) ?? `Select ${this.props.id.titleCase}`}
 			</option> : null}
 
-			{this.props.data?.map ((item: ListItem) => <option key={item.id} value={item.id}>{item.name}</option>)}
+			{this.props.data?.map ((item: DataKey) => <option key={item.id} value={item.id}>{item.name.titleCase ()}</option>)}
 
 		</select>
 

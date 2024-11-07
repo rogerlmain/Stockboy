@@ -84,10 +84,6 @@ globalThis.control_keys = ["c", "v", "a"]; // use in conjunction with ctrl key
 
 globalThis.no_data = "No data available";
 
-
-globalThis.key_name =  (field: DataKey) => String.isString (field) ? (field as string) : Object.keys (field) [0];
-
-
 globalThis.is_empty = (value: any): boolean => (String.isString (value) && (value == String.Empty)) || (Array.isArray (value) && (value.length == 0));
 globalThis.not_empty = (value: any): boolean => !is_empty (value);
 
