@@ -51,12 +51,10 @@ export default class DataTable extends Component<DataTableProps> {
 	private get_key = (value: any):string => Object.values (value).join ().replace (/\W/g, String.Empty);
 
 
-	private sort_table (sort_field: string) {
+	private sort_table (sort_field: string, ascending: boolean) {
 
 		let key = sort_field as keyof IBaseModel;
-
-		let ascending = (this.state.sort_field == sort_field) ? !this.state.ascending: true;
-		let sort_values: Array<IBaseModel> = this.props.data.toSorted ((first, second) => ascending ? (first [key] > second [key] ? 1 : -1) : (first [key] > second [key] ? -1 : 1));
+		let sort_values: Array<IBaseModel> = this.props.data.toSorted ((first, second) => ascending ? (first [key] >= second [key] ? 1 : -1) : (first [key] >= second [key] ? -1 : 1));
 
 		this.setState ({ 
 			sort_field,
@@ -143,9 +141,10 @@ export default class DataTable extends Component<DataTableProps> {
 	}// highlighted_color;
 
 
-	public componentDidUpdate (previous_props: DataTableProps) {
-		if (previous_props?.data?.matches (this.props.data)) return;
+	public componentDidUpdate (props: DataTableProps) {
+		if (props?.data?.matches (this.props.data)) return;
 		if (isset (this.data_block.current)) this.data_block.current.style.gridTemplateColumns = `repeat(${this.field_count}, min-content)`;
+		if (isset (this.state.sort_field)) this.sort_table (this.state.sort_field, this.state.ascending);
 	}// componentDidUpdate;
 
 
@@ -163,7 +162,9 @@ export default class DataTable extends Component<DataTableProps> {
 				<div className="data-table" ref={this.data_block}>
 
 					<div className="table-header">
-						{this.props.properties.fields.map ((field: DataKey) => <div key={field.id} onClick={() => this.sort_table (field.id)}>
+						{this.props.properties.fields.map ((field: DataKey) => <div key={field.id} onClick={() => {
+							this.sort_table (field.id, (this.state.sort_field == field.id) ? !this.state.ascending : true)
+						}}>
 							{field.name.titleCase ()}
 							{(field.id == this.state.sort_field) ? <GlyphArrow direction={this.state.ascending? direction_type.forwards : direction_type.backwards} /> : null}
 						</div>)}
