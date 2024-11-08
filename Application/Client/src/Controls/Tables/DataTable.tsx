@@ -54,7 +54,7 @@ export default class DataTable extends Component<DataTableProps> {
 	private sort_table (sort_field: string, ascending: boolean) {
 
 		let key = sort_field as keyof IBaseModel;
-		let sort_values: Array<IBaseModel> = this.props.data.toSorted ((first, second) => ascending ? (first [key] >= second [key] ? 1 : -1) : (first [key] >= second [key] ? -1 : 1));
+		let sort_values: Array<IBaseModel> = this.props.data.toSorted ((first, second) => ascending ? (first [key] >= second [key] ? 1 : -1) : (first [key] <= second [key] ? 1 : -1));
 
 		this.setState ({ 
 			sort_field,
