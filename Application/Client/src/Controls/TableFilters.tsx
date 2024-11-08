@@ -1,4 +1,5 @@
-import DataPageControl from "Controls/DataPageControl";
+import DataPageControl, { FilterHandlerContext } from "Controls/DataPageControl";
+import FilterHandler from "Controls/FilterHandler";
 import SelectList from "Controls/Lists/SelectList";
 import TickerSelector from "Controls/TickerSelector";
 
@@ -16,6 +17,7 @@ class TableFiltersProps extends BaseModel {
 	stock_filters: boolean;
 	allow_all?: boolean;
 	required?: boolean;
+	onFilterChange?: Function;
 }// TableFiltersProps;
 
 
@@ -42,6 +44,7 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 		stock_filters: false,
 		allow_all: true,
 		required: false,
+		onFilterChange: null,
 	}// defaultProps;
 
 
@@ -59,11 +62,13 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 
 				<input type="text" id="stock_ticker" onChange={(event: ChangeEvent<HTMLInputElement>) => this.setState ({ lookup_value: event.currentTarget.value })} />
 
-				<button id="stock_lookup_button" onClick={() => {
-					this.props.parent.remove_partial_filters ();
-					if (is_defined (this.state.lookup_value)) return this.props.parent.add_filter (new DataFilter (this.state.lookup_field, this.state.lookup_value, FilterType.exclusive, true));
-					this.props.parent.filter_data ();
-				}}>Lookup</button>
+				<FilterHandlerContext.Consumer>
+					{(filter_handler: FilterHandler) => <button id="stock_lookup_button" onClick={() => {
+						filter_handler.remove_partial_filters ();
+						if (is_defined (this.state.lookup_value)) return filter_handler.add_filter (new DataFilter (this.state.lookup_field, this.state.lookup_value, FilterType.exclusive, true));
+						filter_handler.filter_data ();
+					}}>Lookup</button>}
+				</FilterHandlerContext.Consumer>
 
 			</div> : null}
 
@@ -72,12 +77,10 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 				onTickerChange={(ticker_id: string) => this.setState ({ ticker_id })}
 
 				onChange={(broker_id: string, ticker_id: string) => this.setState ({ broker_id, ticker_id }, () => {
-					if (isset (this.props.parent.props.onFilterChange)) {
-						this.props.parent.props.onFilterChange (this.state.broker_id, this.state.ticker_id);
+					if (isset (this.props.onFilterChange)) {
+						this.props.onFilterChange (this.state.broker_id, this.state.ticker_id);
 						return;
 					}// if;
-					isset (broker_id) ? this.props.parent.add_filter (new DataFilter ("broker_id", broker_id)) : this.props.parent.remove_filter ("broker_id");
-					isset (ticker_id) ? this.props.parent.add_filter (new DataFilter ("ticker_id", ticker_id)) : this.props.parent.remove_filter ("ticker_id");
 				})}>
 			</TickerSelector> : null}
 

@@ -18,7 +18,7 @@ export default class TransactionTypeList extends DataControl<TransactionTypeList
 
 	public render () { 
 		return <div className="container">
-			<DataList id="transaction_type" header="Transaction types" table="transaction_types" selected_item={this.props.selected_item} />
+			<DataList id="transaction_type_id" header="Transaction types" table="transaction_types" selected_item={this.props.selected_item} />
 		</div>
 	}// render;
 

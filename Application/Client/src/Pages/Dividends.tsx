@@ -5,13 +5,14 @@ import EditDividendForm from "Forms/EditDividendForm";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 
+import { DataKeyArray } from "Classes/DataKeys";
 import { DividendListModel } from "Models/Dividends";
 import { Component } from "react";
 
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: ["broker", "company", "ticker", "issue_date", "amount_per_share", "share_quantity", {payout: "Total Payout"}],
+	fields: new DataKeyArray ("broker", "company", "ticker", "issue_date", "amount_per_share", "share_quantity", {payout: "Total Payout"}),
 	date_fields: ["issue_date"],
 	numeric_fields: ["share_quantity"],
 	currency_fields: ["amount_per_share", "payout"],

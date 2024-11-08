@@ -64,6 +64,7 @@ div.data-table div.table-header {
   display: contents;
 }
 div.data-table div.table-header > div {
+  display: flex;
   flex-direction: row;
   font-weight: bold;
   min-width: 5em;

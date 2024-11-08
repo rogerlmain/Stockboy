@@ -7,15 +7,16 @@ import { ProfitLossModel } from "Models/Holdings";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { Component, createRef, RefObject } from "react";
+import { DataKeyArray } from "../Classes/DataKeys";
 
 
 const properties: DataTableProperties = {
-	fields: ["broker", "symbol", "company", 
+	fields: new DataKeyArray ("broker", "symbol", "company", 
 		{ sales_profit: "Sales Profit/Loss"}, 
 		{ dividend_payout: "Dividend Payout" },
 		"value_profit",
 		{ overall_profit: "Overall Profit/Loss" }
-	],
+	),
 	currency_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],
 	total_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],
 	highlighted_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],

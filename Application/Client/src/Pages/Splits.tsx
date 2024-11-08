@@ -4,6 +4,7 @@ import DataPageControl from "Controls/DataPageControl";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 
+import { DataKeyArray } from "Classes/DataKeys";
 import { EditSplitForm } from "Forms/EditSplitForm";
 import { SplitListModel } from "Models/Splits";
 import { Component } from "react";
@@ -11,7 +12,7 @@ import { Component } from "react";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: ["broker", "company", "symbol", "previous", "current", "split_date"],
+	fields: new DataKeyArray ("broker", "company", "symbol", "previous", "current", "split_date"),
 	date_fields: ["split_date"],
 	numeric_fields: ["previous", "current"]
 }// properties;

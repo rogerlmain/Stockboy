@@ -71,6 +71,7 @@ div.data-table {
 		display: contents;
 
 		> div {
+			display: flex;
 			flex-direction: row;
 			font-weight: bold;
 			min-width: 5em;

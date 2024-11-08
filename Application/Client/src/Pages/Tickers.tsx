@@ -4,13 +4,15 @@ import EditTickersForm from "Forms/EditTickersForm";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
+
+import { DataKeyArray } from "Classes/DataKeys";
 import { TickersListModel } from "Models/Tickers";
 import { Component } from "react";
 
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: ["symbol", "name", "price", "volume", "last_payment_date", "next_payment_date"]
+	fields: new DataKeyArray ("symbol", "name", "price", "volume", "last_payment_date", "next_payment_date"),
 }// properties;
 
 

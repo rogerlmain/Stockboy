@@ -6,13 +6,14 @@ import DataPageControl, { ButtonAlignment } from "Controls/DataPageControl";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 
+import { DataKeyArray } from "Classes/DataKeys";
 import { BrokersModel } from "Models/Brokers";
 import { Component, RefObject, createRef } from "react";
 
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: [{ name: "broker" }]
+	fields: new DataKeyArray ({ name: "broker" }),
 }// properties;
 
 

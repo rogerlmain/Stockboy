@@ -11,6 +11,11 @@ class StockStatusFiltersProps {
 
 export default class StockStatusFilters extends Component<StockStatusFiltersProps> {
 
+	public static defaultProps: StockStatusFiltersProps = {
+		data_page: null
+	}// defaultProps;
+
+
 	public render () {
 		return <CheckboxFilterList id="checkbox_list">
 			<CheckboxFilter text="Show live stocks" data_page={this.props.data_page} field_name="status" field_value="Live" />
