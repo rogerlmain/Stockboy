@@ -21,12 +21,18 @@ export default class DataTableRow extends Component<DataRowProps, DataRowState> 
 	private table_props: DataTableProps = null;
 
 
+	public highlighted_color (field: string, value: number) {
+		if (not_set (value)) return null;
+		return this.table_props.properties.highlighted_fields?.contains (field) && (value != 0) ? ((value > 0) ? "#080" : "#A00") : null;
+	}// highlighted_color;
+
+
 	private styles (key: string, value: any): CSSProperties {
 
 		let result: CSSProperties = {}
 
 		if (this.table_props.properties.currency_fields?.contains (key) || this.props.data_table.props.properties.numeric_fields?.contains (key) || this.props.data_table.props.properties.date_fields?.contains (key)) result ["textAlign"] = "right";
-		result ["color"] = this.props.data_table.highlighted_color (key, value);
+		result ["color"] = this.highlighted_color (key, value);
 		return result;
 
 	}// styles;

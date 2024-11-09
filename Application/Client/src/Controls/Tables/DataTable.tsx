@@ -80,28 +80,26 @@ export default class DataTable extends Component<DataTableProps> {
 
 
 	private show_totals () {
-
+/*
 		let blank_field = (index: number): boolean => {
 			if (index == (this.props.properties.fields.length - 1)) return false;
 			if (this.props.properties.total_fields.contains (this.props.properties.fields.names [index + 1])) return false;
 			return true;
 		}// blank_field;
+*/
+		let field_names = this.props.properties.fields.ids;
 
-		let field_names = this.props.properties.fields.names;
-
-		return <div style={{ fontWeight: "bold", display: "contents" }}>
+		return <div className="table-footer">
 
 			{field_names.map ((name: string) => {
 
 				let index: number = field_names.indexOf (name);
 				let total = this.totals?.[name] ?? 0;
 
-				if (index == 0) return <div key="total" style={{ borderRight: "none" }}>Total</div>
-				if (!this.props.properties.total_fields.contains (name)) return <div key={name} style={blank_field (index) ? { borderRight: "none" } : null}></div>
+				if (index == 0) return <div key="total" className="data-cell">Total</div>
+				if (!this.props.properties.total_fields.contains (name)) return <div key={name}></div>
 
-				return <div key={name} style={{ textAlign: "right", 
-					color: this.highlighted_color (name, total),
-					borderLeft: "solid 1px var(--table-border) !important" }}>
+				return <div key={name} className="right-aligned row-block data-cell">
 					{this.format (name, total)}
 				</div>
 
@@ -133,12 +131,6 @@ export default class DataTable extends Component<DataTableProps> {
 		return (value as string);
 
 	}// format;
-
-
-	public highlighted_color (field: string, value: number) {
-		if (not_set (value)) return null;
-		return this.props.properties.highlighted_fields?.contains (field) && (value != 0) ? ((value > 0) ? "#080" : "#A00") : null;
-	}// highlighted_color;
 
 
 	public componentDidUpdate (props: DataTableProps) {

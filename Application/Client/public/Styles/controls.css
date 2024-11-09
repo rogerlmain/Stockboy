@@ -74,11 +74,29 @@ div.data-table div.table-header > div {
   border: var(--table-border);
   border-top: solid 2px var(--element-border-color);
   border-bottom: solid 2px var(--element-border-color);
-  background-color: var(--table-header-background);
+  background-color: var(--table-header-background-color);
   cursor: pointer;
   position: sticky;
   z-index: 1;
   top: 0;
+}
+div.data-table div.table-footer {
+  font-weight: bold;
+  display: contents;
+}
+div.data-table div.table-footer > div {
+  background-color: var(--table-footer-background-color);
+  border-top: solid 1px var(--element-border-color);
+  border-left: none;
+  border-right: none;
+  bottom: 0;
+  position: sticky;
+}
+div.data-table div.table-footer > div:last-child {
+  border-right: solid 1px var(--element-border-color);
+}
+div.data-table div.table-footer > div.data-cell {
+  border-left: solid 1px var(--element-border-color);
 }
 div.data-table div:not(.glyph-arrow) {
   border-right: var(--table-border);
