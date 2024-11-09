@@ -11,6 +11,7 @@ namespace Stockboy.Classes.Queries {
 		public string company { get; set; } = String.Empty;
 		public string? ticker { get; set; } = null;
 		public Decimal? quantity { get; set; } = Decimal.Zero;
+		public Decimal? price { get; set; } = Decimal.Zero;
 		public Decimal? total_quantity { get; set; } = Decimal.Zero;
 }// ActivityModel;
 
@@ -31,6 +32,7 @@ namespace Stockboy.Classes.Queries {
 				company = tck.name,
 				ticker = tck.symbol,
 				quantity = trn.quantity,
+				price = trn.price
 			}
 		);
 
@@ -48,6 +50,7 @@ namespace Stockboy.Classes.Queries {
 				company = tck.name,
 				ticker = tck.symbol,
 				quantity = dvd.share_quantity,
+				price = null
 			}
 		);
 
@@ -65,6 +68,7 @@ namespace Stockboy.Classes.Queries {
 				company = tck.name,
 				ticker = tck.symbol,
 				quantity = spl.current / spl.previous,
+				price = null
 			}
 		);
 

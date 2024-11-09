@@ -96,7 +96,7 @@ export default class MainPage extends Component {
 
 	constructor (props: BaseProps) {
 		super (props);
-		this.state.page = PageType.activity;
+		this.state.page = PageType.home;
 	}// constructor;
 
 }// MainPage;

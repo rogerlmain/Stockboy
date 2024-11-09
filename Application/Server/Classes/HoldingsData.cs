@@ -31,7 +31,7 @@ namespace Stockboy.Classes {
 				Boolean ticker_exists = ticker_list?.Exists (ticker => item.ticker_id == ticker) ?? false;
 
 				if (is_null (item.ticker_id) || ticker_exists || (item.current_price == -1)) return;
-				if ((DateTime.Now.UnixTimestamp () - (item.last_updated ?? DateTime.Now).UnixTimestamp ()) <= one_hour) return;
+				if ((DateTime.Now.UnixTimestamp () - (item.last_updated ?? DateTime.MinValue).UnixTimestamp ()) <= one_hour) return;
 				if (is_null (ticker_list)) ticker_list = new ();
 
 				ticker_list!.Add (item.ticker_id!.Value);

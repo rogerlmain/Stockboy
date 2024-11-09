@@ -16,10 +16,10 @@ import { Component, createRef, RefObject } from "react"
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray ("date", "transaction_type", "broker", "company", "ticker", "quantity", /*"amount",*/ "total_quantity"/*, {total_amount: "Total Cost"}*/),
+	fields: new DataKeyArray ("date", "transaction_type", "broker", "company", "ticker", "quantity", "price", /*"amount",*/ "total_quantity"/*, {total_amount: "Total Cost"}*/),
 	date_fields: ["date"],
 	numeric_fields: ["quantity", "total_quantity"],
-	currency_fields: ["amount", "total_amount"],
+	currency_fields: ["amount", "total_amount", "price"],
 //	rounded_fields: [{ cost: 2 }]
 }// properties;
 
@@ -81,7 +81,7 @@ export default class ActivityPage extends Component<BaseProps, ActivityPageState
 
 				<div>{isset (this.state.data) ? <CheckboxFilterList id="checkbox_list" ref={this.filter_list}>
 					<CheckboxFilter text="Buys" data_page={this.data_page.current} field_name="transaction_type" field_value="Buy" />
-					<CheckboxFilter text="Reinvestments" checked={false} data_page={this.data_page.current} field_name="transaction_type" field_value="Reinvestment" />
+					<CheckboxFilter text="Reinvestments" data_page={this.data_page.current} field_name="transaction_type" field_value="Reinvestment" />
 					<CheckboxFilter text="Sales" data_page={this.data_page.current} field_name="transaction_type" field_value="Sell" />
 					<CheckboxFilter text="Dividends" data_page={this.data_page.current} field_name="transaction_type" field_value="Dividend" />
 					<CheckboxFilter text="Splits" data_page={this.data_page.current} field_name="transaction_type" field_value="Split" />
