@@ -28,7 +28,7 @@ namespace Stockboy.Classes {
 
 			if (not_null (parameters)) {
 
-				List<String>? keys = parameters!.GetKeys ();
+				StringList? keys = parameters!.GetKeys ();
 
 				if (is_null (keys)) return null;
 

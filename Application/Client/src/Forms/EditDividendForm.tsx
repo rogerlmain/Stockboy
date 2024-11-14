@@ -1,5 +1,4 @@
 import APIClass from "Classes/APIClass";
-import Decimal from "Classes/Decimal";
 import Eyecandy from "Controls/Eyecandy";
 import TickerSelector from "Controls/TickerSelector";
 
@@ -52,7 +51,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 
 	private update_total_dividend = () => {
 
-		let total = Decimal.round (parseFloat (this.per_share_textbox_ref.current.value) * parseFloat (this.quantity_textbox_ref.current.value), 2);
+		let total = (parseFloat (this.per_share_textbox_ref.current.value) * parseFloat (this.quantity_textbox_ref.current.value)).round_to (2);
 		let parts = total.toString ().parts (".", 1, 2);
 
 		if (parts.length == 1) parts.push ("0");

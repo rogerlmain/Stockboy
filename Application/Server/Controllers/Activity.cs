@@ -15,7 +15,7 @@ namespace Stockboy.Controllers {
 
 				Decimal total_quantity = 0;
 
-				List<ActivityModel> activity = ActivityQueries.get_activity (context, parameters.broker_id, parameters.ticker_id).ToList ();
+				ActivityModelList activity = ActivityQueries.get_activity (context, parameters.broker_id, parameters.ticker_id).ToList ();
 
 				foreach (ActivityModel item in activity) {
 
@@ -30,7 +30,7 @@ namespace Stockboy.Controllers {
 						continue;
 					}// if;
 
-					if ((item.transaction_type == "Buy") || (item.transaction_type == "Reinvestment")) item.total_quantity = total_quantity += item.quantity.Value;
+					if ((item.transaction_type == "Buy") || (item.transaction_type == "Reinvestment")) item.total_quantity = total_quantity += item.quantity ?? 0;
 					
 					if (item.transaction_type == "Sell") item.total_quantity = total_quantity -= item.quantity!.Value;
 

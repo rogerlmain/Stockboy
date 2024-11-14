@@ -14,7 +14,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("SaveBroker")]
-		public IActionResult SaveBroker ([FromBody] BrokersTable parameters) => context.brokers.Save (parameters);
+		public IActionResult SaveBroker ([FromBody] BrokersTableRecord parameters) => context.brokers.Save (parameters);
 
 
 		[HttpPost]

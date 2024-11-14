@@ -25,15 +25,19 @@ declare global {
 
 
 	interface DateConstructor {
-		format (date_value: string | Date, format?: DateFormats): string;
-		today (format?: DateFormats): string;
 		current_date (): Date;
 		earlier (value: Date);
+		format (date_value: string | Date, format?: DateFormats): string;
 		later (value: Date);
+		month_name (month: number): string;
+		today (format?: DateFormats): string;
+		weekday_name (day: number): string;
 	}// DateConstructor;
 
 
 	interface Date {
+		appended_day (): string;
+		format (template: string): string;
 		timestamp (): number;
 		toUnix (): number;
 	}// Date;
@@ -74,12 +78,26 @@ declare global {
 	interface Number {
 
 		format (decimal_places: number): string;
+		padded (digits: number): string;
+		padFractions (decimal_places: number);
 		round_to (decimal_places: number): number;
 		truncate_to (decimal_places: number): number;
 
 		get length (): number;
 
 	}// Number;
+
+
+	interface ObjectConstructor {
+
+		isFunction (candidate: any): boolean;
+		isObject (candidate: any): boolean;
+		isObjectLike (candidate: any): boolean;
+
+		notObject (candidate: any): boolean;
+		notObjectLike (candidate: any): boolean;
+
+	}// ObjectConstructor;
 
 
 	interface Object {
@@ -258,6 +276,15 @@ Component.prototype.setState = function (state: any, callback?: () => void): boo
 /**** Date Extension Functions ****/
 
 
+Date.current_date = function (): Date { return new Date () }
+
+Date.earlier = function (value: String | Date): boolean {
+	if (typeof value == "string") value = new Date (value as string);
+	let result: boolean = (value as Date) < new Date ();
+	return result;
+}// earlier;
+
+
 Date.format = function (date_value: string | Date, format: DateFormats = DateFormats.readable): string {
 
 	if (is_null (date_value)) return null;
@@ -272,19 +299,6 @@ Date.format = function (date_value: string | Date, format: DateFormats = DateFor
 }// Date.format;
 
 
-Date.today = function (format: DateFormats = DateFormats.readable): string { return Date.format (new Date (), format); }
-
-
-Date.current_date = function (): Date { return new Date () }
-
-
-Date.earlier = function (value: String | Date): boolean {
-	if (typeof value == "string") value = new Date (value as string);
-	let result: boolean = (value as Date) < new Date ();
-	return result;
-}// earlier;
-
-
 Date.later = function (value: String | Date): boolean {
 	if (typeof value == "string") value = new Date (value as string);
 	let result: boolean = (value as Date) > new Date ();
@@ -292,7 +306,54 @@ Date.later = function (value: String | Date): boolean {
 }// later;
 
 
+Date.month_name = (month: number) => { return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month - 1] }
+
+Date.today = function (format: DateFormats = DateFormats.readable): string { return Date.format (new Date (), format); }
+
+
+Date.weekday_name = (day: number) => { return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day - 1] }
+
+
 /**** Date Prototype Functions ****/
+
+
+Date.prototype.appended_day = function () {
+
+	let day = this.getDate ();
+
+	switch (day) {
+		case 1: return `${day}st`;
+		case 2: return `${day}nd`;
+		case 3: return `${day}rd`;
+		default: return `${day}th`;
+	}// switch;
+	
+}// appended_day;
+
+
+Date.prototype.format = function (template) {
+
+	let hours = this.getHours ();
+	let month = this.getMonth ();
+
+	let result = (template.replace ? template : String.Empty);
+
+	return result.
+		replace ("yyyy", this.getFullYear ().toString ()).
+		replace ("MMMM", Date.month_name (month + 1)).
+		replace ("MM", (month + 1).padded (2)).
+		replace ("dd", this.getDate ().padded (2)).
+		replace ("HH", hours.padded (2)).
+		replace ("mm", this.getMinutes ().padded (2)).
+		replace ("ss", this.getSeconds ().padded (2)).
+		replace ("M", (month + 1).toString ()).
+		replace ("ad", this.appended_day ()).
+		replace ("d", this.getDate ().toString ()).
+		replace ("H", ((hours % 12) || 12).toString ()).
+		replace ("ap", (hours < 12) ? "am" : "pm").
+		replace ("w", Date.weekday_name [this.getDay ()]);
+
+}// format;
 
 
 Date.prototype.timestamp = function (): number { return this.valueOf () }
@@ -410,6 +471,21 @@ Number.prototype.format = function (decimal_places: number): string {
 }// format;
 
 
+Number.prototype.padded = function (digits: number) { return this.toString ().padStart (digits - this.toString ().length, "0") }
+
+
+Number.prototype.padFractions = function (decimal_places: number): string {
+
+	let parts: StringArray = this.toString ().parts (".", 1, 2);
+
+	if (parts.length == 1) parts.push ("0");
+	parts [1] = parts [1].padEnd (decimal_places, "0");
+
+	return `${parts [0]}.${parts [1]}`;
+
+}// padFractions;
+
+
 Number.prototype.round_to = function (decimal_places: number): number {
 	return Math.round ((this as number) * Math.pow(10, decimal_places)) / Math.pow (10, decimal_places);
 }// round_to;
@@ -427,11 +503,69 @@ Object.defineProperties (Number.prototype, {
 });
 
 
+/**** Object Extension Functions ****/
+
+
+Object.isFunction = function (candidate: any): boolean {
+	return (typeof candidate == "function");
+}// isFunction;
+
+
+Object.isObject = function (candidate: any): boolean {
+	return (typeof candidate == "object");
+}// isObject;
+
+
+Object.isObjectLike = function (candidate: any): boolean {
+	return Object.isObject (candidate) || Object.isFunction (candidate);
+}// isObjectLike;
+
+
+Object.notObject = function (candidate: any): boolean {
+	return !Object.isObject (candidate);
+}// notObject;
+
+
+Object.notObjectLike = function (candidate: any): boolean {
+	return !Object.isObjectLike (candidate);
+}// notObjectLike;
+
+
 /**** Object Prototype Functions ****/
 
 
 Object.prototype.assign = function (template: any): any {
-	return Object.assign (this, template);
+
+	function create_element (element_type: any, template: any) {
+
+		if (Object.notObject (template)) return template;
+		if (not_set (element_type)) element_type = template.GetType;
+
+		let new_element = new element_type ();
+
+		new_element.assign (template);
+		return new_element;
+
+	}// create_element;
+
+
+	for (let item of Object.getOwnPropertyNames (template)) {
+
+		let element = this.properties?.[item];
+
+		if (not_defined (template [item])) continue;
+
+		if (Array.isArray (template [item])) {
+			this [item] = new Array<typeof element> ().assign (template [item], element);
+			continue;
+		}// if;
+
+		this [item] = create_element (element, template [item]);
+
+	}// for;
+
+	return this;
+
 }// assign;
 
 

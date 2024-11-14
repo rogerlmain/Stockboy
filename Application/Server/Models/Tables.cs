@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Stockboy.Models {
+﻿namespace Stockboy.Models {
 
 
 	public interface IDataTableModel: IDataModel {
@@ -10,49 +7,53 @@ namespace Stockboy.Models {
 
 
 	public class DataTableModel: DataModel, IDataModel, IDataTableModel {
+		public new Guid id => (Guid) base.id!;
 		public string name { get; set; } = String.Empty;
 	}// DataTableModel;
 
 
-	public class BrokersTable: DataTableModel {}
+	public class BrokersTableRecord: DataTableModel {}
 
 
-	public class TickersTable: DataTableModel {
-		public String symbol { get; set; } = String.Empty;
+	public class TickersTableRecord: DataTableModel {
+		public required String symbol { get; set; }
 		public Decimal? price { get; set; } = null;
 		public int? volume { get; set; } = null;
 		public DateTime? last_payment_date { get; set; } = null;
 		public DateTime? next_payment_date { get; set; } = null;
+		public DateTime? ex_dividend_date { get; set; } = null;
+		public Decimal? dividend_payout { get; set; } = null;
+		public int? frequency { get; set; } = null;
 		public DateTime? last_updated { get; set; } = null;
-	}// TickersTable;
+	}// TickersTableRecord;
 
 
-	public class TransactionsTable: StockDataModel {
+	public class TransactionsTableRecord: StockDataModel {
 		public decimal price { get; set; }
 		public decimal quantity { get; set; }
 		public DateTime transaction_date { get; set; }
 		public DateTime settlement_date { get; set; }
 		public Guid transaction_type_id { get; set; }
-	}// TransactionsTable;
+	}// TransactionsTableRecord;
 
 
-	public class TransactionTypesTable: BaseModel {
+	public class TransactionTypesTableRecord: BaseModel {
 		public string name { get; set; } = String.Empty;
 		public int sort_order { get; set; }
-	}// TransactionTypesTable;
+	}// TransactionTypesTableRecord;
 
 
-	public class SplitsTable: StockDataModel {
+	public class SplitsTableRecord: StockDataModel {
 		public decimal previous { get; set; }
 		public decimal current { get; set; }
 		public DateTime split_date { get; set; }
-	}// SplitsTable;
+	}// SplitsTableRecord;
 
 
-	public class DividendsTable: StockDataModel {
+	public class DividendsTableRecord: StockDataModel {
 		public DateTime issue_date { get; set; }
 		public decimal amount_per_share { get; set; }
 		public decimal share_quantity { get; set; }
-	}// DividendsTable;
+	}// DividendsTableRecord;
 
 }// Stockboy.Models;

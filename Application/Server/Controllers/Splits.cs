@@ -8,7 +8,7 @@ using Stockboy.Models;
 namespace Stockboy.Controllers {
 
 	[EnableCors]
-	public class Splits (DataContext context): DataController<SplitsTable, SplitListModel> (context) {
+	public class Splits (DataContext context): DataController<SplitsTableRecord, SplitListModel> (context) {
 
 		[HttpGet]
 		[Route ("GetSplits")]
@@ -17,7 +17,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("SaveSplit")]
-		public IActionResult SaveSplit ([FromBody] SplitsTable parameters) => SaveData ("get_split_by_id", parameters);
+		public IActionResult SaveSplit ([FromBody] SplitsTableRecord parameters) => SaveData ("get_split_by_id", parameters);
 
 	}// Splits;
 

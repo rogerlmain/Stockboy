@@ -27,20 +27,35 @@ namespace Stockboy.Classes {
 	}// ControllerExtensions;
 
 	public static class DateTimeExtensions {
+
+		private const long one_hour = 60 * 60 * 1000;
 		
+
 		public static long UnixTimestamp (this DateTime date) => (new DateTimeOffset (date).ToUnixTimeMilliseconds ());
+
+
+		public static Boolean LaterThan (this DateTime date, DateTime? comparison, long duration = one_hour) {
+			return (date.UnixTimestamp () - (comparison ?? DateTime.MaxValue).UnixTimestamp ()) >= duration;
+		}// LaterThan;
+
+
+		public static Boolean EarlierThan (this DateTime date, DateTime? comparison, long duration = one_hour) {
+			return ((comparison ?? DateTime.MaxValue).UnixTimestamp () - date.UnixTimestamp ()) >= duration;
+		}// EarlierThan;
+
+
+		public static Boolean LaterThanNow (this DateTime date, long duration = one_hour) => date.LaterThan (DateTime.Now, duration);
+		public static Boolean EarlierThanNow (this DateTime date, long duration = one_hour) => date.EarlierThan (DateTime.Now, duration);
+
 
 	}// DateTimeExtensions;
 
 
 	public static class DataExtensions {
 
-
 		public static DbContext? GetContext<TModel> (this DbSet<TModel> dataset) where TModel : class {
 			return ((dataset as IInfrastructure<IServiceProvider>).Instance.GetService (typeof (ICurrentDbContext)) as ICurrentDbContext)?.Context;
 		}// GetContext;
-
-		public static List<TModel> SelectAll<TModel> (this DbSet<TModel> dataset) where TModel : class => dataset.ToList ();
 
 
 		public static JsonResult Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : class {
@@ -77,10 +92,10 @@ namespace Stockboy.Classes {
 		public static TModel? Find<TModel> (this IEnumerable<TModel> list, Func<TModel, Boolean> predicate) => list.FirstOrDefault<TModel> (next => predicate (next));
 
 
-		public static List<Model>? OrderBy<Model> (this List<Model> source, String sort_list) {
+		public static List<TModel>? OrderBy<TModel> (this List<TModel> source, String sort_list) {
 
 			String [] sort_fields = sort_list.Split (',');
-			IOrderedQueryable<Model>? sorted_list = null;
+			IOrderedQueryable<TModel>? sorted_list = null;
 
 			for (int i = 0; i < sort_fields.Count (); i++) {
 				Boolean descending = sort_fields [i].Contains ("desc");
@@ -102,9 +117,9 @@ namespace Stockboy.Classes {
 		public static dynamic? Abort (this Object model) { throw new AbortException (); }
 
 
-		public static TModel Merge<TModel> ([NotNull] this TModel source, Object model, Boolean copy_nulls = false) {
+		public static TModel Merge<TModel> (this TModel source, Object model, Boolean copy_nulls = false) {
 
-			List<String>? keys = source?.GetKeys ();
+			StringList? keys = source?.GetKeys ();
 
 			if (is_null (keys)) throw new Exception ("Cannot copy fields. Nothing to copy.");
 
@@ -122,9 +137,9 @@ namespace Stockboy.Classes {
 		public static Model? Export<Model> (this Object model) => JsonConvert.DeserializeObject<Model> (JsonConvert.SerializeObject (model));
 
 
-		public static List<string>? GetKeyFields (this Object source) {
+		public static StringList? GetKeyFields (this Object source) {
 
-			List<string>? result = null;
+			StringList? result = null;
 
 			IEnumerable<PropertyInfo> keys = source.GetType ().GetProperties ().Where (property => Attribute.IsDefined (property, typeof (KeyAttribute)));
 
@@ -138,9 +153,9 @@ namespace Stockboy.Classes {
 		}// GetKeyFields;
 
 
-		public static List<String>? GetKeys (this Object source) {
+		public static StringList? GetKeys (this Object source) {
 
-			List<String>? result = null;
+			StringList? result = null;
 
 			foreach (PropertyInfo property in source.GetType ().GetProperties ()) {
 				result ??= new ();
@@ -157,7 +172,7 @@ namespace Stockboy.Classes {
 
 		public static Boolean HasKey (this Object source, String key) {
 
-			List<String>? keys = source.GetKeys ();
+			StringList? keys = source.GetKeys ();
 
 			if (is_null (keys)) return false;
 
@@ -191,7 +206,7 @@ namespace Stockboy.Classes {
 
 	static class QueryableExtensions {
 
-		public static IOrderedQueryable<Model> SequentialOrderBy<Model> (this List<Model> source, String sort_field) {
+		public static IOrderedQueryable<TModel> SequentialOrderBy<TModel> (this List<TModel> source, String sort_field) {
 			Boolean descending = sort_field.Contains ("desc");
 			if (descending) {
 				sort_field = sort_field.Substring (0, sort_field.IndexOf ("desc")).Trim ();

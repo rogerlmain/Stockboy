@@ -5,12 +5,17 @@
         { "path": "./tsconfig.node.json" }
     ],
     "compilerOptions": {
-        "lib": ["ES2023"],
+        "lib": [ "ESNext", "DOM", "WebWorker", "DOM.Iterable" ],
         "baseUrl": "src",
         "paths": {
             "src/*": [ "./src/*" ]
         },
+        "jsx": "react-jsx",
         "strictNullChecks": false,
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false,
+        "emitDecoratorMetadata": true,
+        "sourceMap": true
     }
 }

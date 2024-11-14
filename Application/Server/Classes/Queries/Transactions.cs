@@ -6,16 +6,16 @@ namespace Stockboy.Classes.Queries {
 
 	public class TransactionQueries {
 
-		private static IQueryable<TransactionListModel> select_query (DataContext context) {
-			IQueryable<TransactionListModel> result = from tra in context.transactions
+		private static IQueryable<TransactionModel> select_query (DataContext context) {
+			IQueryable<TransactionModel> result = from tra in context.transactions
 			join tck in context.tickers on tra.ticker_id equals tck.id
 			join brk in context.brokers on tra.broker_id equals brk.id
 			join ttp in context.transaction_types on tra.transaction_type_id equals ttp.id
 			where !tra.deleted
-			select new TransactionListModel () {
+			select new TransactionModel () {
 				id = tra.id,
-				broker_id = brk.id ?? Guid.Empty,
-				ticker_id = tck.id ?? Guid.Empty,
+				broker_id = brk.id,
+				ticker_id = tck.id,
 				company = tck.name,
 				broker = brk.name,
 				ticker = tck.symbol ?? String.Empty,
@@ -31,15 +31,15 @@ namespace Stockboy.Classes.Queries {
 		}// select_query;
 
 
-		public static List<TransactionListModel>? get_transactions (DataContext context) => select_query (context).ToList ();
+		public static TransactionModelList? get_transactions (DataContext context) => select_query (context).ToList ();
 
 
-		public static TransactionListModel? get_transaction_by_id (DataContext context, Guid? id) {
-			return select_query (context).Where ((TransactionListModel item) => item.id == id).FirstOrDefault ();
+		public static TransactionModel? get_transaction_by_id (DataContext context, Guid? id) {
+			return select_query (context).Where ((TransactionModel item) => item.id == id).FirstOrDefault ();
 		}// get_transaction_by_id;
 
 
-		public static TransactionsTable? get_dividend_transaction (DataContext context, DividendsTable dividend) => (from item in context.transactions
+		public static TransactionsTableRecord? get_dividend_transaction (DataContext context, DividendsTableRecord dividend) => (from item in context.transactions
 			join type in context.transaction_types on item.transaction_type_id equals type.id
 			where
 				(item.broker_id == dividend.broker_id) &&
@@ -51,7 +51,7 @@ namespace Stockboy.Classes.Queries {
 		).FirstOrDefault ();
 
 
-		public static Guid? save_transaction (DataContext context, TransactionsTable transaction) {
+		public static Guid? save_transaction (DataContext context, TransactionsTableRecord transaction) {
 
 			switch (isset (transaction.id)) {
 				case true: context.transactions.Update (transaction); break;

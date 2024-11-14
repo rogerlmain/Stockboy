@@ -57,7 +57,8 @@ export default abstract class APIClass {
 
 		fetch (url, parameters).then (response => {
 			try {
-				return response.json ();
+				if (response.ok) return response.json ();
+				throw "Bad request";
 			} catch (except: any) {
 				return { error: except.message };
 			}// try;
@@ -65,6 +66,8 @@ export default abstract class APIClass {
 			if (is_null (response)) return resolve (null);
 			if (isset (response ["error"])) return popup_window.show (<ErrorWindow text={response ["error"]} />);
 			resolve (response);
+		}).catch (() => {
+			setTimeout (() => resolve (this.fetch (url, body)), 1000);
 		});
 
 	});

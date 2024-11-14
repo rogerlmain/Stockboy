@@ -14,7 +14,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("SaveTicker")]
-		public IActionResult SaveTicker ([FromBody] TickersTable ticker) => context.tickers.Save (ticker);
+		public IActionResult SaveTicker ([FromBody] TickersTableRecord ticker) => context.tickers.Save (ticker);
 
 
 		[HttpPost]

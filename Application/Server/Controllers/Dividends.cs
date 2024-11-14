@@ -4,11 +4,10 @@ using Stockboy.Classes;
 using Stockboy.Classes.Queries;
 using Stockboy.Models;
 
-
 namespace Stockboy.Controllers {
 
 	[EnableCors]
-	public class Dividends (DataContext context): DataController<DividendsTable, DividendListModel> (context) {
+	public class Dividends (DataContext context): DataController<DividendsTableRecord, DividendModel> (context) {
 
 		[HttpGet]
 		[Route ("GetDividendTotals")]
@@ -16,18 +15,20 @@ namespace Stockboy.Controllers {
 
 			try {
 
-				List<DividendListModel>? data = Database.CallProcedure<DividendListModel> ("get_dividends", new GetParameters ());
-				List<DividendSummaryModel>? summary = null;
+				DividendModelList? data = DividendQueries.select_query (context).ToList ();
+				DividendSummaryList? summary = null;
 
 				if (isset (data)) foreach (var item in data!) {
 
 					summary ??= new ();
-					DividendSummaryModel? model = summary.Find (summary_item => (summary_item.broker_id == item.broker_id) && (summary_item.ticker_id == item.ticker_id));
+					DividendSummary? model = summary.Find (summary_item => (summary_item.broker_id == item.broker_id) && (summary_item.ticker_id == item.ticker_id));
 
 					if (is_null (model)) {
-						model = new ();
-						model.broker_id = item.broker_id;
-						model.ticker_id = item.ticker_id;
+						model = new () {
+							broker_id = item.broker_id,
+							ticker_id = item.ticker_id,
+							payout = 0
+						};
 						summary.Add (model);
 					}// if;
 
@@ -54,13 +55,13 @@ namespace Stockboy.Controllers {
 		public IActionResult SaveDividend ([FromBody] DividendRequestModel parameters) {
 
 			if (parameters.reinvested) {
-				TransactionsTable transaction = new ();
+				TransactionsTableRecord transaction = new ();
 				transaction.Merge (parameters).transaction_type_id = new Guid ("D6BC19B8-4BDE-4D87-9DB3-BAC3C41476B0");
 				new Transactions (context).SaveData ("get_transaction_by_id", transaction);
 			}// if;
 
 			try {
-				DividendsTable? dividend = SaveData (new DividendsTable ().Merge (parameters));
+				DividendsTableRecord? dividend = SaveData (new DividendsTableRecord ().Merge (parameters));
 				return new JsonResult (DividendQueries.get_dividend_by_id (context, dividend!.id!.Value));
 			} catch (Exception except) {
 				return this.error_message (except.Message);

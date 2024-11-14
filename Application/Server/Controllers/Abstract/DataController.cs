@@ -9,6 +9,12 @@ namespace Stockboy.Controllers {
 
 	public abstract class DataController<TDataModel, TListModel> (DataContext context): Controller where TDataModel : class, IBaseModel, new() where TListModel : class, IBaseModel, new() {
 
+		protected DataContext context = context;
+
+
+		/********/
+
+
 		public JsonResult GetData (string command, GetParameters parameters) {
 			try {
 				return new JsonResult (Database.CallProcedure<TListModel> (command, parameters));

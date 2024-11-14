@@ -4,12 +4,12 @@ namespace Stockboy.Classes.Queries {
 
 	public static class DividendQueries {
 
-		private static IQueryable<DividendListModel> select_query (DataContext context) { 
+		public static IQueryable<DividendModel> select_query (DataContext context) { 
 			return from dvd in context.dividends
 			join brk in context.brokers on dvd.broker_id equals brk.id
 			join tck in context.tickers on dvd.ticker_id equals tck.id
 			where (!dvd.deleted)
-			select new DividendListModel () {
+			select new DividendModel () {
 				id = dvd.id,
 				broker = brk.name,
 				company = tck.name,
@@ -24,11 +24,11 @@ namespace Stockboy.Classes.Queries {
 		}// select_query;
 
 
-		public static List<DividendListModel> get_dividends (DataContext context) => select_query (context).ToList ();
+		public static DividendModelList get_dividends (DataContext context) => select_query (context).ToList ();
 
 
-		public static DividendListModel? get_dividend_by_id (DataContext context, Guid id) { 
-			return select_query (context).Where ((DividendListModel item) => item.id == id).FirstOrDefault ();
+		public static DividendModel? get_dividend_by_id (DataContext context, Guid id) { 
+			return select_query (context).Where ((DividendModel item) => item.id == id).FirstOrDefault ();
 		}// get_dividend_by_id;
 		
 	}// DividendQueries;

@@ -1,3 +1,4 @@
+import "Classes/Types";
 import "Classes/Globals";
 import "Classes/Handlers";
 import "Classes/NumericCurrency";
@@ -11,9 +12,9 @@ import TestPage from "Pages/Test";
 
 let testing: boolean = false;
 
-
-switch (testing) {
-	case true: createRoot (document.getElementById ("main")).render (<TestPage />); break;
-	default: createRoot (document.getElementById ("main")).render (<MainPage />); break;
-}// switch;
+if (testing) {
+	createRoot (document.getElementById ("main")).render (<TestPage />);
+} else {
+	createRoot (document.getElementById ("main")).render (<MainPage />);
+}// if;
 

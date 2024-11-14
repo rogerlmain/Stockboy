@@ -1,6 +1,6 @@
 ﻿namespace Stockboy.Models {
 
-	public class TransactionListModel: StockDataModel {
+	public class TransactionModel: StockDataModel {
 		public string broker { get; set; } = String.Empty;
         public string ticker { get; set; } = String.Empty;
         public string company { get; set; } = String.Empty;
@@ -11,7 +11,7 @@
 		public DateTime settlement_date { get; set; }
 		public string transaction_type { get; set; } = String.Empty;
 		public Guid transaction_type_id { get; set; }
-	}// TransactionListModel;
+	}// TransactionModel;
 
 
 	public class UpdateTransactionModel: BaseModel {

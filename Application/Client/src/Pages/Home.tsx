@@ -7,7 +7,8 @@ import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { DataKeyArray } from "Classes/DataKeys";
-import { HoldingsModel } from "Models/Holdings";
+import { DividendPayment, DividendPayoutItem } from "Models/Dividends";
+import { HoldingsModel, HomeDetailsModel } from "Models/Holdings";
 import { Component, createRef, RefObject } from "react";
 
 
@@ -25,7 +26,7 @@ const properties: DataTableProperties = {
 
 
 class HomePageState {
-	data: HoldingsList | string = null;
+	data: HomeDetailsModel = null;
 }// HomePageState;
 
 
@@ -42,19 +43,58 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 
 	public render () {
 		return <div className="container">
-			<DataPageControl data={this.state.data as HoldingsList} properties={properties} search_filters={properties.fields} 
+
+			<div className="column-block">
+
+				{isset (this.state.data?.payments_list) ? <div className="column-block with-legroom">
+			
+					<div className="title">Upcoming Dividend Payments</div>
+				
+					<div className="data-table" style={{ gridTemplateColumns: "repeat(3, min-content)" }}>
+						<div className="table-header">
+							<div>Company</div>
+							<div>Payment Date</div>
+							<div>Projected Amount</div>
+						</div>
+				
+						{this.state.data?.payments_list?.map ((payment: DividendPayment) => <div className="table-row">
+							<div>{payment.company}</div>
+							<div>{payment.payment_date as String}</div>
+							<div className="right-aligned row-block">{(payment.amount_per_share * payment.quantity).round_to (4)}</div>
+						</div>)}
+					</div>
+
+				</div> : null}
+
+				{isset (this.state.data?.monthly_payout) ? <div>
+
+					{this.state.data?.monthly_payout.payouts.map ((payout: DividendPayoutItem) => <div>
+						{payout.company}<br />
+						{payout.ticker}<br />
+						{payout.amount.toString ()}
+					</div>)}
+
+				</div> : null}
+
+			</div>
+
+			<DataPageControl data={this.state.data?.holdings_list} properties={properties} search_filters={properties.fields} 
 				stock_filters={true} table_buttons={false} ref={this.data_page} data_type="Stock Holdings">
 				{isset (this.state.data) ? <StockStatusFilters data_page={this.data_page.current} /> : null}
 			</DataPageControl>
+
 		</div>
 	}// render;
 
 
 	constructor (props: BaseProps) {
+
 		super (props);
-		APIClass.fetch_data ("GetHoldings").then ((result: HoldingsList) => {
-			this.setState ({ data: new Array<HoldingsModel> ().assign (result, HoldingsModel) });
+
+		APIClass.fetch_data ("GetHoldings").then ((result: HomeDetailsModel) => {
+			this.setState ({ data: new HomeDetailsModel ().assign (result)});
 		});
+
 	}// constructor;
 
 }// TransactionsPage;

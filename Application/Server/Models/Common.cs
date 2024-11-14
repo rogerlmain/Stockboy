@@ -42,5 +42,4 @@ namespace Stockboy.Models {
 		public Guid? ticker_id { get; set; } = null;
 	}// StockModel;
 
-
 }// Stockboy.Models;

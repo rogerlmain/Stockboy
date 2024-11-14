@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Stockboy.Classes.Queries;
+﻿using Mysqlx.Crud;
+using Stockboy.Controllers;
 using Stockboy.Models;
+using System.Runtime.CompilerServices;
 
 
 namespace Stockboy.Classes {
 
-	public class HoldingsData (DataContext context, StockAPIClient client) {
+	public class HoldingsData {
 
-		private const long one_hour = 60 * 60 * 1000;
+		private const int batch_size = 5;
+
+
+		private DataContext context;
+		private StockAPIClient client;
 
 
 		private static class TransactionTypes {
@@ -19,84 +23,139 @@ namespace Stockboy.Classes {
 		}// TransactionTypes;
 
 
+		private HoldingsData (DataContext context, StockAPIClient client) {
+			this.context = context;
+			this.client = client;
+		}// constructor;
+
+
 		/********/
 
 
-		private async Task<List<TickersTable>?> get_outdated_tickers (List<HoldingsModel> holdings) {
+		private List<DividendHistoryList>? dividend_history_query (StockDividendHistory? history) {
 
-			List<Guid>? ticker_list = null;
+			if (is_null (history)) return null;
 
-			holdings.ForEach ((HoldingsModel item) => {
+			List<DividendHistoryList>? result = (from his in history!.historicalStockList
+				join tck in context.tickers on his.symbol equals tck.symbol
+				select (from hpy in his.historical select new DividendHistory () {
+					ticker_id = tck.id,
+					symbol = tck.symbol,
+					payment_date = hpy.paymentDate ?? DateTime.MinValue
+				}).OrderByDescending (dhq => dhq.payment_date).Take (2).ToList ()
+			).ToList ();
 
-				Boolean ticker_exists = ticker_list?.Exists (ticker => item.ticker_id == ticker) ?? false;
+			return result;
 
-				if (is_null (item.ticker_id) || ticker_exists || (item.current_price == -1)) return;
-				if ((DateTime.Now.UnixTimestamp () - (item.last_updated ?? DateTime.MinValue).UnixTimestamp ()) <= one_hour) return;
-				if (is_null (ticker_list)) ticker_list = new ();
-
-				ticker_list!.Add (item.ticker_id!.Value);
-			});
-
-			return is_null (ticker_list) ? null : context?.tickers.Where ((TickersTable item) => ticker_list!.Contains (item.id ?? Guid.Empty)).ToList ();
-			
-		}// get_outdated_tickers;
+		}// dividend_history_query;
 
 
-		private async Task<List<TickersTable>?> get_stock_prices (List<HoldingsModel> holdings) { 
+		private StockDividendHistory? update_dividend_frequency (StockDividendHistory? history, TickersTableList tickers) {
+
+			List<DividendHistoryList>? history_list = dividend_history_query (history);
+
+			if (is_null (history_list)) return null;
+
+            foreach (DividendHistoryList items in history_list!) {
+				if (items.Count < 2) continue;
+				tickers = context.tickers.Where (tkr => tkr.id == items [0].ticker_id).ToList ();
+				tickers.ForEach (tck => tck.frequency = (int) Math.Round ((items [0].payment_date - items [1].payment_date).Days / 30.437));
+				context.SaveChanges ();
+            }// foreach;
+
+			return history;
+
+		}// update_dividend_frequency;
+
+
+		private async Task<StockDividendHistory?> get_dividend_history (StringList symbols) {
+
+			int index = 0;
+			StockDividendHistory? result = null;
+
+			while (index < symbols.Count) {
+				StockDividendHistory? sublist = await client.GetDividendHistory (String.Join (comma, symbols.Skip (index).Take (batch_size)));
+				if (isset (sublist)) {
+					result ??= new ();
+					result.historicalStockList = result.historicalStockList.Concat (sublist!.historicalStockList).ToArray ();
+				}// if;
+				index += batch_size;
+			}// while;
+
+			return result;
+
+		}// get_dividend_history;
+
+
+		private async Task update_stock_data () {
 			try {
-				List<TickersTable>? outdated_prices = await this.get_outdated_tickers (holdings) ?? this.Abort ();
-				List<string> symbol_list = (from opr in outdated_prices select opr.symbol).ToList ();
-				String symbols_string = String.Join (comma, symbol_list);
 
-				List<ShortStockQuote>? stock_prices = await client.GetStockQuotes (symbols_string);
-				StockDividendHistory? dividend_data = await client.GetDividendHistory (symbols_string);
+				TickersTableList tickers = (from ticker in context.tickers.ToList ()
+					where (ticker.price != -1) && (ticker.last_updated?.EarlierThanNow () ?? true)
+					select ticker).ToList ();
 
-				if (is_null (stock_prices) && is_null (dividend_data)) return null; // Nothing to update
+				if (tickers.Count == 0) return;
 
-				symbol_list.ForEach ((string symbol) => {
-					TickersTable ticker = (outdated_prices!.Find ((TickersTable ticker) => ticker.symbol == symbol) ?? this.Abort ())!;
+				StringList symbols = (from tck in tickers select tck.symbol).ToList ();
+				ShortStockQuoteList? stock_prices = await client.GetStockQuotes (String.Join (comma, symbols)) ?? this.Abort ();
+				StockDividendHistory? dividend_data = update_dividend_frequency (await get_dividend_history (symbols), tickers!) ?? this.Abort ();
+
+				if (is_null (stock_prices) && is_null (dividend_data)) return; // Nothing to update
+
+				symbols.ForEach ((string symbol) => {
+					TickersTableRecord ticker = (tickers!.Find ((TickersTableRecord ticker) => ticker.symbol == symbol))!;
 					ShortStockQuote? price = stock_prices?.Find ((ShortStockQuote stock_price) => stock_price.symbol == symbol);
-					HistoricalStockList? dividend = dividend_data?.historicalStockList?.Find ((HistoricalStockList item) => item.symbol == symbol);
+					HistoricalStockList? dividends = dividend_data?.historicalStockList?.Find ((HistoricalStockList item) => item.symbol == symbol);
+
+					if (is_null (dividends)) return;
 					
-					List<DateTime?>? date_list = isset (dividend) ? (
-						from history in dividend?.historical
-						orderby history.paymentDate descending
-						select history.paymentDate
-					).ToList () : null;
+					StockDividendPrice? last_payment_date = (from date in dividends!.historical
+						where date.paymentDate < DateTime.Now
+						select date
+					).OrderByDescending (date => date.paymentDate).FirstOrDefault ();
+
+					StockDividendPrice? next_payment_date = (from date in dividends.historical
+						where date.paymentDate > DateTime.Now select date
+					).OrderBy (date => date.paymentDate).FirstOrDefault ();
 
 					ticker.price = price?.price ?? -1;
 					ticker.volume = price?.volume;
 
-					ticker.last_payment_date = date_list?.Find ((DateTime? date) => date < DateTime.Now);
-					ticker.next_payment_date = date_list?.Find ((DateTime? date) => date > DateTime.Now);
+					ticker.last_payment_date = last_payment_date?.paymentDate;
+					ticker.next_payment_date = next_payment_date?.paymentDate;
+					ticker.ex_dividend_date = next_payment_date?.recordDate;
+					ticker.dividend_payout = next_payment_date?.dividend;
 
 					ticker.last_updated = DateTime.Now;
 
 				});
-
-				context.tickers.UpdateRange (outdated_prices!);
+				
 				context.SaveChanges ();
-
-				return outdated_prices;
 
 			} catch (Exception except) {
 				if (except is not AbortException) throw;
-				return null;
 			}// try;
-		}// get_stock_prices;
+
+		}// update_stock_data;
 
 
 		/********/
 
 
-		public List<HoldingsModel>? GetHoldingsData () {
+		public HoldingsModelList? GetHoldingsData (StockDateModelList? report_dates = null) {
 
 			String? previous_broker = null;
 			String? previous_company = null;
 
-			List<HoldingsModel>? holdings = null;
-			List<ActivityView> activity = context.activity_view.AsEnumerable ().ToList ();
+			HoldingsModelList? holdings = null;
 			HoldingsModel? holding = null;
+
+			ActivityViewList activity = (from atv in context.activity_view.ToList ()
+				where is_null (report_dates) || atv.transaction_date.EarlierThan ((from rdt in report_dates
+					where rdt.ticker_id == atv.ticker_id
+					select rdt.date).FirstOrDefault ()
+				) select atv
+			).ToList ();
 
 			foreach (ActivityView item in activity) {
 
@@ -155,15 +214,15 @@ namespace Stockboy.Classes {
 		}// GetHoldingsData;
 
 
-		public async Task<List<HoldingsModel>?> GetHoldingsList () {
+		public HoldingsModelList? HoldingsPriceList (StockDateModelList? report_dates = null) {
 
-			List<HoldingsModel>? holdings = GetHoldingsData ();
+			HoldingsModelList? holdings = GetHoldingsData (report_dates);
 
 			if (is_null (holdings)) return null;
-			List<TickersTable> stock_prices = (await this.get_stock_prices (holdings!))!;
+			TickersTableList stock_prices = context.tickers.ToList ();
 
 			holdings!.ForEach ((HoldingsModel holding) => {
-				TickersTable? stock_price = stock_prices?.Find ((TickersTable item) => holding.ticker_id == item.id);
+				TickersTableRecord? stock_price = stock_prices?.Find ((TickersTableRecord item) => holding.ticker_id == item.id);
 				if (isset (stock_price)) holding.current_price = stock_price?.price;
 				holding.value = (holding.current_price < 0) ? 0 : holding.quantity * holding.current_price;
 				holding.status = (holding.current_price == -1) ? HoldingStatus.defunct : ((holding.quantity == 0) ? HoldingStatus.dead : HoldingStatus.live);
@@ -171,11 +230,11 @@ namespace Stockboy.Classes {
 
 			return holdings;
 		
-		}// get_holdings_list;
+		}// HoldingsPriceList;
 
 
-		public async Task<List<ProfitLossModel>?> GetProfitLossList () {
-  				List<HoldingsModel>? holdings_data = await new HoldingsData (context, client).GetHoldingsList ();
+		public ProfitLossModelList? GetProfitLossList () {
+  				HoldingsModelList? holdings_data = HoldingsPriceList ();
 
 				if (is_null (holdings_data)) return null;
 
@@ -221,6 +280,13 @@ namespace Stockboy.Classes {
 				).ToList ();
 
 		}// GetProfitLossList;
+
+
+		public async static Task<HoldingsData> Create (DataContext context, StockAPIClient client) {
+			HoldingsData holdings_data = new HoldingsData (context, client);
+			await holdings_data.update_stock_data ();
+			return holdings_data;
+		}// Create;
 
 	}// HoldingsData;
 

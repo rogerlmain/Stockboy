@@ -69,7 +69,7 @@ div.data-table div.table-header > div {
   font-weight: bold;
   min-width: 5em;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   padding: 0.25rem 2em;
   border: var(--table-border);
   border-top: solid 2px var(--element-border-color);
@@ -109,7 +109,7 @@ div.data-table div.table-row {
 div.data-table div.table-row > div {
   cursor: pointer;
 }
-div.data-table div.table-row > div:nth-child(2) {
+div.data-table div.table-row > div:nth-child(1), div.data-table div.table-row > div.keys + div {
   border-left: var(--table-border);
 }
 div.data-table div.table-row.selected > div {

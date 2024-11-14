@@ -1,5 +1,9 @@
 import { HoldingsStatus } from "Classes/Globals";
-import { StockModel } from "Models/Abstract/BaseModels";
+import { TypeSafe, DateType, StockModel } from "Models/Abstract/BaseModels";
+import { DividendPayment, DividendPaymentList, DividendPayout } from "Models/Dividends";
+
+
+type HoldingsModelList = Array<HoldingsModel>
 
 
 export class HoldingsModel extends StockModel {
@@ -26,3 +30,37 @@ export class ProfitLossModel extends HoldingsModel {
 	public overall_profit: number;
 }// ProfitLossModel;
 
+
+export class StockDetailsModel {
+	public company: string = null;
+	public brokers: StringArray = null;
+	public ticker: string = null;
+
+	@TypeSafe (Date)
+	public first_purchased: DateType = null;
+
+	@TypeSafe (Date)
+	public last_purchased: DateType = null;
+
+	@TypeSafe (Date)
+	public first_dividend_date: DateType = null;
+
+	@TypeSafe (Date)
+	public last_dividend_date: DateType = null;
+
+	@TypeSafe (Date)
+	public next_dividend_date: DateType = null;
+}// StockDetailsModel;
+
+
+export class HomeDetailsModel {
+
+	@TypeSafe (DividendPayment)
+	public payments_list?: DividendPaymentList = null;
+	
+	public holdings_list?: HoldingsModelList = null;
+
+	@TypeSafe (DividendPayout)
+	public monthly_payout: DividendPayout = null
+
+}// HomeDetailsModel;

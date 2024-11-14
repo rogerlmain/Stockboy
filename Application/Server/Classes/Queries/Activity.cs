@@ -2,20 +2,6 @@
 
 namespace Stockboy.Classes.Queries {
 
-	public class ActivityModel: BaseModel {
-		public DateTime date { get; set; }
-		public string transaction_type { get; set; } = String.Empty;
-		public Guid? broker_id { get; set; } = null;
-		public Guid? ticker_id { get; set; } = null;
-		public string broker { get; set; } = String.Empty;
-		public string company { get; set; } = String.Empty;
-		public string? ticker { get; set; } = null;
-		public Decimal? quantity { get; set; } = Decimal.Zero;
-		public Decimal? price { get; set; } = Decimal.Zero;
-		public Decimal? total_quantity { get; set; } = Decimal.Zero;
-}// ActivityModel;
-
-
 	public static class ActivityQueries {
 
 		private static IQueryable<ActivityModel> transaction_query (DataContext context) => (from trn in context.transactions

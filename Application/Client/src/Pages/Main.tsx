@@ -3,6 +3,7 @@ import PopupWindow from "Controls/PopupWindow";
 
 import ActivityPage from "Pages/Activity";
 import BrokersPage from "Pages/Brokers";
+import StockDetailsPage from "Pages/Details";
 import DividendsPage from "Pages/Dividends";
 import HomePage from "Pages/Home";
 import ProfitLossPage from "Pages/ProfitLoss";
@@ -17,6 +18,7 @@ import { Component, Context, createContext, createRef, RefObject } from "react";
 export enum PageType {
 	home = "Home",
 	activity = "Activity",
+	details = "Details",
 	transactions = "Transactions",
 	dividends = "Dividends",
 	splits = "Splits",
@@ -44,6 +46,7 @@ export default class MainPage extends Component {
 		switch (this.state.page) {
 			case PageType.home: return <HomePage />;
 			case PageType.activity: return <ActivityPage />;
+			case PageType.details: return <StockDetailsPage />;
 			case PageType.transactions: return <TransactionsPage />;
 			case PageType.dividends: return <DividendsPage />;
 			case PageType.splits: return <SplitsPage />;

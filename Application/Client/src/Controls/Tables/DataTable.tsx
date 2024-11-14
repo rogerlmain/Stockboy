@@ -1,4 +1,3 @@
-import Decimal from "Classes/Decimal";
 import ScrollBlock from "Controls/ScrollBlock";
 import DataTableRow from "Controls/Tables/DataTableRow";
 
@@ -118,7 +117,7 @@ export default class DataTable extends Component<DataTableProps> {
 
 	public format (field_name: string, value: FieldValue): string {
 
-		let number_format = (decimal_places: number) => Decimal.padFractions (Decimal.round ((value as number), decimal_places), decimal_places);
+		let number_format = (decimal_places: number) => (value as number).round_to (decimal_places).padFractions (decimal_places);
 		let rounded_field = this.props.properties.rounded_fields?.find ((item: RoundingRecord) => item.hasKey (field_name));
 
 		if ((field_name == "current_price") && ((value as number) == -1)) return "N/A";

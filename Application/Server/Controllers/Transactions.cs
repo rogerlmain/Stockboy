@@ -9,7 +9,7 @@ using Stockboy.Models;
 namespace Stockboy.Controllers {
 
 	[EnableCors]
-	public class Transactions (DataContext context): DataController<TransactionsTable, TransactionListModel> (context) {
+	public class Transactions (DataContext context): DataController<TransactionsTableRecord, TransactionModel> (context) {
 
 		[HttpGet]
 		[Route ("GetTransactions")]
@@ -18,9 +18,9 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetDividendTransaction")]
-		public IActionResult GetDividendTransaction ([FromBody] DividendsTable dividend) {
+		public IActionResult GetDividendTransaction ([FromBody] DividendsTableRecord dividend) {
 
-			TransactionsTable? result = TransactionQueries.get_dividend_transaction (context, dividend);
+			TransactionsTableRecord? result = TransactionQueries.get_dividend_transaction (context, dividend);
 
 			if (isset (result) && ((result!.price * result.quantity).round (2) != (dividend.amount_per_share * dividend.share_quantity).round (2))) result = null;
 			return new JsonResult (new { id = isset (result) ? result!.id : null });
@@ -30,7 +30,7 @@ namespace Stockboy.Controllers {
 
 		[HttpGet]
 		[Route ("GetTransactionTypes")]
-		public IActionResult GetTransactionTypes () => new JsonResult (context?.transaction_types.SelectAll ().OrderBy ("sort_order"));
+		public IActionResult GetTransactionTypes () => new JsonResult (context?.transaction_types.ToList ().OrderBy ("sort_order"));
 
 
 		[HttpPost]
@@ -40,7 +40,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("SaveTransaction")]
-		public IActionResult SaveTransaction ([FromBody] TransactionsTable parameters) {
+		public IActionResult SaveTransaction ([FromBody] TransactionsTableRecord parameters) {
 			return new JsonResult (TransactionQueries.get_transaction_by_id (context, TransactionQueries.save_transaction (context, parameters)));
 		}// SaveTransaction;
 

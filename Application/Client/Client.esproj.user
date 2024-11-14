@@ -6,8 +6,9 @@
   "name": "localhost (Chrome)",
   "type": "chrome",
   "request": "launch",
-  "url": "https://localhost:5173",
-  "webRoot": "D:\\Projects\\Stockboy\\Application\\Client"
+  "url": "http://localhost:9000",
+  "webRoot": "D:\\Projects\\Stockboy\\Application\\Client",
+  "sourceMaps": true
 }</LaunchJsonTarget>
   </PropertyGroup>
 </Project>
