@@ -18,8 +18,8 @@ export type DividendPaymentList = Array<DividendPayment>
 
 
 export class DividendPayment {
-	public ticker_id: String = null;
 	public company: String = null;
+	public ticker: String = null;
 
 	@TypeSafe (Date)
 	public payment_date: DateType = null;

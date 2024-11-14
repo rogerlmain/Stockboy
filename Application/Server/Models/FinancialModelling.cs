@@ -14,11 +14,11 @@
 
 	public class HistoricalStockList {
 		public String symbol { get; set; } = String.Empty;
-		public StockDividendPrice [] historical { get; set; } = Array.Empty<StockDividendPrice> ();
+		public StockDividendData [] historical { get; set; } = Array.Empty<StockDividendData> ();
 	}// HistoricalStockList;
 
 
-    public class StockDividendPrice {
+    public class StockDividendData {
 		public DateTime? date { get; set; } = DateTime.Now;
 		public String label { get; set; } = String.Empty;
 		public Decimal adjDividend { get; set; } = Decimal.Zero;
@@ -26,6 +26,6 @@
 		public DateTime? recordDate { get; set; } = DateTime.Now;
 		public DateTime? paymentDate { get; set; } = DateTime.Now;
 		public DateTime? declarationDate { get; set; } = null;
-    }// StockDividendPrice;
+    }// StockDividendData;
 
 }// Stockboy.Models;

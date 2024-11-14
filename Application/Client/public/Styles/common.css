@@ -123,6 +123,9 @@ div.bold-text {
 *.column-block.very-spaced-out {
   row-gap: 2rem;
 }
+*.column-block.totally-spaced-out {
+  align-content: space-between;
+}
 *.column-block.left-aligned {
   align-items: flex-start;
 }
@@ -158,6 +161,9 @@ div.bold-text {
 }
 *.row-block.very-spaced-out, div.very-spaced-out.button-bar, *.flex-block.very-spaced-out {
   column-gap: 2rem;
+}
+*.row-block.totally-spaced-out, div.totally-spaced-out.button-bar, *.flex-block.totally-spaced-out {
+  justify-content: space-between;
 }
 *.row-block.left-aligned, div.left-aligned.button-bar, *.flex-block.left-aligned {
   justify-content: flex-start;

@@ -13,7 +13,7 @@ namespace Stockboy.Classes {
 
 
 		public DbSet<BrokersTableRecord> brokers { get; set; }
-		public DbSet<TickersTableRecord> tickers { get; set; }
+		public DbSet<TickerTableRecord> tickers { get; set; }
 		public DbSet<TransactionTypesTableRecord> transaction_types { get; set; }
 		public DbSet<TransactionsTableRecord> transactions { get; set; }
 		public DbSet<SplitsTableRecord> splits { get; set; }

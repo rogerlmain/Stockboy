@@ -15,7 +15,7 @@
 	public class BrokersTableRecord: DataTableModel {}
 
 
-	public class TickersTableRecord: DataTableModel {
+	public class TickerTableRecord: DataTableModel {
 		public required String symbol { get; set; }
 		public Decimal? price { get; set; } = null;
 		public int? volume { get; set; } = null;
@@ -25,7 +25,7 @@
 		public Decimal? dividend_payout { get; set; } = null;
 		public int? frequency { get; set; } = null;
 		public DateTime? last_updated { get; set; } = null;
-	}// TickersTableRecord;
+	}// TickerTableRecord;
 
 
 	public class TransactionsTableRecord: StockDataModel {

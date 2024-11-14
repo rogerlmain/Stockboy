@@ -33,8 +33,8 @@
 
 
 	public class DividendPayment {
-		public required Guid ticker_id { get; set; }
 		public required String company { get; set; }
+		public required String ticker { get; set; }
 		public required DateTime payment_date { get; set; }
 		public required Decimal amount_per_share { get; set; }
 		public required Decimal quantity { get; set; }

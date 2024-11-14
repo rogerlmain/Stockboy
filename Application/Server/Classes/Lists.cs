@@ -11,7 +11,7 @@ global using HoldingsModelList = System.Collections.Generic.List<Stockboy.Models
 global using ProfitLossModelList = System.Collections.Generic.List<Stockboy.Models.ProfitLossModel>;
 global using ShortStockQuoteList = System.Collections.Generic.List<Stockboy.Models.ShortStockQuote>;
 global using StockDateModelList = System.Collections.Generic.List<Stockboy.Models.StockDateModel>;
-global using TickersTableList = System.Collections.Generic.List<Stockboy.Models.TickersTableRecord>;
+global using TickersTableList = System.Collections.Generic.List<Stockboy.Models.TickerTableRecord>;
 global using TransactionModelList = System.Collections.Generic.List<Stockboy.Models.TransactionModel>;
 
 global using StringList = System.Collections.Generic.List<System.String>;

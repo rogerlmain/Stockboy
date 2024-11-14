@@ -87,6 +87,40 @@ namespace Stockboy.Classes {
 		}// get_dividend_history;
 
 
+		private DateTime? get_payment_date (TickerTableRecord ticker, DateTime? last_payment_date, DateTime? next_payment_date) {
+			if (isset (next_payment_date)) return next_payment_date;
+			if (isset (ticker.frequency) && isset (last_payment_date)) {
+				DateTime payment_date = (DateTime) last_payment_date!;
+				return payment_date.AddMonths ((int) ticker.frequency!);
+			}// if;
+			return null;
+		}// get_payment_date;
+
+
+		private void set_stock_data (TickerTableRecord ticker, HistoricalStockList? dividends, ShortStockQuote? price) {
+
+			StockDividendData last_payment_date = (from date in dividends!.historical
+				where date.paymentDate < DateTime.Now
+				select date
+			).OrderByDescending (date => date.paymentDate).First ();
+
+			StockDividendData? next_payment_date = (from date in dividends.historical
+				where date.paymentDate > DateTime.Now select date
+			).OrderBy (date => date.paymentDate).FirstOrDefault ();
+
+			ticker.price = price?.price ?? -1;
+			ticker.volume = price?.volume;
+
+			ticker.last_payment_date = last_payment_date?.paymentDate;
+			ticker.next_payment_date = get_payment_date (ticker, last_payment_date?.paymentDate, next_payment_date?.paymentDate);
+			ticker.ex_dividend_date = next_payment_date?.recordDate;
+			ticker.dividend_payout = next_payment_date?.dividend ?? last_payment_date?.dividend;
+
+			ticker.last_updated = DateTime.Now;
+
+		}// set_stock_data;
+
+
 		private async Task update_stock_data () {
 			try {
 
@@ -103,31 +137,12 @@ namespace Stockboy.Classes {
 				if (is_null (stock_prices) && is_null (dividend_data)) return; // Nothing to update
 
 				symbols.ForEach ((string symbol) => {
-					TickersTableRecord ticker = (tickers!.Find ((TickersTableRecord ticker) => ticker.symbol == symbol))!;
+					TickerTableRecord ticker = (tickers!.Find ((TickerTableRecord ticker) => ticker.symbol == symbol))!;
 					ShortStockQuote? price = stock_prices?.Find ((ShortStockQuote stock_price) => stock_price.symbol == symbol);
 					HistoricalStockList? dividends = dividend_data?.historicalStockList?.Find ((HistoricalStockList item) => item.symbol == symbol);
 
-					if (is_null (dividends)) return;
+					if (isset (dividends?.historical)) set_stock_data (ticker, dividends, price);
 					
-					StockDividendPrice? last_payment_date = (from date in dividends!.historical
-						where date.paymentDate < DateTime.Now
-						select date
-					).OrderByDescending (date => date.paymentDate).FirstOrDefault ();
-
-					StockDividendPrice? next_payment_date = (from date in dividends.historical
-						where date.paymentDate > DateTime.Now select date
-					).OrderBy (date => date.paymentDate).FirstOrDefault ();
-
-					ticker.price = price?.price ?? -1;
-					ticker.volume = price?.volume;
-
-					ticker.last_payment_date = last_payment_date?.paymentDate;
-					ticker.next_payment_date = next_payment_date?.paymentDate;
-					ticker.ex_dividend_date = next_payment_date?.recordDate;
-					ticker.dividend_payout = next_payment_date?.dividend;
-
-					ticker.last_updated = DateTime.Now;
-
 				});
 				
 				context.SaveChanges ();
@@ -222,7 +237,7 @@ namespace Stockboy.Classes {
 			TickersTableList stock_prices = context.tickers.ToList ();
 
 			holdings!.ForEach ((HoldingsModel holding) => {
-				TickersTableRecord? stock_price = stock_prices?.Find ((TickersTableRecord item) => holding.ticker_id == item.id);
+				TickerTableRecord? stock_price = stock_prices?.Find ((TickerTableRecord item) => holding.ticker_id == item.id);
 				if (isset (stock_price)) holding.current_price = stock_price?.price;
 				holding.value = (holding.current_price < 0) ? 0 : holding.quantity * holding.current_price;
 				holding.status = (holding.current_price == -1) ? HoldingStatus.defunct : ((holding.quantity == 0) ? HoldingStatus.dead : HoldingStatus.live);

@@ -44,21 +44,23 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 	public render () {
 		return <div className="container">
 
-			<div className="column-block">
+			<div className="somewhat-spaced-out row-block with-headspace with-lotsa-legroom">
 
 				{isset (this.state.data?.payments_list) ? <div className="column-block with-legroom">
 			
 					<div className="title">Upcoming Dividend Payments</div>
 				
-					<div className="data-table" style={{ gridTemplateColumns: "repeat(3, min-content)" }}>
+					<div className="data-table" style={{ gridTemplateColumns: "repeat(4, min-content)" }}>
 						<div className="table-header">
 							<div>Company</div>
+							<div>Ticker</div>
 							<div>Payment Date</div>
 							<div>Projected Amount</div>
 						</div>
 				
 						{this.state.data?.payments_list?.map ((payment: DividendPayment) => <div className="table-row">
 							<div>{payment.company}</div>
+							<div>{payment.ticker}</div>
 							<div>{payment.payment_date as String}</div>
 							<div className="right-aligned row-block">{(payment.amount_per_share * payment.quantity).round_to (4)}</div>
 						</div>)}
@@ -66,13 +68,27 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 
 				</div> : null}
 
-				{isset (this.state.data?.monthly_payout) ? <div>
+				{isset (this.state.data?.monthly_payout) ? <div className="column-block">
 
-					{this.state.data?.monthly_payout.payouts.map ((payout: DividendPayoutItem) => <div>
-						{payout.company}<br />
-						{payout.ticker}<br />
-						{payout.amount.toString ()}
-					</div>)}
+					<div className="title">Monthly Dividend Payments</div>
+				
+					<div className="data-table" style={{ gridTemplateColumns: "repeat(3, min-content)" }}>
+						<div className="table-header">
+							<div>Company</div>
+							<div>Ticker</div>
+							<div>Monthly Amount</div>
+						</div>
+						{this.state.data?.monthly_payout.payouts.map ((payout: DividendPayoutItem) => <div className="table-row">
+							<div>{payout.company}</div>
+							<div>{payout.ticker}</div>
+							<div className="right-aligned row-block">{payout.amount.round_to (4)}</div>
+						</div>)}
+					</div>
+
+					<div className="somewhat-spaced-out centered row-block with-headspace">
+						<label>Total monthly dividend</label>
+						<div>${this.state.data.monthly_payout.total.round_to (4)}</div>
+					</div>
 
 				</div> : null}
 

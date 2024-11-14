@@ -11,14 +11,12 @@ export function TypeSafe (object_type: any = null) {
 
 		if (object_type == Date) {
 
-			let date_value: Date = null;
-			
 			return Object.defineProperty (target, key, {
 				get: function (): string {
-					return date_value.format ("MMMM d, yyyy");
+					return this.date_value.format ("MMMM d, yyyy");
 				},
 				set: function (new_value: string) {
-					date_value = new Date (new_value);
+					this.date_value = new Date (new_value);
 				}
 			});
 

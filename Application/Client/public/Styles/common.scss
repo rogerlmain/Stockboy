@@ -127,6 +127,7 @@ div.bold-text { font-weight: bold }
 	&.somewhat-spaced-out { row-gap: 0.5rem }
 	&.spaced-out { row-gap: 1rem }
 	&.very-spaced-out { row-gap: 2rem }
+	&.totally-spaced-out { align-content: space-between }
 
 	&.left-aligned { align-items: flex-start }
 	&.right-aligned { align-items: flex-end }
@@ -149,6 +150,7 @@ div.bold-text { font-weight: bold }
 	&.somewhat-spaced-out { column-gap: 0.5rem }
 	&.spaced-out { column-gap: 1rem }
 	&.very-spaced-out { column-gap: 2rem }
+	&.totally-spaced-out { justify-content: space-between }
 
 	&.left-aligned { justify-content: flex-start }
 	&.right-aligned { justify-content: flex-end }

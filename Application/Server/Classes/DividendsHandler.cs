@@ -1,11 +1,12 @@
 ﻿using Stockboy.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 namespace Stockboy.Classes {
 
-	public class DividendsHandler (DataContext context, StockAPIClient client) {
+	public class DividendsHandler (DataContext context) {
 
-		public async Task<DividendPaymentList?> GetPendingPayments () {
+		public DividendPaymentList? GetPendingPayments (HoldingsData holdings_data) {
 
 			StockDateModelList exdiv_dates = (from tck in context.tickers 
 				where tck.ex_dividend_date != null
@@ -15,39 +16,55 @@ namespace Stockboy.Classes {
 				}
 			).ToList ();
 
-			return (from hld in (await HoldingsData.Create (context, client)).HoldingsPriceList (exdiv_dates)
+			DividendPaymentList result = (from hld in holdings_data.HoldingsPriceList (exdiv_dates)
 				join tck in context.tickers on hld.ticker_id equals tck.id
-				where hld.quantity > 0 
+				where (hld.quantity > 0) && (tck.price != -1)
 				group hld by new {
-					hld.ticker_id,
 					company = tck.name,
+					ticker = tck.symbol,
 					tck.next_payment_date,
 					amount_per_share = tck.dividend_payout
 				} into hdg
 				select new DividendPayment () {
-					ticker_id = hdg.Key.ticker_id ?? Guid.Empty,
 					company = hdg.Key.company ?? String.Empty,
+					ticker = hdg.Key.ticker ?? String.Empty,
 					payment_date = hdg.Key.next_payment_date ?? DateTime.Now,
 					amount_per_share = hdg.Key.amount_per_share ?? 0,
 					quantity = hdg.Sum (holding => holding.quantity)
 				}
-			).OrderByDescending (payout => payout.payment_date).ToList ();
+			).OrderBy (payout => payout.payment_date).ToList ();
+
+			return result;
 
 		}// GetPendingPayments;
 
 
 		public DividendPayout GetMonthlyPayout (HoldingsModelList holdings) {
 
-			DividendPayoutList payouts = (from hld in holdings
-				join tck in context.tickers on hld.ticker_id equals tck.id
-				where (hld.quantity > 0) && (tck.price != -1)
+			DividendPayoutList payouts = (from rows in 
+				(from hld in holdings
+					join tck in context.tickers on hld.ticker_id equals tck.id
+					where (hld.quantity > 0) && (tck.price != -1) && (tck.dividend_payout > 0)
+					select new {
+						tck.id,
+						tck.name,
+						tck.symbol,
+						hld.quantity,
+						tck.dividend_payout,
+						tck.frequency
+					}
+				) group rows by new {
+					rows.id,
+					rows.name,
+					rows.symbol
+				} into hlg
 				select new DividendPayoutItem () {
-					ticker_id = tck.id,
-					company = tck.name,
-					ticker = tck.symbol,
-					amount = (hld.quantity * tck.dividend_payout / tck.frequency) ?? 0
+					ticker_id = hlg.Key.id,
+					company = hlg.Key.name,
+					ticker = hlg.Key.symbol,
+					amount = hlg.Sum (holding => holding.quantity * holding.dividend_payout / holding.frequency) ?? 0
 				}// DividendPayout;
-			).ToList ();
+			).OrderBy (item => item.company).ToList ();
 
 			return new DividendPayout () {
 				payouts = payouts,
