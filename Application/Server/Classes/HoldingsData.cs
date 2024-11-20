@@ -1,4 +1,5 @@
 ﻿using Mysqlx.Crud;
+using Stockboy.Classes.Queries;
 using Stockboy.Controllers;
 using Stockboy.Models;
 using System.Runtime.CompilerServices;
@@ -249,50 +250,26 @@ namespace Stockboy.Classes {
 
 
 		public ProfitLossModelList? GetProfitLossList () {
-  				HoldingsModelList? holdings_data = HoldingsPriceList ();
 
-				if (is_null (holdings_data)) return null;
+  			HoldingsModelList? holdings_data = HoldingsPriceList ();
 
-				return (from jtb in (
-					from hdd in holdings_data
-						join div in context.dividends on new { hdd.broker_id, hdd.ticker_id } equals new { div.broker_id, div.ticker_id } into jdv
-						from ndv in jdv.DefaultIfEmpty ()
-						select new {
-							hdd.broker_id,
-							hdd.ticker_id,
-							hdd.broker,
-							hdd.symbol,
-							hdd.company,
-							hdd.sales_profit,
-							hdd.value,
-							value_profit = (hdd.value ?? 0) - hdd.current_purchase_cost,
-							hdd.current_purchase_cost,
-							hdd.total_purchase_cost,
-							ndv?.amount_per_share,
-							ndv?.share_quantity
-						}
-					) group jtb by new {
-						jtb.broker_id,
-						jtb.ticker_id,
-						jtb.broker,
-						jtb.symbol,
-						jtb.company,
-						jtb.sales_profit,
-						jtb.value,
-						jtb.current_purchase_cost,
-						jtb.total_purchase_cost
-					} into ghd
-					select new ProfitLossModel () {
-						broker_id = ghd.Key.broker_id,
-						ticker_id = ghd.Key.ticker_id,
-						broker = ghd.Key.broker,
-						symbol = ghd.Key.symbol,
-						company = ghd.Key.company,
-						sales_profit = ghd.Key.sales_profit,
-						dividend_payout = ghd.Sum (ssa => (ssa.share_quantity ?? 0) * (ssa.amount_per_share ?? 0)),
-						overall_profit = ghd.Key.sales_profit + ghd.Sum (ssa => (ssa.share_quantity ?? 0) * (ssa.amount_per_share ?? 0)) + ((ghd.Key.value ?? 0) - ghd.Key.current_purchase_cost)
-					}
-				).ToList ();
+			if (is_null (holdings_data)) return null;
+
+			ProfitLossDetailsList profit_loss_details = ProfitLossQueries.GetProfitLossDetails (context, holdings_data!).ToList ();
+
+			return (from pld in ProfitLossQueries.GetProfitLossDetails (context, holdings_data!) 
+			select new ProfitLossModel () {
+				broker_id = pld.broker_id,
+				ticker_id = pld.ticker_id,
+				broker = pld.broker,
+				symbol = pld.symbol,
+				company = pld.company,
+				status = pld.status,
+				sales_profit = pld.sales_profit,
+				dividend_payout = pld.dividend_payout,
+				value_profit = pld.value_profit,
+				overall_profit = pld.sales_profit + pld.value_profit + pld.dividend_payout,
+			}).ToList ();
 
 		}// GetProfitLossList;
 

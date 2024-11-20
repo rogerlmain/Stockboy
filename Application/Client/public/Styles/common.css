@@ -291,6 +291,12 @@ div[class*=-column-grid] {
   column-gap: 0.5rem;
   row-gap: 0.2rem;
 }
+div[class*=-column-grid].left-aligned {
+  justify-content: flex-start;
+}
+div[class*=-column-grid].right-aligned, div[class*=-column-grid].button-bar {
+  justify-content: flex-end;
+}
 div[class*=-column-grid] label {
   display: inline-flex;
   flex-direction: row;

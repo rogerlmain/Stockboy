@@ -6,7 +6,7 @@ namespace Stockboy.Classes.Queries {
 
 	public class TransactionQueries {
 
-		private static IQueryable<TransactionModel> select_query (DataContext context) {
+		private static IQueryable<TransactionModel> SelectQuery (DataContext context) {
 			IQueryable<TransactionModel> result = from tra in context.transactions
 			join tck in context.tickers on tra.ticker_id equals tck.id
 			join brk in context.brokers on tra.broker_id equals brk.id
@@ -28,14 +28,14 @@ namespace Stockboy.Classes.Queries {
 				transaction_type_id = ttp.id ?? Guid.Empty,
 			};
 			return result;
-		}// select_query;
+		}// SelectQuery;
 
 
-		public static TransactionModelList? get_transactions (DataContext context) => select_query (context).ToList ();
+		public static TransactionModelList? get_transactions (DataContext context) => SelectQuery (context).ToList ();
 
 
 		public static TransactionModel? get_transaction_by_id (DataContext context, Guid? id) {
-			return select_query (context).Where ((TransactionModel item) => item.id == id).FirstOrDefault ();
+			return SelectQuery (context).Where ((TransactionModel item) => item.id == id).FirstOrDefault ();
 		}// get_transaction_by_id;
 
 

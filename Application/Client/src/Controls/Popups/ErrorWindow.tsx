@@ -6,9 +6,11 @@ class ErrorWindowProps { text: string = null }
 
 export default class ErrorWindow extends Component<ErrorWindowProps> {
 
-	public render = () => <div className="row-block">
-		<img src="Images/error.png" className="eyecandy" />
-		{this.props.text}
+	public render = () => <div className="column-block">
+		<div className="row-block">
+			<img src="Images/error.png" className="eyecandy" />
+			{this.props.text}
+		</div>
 		<div className="button-bar">{popup_window.close_button}</div>
 	</div>
 

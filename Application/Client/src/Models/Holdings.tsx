@@ -3,7 +3,7 @@ import { TypeSafe, DateType, StockModel } from "Models/Abstract/BaseModels";
 import { DividendPayment, DividendPaymentList, DividendPayout } from "Models/Dividends";
 
 
-type HoldingsModelList = Array<HoldingsModel>
+type HoldingsList = Array<HoldingsModel>
 
 
 export class HoldingsModel extends StockModel {
@@ -58,7 +58,7 @@ export class HomeDetailsModel {
 	@TypeSafe (DividendPayment)
 	public payments_list?: DividendPaymentList = null;
 	
-	public holdings_list?: HoldingsModelList = null;
+	public holdings_list?: HoldingsList = null;
 
 	@TypeSafe (DividendPayout)
 	public monthly_payout: DividendPayout = null

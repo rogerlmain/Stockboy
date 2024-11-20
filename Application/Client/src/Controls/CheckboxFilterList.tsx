@@ -3,7 +3,7 @@ import FilterHandler from "Controls/FilterHandler";
 
 import { DataFilter, FilterType } from "Classes/Collections";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
-import { ChangeEvent, Component, RefObject, createRef } from "react";
+import { Component, RefObject, createRef } from "react";
 
 
 class CheckboxFilterProps {
@@ -66,7 +66,7 @@ export class CheckboxFilter extends Component<CheckboxFilterProps, CheckboxFilte
 				return <div className="container">
 
 					<input type="checkbox" id={`${this.props.field_value}_checkbox`}
-						onChange={(event: ChangeEvent<HTMLInputElement>) => this.update_filter (event.currentTarget)}
+						onChange={(event: InputChangeEvent) => this.update_filter (event.currentTarget)}
 						ref={this.checkbox} value={this.props.field_value} defaultChecked={this.props.checked}>
 					</input>
 
@@ -93,7 +93,7 @@ export class CheckboxFilterList extends Component<CheckboxFilterListProps> {
 
 
 	public render () {
-		return <div id={this.props.id} className="right-aligned two-column-grid checkbox-list" ref={this.container}>
+		return <div id={this.props.id} className="left-aligned two-column-grid checkbox-list" ref={this.container}>
 			{this.props.children}
 		</div>
 	}// render;

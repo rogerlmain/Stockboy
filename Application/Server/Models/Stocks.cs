@@ -42,19 +42,6 @@ namespace Stockboy.Models {
 	}// HoldingsModel;
 
 
-	[Keyless]
-	public class ProfitLossModel: StockDataModel {
-		public string broker { get; set; } = String.Empty;
-		public string symbol { get; set; } = String.Empty;
-		public string company { get; set; } = String.Empty;
-		public Decimal sales_profit { get; set; } = 0;
-		public Decimal dividend_payout { get; set; } = 0;
-		public Decimal value_profit { get; set; } = 0;
-		public Decimal overall_profit { get; set; } = 0;
-		public string status { get; set; } = HoldingStatus.live;
-	}// ProfitLossModel;
-
-
 	public class StockDateModel {
 		public Guid ticker_id { get; set; } = Guid.Empty;
 		public DateTime date { get; set; } = DateTime.MinValue;

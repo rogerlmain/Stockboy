@@ -12,7 +12,7 @@ import { Component } from "react";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray ("broker", "company", "symbol", "previous", "current", "split_date"),
+	fields: new DataKeyArray ("broker", "company", {symbol: "Tickers"}, "previous", "current", "split_date"),
 	date_fields: ["split_date"],
 	numeric_fields: ["previous", "current"]
 }// properties;

@@ -1,5 +1,5 @@
 import MainMenuItem from "Controls/MainMenuItem";
-import PopupWindow from "Controls/PopupWindow";
+import PopupWindow from "Controls/Popups/PopupWindow";
 
 import ActivityPage from "Pages/Activity";
 import BrokersPage from "Pages/Brokers";
@@ -99,7 +99,7 @@ export default class MainPage extends Component {
 
 	constructor (props: BaseProps) {
 		super (props);
-		this.state.page = PageType.home;
+		this.state.page = PageType.profits
 	}// constructor;
 
 }// MainPage;

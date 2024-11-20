@@ -7,7 +7,7 @@ import { IFormProps } from "Controls/Abstract/BaseProperties";
 import { PromptResponse } from "Controls/EditFormControl";
 import { BaseModel } from "Models/Abstract/BaseModels";
 import { DividendDataModel } from "Models/Dividends";
-import { ChangeEvent, Component, RefObject, createRef } from "react";
+import { Component, RefObject, createRef } from "react";
 
 
 
@@ -144,7 +144,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 							<label htmlFor="reinvested">Reinvested</label>
 							<input id="reinvested" type="checkbox" value={this.state.reinvested.toString ()}
 								style={{ width: "1rem" }} defaultChecked={true} 
-								onChange={(event: ChangeEvent<HTMLInputElement>) => this.setState ({ reinvested: event.target.checked })}>
+								onChange={(event: InputChangeEvent) => this.setState ({ reinvested: event.target.checked })}>
 							</input>
 						</div>
 					</div>

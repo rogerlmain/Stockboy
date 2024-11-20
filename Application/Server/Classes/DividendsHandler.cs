@@ -1,5 +1,4 @@
 ﻿using Stockboy.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 namespace Stockboy.Classes {

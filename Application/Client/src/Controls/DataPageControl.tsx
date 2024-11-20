@@ -68,6 +68,12 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	}// show_form;
 
 
+	private recenter_grid_block () {
+		if (not_set (this.side_panel.current) || not_set (this.grid_block.current) || (this.side_panel.current.offsetWidth == 0)) return setTimeout (this.recenter_grid_block.bind (this));
+		this.grid_block.current.style.setProperty ("margin-left", `${this.side_panel.current.offsetWidth}px`);
+	}// recenter_grid_block;
+
+
 	/********/
 
 
@@ -150,9 +156,10 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 	public componentDidUpdate (props: DataPageControlProps) {
 		if (props.data?.matches (this.props.data)) return;
+		if (isset (this.props.children)) this.recenter_grid_block.bind (this) ();
 		this.setState ({ data: this.props.data });
 	}// componentDidMount;
-		
+
 
 	public render () {
 		return <div className="full-size column-block">

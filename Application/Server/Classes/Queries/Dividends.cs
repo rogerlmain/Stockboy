@@ -4,7 +4,7 @@ namespace Stockboy.Classes.Queries {
 
 	public static class DividendQueries {
 
-		public static IQueryable<DividendModel> select_query (DataContext context) { 
+		public static IQueryable<DividendModel> SelectQuery (DataContext context) { 
 			return from dvd in context.dividends
 			join brk in context.brokers on dvd.broker_id equals brk.id
 			join tck in context.tickers on dvd.ticker_id equals tck.id
@@ -21,15 +21,27 @@ namespace Stockboy.Classes.Queries {
 				share_quantity = dvd.share_quantity,
 				payout = dvd.amount_per_share * dvd.share_quantity
 			};
-		}// select_query;
+		}// SelectQuery;
 
 
-		public static DividendModelList get_dividends (DataContext context) => select_query (context).ToList ();
+		public static IEnumerable<DividendSummary> GetDividendTotals (DataContext context) {
+			return from dvd in context.dividends
+			group dvd by new {
+				dvd.broker_id,
+				dvd.ticker_id,
+			} into dvg
+			select new DividendSummary () {
+				broker_id = dvg.Key.broker_id,
+				ticker_id = dvg.Key.ticker_id,
+				payout = dvg.Sum (div => div.amount_per_share * div.share_quantity)
+			};
+		}// GetDividendTotals;
 
 
-		public static DividendModel? get_dividend_by_id (DataContext context, Guid id) { 
-			return select_query (context).Where ((DividendModel item) => item.id == id).FirstOrDefault ();
-		}// get_dividend_by_id;
+
+		public static DividendModel? GetDividendById (DataContext context, Guid id) { 
+			return SelectQuery (context).Where ((DividendModel item) => item.id == id).FirstOrDefault ();
+		}// GetDividendById;
 		
 	}// DividendQueries;
 

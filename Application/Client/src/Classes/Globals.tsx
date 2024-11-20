@@ -1,4 +1,4 @@
-import PopupWindow from "Controls/PopupWindow";
+import PopupWindow from "Controls/Popups/PopupWindow";
 
 
 export {};

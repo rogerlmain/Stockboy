@@ -16,7 +16,7 @@ import { Component, createRef, RefObject } from "react"
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray ("date", "transaction_type", "broker", "company", "ticker", "quantity", "price", /*"amount",*/ "total_quantity"/*, {total_amount: "Total Cost"}*/),
+	fields: new DataKeyArray ("date", "broker", "company", "ticker", "transaction_type", "quantity", "price", /*"amount",*/ "total_quantity"/*, {total_amount: "Total Cost"}*/),
 	date_fields: ["date"],
 	numeric_fields: ["quantity", "total_quantity"],
 	currency_fields: ["amount", "total_amount", "price"],

@@ -15,7 +15,7 @@ namespace Stockboy.Controllers {
 
 			try {
 
-				DividendModelList? data = DividendQueries.select_query (context).ToList ();
+				DividendModelList? data = DividendQueries.SelectQuery (context).ToList ();
 				DividendSummaryList? summary = null;
 
 				if (isset (data)) foreach (var item in data!) {
@@ -47,7 +47,7 @@ namespace Stockboy.Controllers {
 
 		[HttpGet]
 		[Route ("GetDividends")]
-		public IActionResult GetDividends () => new JsonResult (DividendQueries.get_dividends (context));
+		public IActionResult GetDividends () => new JsonResult (DividendQueries.SelectQuery (context));
 
 
 		[HttpPost]
@@ -62,7 +62,7 @@ namespace Stockboy.Controllers {
 
 			try {
 				DividendsTableRecord? dividend = SaveData (new DividendsTableRecord ().Merge (parameters));
-				return new JsonResult (DividendQueries.get_dividend_by_id (context, dividend!.id!.Value));
+				return new JsonResult (DividendQueries.GetDividendById (context, dividend!.id!.Value));
 			} catch (Exception except) {
 				return this.error_message (except.Message);
 			}// try;

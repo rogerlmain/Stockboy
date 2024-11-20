@@ -59,6 +59,26 @@ export class DataKeyArray {
 	}// titleCase;
 
 
+	public has = (value: string): boolean => this.indexOf (value) > -1;
+
+
+	public indexOf (value: string) {
+
+		for (let index = 0; index < this.key_values.length; index++) {
+			if (this.key_values [index].id == value) return index;
+		}// indexOf;
+
+		return -1;
+
+	}// indexOf;
+
+
+	public insert = (value: DataKey, position: number = 0) => this.key_values.splice (position, 0, value);
+
+
+	public remove = (value: string) => this.key_values.splice (this.indexOf (value), 1);
+
+
 	public map = (handler: DataKeyArrayMapFunction): Array<ReactNode> => this.key_values.map<ReactNode> (handler);
 
 

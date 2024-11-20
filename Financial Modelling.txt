@@ -6,3 +6,9 @@ BDN,M,GLAD,PCFBY,ALLR,SQFT,AGNC,EFTR,LGSXY,LBUY
 
 
 $.historicalStockList[2].historical[7].recordDate
+
+
+https://financialmodelingprep.com/api/v3/historical-price-full/stock_dividend/EARN,BDN,EFC,M,GLAD,OXSQ,PCFBY,ALLR,SQFT,AGNC,EFTR,LGSXY,LBUY?apikey=GWL8VaOub1b403hrhY0RGpKUnUl5yRhP
+
+
+https://financialmodelingprep.com/api/v3/historical-price-full/stock_dividend/EARN,BDN,EFC,M,GLAD?apikey=GWL8VaOub1b403hrhY0RGpKUnUl5yRhP

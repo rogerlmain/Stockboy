@@ -250,6 +250,9 @@ div[class*="-column-grid"] {
 	column-gap: 0.5rem;
 	row-gap: 0.2rem;
 
+	&.left-aligned { justify-content: flex-start }
+	&.right-aligned { justify-content: flex-end }
+
 	label {
 		display: inline-flex;
 		flex-direction: row;
@@ -258,6 +261,7 @@ div[class*="-column-grid"] {
 	}
 
 	*.full-width { grid-column: 1/-1 }
+
 }
 
 

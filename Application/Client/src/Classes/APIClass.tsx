@@ -1,4 +1,4 @@
-import ErrorWindow from "Controls/ErrorWindow";
+import ErrorWindow from "Controls/Popups/ErrorWindow";
 
 
 const stockboy_url = "https://localhost:7006";
