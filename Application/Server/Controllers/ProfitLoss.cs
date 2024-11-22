@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stockboy.Classes;
-using Stockboy.Models;
+
 
 namespace Stockboy.Controllers {
 

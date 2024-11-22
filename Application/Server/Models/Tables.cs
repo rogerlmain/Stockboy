@@ -7,7 +7,6 @@
 
 
 	public class DataTableModel: DataModel, IDataModel, IDataTableModel {
-		public new Guid id => (Guid) base.id!;
 		public string name { get; set; } = String.Empty;
 	}// DataTableModel;
 
@@ -24,7 +23,6 @@
 		public DateTime? ex_dividend_date { get; set; } = null;
 		public Decimal? dividend_payout { get; set; } = null;
 		public int? frequency { get; set; } = null;
-		public DateTime? last_updated { get; set; } = null;
 	}// TickerTableRecord;
 
 

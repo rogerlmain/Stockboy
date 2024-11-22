@@ -9,7 +9,6 @@ create view activity_view as select
 	concat(tck.name, if(tck.price = -1, " (Defunct)", "")) as company,
 	tac.price as cost_price,
     tck.price as current_price,
-    tck.last_updated,
 	tac.quantity,
 	ttp.name as transaction_type,
 	tac.transaction_date as transaction_date
@@ -38,7 +37,6 @@ union select
 	tck.name,
 	0 as cost_price,
     tck.price as current_price,
-    tck.last_updated,   
 	spl.current / spl.previous as quantity,
 	'Split' as transaction_type,
 	spl.split_date as transaction_date

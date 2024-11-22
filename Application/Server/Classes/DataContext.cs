@@ -4,7 +4,7 @@ using Stockboy.Models;
 
 namespace Stockboy.Classes {
 
-	public class DataContext: DbContext {
+	public class DataContext (DbContextOptions<DataContext> context): DbContext (context) {
 
 		protected override void OnConfiguring (DbContextOptionsBuilder builder) => builder.LogTo (Console.WriteLine);
 
@@ -12,19 +12,16 @@ namespace Stockboy.Classes {
 		/********/
 
 
-		public DbSet<BrokersTableRecord> brokers { get; set; }
-		public DbSet<TickerTableRecord> tickers { get; set; }
-		public DbSet<TransactionTypesTableRecord> transaction_types { get; set; }
-		public DbSet<TransactionsTableRecord> transactions { get; set; }
-		public DbSet<SplitsTableRecord> splits { get; set; }
-		public DbSet<DividendsTableRecord> dividends { get; set; }
+		public required DbSet<BrokersTableRecord> brokers { get; set; }
+		public required DbSet<DividendsTableRecord> dividends { get; set; }
+		public required DbSet<SplitsTableRecord> splits { get; set; }
+		public required DbSet<TickerTableRecord> tickers { get; set; }
+		public required DbSet<TransactionsTableRecord> transactions { get; set; }
+		public required DbSet<TransactionTypesTableRecord> transaction_types { get; set; }
+		public required DbSet<UsersTable> users { get; set; }
 
 
-		public DbSet<ActivityView> activity_view { get; set; }
-
-
-		public DataContext (DbContextOptions<DataContext> context) : base (context) {}
-
+		public required DbSet<ActivityView> activity_view { get; set; }
 
 	}// DataContext;
 

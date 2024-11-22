@@ -5,15 +5,18 @@ using Newtonsoft.Json;
 using Stockboy.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace Stockboy.Classes {
 
 	public static class ControllerExtensions {
 
+		[SuppressMessage ("Style", "IDE0060:Remove unused parameter", Justification = "Required")]
 		public static JsonResult error_message (this Controller controller, string message) => new (new { error = message });
 
 
+		[SuppressMessage ("Style", "IDE0060:Remove unused parameter", Justification = "Required")]
 		public static JsonResult DeleteRecord<TModel> (this Controller controller, DbSet<TModel> dataset, IDataModel parameters) where TModel: DataModel {
 			try {
 				dataset.Where (item => item.id == parameters.id).ExecuteUpdate<IDataModel> (property => property.SetProperty (item => item.deleted, true));
@@ -33,18 +36,10 @@ namespace Stockboy.Classes {
 		public static long UnixTimestamp (this DateTime date) => (new DateTimeOffset (date).ToUnixTimeMilliseconds ());
 
 
-		public static Boolean LaterThan (this DateTime date, DateTime? comparison, long duration = one_hour) {
-			return (date.UnixTimestamp () - (comparison ?? DateTime.MaxValue).UnixTimestamp ()) >= duration;
-		}// LaterThan;
-
-
-		public static Boolean EarlierThan (this DateTime date, DateTime? comparison, long duration = one_hour) {
-			return ((comparison ?? DateTime.MaxValue).UnixTimestamp () - date.UnixTimestamp ()) >= duration;
-		}// EarlierThan;
-
-
-		public static Boolean LaterThanNow (this DateTime date, long duration = one_hour) => date.LaterThan (DateTime.Now, duration);
-		public static Boolean EarlierThanNow (this DateTime date, long duration = one_hour) => date.EarlierThan (DateTime.Now, duration);
+		public static Boolean LaterThan (this DateTime date, DateTime? comparison) => date > comparison;
+		public static Boolean EarlierThan (this DateTime date, DateTime? comparison) => date < comparison;
+		public static Boolean LaterThanNow (this DateTime date) => date.LaterThan (DateTime.Now);
+		public static Boolean EarlierThanNow (this DateTime date) => date.EarlierThan (DateTime.Now);
 
 
 	}// DateTimeExtensions;
@@ -57,22 +52,24 @@ namespace Stockboy.Classes {
 		}// GetContext;
 
 
-		public static JsonResult Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : class {
-
-			var key_fields = parameters.GetKeyFields ();
-
+		public static JsonResult Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : BaseModel {
 			try {
-				switch (isset (parameters.GetKeyFields ()?.Find (next => isset (parameters.GetValue (next))))) {
-					case true: dataset.Update (parameters); break;
-					default: dataset.Add (parameters); break;
-				}// switch;
+
+				Boolean new_record = parameters.id == Guid.Empty;
+
+				if (new_record) {
+					parameters.id = Guid.NewGuid ();
+					dataset.Add (parameters);
+				} else {
+					dataset.Update (parameters);
+				}// if;
 
 				dataset.GetContext ()?.SaveChanges ();
 				return new JsonResult (parameters);
+
 			} catch (Exception except) {
 				return new JsonResult (new { error = except.Message });
-			}
-
+			}// try;
 		}// Save;
 
 	}// DataExtensions;
@@ -96,8 +93,7 @@ namespace Stockboy.Classes {
 			String [] sort_fields = sort_list.Split (',');
 			IOrderedQueryable<TModel>? sorted_list = null;
 
-			for (int i = 0; i < sort_fields.Count (); i++) {
-				Boolean descending = sort_fields [i].Contains ("desc");
+			for (int i = 0; i < sort_fields.Length; i++) {
 				if (i == 0) {
 					sorted_list = source.SequentialOrderBy (sort_fields [i]);
 					continue;

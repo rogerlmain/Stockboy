@@ -62,7 +62,7 @@ namespace Stockboy.Controllers {
 
 			try {
 				DividendsTableRecord? dividend = SaveData (new DividendsTableRecord ().Merge (parameters));
-				return new JsonResult (DividendQueries.GetDividendById (context, dividend!.id!.Value));
+				return new JsonResult (DividendQueries.GetDividendById (context, dividend!.id));
 			} catch (Exception except) {
 				return this.error_message (except.Message);
 			}// try;

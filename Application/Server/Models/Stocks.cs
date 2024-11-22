@@ -37,7 +37,6 @@ namespace Stockboy.Models {
 		public decimal total_sales_amount { get; set; } = Decimal.Zero;
 		public decimal? value { get; set; } = null;
 		public decimal sales_profit { get; set; } = Decimal.Zero;
-		public DateTime? last_updated { get; set; } = null;
 		public string status { get; set; } = HoldingStatus.live;
 	}// HoldingsModel;
 

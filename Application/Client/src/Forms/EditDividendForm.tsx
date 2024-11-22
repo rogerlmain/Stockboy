@@ -12,6 +12,8 @@ import { Component, RefObject, createRef } from "react";
 
 
 class EditDividendFormProps implements IFormProps {
+	broker_id: String;
+	ticker_id: String;
 	data?: DividendDataModel;
 }// EditDividendFormProps;
 
@@ -65,7 +67,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 	/********/
 
 
-	public static defaultProps = {
+	public static defaultProps: EditDividendFormProps = {
 		broker_id: null,
 		ticker_id: null,
 		data: this.test_data,

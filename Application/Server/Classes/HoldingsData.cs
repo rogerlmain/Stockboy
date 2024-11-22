@@ -12,8 +12,8 @@ namespace Stockboy.Classes {
 		private const int batch_size = 5;
 
 
-		private DataContext context;
-		private StockAPIClient client;
+		private readonly DataContext context;
+		private readonly StockAPIClient client;
 
 
 		private static class TransactionTypes {
@@ -31,6 +31,38 @@ namespace Stockboy.Classes {
 
 
 		/********/
+
+
+		private static DateTime? get_payment_date (TickerTableRecord ticker, DateTime? last_payment_date, DateTime? next_payment_date) {
+			if (isset (next_payment_date)) return next_payment_date;
+			if (isset (ticker.frequency) && isset (last_payment_date)) {
+				DateTime payment_date = (DateTime) last_payment_date!;
+				return payment_date.AddMonths ((int) ticker.frequency!);
+			}// if;
+			return null;
+		}// get_payment_date;
+
+
+		private static void set_stock_data (TickerTableRecord ticker, HistoricalStockList? dividends, ShortStockQuote? price) {
+
+			StockDividendData last_payment_date = (from date in dividends!.historical
+				where date.paymentDate < DateTime.Now
+				select date
+			).OrderByDescending (date => date.paymentDate).First ();
+
+			StockDividendData? next_payment_date = (from date in dividends.historical
+				where date.paymentDate > DateTime.Now select date
+			).OrderBy (date => date.paymentDate).FirstOrDefault ();
+
+			ticker.price = price?.price ?? -1;
+			ticker.volume = price?.volume;
+
+			ticker.last_payment_date = last_payment_date?.paymentDate;
+			ticker.next_payment_date = get_payment_date (ticker, last_payment_date?.paymentDate, next_payment_date?.paymentDate);
+			ticker.ex_dividend_date = next_payment_date?.recordDate;
+			ticker.dividend_payout = next_payment_date?.dividend ?? last_payment_date?.dividend;
+
+		}// set_stock_data;
 
 
 		private List<DividendHistoryList>? dividend_history_query (StockDividendHistory? history) {
@@ -60,7 +92,10 @@ namespace Stockboy.Classes {
             foreach (DividendHistoryList items in history_list!) {
 				if (items.Count < 2) continue;
 				tickers = context.tickers.Where (tkr => tkr.id == items [0].ticker_id).ToList ();
-				tickers.ForEach (tck => tck.frequency = (int) Math.Round ((items [0].payment_date - items [1].payment_date).Days / 30.437));
+				tickers.ForEach (tck => {
+					tck.frequency = (int) Math.Round ((items [0].payment_date - items [1].payment_date).Days / 30.437);
+					if (tck.frequency < 1) tck.frequency = 1;
+				});
 				context.SaveChanges ();
             }// foreach;
 
@@ -88,46 +123,14 @@ namespace Stockboy.Classes {
 		}// get_dividend_history;
 
 
-		private DateTime? get_payment_date (TickerTableRecord ticker, DateTime? last_payment_date, DateTime? next_payment_date) {
-			if (isset (next_payment_date)) return next_payment_date;
-			if (isset (ticker.frequency) && isset (last_payment_date)) {
-				DateTime payment_date = (DateTime) last_payment_date!;
-				return payment_date.AddMonths ((int) ticker.frequency!);
-			}// if;
-			return null;
-		}// get_payment_date;
-
-
-		private void set_stock_data (TickerTableRecord ticker, HistoricalStockList? dividends, ShortStockQuote? price) {
-
-			StockDividendData last_payment_date = (from date in dividends!.historical
-				where date.paymentDate < DateTime.Now
-				select date
-			).OrderByDescending (date => date.paymentDate).First ();
-
-			StockDividendData? next_payment_date = (from date in dividends.historical
-				where date.paymentDate > DateTime.Now select date
-			).OrderBy (date => date.paymentDate).FirstOrDefault ();
-
-			ticker.price = price?.price ?? -1;
-			ticker.volume = price?.volume;
-
-			ticker.last_payment_date = last_payment_date?.paymentDate;
-			ticker.next_payment_date = get_payment_date (ticker, last_payment_date?.paymentDate, next_payment_date?.paymentDate);
-			ticker.ex_dividend_date = next_payment_date?.recordDate;
-			ticker.dividend_payout = next_payment_date?.dividend ?? last_payment_date?.dividend;
-
-			ticker.last_updated = DateTime.Now;
-
-		}// set_stock_data;
-
-
 		private async Task update_stock_data () {
 			try {
+				UsersTable users = (from user in context.users select user).First ();
+
+				if ((users.last_updated ?? DateTime.MinValue).LaterThan (DateTime.Now.AddHours (-1))) return;
 
 				TickersTableList tickers = (from ticker in context.tickers.ToList ()
-					where (ticker.price != -1) && (ticker.last_updated?.EarlierThanNow () ?? true)
-					select ticker).ToList ();
+					where (ticker.price != -1) select ticker).ToList ();
 
 				if (tickers.Count == 0) return;
 
@@ -145,6 +148,8 @@ namespace Stockboy.Classes {
 					if (isset (dividends?.historical)) set_stock_data (ticker, dividends, price);
 					
 				});
+
+				users.last_updated = DateTime.Now;
 				
 				context.SaveChanges ();
 
@@ -192,23 +197,21 @@ namespace Stockboy.Classes {
 					(holdings ??= new ()).Add (holding);
 				}// if;
 
-				holding!.last_updated = item.last_updated;
-
 				if ((item.transaction_type == TransactionTypes.buy) || (item.transaction_type == TransactionTypes.reinvestment)) {
 
 					Decimal purchase_price = (item.cost_price * item.quantity).round (2);
 
-					holding.total_purchase_cost += purchase_price;
-					holding.current_purchase_cost += purchase_price;
-					holding.quantity += item.quantity;
+					holding!.total_purchase_cost += purchase_price;
+					holding!.current_purchase_cost += purchase_price;
+					holding!.quantity += item.quantity;
 
 				}// if;
 
 				if (item.transaction_type == TransactionTypes.sell) {
 
-					Decimal per_stock_cost = (holding.current_purchase_cost / holding.quantity);
+					Decimal per_stock_cost = (holding!.current_purchase_cost / holding!.quantity);
 					Decimal sale_price = (item.cost_price * item.quantity).round (2);
-					Decimal shares_remaining = (holding.quantity - item.quantity).round (6);
+					Decimal shares_remaining = (holding!.quantity - item.quantity).round (6);
 					Decimal sold_stock_cost = (per_stock_cost * item.quantity);
 
 					holding.sales_profit += (sale_price - sold_stock_cost).round (2);
@@ -218,7 +221,7 @@ namespace Stockboy.Classes {
 
 				}// if;
 
-				if (item.transaction_type == TransactionTypes.split) holding.quantity = (holding.quantity * item.quantity).round (6);
+				if (item.transaction_type == TransactionTypes.split) holding!.quantity = (holding.quantity * item.quantity).round (6);
 
 				previous_broker = item.broker;
 				previous_company = item.company;
@@ -275,7 +278,7 @@ namespace Stockboy.Classes {
 
 
 		public async static Task<HoldingsData> Create (DataContext context, StockAPIClient client) {
-			HoldingsData holdings_data = new HoldingsData (context, client);
+			HoldingsData holdings_data = new (context, client);
 			await holdings_data.update_stock_data ();
 			return holdings_data;
 		}// Create;

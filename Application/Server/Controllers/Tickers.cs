@@ -19,7 +19,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("DeleteTicker")]
-		public IActionResult DeleteBroker ([FromBody] DataModel parameters) => this.DeleteRecord (context.tickers, parameters);
+		public IActionResult DeleteTicker ([FromBody] DataModel parameters) => this.DeleteRecord (context.tickers, parameters);
 
 	}// Tickers;
 

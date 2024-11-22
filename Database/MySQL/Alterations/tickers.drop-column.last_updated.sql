@@ -1,0 +1,1 @@
+alter table tickers drop column last_updated;

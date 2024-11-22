@@ -12,7 +12,6 @@ namespace Stockboy.Models {
 		public string company { get; set; } = String.Empty;
 		public decimal cost_price { get; set; } = Decimal.Zero;
 		public decimal? current_price { get; set; } = null;
-		public DateTime? last_updated { get; set; } = null;
 		public decimal quantity { get; set; } = Decimal.Zero;
 		public string transaction_type { get; set; } = String.Empty;
 		public DateTime transaction_date { get; set; } = DateTime.Now;

@@ -25,7 +25,7 @@ namespace Stockboy.Classes.Queries {
 				transaction_date = tra.transaction_date,
 				settlement_date = tra.settlement_date,
 				transaction_type = ttp.name,
-				transaction_type_id = ttp.id ?? Guid.Empty,
+				transaction_type_id = ttp.id,
 			};
 			return result;
 		}// SelectQuery;
