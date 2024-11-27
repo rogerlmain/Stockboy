@@ -88,12 +88,22 @@ export class DataKeyArray {
 	}// push;
 
 
-	constructor (...values: StringObjectArray) {
+	constructor (values: StringObjectArray = null, keys: StringPair = null) {
+
+		if (not_set (values)) return;
+
 		values.forEach ((value: StringObject) => {
+
 			if (is_null (this.key_values)) this.key_values = new Array<DataKey> ();
 			if (String.isString (value)) return this.key_values.push (new DataKey (value));
-			Object.keys (value).forEach ((key: string) => this.key_values.push (new DataKey ({ [key]: value [key] })));
+
+			switch (isset (keys)) {
+				case true: this.key_values.push (new DataKey ({ [value [keys [0]]]: value [keys [1]] })); break;
+				default: Object.keys (value).forEach ((key: string) => this.key_values.push (new DataKey ({ [key]: value [key] }))); break;
+			}// switch;
+
 		});
+
 	}// constructor;
 
 }// DataKeyArray;

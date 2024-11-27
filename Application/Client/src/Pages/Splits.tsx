@@ -1,4 +1,4 @@
-import APIClass from "Classes/APIClass";
+import StockboyAPI from "Classes/StockboyAPI";
 import DataPageControl from "Controls/DataPageControl";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
@@ -12,7 +12,7 @@ import { Component } from "react";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray ("broker", "company", {symbol: "Tickers"}, "previous", "current", "split_date"),
+	fields: new DataKeyArray (["broker", "company", {symbol: "Tickers"}, "previous", "current", "split_date"]),
 	date_fields: ["split_date"],
 	numeric_fields: ["previous", "current"]
 }// properties;
@@ -47,7 +47,7 @@ export default class SplitsPage extends Component<BaseProps, SplitsPageState> {
 
 	constructor (props: BaseProps) {
 		super (props);
-		APIClass.fetch_data ("GetSplits").then ((result: SplitList) => this.setState ({ data: result }));
+		new StockboyAPI ().fetch_data ("GetSplits").then ((result: SplitList) => this.setState ({ data: result }));
 	}// constructor;
 
 }// SplitsPage;

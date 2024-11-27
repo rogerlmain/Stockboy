@@ -1,7 +1,7 @@
 import TransactionTypeList from "Controls/Lists/TransactionTypeList";
 import TickerSelector from "Controls/TickerSelector";
 
-import { DateFormats } from "Classes/Globals";
+import { DateFormats } from "Classes/Common/Globals";
 import { IBaseState, IFormProps } from "Controls/Abstract/BaseProperties";
 import { TransactionDataModel } from "Models/Transactions";
 import { Component } from "react";

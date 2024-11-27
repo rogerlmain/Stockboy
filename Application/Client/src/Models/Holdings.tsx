@@ -1,4 +1,4 @@
-import { HoldingsStatus } from "Classes/Globals";
+import { HoldingsStatus } from "Classes/Common/Globals";
 import { TypeSafe, DateType, StockModel } from "Models/Abstract/BaseModels";
 import { DividendPayment, DividendPaymentList, DividendPayout } from "Models/Dividends";
 

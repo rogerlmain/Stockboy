@@ -1,6 +1,6 @@
-import APIClass from "Classes/APIClass";
+import StockboyAPI from "Classes/StockboyAPI";
+import Eyecandy from "Controls/Common/Eyecandy";
 import DataPageControl from "Controls/DataPageControl";
-import Eyecandy from "Controls/Eyecandy";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { IBaseModel } from "Models/Abstract/BaseModels";
@@ -28,7 +28,7 @@ export class DeleteForm extends Component<DeleteFormProps> {
 
 	public delete_record () {
 		popup_window.show (<Eyecandy text={`Deleting record...`}
-			command={() => APIClass.fetch_data (this.props.delete_command, this.props.data).then (() => {
+			command={() => new StockboyAPI ().fetch_data (this.props.delete_command, this.props.data).then (() => {
 
 				this.props.data_page_control.remove_row ();
 

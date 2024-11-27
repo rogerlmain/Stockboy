@@ -1,5 +1,6 @@
-import APIClass from "Classes/APIClass";
+import StockboyAPI from "Classes/StockboyAPI";
 
+import Eyecandy from "Controls/Common/Eyecandy";
 import DataPageControl from "Controls/DataPageControl";
 import StockStatusFilters from "Controls/StockStatusFilters";
 
@@ -17,7 +18,7 @@ export type HoldingsList = Array<HoldingsModel>
 
 const properties: DataTableProperties = {
 	keys: ["ticker_id", "broker_id"],
-	fields: new DataKeyArray ("broker", "company", {symbol: "Ticker"}, "status", "quantity", "current_price", { current_purchase_cost: "Purchase Value", value: "Current Value" }),
+	fields: new DataKeyArray (["broker", "company", {symbol: "Ticker"}, "status", "quantity", "current_price", { current_purchase_cost: "Purchase Value", value: "Current Value" }]),
 	numeric_fields: ["quantity"],
 	currency_fields: ["current_price", "current_purchase_cost", "value"],
 	rounded_fields: [{ value: 2 }],
@@ -27,6 +28,7 @@ const properties: DataTableProperties = {
 
 class HomePageState {
 	data: HomeDetailsModel = null;
+	loading: boolean = true;
 }// HomePageState;
 
 
@@ -46,7 +48,7 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 
 			<div className="somewhat-spaced-out row-block with-headspace with-lotsa-legroom">
 
-				{isset (this.state.data?.payments_list) ? <div className="column-block with-legroom">
+				{this.state.loading ? <Eyecandy text="Loading pending dividends" /> : (isset (this.state.data?.payments_list) ? <div className="column-block with-legroom">
 			
 					<div className="title">Upcoming Dividend Payments</div>
 				
@@ -66,9 +68,10 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 						</div>)}
 					</div>
 
-				</div> : null}
+				</div> : <label>No pending dividends</label>)}
 
-				{isset (this.state.data?.monthly_payout) ? <div className="column-block">
+
+				{this.state.loading ? <Eyecandy text="Loading monthly dividends" /> : (isset (this.state.data?.monthly_payout) ? <div className="column-block">
 
 					<div className="title">Monthly Dividend Payments</div>
 				
@@ -90,14 +93,14 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 						<div>${this.state.data.monthly_payout.total.round_to (4)}</div>
 					</div>
 
-				</div> : null}
+				</div> : <label>No monthly dividends</label>)}
 
 			</div>
 
-			<DataPageControl data={this.state.data?.holdings_list} properties={properties} search_filters={properties.fields} 
+			{this.state.loading ? <Eyecandy text="Loading monthly dividends" /> : (isset (this.state.data) ? <DataPageControl data={this.state.data?.holdings_list} properties={properties} search_filters={properties.fields} 
 				stock_filters={true} table_buttons={false} ref={this.data_page} data_type="Stock Holdings">
-				{isset (this.state.data) ? <StockStatusFilters data_page={this.data_page.current} /> : null}
-			</DataPageControl>
+				<StockStatusFilters data_page={this.data_page.current} />
+			</DataPageControl> : <label>No stock holdings</label>)}
 
 		</div>
 	}// render;
@@ -107,8 +110,10 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 
 		super (props);
 
-		APIClass.fetch_data ("GetHoldings").then ((result: HomeDetailsModel) => {
-			this.setState ({ data: new HomeDetailsModel ().assign (result)});
+		new StockboyAPI ().fetch_data ("GetHoldings").then ((result: HomeDetailsModel) => {
+			let data: HomeDetailsModel = new HomeDetailsModel ();
+			this.setState ({ loading: false });
+			if (isset (result)) this.setState ({ data: data.assign (result) });
 		});
 
 	}// constructor;

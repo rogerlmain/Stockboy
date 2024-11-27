@@ -1,15 +1,54 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Stockboy.Classes;
 using Stockboy.Models;
 
 
 namespace Stockboy.Controllers {
 
-	public class Brokers (DataContext context) : Controller {
+	[EnableCors]
+	public class Brokers (DataContext context) : BaseController {
 
 		[HttpGet]
 		[Route ("GetBrokers")]
-		public IActionResult GetBrokers () => new JsonResult (context?.brokers.Where (broker => !broker.deleted).OrderBy (item => item.name).ToList ());
+		public IActionResult GetBrokers () {
+			try {
+
+var response = (from brk in context.brokers select new {
+					brk.id,
+					brk.name
+				}).OrderBy (broker => broker.name);
+
+				return new JsonResult ((from brk in context.brokers select new {
+					brk.id,
+					brk.name
+				}).OrderBy (broker => broker.name));
+			} catch (Exception except) {
+				return Error (except);
+			}// GetBrokers;
+		}// GetBrokers;
+
+
+		[HttpPost]
+		[Route ("GetBrokers")]
+		public IActionResult GetBrokers ([FromBody] UserCredentialsRecord user) {
+			try {
+				return new JsonResult ((
+					from ust in context.user_stocks
+					join brk in context.brokers on
+						ust.broker_id equals brk.id
+					where
+						(ust.user_id == user.user_id) &&
+						(!ust.deleted)
+					select new {
+						brk.id,
+						brk.name
+					}
+				).Distinct ().OrderBy (result => result.name));
+			} catch (Exception except) {
+				return Error (except);
+			}// try;
+		}// GetBrokers;
 
 
 		[HttpPost]

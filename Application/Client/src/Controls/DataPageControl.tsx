@@ -1,5 +1,4 @@
 import EditFormControl from "Controls/EditFormControl";
-import Eyecandy from "Controls/Eyecandy";
 import FilterHandler from "Controls/FilterHandler";
 import TableButtons from "Controls/TableButtons";
 import TableFilters from "Controls/TableFilters";
@@ -170,16 +169,16 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 			<FilterHandlerContext.Provider value={this.filter_handler}>
 
-				{(this.props.search_filters || this.props.stock_filters) ? <TableFilters data={this.props.data} 
+				{((this.props.search_filters || this.props.stock_filters) && isset (this.props.data)) ? <TableFilters data={this.props.data} 
 					search_filters={this.props.search_filters} stock_filters={this.props.stock_filters}
 					parent={this} ref={this.table_filters} onFilterChange={this.filter_handler?.update_stock_filters.bind (this.filter_handler)}>
 				</TableFilters> : null}
 
 				<div className="full-size column-centered row-block" ref={this.grid_block}>
 
-					<div className="full-height column-block">
+					<div className="full-height column-centered column-block">
 
-						{is_null (this.props.data) ? <Eyecandy text={`Loading ${this.props.data_type}`} /> : <DataTable data={this.state.data} properties={this.props.properties} ref={this.data_table} parent={this} /> }
+						{is_null (this.props.data) ? <div className="bold-text">{`No ${this.props.data_type} defined`}</div> : <DataTable data={this.state.data} properties={this.props.properties} ref={this.data_table} parent={this} /> }
 
 						{this.props.table_buttons ? <div className={`button-bar ${this.props.align_buttons == ButtonAlignment.center ? "column-centered" : null}`}>
 							<TableButtons selected_row={this.state.selected_row}

@@ -1,5 +1,4 @@
 import MainMenuItem from "Controls/MainMenuItem";
-import PopupWindow from "Controls/Popups/PopupWindow";
 
 import ActivityPage from "Pages/Activity";
 import BrokersPage from "Pages/Brokers";
@@ -12,7 +11,7 @@ import TickersPage from "Pages/Tickers";
 import TransactionsPage from "Pages/Transactions";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
-import { Component, Context, createContext, createRef, RefObject } from "react";
+import { Component, Context, createContext } from "react";
 
 
 export enum PageType {
@@ -38,10 +37,6 @@ export const MainPageContext: Context<MainPage> = createContext (null);
 
 export default class MainPage extends Component {
 
-
-	private popup_ref: RefObject<PopupWindow> = createRef ();
-
-
 	private get active_page () {
 		switch (this.state.page) {
 			case PageType.home: return <HomePage />;
@@ -66,14 +61,7 @@ export default class MainPage extends Component {
 	public change_page = (new_page: PageType) => this.setState ({ page: new_page });
 
 
-	public componentDidMount () {
-		popup_window = this.popup_ref.current;
-	}// componentDidMount;
-
-
 	public render = () => <div className="centered full-page column-block with-row-space">
-
-		<PopupWindow id="popup_window" ref={this.popup_ref} />
 
 		<div className="full-width left-aligned row-block">
 			<MainPageContext.Provider value={this}>
@@ -99,7 +87,7 @@ export default class MainPage extends Component {
 
 	constructor (props: BaseProps) {
 		super (props);
-		this.state.page = PageType.profits;
+		this.state.page = PageType.brokers;
 	}// constructor;
 
 }// MainPage;

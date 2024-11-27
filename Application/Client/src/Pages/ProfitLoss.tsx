@@ -1,4 +1,4 @@
-import APIClass from "Classes/APIClass";
+import StockboyAPI from "Classes/StockboyAPI";
 
 import DataPageControl from "Controls/DataPageControl";
 import StockStatusFilters from "Controls/StockStatusFilters";
@@ -11,12 +11,12 @@ import { DataKey, DataKeyArray } from "../Classes/DataKeys";
 
 
 const properties: DataTableProperties = {
-	fields: new DataKeyArray ("broker", "symbol", "company", "status",
+	fields: new DataKeyArray (["broker", "symbol", "company", "status",
 		{ sales_profit: "Sales Profit/Loss"}, 
 		{ dividend_payout: "Dividend Payout" },
 		"value_profit",
 		{ overall_profit: "Overall Profit/Loss" }
-	),
+	]),
 	currency_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],
 	total_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],
 	highlighted_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],
@@ -114,7 +114,7 @@ export default class ProfitLossPage extends Component<BaseProps, ProfitLossPageS
 
 	constructor (props: BaseProps) {
 		super (props);
-		APIClass.fetch_data ("GetProfitAndLoss").then ((result: ProfitLossList) => {
+		new StockboyAPI ().fetch_data ("GetProfitAndLoss").then ((result: ProfitLossList) => {
 			this.profit_loss_list = new Array<ProfitLossModel> ().assign (result, ProfitLossModel);
 			this.setState ({ data: this.profit_loss_list });
 		});

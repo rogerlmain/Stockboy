@@ -1,8 +1,8 @@
-import APIClass from "Classes/APIClass";
-import Eyecandy from "Controls/Eyecandy";
+import StockboyAPI from "Classes/StockboyAPI";
+import Eyecandy from "Controls/Common/Eyecandy";
 import TickerSelector from "Controls/TickerSelector";
 
-import { DateFormats } from "Classes/Globals";
+import { DateFormats } from "Classes/Common/Globals";
 import { IFormProps } from "Controls/Abstract/BaseProperties";
 import { PromptResponse } from "Controls/EditFormControl";
 import { BaseModel } from "Models/Abstract/BaseModels";
@@ -26,6 +26,8 @@ class EditDividendFormState {
 
 
 export default class EditDividendForm extends Component<EditDividendFormProps, EditDividendFormState> {
+
+	private api: StockboyAPI = new StockboyAPI ();
 
 	private form: RefObject<HTMLDivElement> = createRef ();
 
@@ -82,7 +84,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 
 			let values = new FormData (this.form.current.closest ("form"));
 
-			APIClass.fetch_data ("GetDividendTransaction", values).then ((response: BaseModel) => {
+			this.api.fetch_data ("GetDividendTransaction", values).then ((response: BaseModel) => {
 				if (isset (response.id)) return popup_window.show (<div>
 
 					A stock purchase was found on the same date for the same broker,<br />
@@ -92,7 +94,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 					<div className="button-bar">
 						<button onClick={() => {
 							popup_window.show (<Eyecandy text="Updating transaction. One moment, please." />);
-							APIClass.fetch_data ("UpdateTransactionType", { id: response.id, type: "reinvestment" }).then (() => {
+							this.api.fetch_data ("UpdateTransactionType", { id: response.id, type: "reinvestment" }).then (() => {
 								resolve (PromptResponse.Proceed);
 							});
 						}}>Yes</button>

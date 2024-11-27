@@ -125,9 +125,9 @@ namespace Stockboy.Classes {
 
 		private async Task update_stock_data () {
 			try {
-				UsersTable users = (from user in context.users select user).First ();
+				SettingsTableRecord? settings = (from set in context.settings where set.name == "last_updated" select set).FirstOrDefault ();
 
-				if ((users.last_updated ?? DateTime.MinValue).LaterThan (DateTime.Now.AddHours (-1))) return;
+				if (isset (settings) && DateTime.Parse (settings!.value).LaterThan (DateTime.Now.AddHours (-1))) return;
 
 				TickersTableList tickers = (from ticker in context.tickers.ToList ()
 					where (ticker.price != -1) select ticker).ToList ();
@@ -149,9 +149,10 @@ namespace Stockboy.Classes {
 					
 				});
 
-				users.last_updated = DateTime.Now;
-				
-				context.SaveChanges ();
+				if (not_set (settings)) settings = new SettingsTableRecord () { name = "last_updated" };
+
+				settings!.value = DateTime.Now.ToString ();
+				context.settings.Save (settings);
 
 			} catch (Exception except) {
 				if (except is not AbortException) throw;
@@ -163,7 +164,7 @@ namespace Stockboy.Classes {
 		/********/
 
 
-		public HoldingsModelList? GetHoldingsData (StockDateModelList? report_dates = null) {
+		public HoldingsModelList? GetHoldingsData (Guid user_id, StockDateModelList? report_dates = null) {
 
 			String? previous_broker = null;
 			String? previous_company = null;
@@ -173,7 +174,9 @@ namespace Stockboy.Classes {
 
 			ActivityViewList activity = (from atv in context.activity_view.ToList ()
 				where is_null (report_dates) || atv.transaction_date.EarlierThan ((from rdt in report_dates
-					where rdt.ticker_id == atv.ticker_id
+					where 
+						(rdt.ticker_id == atv.ticker_id) &&
+						(atv.user_id == user_id)
 					select rdt.date).FirstOrDefault ()
 				) select atv
 			).ToList ();
@@ -233,9 +236,9 @@ namespace Stockboy.Classes {
 		}// GetHoldingsData;
 
 
-		public HoldingsModelList? HoldingsPriceList (StockDateModelList? report_dates = null) {
+		public HoldingsModelList? HoldingsPriceList (Guid user_id, StockDateModelList? report_dates = null) {
 
-			HoldingsModelList? holdings = GetHoldingsData (report_dates);
+			HoldingsModelList? holdings = GetHoldingsData (user_id, report_dates);
 
 			if (is_null (holdings)) return null;
 			TickersTableList stock_prices = context.tickers.ToList ();
@@ -252,9 +255,9 @@ namespace Stockboy.Classes {
 		}// HoldingsPriceList;
 
 
-		public ProfitLossModelList? GetProfitLossList () {
+		public ProfitLossModelList? GetProfitLossList (Guid user_id) {
 
-  			HoldingsModelList? holdings_data = HoldingsPriceList ();
+  			HoldingsModelList? holdings_data = HoldingsPriceList (user_id);
 
 			if (is_null (holdings_data)) return null;
 

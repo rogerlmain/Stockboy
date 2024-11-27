@@ -1,6 +1,6 @@
 import TickerSelector from "Controls/TickerSelector";
 
-import { DateFormats } from "Classes/Globals";
+import { DateFormats } from "Classes/Common/Globals";
 import { IBaseState, IFormProps } from "Controls/Abstract/BaseProperties";
 import { SplitDataModel } from "Models/Splits";
 import { Component } from "react";

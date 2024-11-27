@@ -32,6 +32,7 @@ namespace Stockboy.Models {
 
 
 	public class StockModel {
+		public Guid user_id { get; set; } = Guid.Empty;
 		public Guid? broker_id { get; set; } = null;
 		public Guid? ticker_id { get; set; } = null;
 	}// StockDataModel;
@@ -41,5 +42,10 @@ namespace Stockboy.Models {
 		public Guid? broker_id { get; set; } = null;
 		public Guid? ticker_id { get; set; } = null;
 	}// StockModel;
+
+
+	public class TextModel {
+		public String text { get; set; } = String.Empty;
+	}// TextModel;
 
 }// Stockboy.Models;

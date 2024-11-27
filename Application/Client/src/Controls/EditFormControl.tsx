@@ -1,10 +1,9 @@
-import APIClass from "Classes/APIClass";
-
 import DataPageControl from "Controls/DataPageControl";
-import Eyecandy from "Controls/Eyecandy";
+import Eyecandy from "Controls/Common/Eyecandy";
 
 import { IBaseModel } from "Models/Abstract/BaseModels";
 import { Component, ComponentClass, createRef, MouseEvent, RefObject } from "react";
+import StockboyAPI from "../Classes/StockboyAPI";
 
 
 export class EditFormControlProps {
@@ -30,7 +29,7 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 	private required_fields_completed (): boolean {
 
-		let fields: FormFieldList = this.form.current.querySelectorAll (form_fields);
+		const fields: FormFieldList = this.form.current.querySelectorAll (form_fields);
 		let result: boolean = true;
 
 		fields.forEach ((field: FormField) => {
@@ -49,13 +48,13 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 		if (!this.required_fields_completed ()) return event.preventDefault ();
 
-		let form_data: FormData = new FormData (this.form.current).get_data ();
-		let new_record: boolean = !form_data.has ("id");
+		const form_data: FormData = new FormData (this.form.current).get_data ();
+		const new_record: boolean = !form_data.has ("id");
 
 		popup_window.show (this.eyecandy);
 
 		if (isset (this.form_body.current.onSave)) {
-			let response = await this.form_body.current.onSave ();
+			const response = await this.form_body.current.onSave ();
 			switch (response) {
 				case PromptResponse.Cancel: return popup_window.show (<EditFormControl {...this.props} data={Object.fromEntries (form_data)}/>);
 				case PromptResponse.Abort: return popup_window.hide ();
@@ -63,7 +62,7 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 			}// switch;
 		}// if;
 
-		APIClass.fetch_data (this.props.save_command, form_data).then (response => {
+		new StockboyAPI ().fetch_data (this.props.save_command, form_data).then (response => {
 
 			if (new_record) {
 
@@ -120,8 +119,8 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 				if (mutation.attributeName == "enforced") {
 
-					let element = mutation.target as FormField;
-					let event_name = element.tagType.matches ("select") ? "change" : "keyup";
+					const element = mutation.target as FormField;
+					const event_name = element.tagType.matches ("select") ? "change" : "keyup";
 
 					set_required (element);
 					element.addEventListener (event_name, () => {

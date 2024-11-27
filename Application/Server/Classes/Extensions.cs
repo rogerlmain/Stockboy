@@ -30,9 +30,6 @@ namespace Stockboy.Classes {
 
 	public static class DateTimeExtensions {
 
-		private const long one_hour = 60 * 60 * 1000;
-		
-
 		public static long UnixTimestamp (this DateTime date) => (new DateTimeOffset (date).ToUnixTimeMilliseconds ());
 
 
@@ -52,13 +49,13 @@ namespace Stockboy.Classes {
 		}// GetContext;
 
 
-		public static JsonResult Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : BaseModel {
+		public static JsonResult Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : class {
 			try {
 
-				Boolean new_record = parameters.id == Guid.Empty;
+				Boolean new_record = not_set (parameters.GetValue ("id"));
 
 				if (new_record) {
-					parameters.id = Guid.NewGuid ();
+					parameters.SetValue ("id", Guid.NewGuid ());
 					dataset.Add (parameters);
 				} else {
 					dataset.Update (parameters);
@@ -163,6 +160,9 @@ namespace Stockboy.Classes {
 
 
 		public static Object? GetValue (this Object source, String field) => source.GetType ().GetProperty (field)?.GetValue (source);
+
+
+		public static void SetValue (this Object source, String field, dynamic value) => source.GetType ().GetProperty (field)?.SetValue (source, value);
 
 
 		public static Boolean HasKey (this Object source, String key) {

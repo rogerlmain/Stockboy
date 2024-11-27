@@ -1,0 +1,61 @@
+div.edit-list {
+	font-size: 10pt;
+
+	div.glyph {
+		position: absolute;
+		height: 100%;
+		width: auto;
+		aspect-ratio: 1 / 1;
+		top: 0;
+		right: 0;
+
+		div.carat {
+			width: 6px;
+			height: 6px;
+			border-right: solid 1px black;
+			border-bottom: solid 1px black;
+			transform: rotate(45deg);
+			position: absolute;
+			top: 30%;
+			right: 7px;
+		}// div.carat;
+
+	}// div.glyph;
+
+	div.select-list {
+		display: none;
+		background-color: white;
+		border: solid 1px #B8B8B8;
+		box-shadow: 0 30px 30px 0 #D8D8D8;
+		border-radius: 8px;
+		width: 100%;
+
+		div.select-element {
+			color: black;
+			padding: 4px 14px;
+		}// div.select-element;
+
+		div.select-element:first-child {
+			padding-top: 3.5px;
+		}// div.select-element;
+
+		div.select-element:last-child {
+			padding-bottom: 3px;
+		}// div.select-element;
+
+		div.select-element:hover, div.select-element.active {
+			background-color: #3966CA;
+			color: white;
+			cursor: default;
+		}// div.select-element:hover;
+
+	}// div.select-list;
+
+
+	div.select-list:first-child {
+		padding-top: 7px 14px;
+	}// div.select-element;
+
+
+}// div.dropdown-list;
+

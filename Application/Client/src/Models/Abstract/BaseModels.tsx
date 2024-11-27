@@ -36,6 +36,9 @@ export function TypeSafe (object_type: any = null) {
 
 export type BaseModelArray = Array<IBaseModel>
 export type StockModelArray = Array<IStockModel>
+export type NameModelArray = Array<NameModel>
+
+
 export type DateType = Date | string;
 
 
@@ -68,6 +71,12 @@ export abstract class BaseModel implements IBaseModel {
 	public static invisible_fields: StringArray = null;
 
 }// BaseModel;
+
+
+export class NameModel {
+	public id: string = null;
+	public name: string = null;
+}// NameModel;
 
 
 export class DataModel extends BaseModel {

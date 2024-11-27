@@ -1,20 +1,21 @@
-import "Classes/Types";
-import "Classes/Globals";
+import "Classes/Common/Globals";
+import "Classes/Common/NumericCurrency";
+import "Classes/Common/Prototypes";
+import "Classes/Common/Types";
 import "Classes/Handlers";
-import "Classes/NumericCurrency";
-import "Classes/Prototypes";
+
+import BasePage from "Pages/Base";
+import TestPage from "Pages/Test";
 
 import { createRoot } from "react-dom/client";
 
-import MainPage from "Pages/Main";
-import TestPage from "Pages/Test";
 
+const testing: boolean = true;
 
-let testing: boolean = false;
 
 if (testing) {
 	createRoot (document.getElementById ("main")).render (<TestPage />);
 } else {
-	createRoot (document.getElementById ("main")).render (<MainPage />);
+	createRoot (document.getElementById ("main")).render (<BasePage />);
 }// if;
 

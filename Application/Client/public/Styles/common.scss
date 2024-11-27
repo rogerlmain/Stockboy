@@ -87,6 +87,9 @@ div.row-divider {
 div.bold-text { font-weight: bold }
 
 
+div.warning { color: #A00 }
+
+
 /**** Display Styles ****/
 
 
@@ -96,6 +99,16 @@ div.bold-text { font-weight: bold }
 
 
 /**** Layout Styles ****/
+
+
+div.grid-stack {
+	display: grid;
+	grid-template-columns: min-content;
+}
+
+div.grid-stack > * {
+	grid-area: 1 / 1;
+}
 
 
 *.full-width { width: 100% }
@@ -205,6 +218,10 @@ div.bold-text { font-weight: bold }
 /**** Positioning Styles ****/
 
 
+*.relative { position: relative }
+*.absolute { position: absolute }
+
+
 div.full-screen {
 	position: absolute;
 	left: 0;
@@ -262,7 +279,10 @@ div[class*="-column-grid"] {
 
 	*.full-width { grid-column: 1/-1 }
 
-}
+	*.all-columns { grid-column: 1/-1 }
+	*.second-column { grid-column: 2/2 }
+
+}/* div[class*="-column-grid"] */
 
 
 div.nested {

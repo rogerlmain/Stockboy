@@ -1,4 +1,4 @@
-import { DateFormats } from "Classes/Globals";
+import { DateFormats } from "Classes/Common/Globals";
 import { Component } from "react";
 
 
@@ -103,13 +103,13 @@ declare global {
 	interface Object {
 
 		assign (template: any): any;
+		clone (): any;
 		copy (...candidates: Object []): Object;
 		hasKey (key_name: string): boolean;
 		matches (candidate: any): boolean;
 		merge (...candidates: Object []): Object;
 		toJson (): string;
 
-		get Duplicate (): any;
 		get GetType (): Function;
 		get GetTypeName (): string;
 		get Keys (): StringArray;
@@ -171,7 +171,7 @@ Array.prototype.add = function<T> (value: T): Array<T> {
 
 
 Array.prototype.append = function<T> (value: T): Array<T> {
-	let new_array = this.Duplicate;
+	let new_array: Array<T> = this.clone ();
 	new_array.push (value);
 	return new_array;
 }// append;
@@ -569,6 +569,9 @@ Object.prototype.assign = function (template: any): any {
 }// assign;
 
 
+Object.prototype.clone = function () { return this.Replica.assign (this) }
+
+
 Object.prototype.copy = function (...candidates: Object []): Object {
 
 	candidates.forEach (candidate => {
@@ -607,7 +610,6 @@ Object.prototype.toJson = function () { return JSON.stringify (this) }
 
 Object.defineProperties (Object.prototype, {
 
-	Duplicate: { get: function (): any { return this.Replica.assign (this) } },
 	GetType: { get: function (): Function { return Object.getPrototypeOf (this).constructor } },
 	GetTypeName: { get: function (): string { return Object.getPrototypeOf (this).constructor.name } },
 	Keys: { get: function (): StringArray { return Object.keys (this) } },

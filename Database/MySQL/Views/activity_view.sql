@@ -2,6 +2,7 @@ drop view if exists activity_view;
 
 create view activity_view as select
 	tac.id,
+    ust.user_id,
 	brk.id as broker_id,
     tck.id as ticker_id,
 	brk.name as broker,
@@ -15,13 +16,17 @@ create view activity_view as select
 from
 	transactions as tac
 join
+	user_stocks as ust
+on
+	ust.id = tac.user_stocks_id
+join
 	brokers as brk
 on
-	brk.id = tac.broker_id
+	brk.id = ust.broker_id
 join
 	tickers as tck
 on
-	tck.id = tac.ticker_id
+	tck.id = ust.ticker_id
 join
 	transaction_types as ttp
 on
@@ -30,6 +35,7 @@ where
 	(not tac.deleted)
 union select
 	spl.id,
+    ust.user_id,
 	brk.id as broker_id,
     tck.id as ticker_id,
 	brk.name as broker,
@@ -43,13 +49,17 @@ union select
 from
 	splits as spl
 join
+	user_stocks as ust
+on
+	ust.id = spl.user_stocks_id
+join
 	brokers as brk
 on
-	brk.id = spl.broker_id
+	brk.id = ust.broker_id
 join
 	tickers as tck
 on
-	tck.id = spl.ticker_id
+	tck.id = ust.ticker_id
 where
 	(not spl.deleted)
 order by

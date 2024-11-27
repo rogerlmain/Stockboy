@@ -39,7 +39,7 @@ export default class FilterHandler extends Component<FilterHandlerProps> {
 
 	private exclusive_data (data: DataArray) {
 
-		let filtered_data: DataArray = data.Duplicate;
+		let filtered_data: DataArray = data.clone ();
 		let filters: DataFilterList = this.filters?.filter ((filter: DataFilter) => filter.type == FilterType.exclusive)
 
 		if (not_defined (filters) || not_defined (data)) return data;

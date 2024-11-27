@@ -105,13 +105,13 @@ Object.defineProperties (Object.prototype, {
 
 	isCurrency: { 
 		get: function () {
-			return ((this instanceof HTMLInputElement) && (this.getAttribute ("type").toLowerCase () == "currency"));
+			return ((this instanceof HTMLInputElement) && (this.getAttribute ("type")?.toLowerCase () == "currency"));
 		}// get;
 	},// isCurrency;
 
 	isNumeric: {
 		get: function () {
-			return ((this instanceof HTMLInputElement) && (this.getAttribute ("type").toLowerCase () == "numeric"));
+			return ((this instanceof HTMLInputElement) && (this.getAttribute ("type")?.toLowerCase () == "numeric"));
 		}// get;
 	},// isNumeric;
 

@@ -74,6 +74,10 @@ div.bold-text {
   font-weight: bold;
 }
 
+div.warning {
+  color: #A00;
+}
+
 /**** Display Styles ****/
 *.container {
   display: contents;
@@ -84,6 +88,15 @@ div.bold-text {
 }
 
 /**** Layout Styles ****/
+div.grid-stack {
+  display: grid;
+  grid-template-columns: min-content;
+}
+
+div.grid-stack > * {
+  grid-area: 1/1;
+}
+
 *.full-width, div.button-bar, html, body, .full-page {
   width: 100%;
 }
@@ -240,6 +253,14 @@ div.bold-text {
 }
 
 /**** Positioning Styles ****/
+*.relative {
+  position: relative;
+}
+
+*.absolute {
+  position: absolute;
+}
+
 div.full-screen, div.blackout {
   position: absolute;
   left: 0;
@@ -306,7 +327,14 @@ div[class*=-column-grid] label {
 div[class*=-column-grid] *.full-width, div[class*=-column-grid] html, div[class*=-column-grid] body, div[class*=-column-grid] .full-page, div[class*=-column-grid] div.button-bar {
   grid-column: 1/-1;
 }
+div[class*=-column-grid] *.all-columns {
+  grid-column: 1/-1;
+}
+div[class*=-column-grid] *.second-column {
+  grid-column: 2/2;
+}
 
+/* div[class*="-column-grid"] */
 div.nested {
   width: 100%;
   justify-content: space-between;

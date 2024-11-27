@@ -23,10 +23,16 @@ module.exports = {
 	},
 	resolve: {
 		modules: [
-			path.resolve(__dirname, "src"),
-			path.resolve(__dirname, "node_modules"),
+			path.resolve (__dirname, "src"),
+			path.resolve (__dirname, "node_modules"),
 		],
-		extensions: ['.tsx', '.ts', '.js']
+		extensions: ['.tsx', '.ts', '.js'],
+		fallback: { 
+			"crypto": require.resolve ("crypto-browserify"),
+			"vm": require.resolve ("vm-browserify"),
+			"buffer": require.resolve ("buffer/"),
+			"stream": require.resolve ("stream-browserify")
+		}
 	},
 	devtool: 'source-map',
 	devServer: {

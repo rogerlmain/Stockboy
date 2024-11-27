@@ -1,6 +1,6 @@
 import { DataKey, DataKeyArray } from "Classes/DataKeys";
 import { InputElementContext } from "Controls/InputElement";
-import { ChangeEvent, Component, RefObject, createRef } from "react";
+import { CSSProperties, ChangeEvent, Component, KeyboardEventHandler, RefObject, createRef } from "react";
 
 
 export class BaseSelectListProps {
@@ -16,6 +16,8 @@ export class BaseSelectListProps {
 
 class SelectListProps extends BaseSelectListProps {
 	data: DataKeyArray;
+	style: CSSProperties;
+	onKeyUp?: KeyboardEventHandler;
 }// SelectListProps;
 
 
@@ -39,10 +41,12 @@ export default class SelectList extends Component<SelectListProps, SelectListSta
 		id: null,
 		header: null,
 		selected_item: null,
+		allow_all: false,
 		onChange: null,
 		disabled: false,
 		required: false,
 		data: null,
+		style: null,
 	}// defaultProps;
 
 
@@ -64,8 +68,9 @@ export default class SelectList extends Component<SelectListProps, SelectListSta
 
 	public render () {
 
-		return <select id={this.props.id} name={this.props.id} ref={this.select_list_ref} value={this.state.selected_item ?? String.Empty}
-			disabled={this.props.disabled} required={this.props.required}
+		return <select id={this.props.id} name={this.props.id} style={this.props.style}
+			disabled={this.props.disabled} required={this.props.required} onKeyPress={() => alert ("keyboard doing shit")/*this.props.onKeyUp*/}
+			value={this.state.selected_item ?? String.Empty} ref={this.select_list_ref} 
 
 			onChange={(event: ChangeEvent<HTMLSelectElement>) => {
 				if (isset (this.props.onChange)) this.props.onChange (event);
@@ -73,7 +78,7 @@ export default class SelectList extends Component<SelectListProps, SelectListSta
 			}}>
 
 			{not_set (this.state.selected_item) || (this.props.allow_all) ? <option key={"header"} value={String.Empty}>
-				{this.props.header ?? (this.props.allow_all ? "All" : null) ?? `Select ${this.props.id.titleCase ()}`}
+				{this.props.header ?? (this.props.allow_all ? "All" : `Select ${this.props.id.titleCase ()}`)}
 			</option> : null}
 
 			{this.props.data?.map ((item: DataKey) => <option key={item.id} value={item.id}>{item.name}</option>)}

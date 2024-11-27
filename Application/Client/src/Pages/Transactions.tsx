@@ -1,4 +1,4 @@
-import APIClass from "Classes/APIClass";
+import StockboyAPI from "Classes/StockboyAPI";
 import DataPageControl from "Controls/DataPageControl";
 
 import EditTransactionForm from "Forms/EditTransactionForm";
@@ -13,7 +13,7 @@ import { Component } from "react";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray ("broker", "company", "ticker", "transaction_date", "settlement_date", "quantity", "price", "cost", "transaction_type"),
+	fields: new DataKeyArray (["broker", "company", "ticker", "transaction_date", "settlement_date", "quantity", "price", "cost", "transaction_type"]),
 	date_fields: ["transaction_date", "settlement_date"],
 	numeric_fields: ["quantity"],
 	currency_fields: ["price", "cost"],
@@ -50,7 +50,7 @@ export default class TransactionsPage extends Component<BaseProps, TransactionsP
 
 	constructor (props: BaseProps) {
 		super (props);
-		APIClass.fetch_data ("GetTransactions").then ((result: TransactionList) => {
+		new StockboyAPI ().fetch_data ("GetTransactions").then ((result: TransactionList) => {
 			this.setState ({ data: new Array<TransactionListModel> ().assign (result, TransactionListModel) });
 		});
 	}// constructor;

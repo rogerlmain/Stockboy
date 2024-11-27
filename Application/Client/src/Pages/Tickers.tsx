@@ -1,4 +1,4 @@
-import APIClass from "Classes/APIClass";
+import StockboyAPI from "Classes/StockboyAPI";
 import DataPageControl from "Controls/DataPageControl";
 import EditTickersForm from "Forms/EditTickersForm";
 
@@ -12,7 +12,7 @@ import { Component } from "react";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray ("symbol", "name", "price", "volume", "last_payment_date", "next_payment_date"),
+	fields: new DataKeyArray (["symbol", "name", "price", "volume", "last_payment_date", "next_payment_date"]),
 }// properties;
 
 
@@ -49,7 +49,7 @@ export default class TickersPage extends Component<BaseProps, TickersPageState> 
 
 	constructor (props: BaseProps) {
 		super (props);
-		APIClass.fetch_data ("GetTickers").then ((result: TickersList) => this.setState ({ data: result }));
+		new StockboyAPI ().fetch_data ("GetTickers").then ((result: TickersList) => this.setState ({ data: result }));
 	}// constructor;
 
 }// TickersPage;

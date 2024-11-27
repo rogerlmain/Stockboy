@@ -1,4 +1,5 @@
-import PopupWindow from "Controls/Popups/PopupWindow";
+import PopupWindow from "Controls/Common/Windows/PopupWindow";
+import { DOMAttributes } from "react";
 
 
 export {};
@@ -9,13 +10,22 @@ export {};
 
 declare global {
 	var popup_window: PopupWindow;
+	var local_host: Boolean;
 }// global;
 
 
 globalThis.popup_window = null;
+globalThis.local_host = window.location.hostname == "localhost";
 
 
 /**** Generic Global Definitions ****/
+
+
+declare module "react" {
+	interface HTMLAttributes<T> extends DOMAttributes<T> {
+		name?: String;
+	}// HTMLAttributes;
+}// globals;
 
 
 declare global {
@@ -48,6 +58,8 @@ declare global {
 
 	var is_defined: Function;
 	var not_defined: Function;
+
+	var is_undefined: Function;
 
 	var conditional: Function;
 
@@ -95,6 +107,8 @@ globalThis.not_null = (value: any): boolean => !is_null (value);
 
 globalThis.is_defined = (value: any): boolean => isset (value) && not_empty (value);
 globalThis.not_defined = (value: any): boolean => !is_defined (value);
+
+globalThis.is_undefined = (value: any): boolean => value == undefined;
 
 globalThis.conditional = (condition: boolean, output: any): string => condition ? output : String.Empty;
 

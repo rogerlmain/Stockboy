@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\Projects\Stockboy\Application\Server\bin\Release\net8.0\publish\</_PublishTargetUrl>
+    <History>True|2024-11-24T15:41:37.4502389Z||;True|2024-11-24T08:31:54.0242468-07:00||;True|2024-11-23T08:36:18.8829995-07:00||;True|2024-11-23T08:13:30.3976316-07:00||;True|2024-11-23T07:18:50.4876310-07:00||;True|2024-11-22T16:35:55.1545509-07:00||;True|2024-11-22T16:32:47.0189187-07:00||;True|2024-11-22T16:31:32.2704764-07:00||;True|2024-11-22T16:30:35.4892145-07:00||;True|2024-11-22T16:09:07.1827608-07:00||;True|2024-11-22T16:07:33.2294707-07:00||;</History>
+    <LastFailureDetails />
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="MySqlConnection">
+      <Value>server=localhost%3b port=3306%3b user id=root%3b password=2Ae%4084:%25X`wPiE%3b%289{fdrJP%3b database=stockboy%3b Allow User Variables=True</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

@@ -1,4 +1,4 @@
-import APIClass from "Classes/APIClass";
+import StockboyAPI from "Classes/StockboyAPI";
 import DataPageControl from "Controls/DataPageControl";
 import EditDividendForm from "Forms/EditDividendForm";
 
@@ -12,7 +12,7 @@ import { Component } from "react";
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray ("broker", "company", "ticker", "issue_date", "amount_per_share", "share_quantity", {payout: "Total Payout"}),
+	fields: new DataKeyArray (["broker", "company", "ticker", "issue_date", "amount_per_share", "share_quantity", {payout: "Total Payout"}]),
 	date_fields: ["issue_date"],
 	numeric_fields: ["share_quantity"],
 	currency_fields: ["amount_per_share", "payout"],
@@ -48,10 +48,13 @@ export default class DividendsPage extends Component<BaseProps, DividendsPageSta
 
 
 	constructor (props: BaseProps) {
+
 		super (props);
-		APIClass.fetch_data ("GetDividends").then ((result: DividendList) => {
+
+		new StockboyAPI ().fetch_data ("GetDividends").then ((result: DividendList) => {
 			this.setState ({ data: new Array<DividendListModel> ().assign (result, DividendListModel) })
 		});
+
 	}// constructor;
 
 }// DividendsPage;

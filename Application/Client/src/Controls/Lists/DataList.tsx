@@ -1,5 +1,5 @@
-import APIClass from "Classes/APIClass";
-import Eyecandy from "Controls/Eyecandy";
+import Eyecandy from "Controls/Common/Eyecandy";
+import StockboyAPI from "Classes/StockboyAPI";
 
 import SelectList, { BaseSelectListProps } from "Controls/Lists/SelectList";
 
@@ -35,7 +35,7 @@ export default class DataList extends Component<DataListProps, DataListState> {
 			return;
 		}// if;
 
-		this.setState ({ loading: true }, () => APIClass.fetch_data (`Get${this.props.table.titleCase (true)}`, this.props.parameters).then ((response: DataKeyArray) => {
+		this.setState ({ loading: true }, () => new StockboyAPI ().fetch_data (`Get${this.props.table.titleCase (true)}`, this.props.parameters).then ((response: DataKeyArray) => {
 			this.setState ({ 
 				data: response,
 				loading: false

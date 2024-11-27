@@ -1,8 +1,9 @@
+drop table if exists users;
+
 create table users (
 	id varchar (36) primary key not null,
-    last_updated datetime
+    username varchar (32) not null,
+    password varchar (128) not null
 );
-
-insert into users values (uuid(), null);
 
 select * from users;

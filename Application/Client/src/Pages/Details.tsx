@@ -1,4 +1,4 @@
-import APIClass from "Classes/APIClass";
+import StockboyAPI from "Classes/StockboyAPI";
 import TickerSelector from "Controls/TickerSelector";
 
 import { StockDetailsModel } from "Models/Holdings";
@@ -18,7 +18,7 @@ class StockDetailsPageState {
 export default class StockDetailsPage extends Component<StockDetailsPageProps, StockDetailsPageState> {
 
 	private select_stock () {
-		APIClass.fetch_data ("GetStockDetails", { 
+		new StockboyAPI ().fetch_data ("GetStockDetails", { 
 			broker_id: this.state.broker_id, 
 			ticker_id: this.state.ticker_id 
 		}).then (result => this.setState ({ stock_details: new StockDetailsModel ().assign (result) }));

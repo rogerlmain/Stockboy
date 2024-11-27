@@ -1,7 +1,7 @@
-import APIClass from "Classes/APIClass"
+import StockboyAPI from "Classes/StockboyAPI"
 
 import DataPageControl from "Controls/DataPageControl"
-import Eyecandy from "Controls/Eyecandy"
+import Eyecandy from "Controls/Common/Eyecandy"
 import FilterHandler from "Controls/FilterHandler"
 import TableFilters from "Controls/TableFilters"
 
@@ -16,7 +16,7 @@ import { Component, createRef, RefObject } from "react"
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray ("date", "broker", "company", "ticker", "transaction_type", "quantity", "price", /*"amount",*/ "total_quantity"/*, {total_amount: "Total Cost"}*/),
+	fields: new DataKeyArray (["date", "broker", "company", "ticker", "transaction_type", "quantity", "price", /*"amount",*/ "total_quantity"/*, {total_amount: "Total Cost"}*/]),
 	date_fields: ["date"],
 	numeric_fields: ["quantity", "total_quantity"],
 	currency_fields: ["amount", "total_amount", "price"],
@@ -45,12 +45,12 @@ export default class ActivityPage extends Component<BaseProps, ActivityPageState
 
 
 	private update_data = (broker_id: string, ticker_id: string) => this.setState ({ loading: "Loading activity"}, () => {
-		APIClass.fetch_data ("GetActivity", { broker_id, ticker_id }).then (response => {
+		new StockboyAPI ().fetch_data ("GetActivity", { broker_id, ticker_id }).then (response => {
 
 			this.data = new Array<ActivityModel> ().assign (response, ActivityModel);
 
 			this.setState ({ 
-				data: response.Duplicate,
+				data: response.clone (),
 				filter_handler: this.filter_handler.current,
 				loading: null,
 			});
