@@ -28,7 +28,7 @@ export class DataFilter {
 export class KeyValuePair { [key: string]: any }
 
 
-export default class NameValueCollection<IModel> extends KeyValuePair {
+export default class NameValueCollection<IModel = string> extends KeyValuePair {
 
 	public hasKey? = (key: string): boolean => Object.keys (this).contains (key);
 

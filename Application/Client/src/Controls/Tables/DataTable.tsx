@@ -23,7 +23,7 @@ export class DataTableProperties extends BaseProps {
 	numeric_fields?: StringArray = null;
 	currency_fields?: StringArray = null;
 	total_fields?: StringArray = null;
-	rounded_fields?: Array<KeyValuePair> = null;
+	rounded_fields?: Array<NameValueCollection<number>> = null;
 	highlighted_fields?: StringArray = null;
 	keys?: StringArray = null;
 	onclick?: Function;
@@ -118,7 +118,7 @@ export default class DataTable extends Component<DataTableProps> {
 	public format (field_name: string, value: FieldValue): string {
 
 		let number_format = (decimal_places: number) => (value as number).round_to (decimal_places).padFractions (decimal_places);
-		let rounded_field = this.props.properties.rounded_fields?.find ((item: KeyValuePair) => item.hasKey (field_name));
+		let rounded_field = this.props.properties.rounded_fields?.find ((item: NameValueCollection<number>) => item.hasKey (field_name));
 
 		if ((field_name == "current_price") && ((value as number) == -1)) return "N/A";
 
