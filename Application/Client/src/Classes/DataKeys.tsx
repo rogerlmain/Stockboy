@@ -1,8 +1,8 @@
-import { KeyValuePair } from "Classes/Collections";
+import NameValueCollection from "Classes/Collections";
 import { ReactNode } from "react";
 
 
-type DataKeyType = String | KeyValuePair;
+type DataKeyType = String | NameValueCollection;
 type DataKeyArrayMapFunction = (value: DataKey, index: number, array: Array<DataKey>) => ReactNode;
 
 export class DataKey {

@@ -1,5 +1,10 @@
-import { Component } from "react";
+import StockboyAPI from "Classes/StockboyAPI";
+
+import { NameValueArray } from "Classes/Collections";
+import EditList from "Controls/Common/Lists/EditList";
+
 import { BrokersModel } from "Models/Brokers";
+import { Component } from "react";
 
 
 class BrokerFormProps {
@@ -7,16 +12,24 @@ class BrokerFormProps {
 }// BrokerFormProps;
 
 
-export default class EditBrokerForm extends Component<BrokerFormProps> {
+class BrokerFormState {
+	brokers: NameValueArray = null;
+}// BrokerFormState;
+
+
+export default class EditBrokerForm extends Component<BrokerFormProps, BrokerFormState> {
+
+	public state: BrokerFormState = new BrokerFormState ();
+
 
 	public render () {
-		return <div>
-			<input type="hidden" name="id" value={this.props.data?.id} />
-			<div className="two-column-grid">
-				<label htmlFor="broker_name">Broker</label>
-				<input id="broker_name" type="text" name="name" defaultValue={this.props.data?.name} />
-			</div>
-		</div>
+		return <EditList id="brokers_list" data={this.state.brokers} />
 	}// render;
+
+
+	constructor (props: BrokerFormProps) {
+		super (props);
+		new StockboyAPI ().fetch_data ("GetBrokers").then ((response: NameValueArray) => this.setState ({ brokers: response }));
+	}// constructor;
 
 }// EditBrokerForm;

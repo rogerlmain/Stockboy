@@ -1,7 +1,7 @@
 import ScrollBlock from "Controls/ScrollBlock";
 import DataTableRow from "Controls/Tables/DataTableRow";
 
-import NameValueCollection, { KeyValuePair } from "Classes/Collections";
+import NameValueCollection from "Classes/Collections";
 import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
 
 import { DataKey, DataKeyArray } from "Classes/DataKeys";

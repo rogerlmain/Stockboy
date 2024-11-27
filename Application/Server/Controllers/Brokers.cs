@@ -13,15 +13,9 @@ namespace Stockboy.Controllers {
 		[Route ("GetBrokers")]
 		public IActionResult GetBrokers () {
 			try {
-
-var response = (from brk in context.brokers select new {
-					brk.id,
-					brk.name
-				}).OrderBy (broker => broker.name);
-
 				return new JsonResult ((from brk in context.brokers select new {
-					brk.id,
-					brk.name
+					name = brk.id,
+					value = brk.name
 				}).OrderBy (broker => broker.name));
 			} catch (Exception except) {
 				return Error (except);

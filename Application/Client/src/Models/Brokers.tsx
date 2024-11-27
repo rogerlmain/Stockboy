@@ -1,4 +1,6 @@
-import { NameModel } from "Models/Abstract/BaseModels";
+import { BaseModel } from "Models/Abstract/BaseModels";
 
 
-export class BrokersModel extends NameModel {}
+export class BrokersModel extends BaseModel {
+	public value: string;
+}// BrokersModel;

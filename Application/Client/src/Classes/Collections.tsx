@@ -2,11 +2,18 @@
 
 
 export type DataFilterList = Array<DataFilter>
+export type NameValueArray = Array<NameValuePair>
 
 export enum FilterType {inclusive, exclusive}
 
 
 /**** Classes ****/
+
+export class NameValuePair<IModel = string> {
+	public name: string = null;
+	public value: IModel = null;
+}// NameValuePair;
+
 
 export class DataFilter {
 
@@ -25,10 +32,10 @@ export class DataFilter {
 }// DataFilter;
 
 
-export class KeyValuePair { [key: string]: any }
+export default class NameValueCollection<IModel = string> {
 
+	[key: string]: any;
 
-export default class NameValueCollection<IModel = string> extends KeyValuePair {
 
 	public hasKey? = (key: string): boolean => Object.keys (this).contains (key);
 

@@ -1,3 +1,4 @@
+import StockboyAPI from "Classes/StockboyAPI";
 import Eyecandy from "Controls/Common/Eyecandy";
 import EditBrokerForm from "Forms/EditBrokerForm";
 
@@ -9,7 +10,6 @@ import { DataTableProperties } from "Controls/Tables/DataTable";
 import { DataKeyArray } from "Classes/DataKeys";
 import { BrokersModel } from "Models/Brokers";
 import { Component, RefObject, createRef } from "react";
-import StockboyAPI from "../Classes/StockboyAPI";
 
 
 const properties: DataTableProperties = {
