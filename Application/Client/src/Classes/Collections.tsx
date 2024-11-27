@@ -48,9 +48,4 @@ export default class NameValueCollection<IModel> extends KeyValuePair {
 	}// matches;
 
 
-	public constructor (values: KeyValuePair = null) {
-		super ();
-		if (isset (values)) this.copy (values);
-	}// constructor;
-
 }// NameValueCollection;
