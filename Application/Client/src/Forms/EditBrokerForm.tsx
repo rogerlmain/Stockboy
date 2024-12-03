@@ -32,7 +32,7 @@ export default class EditBrokerForm extends Component<BrokerFormProps, BrokerFor
 
 	constructor (props: BrokerFormProps) {
 		super (props);
-		new StockboyAPI ().fetch_user_data ("GetBrokers").then ((response: NameValueArray) => this.setState ({ brokers: response }));
+		new StockboyAPI ().fetch_data ("GetBrokers").then ((response: NameValueArray) => this.setState ({ brokers: response }));
 	}// constructor;
 
 }// EditBrokerForm;

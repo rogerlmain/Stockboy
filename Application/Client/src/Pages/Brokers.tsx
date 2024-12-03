@@ -39,7 +39,7 @@ export default class BrokersPage extends Component<BaseProps, BrokersPageState> 
 
 	public update_data (): Promise<Boolean> {
 		return new Promise<Boolean> ((resolve: Function) => {
-			new StockboyAPI ().fetch_user_data ("GetUserBrokers").then ((response: BrokersList) => {
+			new StockboyAPI ().fetch_data ("GetUserBrokers").then ((response: BrokersList) => {
 				if (not_empty (response)) this.setState ({ data: response }, () => resolve (true));
 				this.setState ({ loading: false });
 			});

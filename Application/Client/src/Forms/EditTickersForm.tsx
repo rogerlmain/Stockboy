@@ -81,7 +81,7 @@ export default class EditTickersForm extends Component<TickersFormProps, Tickers
 
 	constructor (props: TickersFormProps) {
 		super (props);
-		new StockboyAPI ().fetch_user_data ("GetTickers").then ((response: TickerArray) => this.setState ({ tickers: response }));
+		new StockboyAPI ().fetch_data ("GetTickers").then ((response: TickerArray) => this.setState ({ tickers: response }));
 	}// constructor;
 
 }// EditTickersForm;

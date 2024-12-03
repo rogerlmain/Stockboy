@@ -43,7 +43,7 @@ export class DividendDataSet {
 export default class StockboyAPI extends APIClass {
 
 
-	public fetch_user_data (url: string, body: any = null): Promise<any> {
+	public fetch_data (url: string, body: any = null): Promise<any> {
 
 		if (not_set (UserId)) throw ("Invalid user ID.");
 		if (is_null (body)) body = new Object ();
@@ -53,9 +53,9 @@ export default class StockboyAPI extends APIClass {
 			default: body ["user_id"] = UserId; break;
 		}// switch;
 
-		return this.fetch_data (`${url}`, body);
+		return super.fetch_data (`${url}`, body);
 
-	}// fetch_user_data;
+	}// fetch_data;
 
 	
 	public fetch_stock_prices = (ticker: string): Promise<Array<StockPriceData>> => this.fetch (`${exchange_url}/${quote_path}/${ticker}?apikey=${exchange_api_key}`);

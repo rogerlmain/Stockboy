@@ -15,42 +15,46 @@ export default abstract class APIClass {
 	/********/
 
 
-	protected fetch = (url: RequestInfo, body: any = null): Promise<any> => new Promise ((resolve) => {
+	protected fetch (url: RequestInfo, body: any = null): Promise<any> {
+		return new Promise ((resolve) => {
 
-		const parameters: RequestInit = {
-			credentials: "include",
-			method: is_null (body) ? "get" : "post",
-			headers: { "content-type": "application/json" }
-		};
+			const parameters: RequestInit = {
+				credentials: "include",
+				method: is_null (body) ? "get" : "post",
+				headers: { "content-type": "application/json" }
+			};
 
-		if (body instanceof FormData) body = Object.fromEntries (body);
-		if (isset (body)) parameters ["body"] = JSON.stringify (body);
+			if (body instanceof FormData) body = Object.fromEntries (body);
+			if (isset (body)) parameters ["body"] = JSON.stringify (body);
 
-		fetch (url, parameters).then (response => {
-			try {
-				if (response.ok) return response.json ();
-				throw "Bad request";
-			} catch (except: any) {
-				return { error: except.message };
-			}// try;
-		}).then (response => {
-			if (is_null (response)) return resolve (null);
-			if (isset (response ["error"])) {
-				popup_window.show (<ErrorWindow text={response ["error"]} />);
-				return resolve (null);
-			}// if;
-			resolve (response);
-		}).catch (() => {
-			setTimeout (() => resolve (this.fetch (url, body)), 1000);
+			fetch (url, parameters).then (response => {
+				try {
+					if (response.ok) return response.json ();
+					throw "Bad request";
+				} catch (except: any) {
+					return { error: except.message };
+				}// try;
+			}).then (response => {
+				if (is_null (response)) return resolve (null);
+				if (isset (response ["error"])) {
+					popup_window.show (<ErrorWindow text={response ["error"]} />);
+					return resolve (null);
+				}// if;
+				resolve (response);
+			}).catch (() => {
+				setTimeout (() => resolve (this.fetch (url, body)), 1000);
+			});
+
 		});
-
-	});
+	}// fetch;
 
 
 	/********/
 
 
-	public fetch_data = (url: string, body: any = null): Promise<any> => this.fetch (`${this.base_url}/${url}`, body);
+	public fetch_data (url: string, body: any = null): Promise<any> {
+		return this.fetch (`${this.base_url}/${url}`, body);
+	}// fetch_data;
 	
 
 	constructor (base_url: string) {

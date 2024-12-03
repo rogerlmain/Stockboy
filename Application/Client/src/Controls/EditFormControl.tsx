@@ -62,7 +62,7 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 			}// switch;
 		}// if;
 
-		new StockboyAPI ().fetch_user_data (this.props.save_command, form_data).then (async response => {
+		new StockboyAPI ().fetch_data (this.props.save_command, form_data).then (async response => {
 
 			if (is_null (response)) return;
 

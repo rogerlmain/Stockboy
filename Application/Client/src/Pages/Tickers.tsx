@@ -38,7 +38,7 @@ export default class TickersPage extends Component<BaseProps, TickersPageState> 
 
 	public update_data (): Promise<Boolean> {
 		return new Promise<Boolean> ((resolve: Function) => {
-			new StockboyAPI ().fetch_user_data ("GetUserTickers").then ((response: TickersList) => {
+			new StockboyAPI ().fetch_data ("GetUserTickers").then ((response: TickersList) => {
 				if (not_empty (response)) this.setState ({ data: response }, () => resolve (true));
 				this.setState ({ loading: false });
 			});
