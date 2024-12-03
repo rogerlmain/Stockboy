@@ -11,8 +11,8 @@ namespace Stockboy.Classes.Queries {
 			where (!dvd.deleted)
 			select new DividendModel () {
 				id = dvd.id,
-				broker = brk.name,
-				company = tck.name,
+				broker = brk.name ?? String.Empty,
+				company = tck.name ?? String.Empty,
 				ticker = tck.symbol,
 				broker_id = dvd.broker_id,
 				ticker_id = dvd.ticker_id,
@@ -39,7 +39,7 @@ namespace Stockboy.Classes.Queries {
 
 
 
-		public static DividendModel? GetDividendById (DataContext context, Guid id) { 
+		public static DividendModel? GetDividendById (DataContext context, Guid? id) { 
 			return SelectQuery (context).Where ((DividendModel item) => item.id == id).FirstOrDefault ();
 		}// GetDividendById;
 		

@@ -3,11 +3,12 @@ drop table if exists brokers;
 create table brokers (
 	id varchar (36) unique primary key not null,
 	name varchar (128),
+    approved boolean not null default false,
     deleted boolean not null default false
 );
 
 insert into brokers values
-	("82d57b96-8722-11ef-b413-6c02e0d344c7", "Fidelity", 0),
-    ("bf6be2f3-7141-11ef-b1e8-a4f933c45288", "Robinhood", 0);
+	('80e43ec8-016a-453d-b4ff-80d9d79a2bc7','Robinhood', true, false),
+    ('87dd6b50-bf1e-4b1f-b48d-6b6e165acf2e','Fidelity', true, false);
     
 select * from brokers;

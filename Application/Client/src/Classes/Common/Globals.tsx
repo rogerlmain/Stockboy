@@ -21,9 +21,11 @@ globalThis.local_host = window.location.hostname == "localhost";
 
 
 declare module "react" {
+
 	interface HTMLAttributes<T> extends DOMAttributes<T> {
 		name?: String;
 	}// HTMLAttributes;
+
 }// globals;
 
 
@@ -62,7 +64,13 @@ declare global {
 
 	var conditional: Function;
 
+	var get_width: Function;
+
 	var event_handler: EventTarget;
+
+	interface Window {
+		debugging: boolean;
+	}// Window;
 
 }// global;
 
@@ -112,6 +120,29 @@ globalThis.is_undefined = (value: any): boolean => value == undefined;
 globalThis.conditional = (condition: boolean, output: any): string => condition ? output : String.Empty;
 
 
+globalThis.get_width = (candidate: HTMLElement) => {
+
+	let element: HTMLElement = candidate.cloneNode (true) as HTMLElement;
+	let result: number = 0;
+
+	element.style.visibility = "hidden";
+	element.style.position = "absolute";
+	element.style.display = "block";
+
+	candidate.parentNode.appendChild (element);
+
+	result = element.offsetWidth;
+
+	candidate.parentNode.removeChild (element);
+
+	return result;
+
+}// get_width;
+
+
 globalThis.event_handler = new EventTarget ();
 
 
+Object.defineProperties (window, {
+	debugging: { get: () => window.location.hostname == "localhost" }
+});

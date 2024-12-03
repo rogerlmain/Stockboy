@@ -2,16 +2,18 @@
 
 
 	public interface IDataTableModel: IDataModel {
-		public string name { get; set; }
+		public String? name { get; set; }
 	}// ITableModel;
 
 
 	public class DataTableModel: DataModel, IDataModel, IDataTableModel {
-		public string name { get; set; } = String.Empty;
+		public String? name { get; set; } = null;
 	}// DataTableModel;
 
 
-	public class BrokersTableRecord: DataTableModel {}
+	public class BrokerTableRecord: DataTableModel {
+		public Boolean approved { get; set; } = false;
+	}// BrokersTableRecord;
 
 
 	public class TickerTableRecord: DataTableModel {
@@ -23,6 +25,7 @@
 		public DateTime? ex_dividend_date { get; set; } = null;
 		public Decimal? dividend_payout { get; set; } = null;
 		public int? frequency { get; set; } = null;
+		public Boolean approved { get; set; } = false;
 	}// TickerTableRecord;
 
 
@@ -31,7 +34,7 @@
 		public decimal quantity { get; set; }
 		public DateTime transaction_date { get; set; }
 		public DateTime settlement_date { get; set; }
-		public Guid transaction_type_id { get; set; }
+		public Guid? transaction_type_id { get; set; }
 	}// TransactionsTableRecord;
 
 
@@ -53,5 +56,19 @@
 		public decimal amount_per_share { get; set; }
 		public decimal share_quantity { get; set; }
 	}// DividendsTableRecord;
+
+
+	public class UserBrokerTableRecord: BaseModel {
+		public Guid? user_id { get; set; } = null;
+		public Guid? broker_id { get; set; } = null;
+		public Boolean deleted { get; set; } = false;
+	}// UserBrokerTableRecord;
+
+
+	public class UserTickerTableRecord: BaseModel {
+		public Guid? user_id { get; set; } = null;
+		public Guid? ticker_id { get; set; } = null;
+		public Boolean deleted { get; set; } = false;
+	}// UserTickerTableRecord;
 
 }// Stockboy.Models;

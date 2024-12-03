@@ -21,19 +21,41 @@ builder.Services.AddHttpClient<StockAPIClient> (client => {
 	client.DefaultRequestHeaders.Add ("Accept", "application/json");
 });
 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession (options => {
+    options.IdleTimeout = TimeSpan.FromSeconds (1800);
+    options.Cookie.HttpOnly = false;
+    options.Cookie.IsEssential = true;
+	options.Cookie.SameSite = SameSiteMode.None;
+	options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+builder.Services.AddCors (options => {
+	options.AddPolicy (name: "CorsPolicy", policy => {
+		policy.WithOrigins ("http://localhost:9000", "https://localhost:9000", "https://stockboy.rogerlmain.com");
+		policy.WithMethods ("GET", "POST");
+		policy.AllowCredentials ();
+		policy.AllowAnyHeader ();
+	});
+});
+
+builder.Services.ConfigureApplicationCookie (options => options.Cookie.Expiration = TimeSpan.FromDays (1));
+
 WebApplication app = builder.Build ();
 
 app.UseDefaultFiles ();
 app.UseStaticFiles ();
+app.UseHttpsRedirection ();
+app.UseCors ();//builder => builder.AllowAnyHeader ().AllowAnyMethod ().AllowAnyOrigin ().AllowCredentials ());
+app.UseSession ();
+app.UseAuthorization ();
+
+app.MapControllers ();
 
 if (app.Environment.IsDevelopment ()) {
 	app.UseSwagger ();
 	app.UseSwaggerUI ();
-}
-
-app.UseHttpsRedirection ();
-app.UseCors (builder => builder.AllowAnyHeader ().AllowAnyMethod ().AllowAnyOrigin ());
-app.UseAuthorization ();
-app.MapControllers ();
+}// if;
 
 app.Run ();

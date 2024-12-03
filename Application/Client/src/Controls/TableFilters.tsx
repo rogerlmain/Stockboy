@@ -10,6 +10,9 @@ import { BaseModel } from "Models/Abstract/BaseModels";
 import { ChangeEvent, Component, createRef, RefObject } from "react";
 
 
+const search_threshold: number = 20;
+
+
 class TableFiltersProps extends BaseModel {
 	data: DataArray;
 	parent: DataPageControl;
@@ -54,7 +57,7 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 	public render () {
 		return <div id={this.props.id} className="column-centered somewhat-spaced-out row-block with-legroom">
 
-			{(this.props.search_filters && isset (this.props.data)) ? <div className="container">
+			{(this.props.search_filters && isset (this.props.data) && (this.props.data.length > search_threshold)) ? <div className="container">
 
 				<SelectList id="ticker_id" header="All fields" allow_all={true} data={this.props.search_filters} 
 					onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ lookup_field: event.currentTarget.value })}>

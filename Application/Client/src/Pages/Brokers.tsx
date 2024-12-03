@@ -9,7 +9,7 @@ import { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { DataKeyArray } from "Classes/DataKeys";
 import { BrokersModel } from "Models/Brokers";
-import { Component, RefObject, createRef } from "react";
+import { Component } from "react";
 
 
 const properties: DataTableProperties = {
@@ -31,15 +31,20 @@ class BrokersPageState {
 
 export default class BrokersPage extends Component<BaseProps, BrokersPageState> {
 
-	private data_page: RefObject<DataPageControl> = createRef ();
-
-	/********/
-
-
 	public static defaultProps: BaseProps = { id: null }
 
 
 	public state: BrokersPageState = new BrokersPageState ();
+
+
+	public update_data (): Promise<Boolean> {
+		return new Promise<Boolean> ((resolve: Function) => {
+			new StockboyAPI ().fetch_user_data ("GetUserBrokers").then ((response: BrokersList) => {
+				if (not_empty (response)) this.setState ({ data: response }, () => resolve (true));
+				this.setState ({ loading: false });
+			});
+		});
+	}// update_data;
 
 
 	public render () {
@@ -47,21 +52,19 @@ export default class BrokersPage extends Component<BaseProps, BrokersPageState> 
 
 			<div className="title">Brokers</div>
 
-			{this.state.loading ? <Eyecandy text="Loading brokers" /> : <DataPageControl data={this.state.data} properties={properties} align_buttons={ButtonAlignment.center}
+			{this.state.loading ? <Eyecandy text="Loading brokers" /> : <DataPageControl data={this.state.data} 
+				properties={properties} align_buttons={ButtonAlignment.center} parent={this}
 				search_filters={properties.fields} stock_filters={false} table_buttons={true} 
-				ref={this.data_page} data_type="Brokers" form={EditBrokerForm}>
+				data_type="Brokers" form={EditBrokerForm} save_command="SaveBroker">
 			</DataPageControl>}
 
 		</div>
 	}// render;
 
 
-	constructor (props: BaseProps) {
-		super (props);
-		new StockboyAPI ().fetch_user_data ("GetBrokers").then ((response: BrokersList) => {
-			if (not_empty (response)) this.setState ({ data: response });
-			this.setState ({ loading: false });
-		});
+	public constructor () {
+		super (null);
+		this.update_data ();
 	}// constructor;
 
 }// BrokersPage;

@@ -15,7 +15,7 @@ namespace Stockboy.Classes {
 				//join dvd in context.dividends on tck.id equals dvd.ticker_id
 				where tck.id == stock.ticker_id && tby.name == "buy"
 				select new StockDetailsModel () {
-					company = tck.name,
+					company = tck.name ?? String.Empty,
 					brokers = (from hld in holdings select $"{hld.broker} ({hld.status})").Distinct ().ToList (),
 					ticker = tck.symbol,
 					first_purchased = (from trn in context.transactions select trn.transaction_date).Min (),

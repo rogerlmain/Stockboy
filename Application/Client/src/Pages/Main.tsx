@@ -63,8 +63,9 @@ export default class MainPage extends Component {
 
 	public render = () => <div className="centered full-page column-block with-row-space">
 
-		<div className="full-width left-aligned row-block">
-			<MainPageContext.Provider value={this}>
+		<MainPageContext.Provider value={this}>
+
+			<div className="full-width left-aligned row-block">
 				<div className="somewhat-spaced-out row-block with-some-headspace">
 					{Object.keys (PageType).map ((key: string) => {
 						return <MainMenuItem key={PageType [key]}
@@ -73,10 +74,12 @@ export default class MainPage extends Component {
 						</MainMenuItem>
 					})}
 				</div>					
-			</MainPageContext.Provider>
-		</div>
+			</div>
 
-		<div className="full-size column-centered column-block with-headspace">{this.active_page}</div>
+			<div className="full-size column-centered column-block with-headspace">{this.active_page}</div>
+
+		</MainPageContext.Provider>
+
 
 		<div className="column-centered row-block with-some-legroom with-headspace">
 			Stockboy Stock Ledger - &copy; Copyright 2024 - The Roger Main Programming Company

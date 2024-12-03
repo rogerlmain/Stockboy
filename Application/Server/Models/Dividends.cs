@@ -26,7 +26,7 @@
 
 
 	class DividendHistory {
-		public required Guid ticker_id { get; set; }
+		public required Guid? ticker_id { get; set; } = null;
 		public required String symbol { get; set; }
 		public required DateTime payment_date { get; set; }
 	}// DividendHistory;
@@ -42,7 +42,7 @@
 
 
 	public class DividendPayoutItem {
-		public required Guid ticker_id { get; set;}
+		public required Guid? ticker_id { get; set;} = null;
 		public required String company { get; set; }
 		public required String ticker { get; set; }
 		public required Decimal amount { get; set; }

@@ -5,9 +5,9 @@ namespace Stockboy.Models {
 
 	[Keyless]
 	public class ActivityView: BaseModel, IStockModel {
-		public Guid user_id { get; set; } = Guid.Empty;
-        public Guid broker_id { get; set; } = Guid.Empty;
-        public Guid ticker_id { get; set; } = Guid.Empty;
+		public Guid? user_id { get; set; } = null;
+        public Guid? broker_id { get; set; } = null;
+        public Guid? ticker_id { get; set; } = null;
 		public string broker { get; set; } = String.Empty;
 		public string symbol { get; set; } = String.Empty;
 		public string company { get; set; } = String.Empty;

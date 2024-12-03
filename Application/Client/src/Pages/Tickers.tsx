@@ -1,6 +1,8 @@
 import StockboyAPI from "Classes/StockboyAPI";
-import DataPageControl from "Controls/DataPageControl";
+import Eyecandy from "Controls/Common/Eyecandy";
 import EditTickersForm from "Forms/EditTickersForm";
+
+import DataPageControl, { ButtonAlignment } from "Controls/DataPageControl";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
@@ -22,6 +24,7 @@ type TickersList = Array<TickersListModel>
 class TickersPageState {
 	data: TickersList = null;
 	form_visible: boolean = false;
+	loading: boolean = false;
 }// TickersPageState;
 
 
@@ -33,15 +36,26 @@ export default class TickersPage extends Component<BaseProps, TickersPageState> 
 	public state: TickersPageState = new TickersPageState ();
 
 
+	public update_data (): Promise<Boolean> {
+		return new Promise<Boolean> ((resolve: Function) => {
+			new StockboyAPI ().fetch_user_data ("GetUserTickers").then ((response: TickersList) => {
+				if (not_empty (response)) this.setState ({ data: response }, () => resolve (true));
+				this.setState ({ loading: false });
+			});
+		});
+	}// update_data;
+
+
 	public render () {
 		return <div className="container">
 
 			<div className="title">Tickers</div>
 
-			<DataPageControl data={this.state.data} properties={properties} 
-				search_filters={properties.fields} table_buttons={true} form={EditTickersForm}
-				save_command="SaveTicker" delete_command="DeleteTicker" data_type="Tickers">
-			</DataPageControl>
+			{this.state.loading ? <Eyecandy text="Loading tickers" /> : <DataPageControl data={this.state.data} 
+				properties={properties} align_buttons={ButtonAlignment.center} parent={this}
+				search_filters={properties.fields} table_buttons={true} data_type="Tickers" form={EditTickersForm}
+				save_command="SaveTicker" delete_command="DeleteTicker">
+			</DataPageControl>}
 
 		</div>
 	}// render;
@@ -49,7 +63,7 @@ export default class TickersPage extends Component<BaseProps, TickersPageState> 
 
 	constructor (props: BaseProps) {
 		super (props);
-		new StockboyAPI ().fetch_data ("GetTickers").then ((result: TickersList) => this.setState ({ data: result }));
+		this.update_data ();
 	}// constructor;
 
 }// TickersPage;

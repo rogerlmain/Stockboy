@@ -377,7 +377,7 @@ FormData.prototype.get_data = function (): FormData {
 	let form_data = null;
 
 	this.forEach ((value: FormDataEntryValue, key: string) => {
-		if (is_defined (value)) {
+		if (!key.matches ("null") && is_defined (value)) {
 			if (is_null (form_data)) form_data = new FormData ();
 			form_data.append (key, value);
 		}// if;

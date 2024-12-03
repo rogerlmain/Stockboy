@@ -4,7 +4,7 @@ using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
-	public class Stocks (DataContext context, StockAPIClient client): Controller {
+	public class Stocks (DataContext context, StockAPIClient client): BaseController (context) {
 
 		[HttpPost]
 		[Route ("GetHoldings")]

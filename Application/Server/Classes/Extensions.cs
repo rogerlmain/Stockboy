@@ -49,21 +49,26 @@ namespace Stockboy.Classes {
 		}// GetContext;
 
 
+		public static TModel SaveData<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : class {
+
+			Boolean new_record = not_set (parameters.GetValue ("id"));
+
+			if (new_record) {
+				parameters.SetValue ("id", Guid.NewGuid ());
+				dataset.Add (parameters);
+			} else {
+				dataset.Update (parameters);
+			}// if;
+
+			dataset.GetContext ()?.SaveChanges ();
+			return parameters;
+
+		}// SaveData;
+
+
 		public static JsonResult Save<TModel> (this DbSet<TModel> dataset, TModel parameters) where TModel : class {
 			try {
-
-				Boolean new_record = not_set (parameters.GetValue ("id"));
-
-				if (new_record) {
-					parameters.SetValue ("id", Guid.NewGuid ());
-					dataset.Add (parameters);
-				} else {
-					dataset.Update (parameters);
-				}// if;
-
-				dataset.GetContext ()?.SaveChanges ();
-				return new JsonResult (parameters);
-
+				return new JsonResult (dataset.SaveData (parameters));
 			} catch (Exception except) {
 				return new JsonResult (new { error = except.Message });
 			}// try;
@@ -180,7 +185,7 @@ namespace Stockboy.Classes {
 		}// GetKeys;
 
 
-		public static Boolean IsGuid (this Object source) => source.GetType () == typeof (Guid);
+		public static Boolean IsGuid (this Object source) => source.GetType () == typeof (Guid?);
 
 
 		public static Boolean Matches (this Object source, Object? candidate) {
@@ -221,5 +226,20 @@ namespace Stockboy.Classes {
 		}// SequentialThenBy;
 
 	}// QueryableExtensions;
+
+
+	static class SessionExtensions {
+		
+		public static void SetObject (this ISession session, String key, Object candidate) {
+			session.SetString (key, JsonConvert.SerializeObject (candidate));
+		}// SetObject;
+
+
+		public static TModel? GetObject<TModel> (this ISession session, String key) {
+			String? value = session.GetString (key);
+			return isset (value) ? JsonConvert.DeserializeObject<TModel> (value!) : default;
+		}// GetObject;
+
+	}// SessionExtensions;
 
 }// Stockboy.Classes;

@@ -1,4 +1,3 @@
-import Validator from "Classes/Validator";
 import PopupWindow from "Controls/Common/Windows/PopupWindow";
 
 import LoginPage from "Pages/Login";
@@ -19,7 +18,7 @@ export default class BasePage extends Component<Object, BasePageState> {
 
 
 	private get active_page (): ReactElement {
-		if (Validator.Validated) return <MainPage />
+		if (Validated) return <MainPage />
 		if (this.state.new_account) return <SignupPage base_page={this} />
 		return <LoginPage base_page={this} />
 	}// active_page;
@@ -44,3 +43,5 @@ export default class BasePage extends Component<Object, BasePageState> {
 	}// render;
 
 }// BasePage;
+
+

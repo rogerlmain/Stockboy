@@ -44,13 +44,13 @@ export default class DataTableRow extends Component<DataRowProps, DataRowState> 
 
 		for (let row of this.props.data_table.props.data) {
 
-			let matches = true;
+			let key_row: HTMLInputElement = null;
 
-			key_rows.forEach ((key_row: HTMLInputElement) => {
-				if (row [key_row.name] != key_row.value) matches = false;
-			});
-
-			if (matches) return row;
+			for (key_row of Array.from (key_rows)) {
+				if (row [key_row.name] != key_row.value) continue;
+				if (row.hasKey ("approved") && (row ["approved"] && !Administrator)) continue;
+				return row;
+			}// for;
 
 		}// for;
 
@@ -74,13 +74,17 @@ export default class DataTableRow extends Component<DataRowProps, DataRowState> 
 	public get selected_class (): string { return (this.props.row == this.props.data_table.state.selected_row) ? "selected" : String.Empty}
 
 	public render () {
+
+		let requires_approval: boolean = this.props.row.hasKey ("approved");
+
 		return <div className={`table-row ${this.selected_class}`}
 
 			onMouseOver={(event: MouseEvent) => this.active_row (event.target).classList.add ("highlighted")}
 			onMouseOut={(event: MouseEvent) => this.active_row (event.target).classList.remove ("highlighted")}>
 
-			{isset (this.props.data_table.props.properties.keys) ? <div className="keys">
+			{isset (this.props.data_table.props.properties.keys) || requires_approval ? <div className="keys">
 				{this.props.data_table.props.properties.keys.map (key => <input key={key} type="hidden" name={key.toString ()} value={this.props.row [key as keyof IBaseModel].toString ()} />)}
+				{requires_approval ? <input type="hidden" name="approved" value={this.props.row ["approved"]} /> : null}
 			</div> : null}
 
 			{this.props.field_ids.map (field_id => {

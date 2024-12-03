@@ -2,6 +2,7 @@ import EditFormControl from "Controls/EditFormControl";
 import FilterHandler from "Controls/FilterHandler";
 import TableButtons from "Controls/TableButtons";
 import TableFilters from "Controls/TableFilters";
+import MainPage from "Pages/Main";
 
 import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
@@ -9,9 +10,6 @@ import { DataKeyArray } from "Classes/DataKeys";
 import { DeleteForm } from "Forms/DeleteForm";
 import { IBaseModel, StockModel } from "Models/Abstract/BaseModels";
 import { Component, ComponentClass, Context, createContext, createRef, RefObject } from "react";
-
-
-export enum ButtonAlignment { center, right }
 
 
 class DataPageControlProps {
@@ -35,6 +33,8 @@ class DataPageControlProps {
 	form: ComponentClass;
 	data_type: string;
 
+	parent: Component;
+
 }// DataPageControlProps;
 
 
@@ -42,6 +42,9 @@ class DataPageControlState {
 	data: DataArray = null;
 	selected_row: IBaseModel = null;
 }// DataPageControlState;
+
+
+export enum ButtonAlignment { center, right }
 
 
 export const FilterHandlerContext: Context<FilterHandler> = createContext (null);
@@ -53,6 +56,9 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	private data_table: RefObject<DataTable> = createRef ();
 	private grid_block: RefObject<HTMLDivElement> = createRef ();
 	private side_panel: RefObject<HTMLDivElement> = createRef ();
+
+
+private main_page: MainPage = null;
 
 
 	private show_form (data?: IBaseModel) {
@@ -102,59 +108,19 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 		form: null,
 		data_type: null,
 
+		parent: null,
+
 	}// defaultProps;
 
 
 	public state: DataPageControlState = new DataPageControlState ();
 
 
-	public add_row (row: IBaseModel) {
-
-		let sort_field: string = this.data_table.current.state.sort_field;
-		let ascending: boolean = this.data_table.current.state.ascending;
-
-		if (isset (row [sort_field])) {
-			for (let index = 0; index < this.props.data.length; index++) {
-
-				let item = this.props.data [index];
-
-				switch (ascending) {
-					case true: if (row [sort_field] > item [sort_field]) continue; break;
-					case false: if (row [sort_field] < item [sort_field]) continue; break;
-				}// switch;
-
-				return this.setState ({ data: this.props.data.toSpliced (index, 0, row) });
-
-			}// for;
-		}// if;
-
-		return this.setState ({ data: this.state.data.append (row) });
-
-	}// add_row;
-
-
-	public update_row (data: IBaseModel) {
-
-		let selected_row = this.state.data.find ((row: IBaseModel) => {
-
-			let found: boolean = false;
-
-			row.Keys.forEach (key => found = (row [key] == data [key]));
-			return found;
-
-		});
-
-		Object.assign (selected_row, data);
-		this.forceUpdate ();
-
-	}// update_row;
-
-
 	public remove_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
 
 	public componentDidUpdate (props: DataPageControlProps) {
-		if (props.data?.matches (this.props.data)) return;
+		if ((props.data == this.props.data) || (props.data?.matches (this.props.data))) return;
 		if (isset (this.props.children)) this.recenter_grid_block.bind (this) ();
 		this.setState ({ data: this.props.data });
 	}// componentDidMount;
@@ -170,7 +136,7 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 			<FilterHandlerContext.Provider value={this.filter_handler}>
 
 				{((this.props.search_filters || this.props.stock_filters) && isset (this.props.data)) ? <TableFilters data={this.props.data} 
-					search_filters={this.props.search_filters} stock_filters={this.props.stock_filters}
+					search_filters={this.props.search_filters}  stock_filters={this.props.stock_filters}
 					parent={this} ref={this.table_filters} onFilterChange={this.filter_handler?.update_stock_filters.bind (this.filter_handler)}>
 				</TableFilters> : null}
 
@@ -203,6 +169,7 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 			</FilterHandlerContext.Provider>
 
 		</div>
+
 	}// render;
 
 	constructor (props: DataPageControlProps) {

@@ -5,7 +5,7 @@ namespace Stockboy.Models {
 
 	public interface IBaseModel {
 		[Key]
-		public Guid id { get; set; }
+		public Guid? id { get; set; }
 	}// IBaseModel;
 
 
@@ -15,14 +15,14 @@ namespace Stockboy.Models {
 
 
 	public interface IStockModel: IBaseModel {
-        public Guid broker_id { get; set; }
-        public Guid ticker_id { get; set; }
+        public Guid? broker_id { get; set; }
+        public Guid? ticker_id { get; set; }
 	}// StockModel;
 
 
 	public class BaseModel: IBaseModel {
 		[Key]
-		public Guid id { get; set; } = new Guid ();
+		public Guid? id { get; set; } = new Guid? ();
 	}// BaseModel;
 
 
@@ -31,8 +31,13 @@ namespace Stockboy.Models {
 	}// DataModel;
 
 
+	public class ValueModel: BaseModel {
+		public String value { get; set; } = String.Empty;
+	}// ValueModel;
+
+
 	public class StockModel {
-		public Guid user_id { get; set; } = Guid.Empty;
+		public Guid? user_id { get; set; } = null;
 		public Guid? broker_id { get; set; } = null;
 		public Guid? ticker_id { get; set; } = null;
 	}// StockDataModel;

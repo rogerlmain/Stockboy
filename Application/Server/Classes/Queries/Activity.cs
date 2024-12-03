@@ -14,8 +14,8 @@ namespace Stockboy.Classes.Queries {
 				transaction_type = ttp.name,
 				broker_id = brk.id,
 				ticker_id = tck.id,
-				broker = brk.name,
-				company = tck.name,
+				broker = brk.name ?? String.Empty,
+				company = tck.name ?? String.Empty,
 				ticker = tck.symbol,
 				quantity = trn.quantity,
 				price = trn.price
@@ -32,8 +32,8 @@ namespace Stockboy.Classes.Queries {
 				transaction_type = "Dividend",
 				broker_id = brk.id,
 				ticker_id = tck.id,
-				broker = brk.name,
-				company = tck.name,
+				broker = brk.name ?? String.Empty,
+				company = tck.name ?? String.Empty,
 				ticker = tck.symbol,
 				quantity = dvd.share_quantity,
 				price = null
@@ -50,8 +50,8 @@ namespace Stockboy.Classes.Queries {
 				transaction_type = "Split",
 				broker_id = brk.id,
 				ticker_id = tck.id,
-				broker = brk.name,
-				company = tck.name,
+				broker = brk.name ?? String.Empty,
+				company = tck.name ?? String.Empty,
 				ticker = tck.symbol,
 				quantity = spl.current / spl.previous,
 				price = null

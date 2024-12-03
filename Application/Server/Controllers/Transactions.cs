@@ -23,7 +23,7 @@ namespace Stockboy.Controllers {
 			TransactionsTableRecord? result = TransactionQueries.get_dividend_transaction (context, dividend);
 
 			if (isset (result) && ((result!.price * result.quantity).round (2) != (dividend.amount_per_share * dividend.share_quantity).round (2))) result = null;
-			return new JsonResult (new { id = isset (result) ? result!.id : new Guid () });
+			return new JsonResult (new { id = isset (result) ? result!.id : new Guid? () });
 
 		}// GetDividendTransaction;
 

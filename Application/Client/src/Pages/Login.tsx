@@ -1,4 +1,3 @@
-
 import StockboyAPI from "Classes/StockboyAPI";
 import EyecandyButton from "Controls/Common/EyecandyButton";
 import Link from "Controls/Link";
@@ -32,6 +31,8 @@ export default class LoginPage extends Component<LoginPageProps, LoginPageState>
 
 		new StockboyAPI ().fetch_data ("LoginUser", form_data).then ((response) => {
 			if (response.message.matches ("validated")) {
+
+				// TO DO: Encrypt end user credentials including full name, administrator status and user id
 				switch (remember_me) {
 					case true: localStorage.setItem ("key", response.user_id); break;
 					default: sessionStorage.setItem ("key", response.user_id); break;
@@ -59,10 +60,10 @@ export default class LoginPage extends Component<LoginPageProps, LoginPageState>
 				<div className="two-column-grid">
 
 					<label htmlFor="email_address">Email address</label>
-					<input id="email_address" />
+					<input id="email_address" defaultValue={ window.debugging ? "rex@rogerlmain.com" : null } />
 
 					<label htmlFor="password">Password</label>
-					<PasswordControl id="password" />
+					<PasswordControl id="password" defaultValue={ window.debugging ? "Strange-1" : null } />
 
 				</div>
 
@@ -79,8 +80,6 @@ export default class LoginPage extends Component<LoginPageProps, LoginPageState>
 							onClick={() => this.setState ({ logging_in: true }, () => this.submit_credentials ())}>
 							Log In
 						</EyecandyButton>
-
-<button id="backdoor" onClick={() => localStorage.setItem ("key", "a2f58788-aa7b-11ef-9ae4-e43a76a2c6fd")}>Back Door</button>
 
 					</div>
 

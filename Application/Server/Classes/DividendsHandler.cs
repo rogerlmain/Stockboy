@@ -5,7 +5,7 @@ namespace Stockboy.Classes {
 
 	public class DividendsHandler (DataContext context) {
 
-		public DividendPaymentList? GetPendingPayments (Guid user_id, HoldingsData holdings_data) {
+		public DividendPaymentList? GetPendingPayments (Guid? user_id, HoldingsData holdings_data) {
 
 			StockDateModelList exdiv_dates = (from tck in context.tickers 
 				where tck.ex_dividend_date != null
@@ -38,7 +38,7 @@ namespace Stockboy.Classes {
 		}// GetPendingPayments;
 
 
-		public DividendPayout GetMonthlyPayout (Guid user_id, HoldingsModelList holdings) {
+		public DividendPayout GetMonthlyPayout (Guid? user_id, HoldingsModelList holdings) {
 
 			DividendPayoutList payouts = (from rows in 
 				(from hld in holdings

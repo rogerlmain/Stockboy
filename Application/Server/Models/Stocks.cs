@@ -42,7 +42,7 @@ namespace Stockboy.Models {
 
 
 	public class StockDateModel {
-		public Guid ticker_id { get; set; } = Guid.Empty;
+		public Guid? ticker_id { get; set; } = null;
 		public DateTime date { get; set; } = DateTime.MinValue;
 	}// StockDateModel;
 

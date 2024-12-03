@@ -36,6 +36,7 @@ export function TypeSafe (object_type: any = null) {
 
 export type BaseModelArray = Array<IBaseModel>
 export type StockModelArray = Array<IStockModel>
+export type IDModelArray = Array<IDModel>
 
 export type DateType = Date | string;
 
@@ -77,6 +78,19 @@ export class DataModel extends BaseModel {
 	public deleted?: boolean = null;
 	
 }// DataModel;
+
+
+export class IDModel<IModel = string> {
+
+	public id: string = null;
+	public value: IModel = null;
+
+	public constructor (id: string = null, value: IModel = null) {
+		this.id = id;
+		this.value = value;
+	}// constructor;
+
+}// IDModel;
 
 
 export class BasicStockModel {

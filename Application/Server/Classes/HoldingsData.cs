@@ -164,7 +164,7 @@ namespace Stockboy.Classes {
 		/********/
 
 
-		public HoldingsModelList? GetHoldingsData (Guid user_id, StockDateModelList? report_dates = null) {
+		public HoldingsModelList? GetHoldingsData (Guid? user_id, StockDateModelList? report_dates = null) {
 
 			String? previous_broker = null;
 			String? previous_company = null;
@@ -236,7 +236,7 @@ namespace Stockboy.Classes {
 		}// GetHoldingsData;
 
 
-		public HoldingsModelList? HoldingsPriceList (Guid user_id, StockDateModelList? report_dates = null) {
+		public HoldingsModelList? HoldingsPriceList (Guid? user_id, StockDateModelList? report_dates = null) {
 
 			HoldingsModelList? holdings = GetHoldingsData (user_id, report_dates);
 
@@ -255,7 +255,7 @@ namespace Stockboy.Classes {
 		}// HoldingsPriceList;
 
 
-		public ProfitLossModelList? GetProfitLossList (Guid user_id) {
+		public ProfitLossModelList? GetProfitLossList (Guid? user_id) {
 
   			HoldingsModelList? holdings_data = HoldingsPriceList (user_id);
 

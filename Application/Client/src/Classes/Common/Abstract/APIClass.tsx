@@ -1,6 +1,12 @@
 import ErrorWindow from "Controls/Common/Windows/ErrorWindow";
 
 
+window.addEventListener ("unhandledrejection", (event) => {
+	alert ("unhandled rejection caught");
+	event.preventDefault ();
+});
+
+
 export default abstract class APIClass {
 
 	private base_url: string = null;
@@ -9,9 +15,10 @@ export default abstract class APIClass {
 	/********/
 
 
-	protected fetch = (url: RequestInfo, body: any = null): any => new Promise ((resolve, reject) => {
+	protected fetch = (url: RequestInfo, body: any = null): Promise<any> => new Promise ((resolve) => {
 
-		const parameters = {
+		const parameters: RequestInit = {
+			credentials: "include",
 			method: is_null (body) ? "get" : "post",
 			headers: { "content-type": "application/json" }
 		};
@@ -30,7 +37,7 @@ export default abstract class APIClass {
 			if (is_null (response)) return resolve (null);
 			if (isset (response ["error"])) {
 				popup_window.show (<ErrorWindow text={response ["error"]} />);
-				reject ();
+				return resolve (null);
 			}// if;
 			resolve (response);
 		}).catch (() => {

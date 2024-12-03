@@ -45,14 +45,12 @@ export default class StockboyAPI extends APIClass {
 
 	public fetch_user_data (url: string, body: any = null): Promise<any> {
 
-		let user_id: string = sessionStorage.getItem ("key") ?? localStorage.getItem ("key");
-
-		if (not_set (user_id)) throw ("Invalid user ID.");
+		if (not_set (UserId)) throw ("Invalid user ID.");
 		if (is_null (body)) body = new Object ();
 
 		switch (body instanceof FormData) {
-			case true: body.append ("user_id", user_id); break;
-			default: body ["user_id"] = user_id; break;
+			case true: body.append ("user_id", UserId); break;
+			default: body ["user_id"] = UserId; break;
 		}// switch;
 
 		return this.fetch_data (`${url}`, body);

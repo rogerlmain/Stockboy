@@ -2,6 +2,7 @@ import "Classes/Common/Globals";
 import "Classes/Common/NumericCurrency";
 import "Classes/Common/Prototypes";
 import "Classes/Common/Types";
+import "Classes/Globals";
 import "Classes/Handlers";
 
 import BasePage from "Pages/Base";

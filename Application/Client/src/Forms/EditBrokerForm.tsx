@@ -1,8 +1,9 @@
 import StockboyAPI from "Classes/StockboyAPI";
-
-import { NameValueArray } from "Classes/Collections";
 import EditList from "Controls/Common/Lists/EditList";
 
+import { NameValueArray } from "Classes/Collections";
+
+import { IDModel } from "Models/Abstract/BaseModels";
 import { BrokersModel } from "Models/Brokers";
 import { Component } from "react";
 
@@ -23,13 +24,15 @@ export default class EditBrokerForm extends Component<BrokerFormProps, BrokerFor
 
 
 	public render () {
-		return <EditList id="brokers_list" data={this.state.brokers} />
+		return <EditList id="brokers_list" name="broker" data={this.state.brokers} 
+			value={(isset (this.props.data?.id) && isset (this.props.data?.name)) ? new IDModel (this.props.data.id, this.props.data.name) : null}>
+		</EditList>
 	}// render;
 
 
 	constructor (props: BrokerFormProps) {
 		super (props);
-		new StockboyAPI ().fetch_data ("GetBrokers").then ((response: NameValueArray) => this.setState ({ brokers: response }));
+		new StockboyAPI ().fetch_user_data ("GetBrokers").then ((response: NameValueArray) => this.setState ({ brokers: response }));
 	}// constructor;
 
 }// EditBrokerForm;

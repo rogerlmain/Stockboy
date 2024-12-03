@@ -10,7 +10,7 @@
 		public DateTime transaction_date { get; set; }
 		public DateTime settlement_date { get; set; }
 		public string transaction_type { get; set; } = String.Empty;
-		public Guid transaction_type_id { get; set; }
+		public Guid? transaction_type_id { get; set; }
 	}// TransactionModel;
 
 

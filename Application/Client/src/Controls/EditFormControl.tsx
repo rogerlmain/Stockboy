@@ -62,12 +62,13 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 			}// switch;
 		}// if;
 
-		new StockboyAPI ().fetch_data (this.props.save_command, form_data).then (response => {
+		new StockboyAPI ().fetch_user_data (this.props.save_command, form_data).then (async response => {
+
+			if (is_null (response)) return;
+
+			await this.props.data_page_control.props.parent.setState ({ data: response });
 
 			if (new_record) {
-
-				this.props.data_page_control.add_row (response);
-
 				return popup_window.show (<div>
 
 					Transaction saved. Save another one?
@@ -78,10 +79,8 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 					</div>
 
 				</div>);
-
 			}// if;
 
-			this.props.data_page_control.update_row (response);
 			popup_window.hide ();
 			
 		});

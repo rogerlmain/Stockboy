@@ -10,8 +10,15 @@ export enum FilterType {inclusive, exclusive}
 /**** Classes ****/
 
 export class NameValuePair<IModel = string> {
+
 	public name: string = null;
 	public value: IModel = null;
+
+	public constructor (name: string = null, value: IModel = null) {
+		this.name = name;
+		this.value = value;
+	}// constructor;
+
 }// NameValuePair;
 
 

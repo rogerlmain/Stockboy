@@ -7,7 +7,7 @@
 
 
 	public class DeleteParameters {
-		public Guid id { get; set; }
+		public Guid? id { get; set; }
 	}// DeleteParameters;
 
 }// Stockboy.Models;
