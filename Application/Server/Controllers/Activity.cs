@@ -6,7 +6,7 @@ using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
-	public class Activity (DataContext context): Controller {
+	public class Activity (DataContext context): BaseController (context) {
 
 		[HttpPost]
 		[Route ("GetActivity")]

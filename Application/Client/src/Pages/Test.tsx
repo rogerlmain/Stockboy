@@ -1,12 +1,11 @@
-import { DataKeyArray } from "Classes/DataKeys";
-import { Component } from "react";
+import { Component, RefObject, createRef } from "react";
 
 import StockboyAPI from "Classes/StockboyAPI";
-import EditList from "Controls/Common/Lists/EditList";
+import PopupWindow from "../Controls/Common/Windows/PopupWindow";
 
 
 class TestState {
-	public data: DataKeyArray = null;
+	public data: String = null;
 }// TestState;
 
 
@@ -14,27 +13,32 @@ export default class TestPage extends Component<Object, TestState> {
 
 	public state: TestState = new TestState ();
 
+	public test_form: RefObject<HTMLFormElement> = createRef ();
+	public popup: RefObject<PopupWindow> = createRef ();
+
+
+	public componentDidMount () {
+		popup_window = this.popup.current;
+	}// componentDidMount;
+
 
 	public render () {
-		return <div className="full-page column-centered column-block with-lotsa-headspace">
-			<EditList id="test_list" close_on_select={false}>
-				<option value="first">First</option>
-				<option>Second</option>
-				<option>Third</option>
-				<option>
-					<div>Fourth</div>
-					<div>and Fifth</div>
-				</option>
-			</EditList>
-		</div>;
+		return <div className="centered full-page">
+			<PopupWindow id="popup_window" ref={this.popup} />
+			<div className="column-centered column-block">
+				<div>Testing</div>
+
+				<button onClick={() => {
+
+					new StockboyAPI ().fetch_data ("TestMe", { value: "some value", user_id: "a6317141-c3cf-41cb-bae3-17545a067958" }).then (response => {
+						this.setState ({ data: JSON.stringify (response) });
+					});
+
+				}}>Doit</button>
+
+				<div>{this.state.data}</div>
+			</div>
+		</div>
 	}// render;
-
-
-	public constructor () {
-		super (null);
-		new StockboyAPI ().fetch_data ("GetBrokers").then (response => {
-			this.setState ({ data: new DataKeyArray (response, ["id", "name"]) });
-		});
-	}// constructor;
 
 }// TestPage;

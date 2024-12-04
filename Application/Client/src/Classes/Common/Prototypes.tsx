@@ -11,11 +11,11 @@ declare global {
 
 		add (value: T): Array<T>
 		append (value: T): Array<T>
-		assign (template: Array<any>, data_type: any): Array<T>
+		assign (template: AnyArray, data_type: any): Array<T>
 		contains (value: any): boolean
 		getDates (fieldname: string): Array<Date>
 		getIntegers (allow_non_numeric?: boolean): Array<number>
-		list (fieldname: string): Array<any>
+		list (fieldname: string): AnyArray
 		remove (value: T): Array<T>
 		sorted (fieldname: string): Array<T>
 
@@ -177,9 +177,9 @@ Array.prototype.append = function<T> (value: T): Array<T> {
 }// append;
 
 
-Array.prototype.assign = function (template: Array<any>, data_type: any = Object): Array<any> {
+Array.prototype.assign = function (template: AnyArray, data_type: any = Object): AnyArray {
 
-	let result: Array<any> = null;
+	let result: AnyArray = null;
 
 	template.forEach (item => {
 		if (is_null (result)) result = new Array<any> ();
@@ -231,7 +231,7 @@ Array.prototype.getIntegers = function (allow_non_numeric: boolean = false): Arr
 }// getIntegers;
 
 
-Array.prototype.list = function (fieldname: string): Array<any> {
+Array.prototype.list = function (fieldname: string): AnyArray {
 
 	let result = null;
 

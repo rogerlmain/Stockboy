@@ -10,11 +10,12 @@ const string exchange_url = "https://financialmodelingprep.com/api/v3/";
 WebApplicationBuilder builder = WebApplication.CreateBuilder (args);
 
 
-builder.Services.AddControllers ().AddNewtonsoftJson ();
+builder.Services.AddDbContext<DataContext> (options => options.UseMySQL (builder.Configuration.GetConnectionString ("MySqlConnection")!));
+builder.Services.AddControllers (options => options.ModelBinderProviders.Insert (0, new BinderProvider ())).AddNewtonsoftJson ();
+
+
 builder.Services.AddEndpointsApiExplorer ();
 builder.Services.AddSwaggerGen ();
-
-builder.Services.AddDbContext<DataContext> (options => options.UseMySQL (builder.Configuration.GetConnectionString ("MySqlConnection")!));
 
 builder.Services.AddHttpClient<StockAPIClient> (client => {
 	client.BaseAddress = new Uri (exchange_url);
@@ -47,7 +48,7 @@ WebApplication app = builder.Build ();
 app.UseDefaultFiles ();
 app.UseStaticFiles ();
 app.UseHttpsRedirection ();
-app.UseCors ();//builder => builder.AllowAnyHeader ().AllowAnyMethod ().AllowAnyOrigin ().AllowCredentials ());
+app.UseCors ();
 app.UseSession ();
 app.UseAuthorization ();
 

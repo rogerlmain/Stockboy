@@ -8,6 +8,11 @@ import { createHash } from "crypto";
 import { Component } from "react";
 
 
+const admin_user: boolean = true;
+const test_user: string = admin_user ? "rex@rogerlmain.com" : "roger.main@rexthestrange.com";
+const test_password: string = "stranger";
+
+
 class LoginPageProps {
 	public base_page: BasePage;
 }// LoginPageProps;
@@ -29,7 +34,7 @@ export default class LoginPage extends Component<LoginPageProps, LoginPageState>
 		form_data.append ("email_address", (document.getElementById ("email_address") as HTMLInputElement).value);
 		form_data.append ("password", createHash ("sha256").update (password).digest ("hex"));
 
-		new StockboyAPI ().fetch_data ("LoginUser", form_data).then ((response) => {
+		new StockboyAPI ().login_user (form_data).then ((response) => {
 			if (response.message.matches ("validated")) {
 
 				// TO DO: Encrypt end user credentials including full name, administrator status and user id
@@ -60,10 +65,10 @@ export default class LoginPage extends Component<LoginPageProps, LoginPageState>
 				<div className="two-column-grid">
 
 					<label htmlFor="email_address">Email address</label>
-					<input id="email_address" defaultValue={ window.debugging ? "rex@rogerlmain.com" : null } />
+					<input id="email_address" defaultValue={ window.debugging ? test_user : null } />
 
 					<label htmlFor="password">Password</label>
-					<PasswordControl id="password" defaultValue={ window.debugging ? "Strange-1" : null } />
+					<PasswordControl id="password" defaultValue={ window.debugging ? test_password : null } />
 
 				</div>
 

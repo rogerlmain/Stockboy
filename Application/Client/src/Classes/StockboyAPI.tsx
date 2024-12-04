@@ -57,6 +57,9 @@ export default class StockboyAPI extends APIClass {
 
 	}// fetch_data;
 
+
+	public login_user = (credentials: FormData) => super.fetch_data ("LoginUser", credentials);
+
 	
 	public fetch_stock_prices = (ticker: string): Promise<Array<StockPriceData>> => this.fetch (`${exchange_url}/${quote_path}/${ticker}?apikey=${exchange_api_key}`);
 

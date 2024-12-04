@@ -6,7 +6,7 @@ namespace Stockboy.Classes {
 
 		public async Task<StockDetailsModel> GetStockDetails (StockModel stock) {
 
-			HoldingsModelList? holdings = (await HoldingsData.Create (context, client)).GetHoldingsData (stock.user_id);
+			HoldingsModelList? holdings = (await HoldingsData.Create (context, client)).GetHoldingsData ();
 
 			StockDetailsModel result = ((
 				from tck in context.tickers

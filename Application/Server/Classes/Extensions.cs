@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Common.Classes;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using Stockboy.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 
 namespace Stockboy.Classes {
@@ -84,6 +86,27 @@ namespace Stockboy.Classes {
 	}// DecimalExtensions;
 
 
+	public static class HttpContextExtensions {
+
+		private static String? ReadValues (this HttpContext context) {
+			context.Request.EnableBuffering ();
+			return new StreamReader (context.Request.Body).ReadEverything ();
+		}// ReadValues;
+
+
+		public static dynamic? GetValues (this HttpContext context, Type? model_type = null) {
+			String? values = context.ReadValues ();
+			if (is_null (values)) return null;
+			if (is_null (model_type)) return StringCollection.FromJson (values!);
+			return JsonConvert.DeserializeObject (values!, model_type!);
+		}// GetValues;
+
+
+		public static TModel? GetValues<TModel> (this HttpContext context) => GetValues (context, typeof (TModel));
+
+	}// HttpContextExtensions;
+
+
 	public static class ListExtensions {
 
 
@@ -107,6 +130,18 @@ namespace Stockboy.Classes {
 		}// OrderBy;
 
 	}// ListExtensions;
+
+
+	public static class ModelBindingContextExtensions {
+
+		public static Guid? GetGuid (this ModelBindingContext context, String name) {
+			String? value = context.HttpContext.GetValues ()? [name];
+			return isset (value) ? new Guid (value!) : null;
+		}// GetGuid;
+
+		public static dynamic? GetValues (this ModelBindingContext context) => context.HttpContext.GetValues (context.ModelType);
+
+	}// ModelBindingContextExtensions;
 
 
 	public static class ObjectExtensions {
@@ -241,5 +276,17 @@ namespace Stockboy.Classes {
 		}// GetObject;
 
 	}// SessionExtensions;
+
+
+	public static class StreamReaderExtensions {
+
+		public static dynamic? ReadEverything (this StreamReader reader) {
+			if (reader.BaseStream.CanSeek) reader.BaseStream.Seek (0, SeekOrigin.Begin);
+			String result = reader.ReadToEndAsync ().Result;
+			if (reader.BaseStream.CanSeek) reader.BaseStream.Seek (0, SeekOrigin.Begin);
+			return result;
+		}// ReadEverything;
+
+	}// StreamReaderExtensions;
 
 }// Stockboy.Classes;

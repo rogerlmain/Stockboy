@@ -11,7 +11,7 @@ import TestPage from "Pages/Test";
 import { createRoot } from "react-dom/client";
 
 
-const testing: boolean = false;
+const testing: boolean = true;
 
 
 if (testing) {

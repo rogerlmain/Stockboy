@@ -21,6 +21,7 @@ declare global {
 	type DataArray = Array<IBaseModel>
 	type StringArray = Array<string>
 	type StringObjectArray = Array<StringObject>
+	type AnyArray = Array<any>
 
 	type StringPair = [string, string];
 

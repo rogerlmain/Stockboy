@@ -2,6 +2,7 @@ drop view if exists activity_view;
 
 create view activity_view as select
 	tac.id,
+    tac.user_id,
 	brk.id as broker_id,
     tck.id as ticker_id,
 	brk.name as broker,
@@ -30,6 +31,7 @@ where
 	(not tac.deleted)
 union select
 	spl.id,
+    spl.user_id,
 	brk.id as broker_id,
     tck.id as ticker_id,
 	brk.name as broker,

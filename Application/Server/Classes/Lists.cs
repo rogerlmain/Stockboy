@@ -17,4 +17,3 @@ global using TickersTableList = System.Collections.Generic.List<Stockboy.Models.
 global using TransactionModelList = System.Collections.Generic.List<Stockboy.Models.TransactionModel>;
 
 global using StringList = System.Collections.Generic.List<System.String>;
-

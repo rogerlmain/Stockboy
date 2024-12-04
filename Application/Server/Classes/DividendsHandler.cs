@@ -5,7 +5,7 @@ namespace Stockboy.Classes {
 
 	public class DividendsHandler (DataContext context) {
 
-		public DividendPaymentList? GetPendingPayments (Guid? user_id, HoldingsData holdings_data) {
+		public DividendPaymentList? GetPendingPayments (HoldingsData holdings_data) {
 
 			StockDateModelList exdiv_dates = (from tck in context.tickers 
 				where tck.ex_dividend_date != null
@@ -15,7 +15,11 @@ namespace Stockboy.Classes {
 				}
 			).ToList ();
 
-			DividendPaymentList result = (from hld in holdings_data.HoldingsPriceList (user_id, exdiv_dates)
+			HoldingsModelList? holdings = holdings_data.HoldingsPriceList (exdiv_dates);
+
+			if (is_null (holdings)) return null;
+
+			DividendPaymentList result = (from hld in holdings
 				join tck in context.tickers on hld.ticker_id equals tck.id
 				where (hld.quantity > 0) && (tck.price != -1)
 				group hld by new {
@@ -38,7 +42,7 @@ namespace Stockboy.Classes {
 		}// GetPendingPayments;
 
 
-		public DividendPayout GetMonthlyPayout (Guid? user_id, HoldingsModelList holdings) {
+		public DividendPayout GetMonthlyPayout (HoldingsModelList holdings) {
 
 			DividendPayoutList payouts = (from rows in 
 				(from hld in holdings

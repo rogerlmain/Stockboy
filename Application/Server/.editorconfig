@@ -34,8 +34,12 @@ csharp_style_prefer_range_operator = false:silent
 dotnet_diagnostic.IDE1006.severity = none
 dotnet_diagnostic.IDE0305.severity = none
 csharp_space_around_binary_operators = before_and_after
+dotnet_style_coalesce_expression = true:suggestion
 
 # Xml files
 
 [*.xml]
-indent_size = 2
+indent_size = 4
+
+[Globals.cs]
+dotnet_diagnostic.CA2211.severity = none

@@ -27,7 +27,7 @@ export default class BrokerList extends DataControl<BrokerListProps> {
 
 
 	public render () {
-		return <DataList id="broker_id" title={this.props.title ?? "Broker"} header={this.props.header} table="brokers"
+		return <DataList id="broker_id" title={this.props.title ?? "Broker"} header={this.props.header} table="UserBrokers"
 			selected_item={this.props.selected_item} allow_all={this.props.allow_all} required={this.props.required}
 			onChange={this.props.onChange}>
 		</DataList>

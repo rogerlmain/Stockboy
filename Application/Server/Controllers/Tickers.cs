@@ -27,14 +27,14 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetTickers")]
-		public IActionResult GetTickers ([FromBody] UserCredentialsRecord credentials) {
+		public IActionResult GetTickers () {
 
 			var result = (
 				from tck in context.tickers.Where (ticker => !ticker.deleted)
 				from utk in context.user_tickers.Where (user_ticker => tck.id == user_ticker.ticker_id).DefaultIfEmpty ()
 				where
 					((utk.ticker_id != tck.id) && tck.approved) || 
-					((utk.user_id == credentials.user_id) && utk.deleted)
+					((utk.user_id == current_user!.user_id) && utk.deleted)
 				select new {
 					name = tck.id,
 					value = tck.name,
@@ -49,14 +49,14 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetUserTickers")]
-		public IActionResult GetUserTickers ([FromBody] UserCredentialsRecord user) {
+		public IActionResult GetUserTickers () {
 
 			var result = (
 				from tck in context.tickers
 				join utk in context.user_tickers on
 					tck.id equals utk.ticker_id
 				where
-					(utk.user_id == user.user_id) &&
+					(utk.user_id == current_user!.user_id) &&
 					(!tck.deleted) && (!utk.deleted)
 				select new {
 					tck.id,

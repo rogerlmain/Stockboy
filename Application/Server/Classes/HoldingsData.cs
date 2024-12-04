@@ -1,8 +1,5 @@
-﻿using Mysqlx.Crud;
-using Stockboy.Classes.Queries;
-using Stockboy.Controllers;
+﻿using Stockboy.Classes.Queries;
 using Stockboy.Models;
-using System.Runtime.CompilerServices;
 
 
 namespace Stockboy.Classes {
@@ -164,7 +161,7 @@ namespace Stockboy.Classes {
 		/********/
 
 
-		public HoldingsModelList? GetHoldingsData (Guid? user_id, StockDateModelList? report_dates = null) {
+		public HoldingsModelList? GetHoldingsData (StockDateModelList? report_dates = null) {
 
 			String? previous_broker = null;
 			String? previous_company = null;
@@ -176,7 +173,7 @@ namespace Stockboy.Classes {
 				where is_null (report_dates) || atv.transaction_date.EarlierThan ((from rdt in report_dates
 					where 
 						(rdt.ticker_id == atv.ticker_id) &&
-						(atv.user_id == user_id)
+						(atv.user_id == current_user!.user_id)
 					select rdt.date).FirstOrDefault ()
 				) select atv
 			).ToList ();
@@ -236,9 +233,9 @@ namespace Stockboy.Classes {
 		}// GetHoldingsData;
 
 
-		public HoldingsModelList? HoldingsPriceList (Guid? user_id, StockDateModelList? report_dates = null) {
+		public HoldingsModelList? HoldingsPriceList (StockDateModelList? report_dates = null) {
 
-			HoldingsModelList? holdings = GetHoldingsData (user_id, report_dates);
+			HoldingsModelList? holdings = GetHoldingsData (report_dates);
 
 			if (is_null (holdings)) return null;
 			TickersTableList stock_prices = context.tickers.ToList ();
@@ -255,9 +252,9 @@ namespace Stockboy.Classes {
 		}// HoldingsPriceList;
 
 
-		public ProfitLossModelList? GetProfitLossList (Guid? user_id) {
+		public ProfitLossModelList? GetProfitLossList () {
 
-  			HoldingsModelList? holdings_data = HoldingsPriceList (user_id);
+  			HoldingsModelList? holdings_data = HoldingsPriceList ();
 
 			if (is_null (holdings_data)) return null;
 
@@ -279,12 +276,12 @@ namespace Stockboy.Classes {
 
 		}// GetProfitLossList;
 
-
 		public async static Task<HoldingsData> Create (DataContext context, StockAPIClient client) {
 			HoldingsData holdings_data = new (context, client);
 			await holdings_data.update_stock_data ();
 			return holdings_data;
 		}// Create;
+
 
 	}// HoldingsData;
 

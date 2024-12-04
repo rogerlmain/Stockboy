@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Stockboy.Classes;
 using Stockboy.Models;
@@ -11,14 +10,14 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetBrokers")]
-		public IActionResult GetBrokers ([FromBody] UserCredentialsRecord user) {
+		public IActionResult GetBrokers () {
 
 			var result = (
 				from brk in context.brokers.Where (broker => !broker.deleted)
 				from ubr in context.user_brokers.Where (user_broker => brk.id == user_broker.broker_id).DefaultIfEmpty ()
 				where
 					((ubr.broker_id != brk.id) && brk.approved) || 
-					((ubr.user_id == user.user_id) && ubr.deleted)
+					((ubr.user_id == current_user!.user_id) && ubr.deleted)
 				select new {
 					name = brk.id,
 					value = brk.name
@@ -32,14 +31,14 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetUserBrokers")]
-		public IActionResult GetUserBrokers ([FromBody] UserCredentialsRecord user) {
+		public IActionResult GetUserBrokers () {
 
 			var result = (
 				from brk in context.brokers
 				join ubr in context.user_brokers on
 					brk.id equals ubr.broker_id
 				where
-					(ubr.user_id == user.user_id) &&
+					(ubr.user_id == current_user!.user_id) &&
 					(!brk.deleted) && (!ubr.deleted)
 				select new {
 					brk.id,
@@ -67,7 +66,7 @@ namespace Stockboy.Controllers {
 			).FirstOrDefault ();
 
 			if (is_null (broker)) broker = new () {
-				approved = user.administrator || broker!.approved,
+				approved = current_user!.administrator || broker!.approved,
 				deleted = false
 			};
 
@@ -83,7 +82,7 @@ namespace Stockboy.Controllers {
 
 			context.user_brokers.Save (user_brokers);
 
-			return GetUserBrokers (new UserCredentialsRecord () { user_id = parameters.user_id });
+			return GetUserBrokers ();
 
 		}// SaveBroker;
 
