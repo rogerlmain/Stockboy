@@ -4,19 +4,6 @@ import PopupWindow from "Controls/Common/Windows/PopupWindow";
 export { };
 
 
-/**** Application Specific Definitions ****/
-
-
-declare global {
-	var popup_window: PopupWindow;
-	var local_host: Boolean;
-}// global;
-
-
-globalThis.popup_window = null;
-globalThis.local_host = window.location.hostname == "localhost";
-
-
 /**** Generic Global Definitions ****/
 
 
@@ -30,6 +17,9 @@ declare module "react" {
 
 
 declare global {
+
+	var popup_window: PopupWindow;
+	var local_host: Boolean;
 
 	var form_fields: string;
 	var form_items: string;
@@ -68,6 +58,8 @@ declare global {
 
 	var event_handler: EventTarget;
 
+	var clearStorage: Function;
+
 	interface Window {
 		debugging: boolean;
 	}// Window;
@@ -86,6 +78,10 @@ export enum HoldingsStatus {
 	dead = "Dead",
 	defunct = "Defunct",
 }// HoldingsStatus;
+
+
+globalThis.popup_window = null;
+globalThis.local_host = window.location.hostname == "localhost";
 
 
 globalThis.form_items = "input, select, textarea";
@@ -141,6 +137,12 @@ globalThis.get_width = (candidate: HTMLElement) => {
 
 
 globalThis.event_handler = new EventTarget ();
+
+
+globalThis.clearStorage = function (name: string) { 
+	localStorage.removeItem (name);
+	sessionStorage.removeItem (name);
+}// clearStorage;
 
 
 Object.defineProperties (window, {

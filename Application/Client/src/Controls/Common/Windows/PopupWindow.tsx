@@ -17,9 +17,10 @@ export default class PopupWindow extends Component<PopupWindowProps> {
 
 	public state: PopupWindowState = new PopupWindowState ();
 
-	public close_button: ReactElement = <button onClick={(event: MouseEvent<HTMLButtonElement>) => {
+	public close_button = (onClose: Function = null): ReactElement => <button onClick={(event: MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault ();
 		this.hide ();
+		if (isset (onClose)) onClose ();
 	}}>Close</button>;
 
 

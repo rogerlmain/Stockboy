@@ -11,7 +11,7 @@ export default class InformationWindow extends Component<InformationWindowProps>
 			<img src="Images/information.svg" className="eyecandy" />
 			{this.props.text}
 		</div>
-		<div className="button-bar with-some-headspace">{popup_window.close_button}</div>
+		<div className="button-bar with-some-headspace">{popup_window.close_button ()}</div>
 	</div>
 
 }// InformationWindow;

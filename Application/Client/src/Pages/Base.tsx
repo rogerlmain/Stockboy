@@ -14,7 +14,7 @@ class BasePageState {
 
 export default class BasePage extends Component<Object, BasePageState> {
 
-	private popup_ref: RefObject<PopupWindow> = createRef ();
+	private popup: RefObject<PopupWindow> = createRef ();
 
 
 	private get active_page (): ReactElement {
@@ -31,13 +31,14 @@ export default class BasePage extends Component<Object, BasePageState> {
 
 
 	public componentDidMount () {
-		popup_window = this.popup_ref.current;
+		popup_window = this.popup.current;
+		base_page = this;
 	}// componentDidMount;
 
 
 	public render () {
 		return <div className="container">
-			<PopupWindow id="popup_window" ref={this.popup_ref} />
+			<PopupWindow id="popup_window" ref={this.popup} />
 			{this.active_page}
 		</div>
 	}// render;

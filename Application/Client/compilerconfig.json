@@ -6,5 +6,9 @@
   {
     "outputFile": "public/Styles/controls.css",
     "inputFile": "public/Styles/controls.scss"
+  },
+  {
+    "outputFile": "public/Styles/Common/Controls/PopupWindow.css",
+    "inputFile": "public/Styles/Common/Controls/PopupWindow.scss"
   }
 ]

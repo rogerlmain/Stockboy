@@ -11,12 +11,11 @@ import TestPage from "Pages/Test";
 import { createRoot } from "react-dom/client";
 
 
-const testing: boolean = true;
+const testing: Boolean = false;
 
 
-if (testing) {
-	createRoot (document.getElementById ("main")).render (<TestPage />);
-} else {
-	createRoot (document.getElementById ("main")).render (<BasePage />);
-}// if;
+switch (testing) {
+	case true: createRoot (document.getElementById ("main")).render (<TestPage />); break;
+	default: createRoot (document.getElementById ("main")).render (<BasePage />); break;
+}// switch;
 

@@ -12,17 +12,16 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder (args);
 
 builder.Services.AddDbContext<DataContext> (options => options.UseMySQL (builder.Configuration.GetConnectionString ("MySqlConnection")!));
 builder.Services.AddControllers (options => options.ModelBinderProviders.Insert (0, new BinderProvider ())).AddNewtonsoftJson ();
-
-
 builder.Services.AddEndpointsApiExplorer ();
 builder.Services.AddSwaggerGen ();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpContextAccessor ();
+
 
 builder.Services.AddHttpClient<StockAPIClient> (client => {
 	client.BaseAddress = new Uri (exchange_url);
 	client.DefaultRequestHeaders.Add ("Accept", "application/json");
 });
-
-builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession (options => {
     options.IdleTimeout = TimeSpan.FromSeconds (1800);

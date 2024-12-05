@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Specialized;
 
 
 namespace Common.Classes {
 
-	public class StringCollection: Dictionary<String, String> {
+	public class StringValueCollection: Dictionary<String, String> {
 
-		public static StringCollection? FromJson (String json) => JsonConvert.DeserializeObject<StringCollection> (json);
+		public static StringValueCollection? FromJson (String json) => JsonConvert.DeserializeObject<StringValueCollection> (json);
 
-	}// StringCollection;
+	}// StringValueCollection;
 
 }// Common.Classes;

@@ -4,7 +4,18 @@ namespace Stockboy.Classes {
 
 	public static partial class Globals {
 
-		public static UserRecord? current_user = null;
+		private static IHttpContextAccessor context { get; set; } = new HttpContextAccessor ();
+
+		public static UserRecord? current_user {
+
+			get { return context.HttpContext?.Session.GetObject<UserRecord> ("user"); }
+
+			set { 
+				if (is_null (value)) throw new Exception ("Current user candidate is not defined.");
+				context.HttpContext?.Session.SetObject ("user", value!); 
+			}// setter;
+
+		}// UserRecord;
 
 	}// Globals;
 

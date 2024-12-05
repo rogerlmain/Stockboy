@@ -1,4 +1,5 @@
 import APIClass from "Classes/Common/Abstract/APIClass";
+import ErrorWindow from "Controls/Common/Windows/ErrorWindow";
 
 
 const stockboy_url = local_host ? "https://localhost:3002" : "https://stockboy.rogerlmain.com:3002";
@@ -42,7 +43,6 @@ export class DividendDataSet {
 
 export default class StockboyAPI extends APIClass {
 
-
 	public fetch_data (url: string, body: any = null): Promise<any> {
 
 		if (not_set (UserId)) throw ("Invalid user ID.");
@@ -53,7 +53,18 @@ export default class StockboyAPI extends APIClass {
 			default: body ["user_id"] = UserId; break;
 		}// switch;
 
-		return super.fetch_data (`${url}`, body);
+		return new Promise (resolve => {
+			super.fetch_data (`${url}`, body).then (response => {
+				if (isset (response ["message"])) {
+					popup_window.show (<ErrorWindow text="Unauthorized access." onClose={() => {
+						clearStorage ("key");
+						base_page.forceUpdate ();
+					}} />);
+					resolve (null);
+				}// if;
+				resolve (response);
+			});
+		});
 
 	}// fetch_data;
 

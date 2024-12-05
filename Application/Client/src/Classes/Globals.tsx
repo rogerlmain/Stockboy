@@ -1,11 +1,21 @@
+import BasePage from "Pages/Base";
+
+
 export {}
 
 
 declare global {
+
 	var Administrator: boolean;
 	var UserId: string;
 	var Validated: boolean;
+
+	var base_page: BasePage;
+
 }// global;
+
+
+globalThis.base_page = null;
 
 
 Object.defineProperties (globalThis, {

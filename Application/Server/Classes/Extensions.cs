@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using Stockboy.Models;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -97,7 +98,7 @@ namespace Stockboy.Classes {
 		public static dynamic? GetValues (this HttpContext context, Type? model_type = null) {
 			String? values = context.ReadValues ();
 			if (is_null (values)) return null;
-			if (is_null (model_type)) return StringCollection.FromJson (values!);
+			if (is_null (model_type)) return StringValueCollection.FromJson (values!);
 			return JsonConvert.DeserializeObject (values!, model_type!);
 		}// GetValues;
 
@@ -135,7 +136,8 @@ namespace Stockboy.Classes {
 	public static class ModelBindingContextExtensions {
 
 		public static Guid? GetGuid (this ModelBindingContext context, String name) {
-			String? value = context.HttpContext.GetValues ()? [name];
+			StringValueCollection? values = context.HttpContext.GetValues ();
+			values!.TryGetValue (name, out String? value);
 			return isset (value) ? new Guid (value!) : null;
 		}// GetGuid;
 
@@ -288,5 +290,11 @@ namespace Stockboy.Classes {
 		}// ReadEverything;
 
 	}// StreamReaderExtensions;
+
+
+	public static class StringDictionaryExtensions {
+		public static StringDictionary? FromJson (String json) => JsonConvert.DeserializeObject<StringDictionary> (json);
+
+	}// StringDictionaryExtensions;
 
 }// Stockboy.Classes;

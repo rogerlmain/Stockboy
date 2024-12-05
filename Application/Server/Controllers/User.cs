@@ -29,18 +29,28 @@ namespace Stockboy.Controllers {
 		[Route ("LoginUser")]
 		public IActionResult LoginUser ([FromBody] Credentials credentials) {
 
-			UsersTableRecord? user = (from usr in context.users where
-				(usr.email_address == credentials.email_address) &&
-				(usr.password == credentials.password)
-			select usr).FirstOrDefault ();
+			UserRecord? user = (from usr in context.users 
+				where
+					(usr.email_address == credentials.email_address) &&
+					(usr.password == credentials.password)
+				select new UserRecord () {
+					user_id = usr.id,
+					first_name = usr.first_name,
+					last_name = usr.last_name,
+					email_address = usr.email_address,
+					administrator = usr.administrator
+				}// select
+			).FirstOrDefault ();
 
 			if (not_set (user)) throw new Exception ("Invalid username or password.");
 
-			HttpContext.Session.SetObject ("user", user!);
+			current_user = user;
+
+			UserRecord some_user = current_user;
 
 			return new JsonResult (new { 
 				message = "validated",
-				user_id = user!.id
+				user!.user_id
 			});
 
 		}// LoginUser;

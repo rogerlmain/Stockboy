@@ -145,7 +145,7 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 			<div className="with-headspace">
 				<div className="button-bar">
 					<button id="save_button" onClick={async (event: MouseEvent<HTMLButtonElement>) => this.save_record (event)}>Save</button>
-					{isset (this.props.form) ? popup_window.close_button : null}
+					{isset (this.props.form) ? popup_window.close_button () : null}
 				</div>
 			</div>
 
