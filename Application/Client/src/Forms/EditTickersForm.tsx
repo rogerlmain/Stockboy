@@ -1,7 +1,7 @@
 import StockboyAPI from "Classes/StockboyAPI";
 import EditList from "Controls/Common/Lists/EditList";
 
-import { NameValueArray, NameValuePair } from "Classes/Collections";
+import { NameValueArray, NameValuePair } from "Classes/Common/Collections";
 import { IDModel } from "Models/Abstract/BaseModels";
 import { TickersDataModel } from "Models/Tickers";
 import { Component } from "react";

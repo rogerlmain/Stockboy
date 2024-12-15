@@ -3,7 +3,7 @@ import FilterHandler from "Controls/FilterHandler";
 import SelectList from "Controls/Lists/SelectList";
 import TickerSelector from "Controls/TickerSelector";
 
-import { DataFilter, FilterType } from "Classes/Collections";
+import { DataFilter, FilterType } from "Classes/Common/Collections";
 import { DataKeyArray } from "Classes/DataKeys";
 
 import { BaseModel } from "Models/Abstract/BaseModels";

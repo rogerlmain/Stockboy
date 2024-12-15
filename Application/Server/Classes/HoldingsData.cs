@@ -1,4 +1,5 @@
-﻿using Stockboy.Classes.Queries;
+﻿using Server.Classes;
+using Stockboy.Classes.Queries;
 using Stockboy.Models;
 
 

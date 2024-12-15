@@ -1,6 +1,6 @@
 import BaseComponent from "Classes/Common/BaseComponent";
 
-import { NameValueArray, NameValuePair } from "Classes/Collections";
+import { NameValueArray, NameValuePair } from "Classes/Common/Collections";
 import { IDModel } from "Models/Abstract/BaseModels";
 import { createRef, ReactHTMLElement, RefObject } from "react";
 import { renderToString } from "react-dom/server";

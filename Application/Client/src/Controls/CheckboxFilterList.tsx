@@ -1,7 +1,7 @@
 import DataPageControl, { FilterHandlerContext } from "Controls/DataPageControl";
 import FilterHandler from "Controls/FilterHandler";
 
-import { DataFilter, FilterType } from "Classes/Collections";
+import { DataFilter, FilterType } from "Classes/Common/Collections";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { Component, RefObject, createRef } from "react";
 

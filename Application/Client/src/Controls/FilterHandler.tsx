@@ -1,4 +1,4 @@
-import { DataFilter, DataFilterList, FilterType } from "Classes/Collections";
+import { DataFilter, DataFilterList, FilterType } from "Classes/Common/Collections";
 import { DataKeyArray } from "Classes/DataKeys";
 import { IBaseModel } from "Models/Abstract/BaseModels";
 import { Component } from "react";

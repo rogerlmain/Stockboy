@@ -1,7 +1,7 @@
 import StockboyAPI from "Classes/StockboyAPI";
 import EditList from "Controls/Common/Lists/EditList";
 
-import { NameValueArray } from "Classes/Collections";
+import { NameValueArray } from "Classes/Common/Collections";
 
 import { IDModel } from "Models/Abstract/BaseModels";
 import { BrokersModel } from "Models/Brokers";

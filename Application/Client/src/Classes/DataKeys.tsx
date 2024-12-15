@@ -1,4 +1,4 @@
-import NameValueCollection from "Classes/Collections";
+import NameValueCollection from "Classes/Common/Collections";
 import { ReactNode } from "react";
 
 

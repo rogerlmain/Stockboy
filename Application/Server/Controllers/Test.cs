@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Classes;
 
 

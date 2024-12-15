@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Server.Classes;
 using Stockboy.Classes;
 using Stockboy.Classes.Queries;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 
 
 namespace Stockboy.Controllers {
 
-	[EnableCors]
-	public class Transactions (DataContext context): DataController<TransactionsTableRecord, TransactionModel> (context) {
+	public class Transactions (DataContext context): BaseController (context) {
 
 		[HttpGet]
 		[Route ("GetTransactions")]

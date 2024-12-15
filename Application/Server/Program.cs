@@ -1,5 +1,3 @@
-global using static Stockboy.Classes.Globals;
-
 using Microsoft.EntityFrameworkCore;
 using Stockboy.Classes;
 
@@ -11,12 +9,10 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder (args);
 
 
 builder.Services.AddDbContext<DataContext> (options => options.UseMySQL (builder.Configuration.GetConnectionString ("MySqlConnection")!));
-builder.Services.AddControllers (options => options.ModelBinderProviders.Insert (0, new BinderProvider ())).AddNewtonsoftJson ();
+builder.Services.AddControllers ();
 builder.Services.AddEndpointsApiExplorer ();
-builder.Services.AddSwaggerGen ();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor ();
-
 
 builder.Services.AddHttpClient<StockAPIClient> (client => {
 	client.BaseAddress = new Uri (exchange_url);
@@ -51,11 +47,8 @@ app.UseCors ();
 app.UseSession ();
 app.UseAuthorization ();
 
-app.MapControllers ();
+app.UseMiddleware<UserValidator> ();
 
-if (app.Environment.IsDevelopment ()) {
-	app.UseSwagger ();
-	app.UseSwaggerUI ();
-}// if;
+app.MapControllers ();
 
 app.Run ();
