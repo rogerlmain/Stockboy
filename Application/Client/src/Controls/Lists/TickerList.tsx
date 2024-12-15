@@ -25,7 +25,7 @@ export default class TickerList extends DataControl<TickerListProps> {
 
 	
 	public render () { 
-		return <DataList id="ticker_id" title={this.props.title ?? "Ticker"} header={this.props.header} table="tickers"
+		return <DataList id="ticker_id" title={this.props.title ?? "Ticker"} header={this.props.header} table="UserTickers"
 			selected_item={this.props.selected_item} allow_all={this.props.allow_all}
 			onChange={this.props.onChange}>
 		</DataList>

@@ -6,15 +6,11 @@ using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
-public class StringModel {
-	public required String junk { get; set; }
-}
-
 	public class Stocks (DataContext context, StockAPIClient client): BaseController (context) {
 
 		[HttpPost]
 		[Route ("GetHoldings")]
-		public async Task<IActionResult?> GetHoldings ([FromBody] StringModel junk) {
+		public async Task<IActionResult?> GetHoldings () {
 
 			DividendsHandler dividends = new (context);
 			HoldingsData holdings_data = await HoldingsData.Create (context, client);

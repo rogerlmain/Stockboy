@@ -58,9 +58,6 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	private side_panel: RefObject<HTMLDivElement> = createRef ();
 
 
-private main_page: MainPage = null;
-
-
 	private show_form (data?: IBaseModel) {
 		popup_window.show (<EditFormControl form={this.props.form} 
 			save_command={this.props.save_command}

@@ -7,7 +7,7 @@
 
 
 	public class UserRecord {
-		public Guid? user_id { get; set; } = null;
+		public required Guid user_id { get; set; }
 		public String? first_name { get; set; } = null;
 		public String? last_name { get; set; } = null;
 		public required String email_address { get; set; }
@@ -16,7 +16,7 @@
 
 
 	public class UsersTableRecord: Credentials {
-		public Guid? id { get; set; } = null;
+		public required Guid id { get; set; }
 		public String? first_name { get; set; } = null;
 		public String? last_name { get; set; } = null;
 		public Boolean administrator { get; set; } = false;

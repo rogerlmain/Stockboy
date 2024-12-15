@@ -11,7 +11,7 @@ namespace Stockboy.Classes.Queries {
 			join tck in context.tickers on tra.ticker_id equals tck.id
 			join brk in context.brokers on tra.broker_id equals brk.id
 			join ttp in context.transaction_types on tra.transaction_type_id equals ttp.id
-			where !tra.deleted
+			where !tra.deleted && (tra.user_id == current_user.user_id)
 			select new TransactionModel () {
 				id = tra.id,
 				broker_id = brk.id,

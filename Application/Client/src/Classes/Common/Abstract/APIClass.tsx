@@ -42,7 +42,8 @@ export default abstract class APIClass {
 				}// if;
 				resolve (response);
 			}).catch ((except) => {
-				setTimeout (() => resolve (this.fetch (url, body)), 5000); //1000);
+				console.log (except);
+				setTimeout (() => resolve (this.fetch (url, body)), 1000);
 			});
 
 		});

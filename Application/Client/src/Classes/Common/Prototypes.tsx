@@ -18,6 +18,7 @@ declare global {
 		list (fieldname: string): AnyArray
 		remove (value: T): Array<T>
 		sorted (fieldname: string): Array<T>
+		update<TModel> (value: TModel, fieldname: string): Array<T>
 
 		get empty (): boolean
 
@@ -255,6 +256,23 @@ Array.prototype.sorted = function<T> (fieldname: string): Array<T> {
 	let result: Array<T> = this.toSorted ((previous: Object, next: Object) => next [fieldname] < previous [fieldname] ? 1 : -1);
 	return result;
 }// sorted;
+
+
+Array.prototype.update = function<TModel> (value: TModel, fieldname: string = "id"): Array<TModel> {
+
+	let item: TModel = null;
+
+	for (item of this) {
+		if (item [fieldname] == value [fieldname]) {
+			this.splice (this.indexOf (item), 1);
+			break;
+		}// if;
+	}// for;
+
+	this.push (value);
+	return this;
+
+}// update;
 
 
 Object.defineProperties (Array.prototype, {

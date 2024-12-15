@@ -40,7 +40,7 @@ export default class TransactionsPage extends Component<BaseProps, TransactionsP
 			<div className="title">Transactions</div>
 
 			<DataPageControl data={this.state.data} properties={properties} form={EditTransactionForm}
-				search_filters={properties.fields} stock_filters={true} table_buttons={true} 
+				search_filters={properties.fields} stock_filters={true} table_buttons={true} parent={this}
 				save_command="SaveTransaction" delete_command="DeleteTransaction" data_type="Transactions">
 			</DataPageControl>
 

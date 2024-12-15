@@ -110,7 +110,7 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 
 		super (props);
 
-		new StockboyAPI ().fetch_data ("GetHoldings", { junk: "garbage" }).then ((result: HomeDetailsModel) => {
+		new StockboyAPI ().fetch_data ("GetHoldings").then ((result: HomeDetailsModel) => {
 			let data: HomeDetailsModel = new HomeDetailsModel ();
 			this.setState ({ loading: false });
 			if (isset (result)) this.setState ({ data: data.assign (result) });

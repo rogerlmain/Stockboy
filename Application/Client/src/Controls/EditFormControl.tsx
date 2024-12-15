@@ -66,7 +66,10 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 			if (is_null (response)) return;
 
-			await this.props.data_page_control.props.parent.setState ({ data: response });
+			let dataset: Array<IBaseModel> = this.props.data_page_control.props.parent.state ["data"].update<IBaseModel> (response);
+
+			this.props.data_page_control.filter_handler.filter_data ();
+			await this.props.data_page_control.props.parent.setState ({ data: dataset });
 
 			if (new_record) {
 				return popup_window.show (<div>

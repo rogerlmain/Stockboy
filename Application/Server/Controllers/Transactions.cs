@@ -12,7 +12,7 @@ namespace Stockboy.Controllers {
 
 	public class Transactions (DataContext context): BaseController (context) {
 
-		[HttpGet]
+		[HttpPost]
 		[Route ("GetTransactions")]
 		public IActionResult GetTransactions () => new JsonResult (TransactionQueries.get_transactions (context));
 
@@ -29,7 +29,7 @@ namespace Stockboy.Controllers {
 		}// GetDividendTransaction;
 
 
-		[HttpGet]
+		[HttpPost]
 		[Route ("GetTransactionTypes")]
 		public IActionResult GetTransactionTypes () => new JsonResult (context?.transaction_types.ToList ().OrderBy ("sort_order"));
 
