@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Classes;
 using Stockboy.Classes;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 using System.Text;
 
@@ -8,7 +9,7 @@ using System.Text;
 // DEPRECATED - Use LINQ instead
 namespace Stockboy.Controllers {
 
-	public abstract class DataController<TDataModel, TListModel> (DataContext context): Controller where TDataModel : class, IBaseModel, new() where TListModel : class, IBaseModel, new() {
+	public abstract class DataController<TDataModel, TListModel> (DataContext context): BaseController (context) where TDataModel : class, IBaseModel, new() where TListModel : class, IBaseModel, new() {
 
 		protected DataContext context = context;
 

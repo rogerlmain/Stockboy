@@ -2,14 +2,13 @@ import EditFormControl from "Controls/EditFormControl";
 import FilterHandler from "Controls/FilterHandler";
 import TableButtons from "Controls/TableButtons";
 import TableFilters from "Controls/TableFilters";
-import MainPage from "Pages/Main";
 
 import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { DataKeyArray } from "Classes/DataKeys";
 import { DeleteForm } from "Forms/DeleteForm";
 import { IBaseModel, StockModel } from "Models/Abstract/BaseModels";
-import { Component, ComponentClass, Context, createContext, createRef, RefObject } from "react";
+import { Component, ComponentClass, createContext, createRef, RefObject } from "react";
 
 
 class DataPageControlProps {
@@ -26,6 +25,7 @@ class DataPageControlProps {
 	filter_handler: FilterHandler;
 	search_filters: DataKeyArray;
 	stock_filters: boolean;
+	date_filters: boolean;
 	table_buttons: boolean;
 
 	align_buttons?: ButtonAlignment;
@@ -47,7 +47,7 @@ class DataPageControlState {
 export enum ButtonAlignment { center, right }
 
 
-export const FilterHandlerContext: Context<FilterHandler> = createContext (null);
+export var DataPageContext = createContext (null);
 
 
 export default class DataPageControl extends Component<DataPageControlProps, DataPageControlState> {
@@ -97,7 +97,8 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 		filter_handler: null,
 		search_filters: null,
-		stock_filters: false,
+		stock_filters: true,
+		date_filters: true,
 		table_buttons: false,
 
 		align_buttons: ButtonAlignment.right,
@@ -120,20 +121,18 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 		if ((props.data == this.props.data) || (props.data?.matches (this.props.data))) return;
 		if (isset (this.props.children)) this.recenter_grid_block.bind (this) ();
 		this.setState ({ data: this.props.data });
-	}// componentDidMount;
-
+	}// componentDidUpdate;
 
 	public render () {
-		return <div className="full-size column-block">
+		return <DataPageContext.Provider value={this}>
+			<div className="full-size column-block">
 
-			{not_set (this.props.filter_handler) ? <FilterHandler data={this.props.data} parent={this} 
-				search_filters={this.props.search_filters} ref={this.filter_handler_control}>
-			</FilterHandler> : null}
-
-			<FilterHandlerContext.Provider value={this.filter_handler}>
+				{not_set (this.props.filter_handler) ? <FilterHandler data={this.props.data} parent={this} 
+					search_filters={this.props.search_filters} ref={this.filter_handler_control}>
+				</FilterHandler> : null}
 
 				{((this.props.search_filters || this.props.stock_filters) && isset (this.props.data)) ? <TableFilters data={this.props.data} 
-					search_filters={this.props.search_filters}  stock_filters={this.props.stock_filters}
+					search_filters={this.props.search_filters} stock_filters={this.props.stock_filters} date_filters={this.props.date_filters}
 					parent={this} ref={this.table_filters} onFilterChange={this.filter_handler?.update_stock_filters.bind (this.filter_handler)}>
 				</TableFilters> : null}
 
@@ -163,10 +162,8 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 				</div>
 
-			</FilterHandlerContext.Provider>
-
-		</div>
-
+			</div>
+		</DataPageContext.Provider>
 	}// render;
 
 	constructor (props: DataPageControlProps) {

@@ -164,6 +164,10 @@ div.grid-stack > * {
   margin-left: 2rem;
 }
 
+*.with-a-little-right-space {
+  margin-right: 0.25rem;
+}
+
 *.with-some-right-space, .with-some-row-space, *.with-some-space {
   margin-right: 0.5rem;
 }
@@ -174,6 +178,10 @@ div.grid-stack > * {
 
 *.with-lotsa-right-space, .with-lotsa-row-space, *.with-lotsa-space {
   margin-right: 2rem;
+}
+
+*.with-a-little-headspace {
+  margin-top: 0.25rem;
 }
 
 *.with-some-headspace, .with-some-room, *.with-some-space {

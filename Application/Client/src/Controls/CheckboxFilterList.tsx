@@ -1,5 +1,4 @@
-import DataPageControl, { FilterHandlerContext } from "Controls/DataPageControl";
-import FilterHandler from "Controls/FilterHandler";
+import DataPageControl, { DataPageContext } from "Controls/DataPageControl";
 
 import { DataFilter, FilterType } from "Classes/Common/Collections";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
@@ -9,15 +8,9 @@ import { Component, RefObject, createRef } from "react";
 class CheckboxFilterProps {
 	text: string;
 	checked: boolean;
-	data_page: DataPageControl;
 	field_name: string;
 	field_value: string;
 }// CheckboxFilterProps;
-
-
-class CheckboxFilterState {
-	filter_handler: FilterHandler = null;
-}// CheckboxFilterState;
 
 
 class CheckboxFilterListProps extends BaseProps {
@@ -25,59 +18,55 @@ class CheckboxFilterListProps extends BaseProps {
 }// CheckboxFilterListProps;
 
 
-export class CheckboxFilter extends Component<CheckboxFilterProps, CheckboxFilterState> {
+export class CheckboxFilter extends Component<CheckboxFilterProps> {
 
 	private checkbox: RefObject<HTMLInputElement> = createRef ();
+
+
+	public data_page: DataPageControl = null;
 
 
 	/********/
 
 
-	public state: CheckboxFilterState = new CheckboxFilterState ();
-
-
 	public static defaultProps: CheckboxFilterProps = {
 		text: null,
 		checked: true,
-		data_page: null,
 		field_name: null,
 		field_value: null,
 	}// CheckboxFilterProps;
 
 
 	public update_filter (checkbox: HTMLInputElement) {
-		if (checkbox.checked) return this.state.filter_handler?.add_filter (new DataFilter (this.props.field_name, checkbox.value, FilterType.inclusive));
-		this.state.filter_handler?.remove_filter (this.props.field_name, checkbox.value);
+		if (checkbox.checked) return this.data_page.filter_handler.add_filter (new DataFilter (this.props.field_name, checkbox.value, FilterType.inclusive));
+		this.data_page.filter_handler.remove_filter (this.props.field_name, checkbox.value);
 	}// update_filter;
 
 
-	public componentDidUpdate (props: CheckboxFilterProps, state: CheckboxFilterState) {
-		if ((props) && (this.state?.filter_handler != state?.filter_handler)) this.update_filter (this.checkbox.current);
-	}// componentDidUpdate;
+	public componentDidMount () {
+		this.data_page = this.context as DataPageControl;
+		this.data_page.filter_handler.filter_data ();
+	}// componentDidMount;
 
 
 	public render () {
+		return <div className="container">
 
-		return <FilterHandlerContext.Consumer>
-			{(handler: FilterHandler) => {
+			<input type="checkbox" id={`${this.props.field_value}_checkbox`}
+				onChange={(event: InputChangeEvent) => this.update_filter (event.currentTarget)}
+				ref={this.checkbox} value={this.props.field_value} defaultChecked={this.props.checked}>
+			</input>
 
-				{isset (handler) && (handler !== this.state?.filter_handler) ? this.setState ({filter_handler: handler}) : null}
-				
-				return <div className="container">
+			<label htmlFor={`${this.props.field_value}_checkbox`}>{this.props.text}</label>
 
-					<input type="checkbox" id={`${this.props.field_value}_checkbox`}
-						onChange={(event: InputChangeEvent) => this.update_filter (event.currentTarget)}
-						ref={this.checkbox} value={this.props.field_value} defaultChecked={this.props.checked}>
-					</input>
-
-					<label htmlFor={`${this.props.field_value}_checkbox`}>{this.props.text}</label>
-
-				</div>
-
-			}}
-		</FilterHandlerContext.Consumer> 
-
+		</div>
 	}// render;
+
+
+	public constructor (props: CheckboxFilterProps) {
+		super (props);
+		CheckboxFilter.contextType = DataPageContext;
+	}// CheckboxFilter;
 
 }// CheckboxFilter;
 

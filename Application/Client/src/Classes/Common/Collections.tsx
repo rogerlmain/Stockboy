@@ -5,6 +5,7 @@ export type DataFilterList = Array<DataFilter>
 export type NameValueArray = Array<NameValuePair>
 
 export enum FilterType {inclusive, exclusive}
+export enum BoundaryType {lower, upper}
 
 
 /**** Classes ****/
@@ -25,15 +26,17 @@ export class NameValuePair<IModel = string> {
 export class DataFilter {
 
 	public field: string = null;
-	public value: string = null;
+	public value: string | Date = null;
 	public type: FilterType = null;
 	public partial: boolean  = false;
+	public boundary: BoundaryType = null;
 
-	constructor (field: string, value: string, type: FilterType = FilterType.exclusive, partial: boolean = false) {
+	constructor (field: string, value: string | Date, type: FilterType = FilterType.exclusive, partial: boolean = false, boundary = null) {
 		this.field = field;
 		this.value = value;
 		this.type = type;
 		this.partial = partial;
+		this.boundary = boundary;
 	}// constructor;
 
 }// DataFilter;

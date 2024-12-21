@@ -98,7 +98,7 @@ export default class ProfitLossPage extends Component<BaseProps, ProfitLossPageS
 				search_filters={properties.fields} stock_filters={true} data_type="Profit and Loss" ref={this.data_page}>
 				<div>{isset (this.state.data) ? <div className="column-block">
 
-					<StockStatusFilters data_page={this.data_page.current} />
+					<StockStatusFilters />
 
 					<div className="left-aligned two-column-grid checkbox-list with-headspace">
 						<input type="checkbox" id="ticker_combine" onChange={(event: InputChangeEvent) => this.filter_tickers (event)} />

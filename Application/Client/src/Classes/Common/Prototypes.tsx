@@ -356,15 +356,20 @@ Date.prototype.format = function (template) {
 
 	let result = (template.replace ? template : String.Empty);
 
+	function replace_months (template: string) {
+		if (template.indexOf ("MMMM") >= 0) return template.replace ("MMMM", Date.month_name (month + 1));
+		if (template.indexOf ("MM") >= 0) return template.replace ("MM", (month + 1).padded (2));
+		if (template.indexOf ("M") >= 0) return template.replace ("M", (month + 1).toString ());
+	}// replace_months;
+
+	result = replace_months (result);
+
 	return result.
 		replace ("yyyy", this.getFullYear ().toString ()).
-		replace ("MMMM", Date.month_name (month + 1)).
-		replace ("MM", (month + 1).padded (2)).
 		replace ("dd", this.getDate ().padded (2)).
 		replace ("HH", hours.padded (2)).
 		replace ("mm", this.getMinutes ().padded (2)).
 		replace ("ss", this.getSeconds ().padded (2)).
-		replace ("M", (month + 1).toString ()).
 		replace ("ad", this.appended_day ()).
 		replace ("d", this.getDate ().toString ()).
 		replace ("H", ((hours % 12) || 12).toString ()).

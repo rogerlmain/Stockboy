@@ -8,7 +8,6 @@ using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
-	[EnableCors]
 	public class Dividends (DataContext context): DataController<DividendsTableRecord, DividendModel> (context) {
 
 		[HttpGet]
@@ -47,9 +46,12 @@ namespace Stockboy.Controllers {
 		}// GetDividendTotals;
 
 
-		[HttpGet]
+		[HttpPost]
 		[Route ("GetDividends")]
-		public IActionResult GetDividends () => new JsonResult (DividendQueries.SelectQuery (context));
+		public IActionResult GetDividends () {
+			IQueryable<DividendModel> result = DividendQueries.SelectQuery (context).OrderByDescending ((DividendModel dividend) => dividend.issue_date);
+			return new JsonResult (result);
+		}// GetDividends;
 
 
 		[HttpPost]

@@ -126,6 +126,7 @@ div.grid-stack > * {
 *.with-left-space { margin-left: 1rem }
 *.with-lotsa-left-space { margin-left: 2rem }
 
+*.with-a-little-right-space { margin-right: 0.25rem }
 *.with-some-right-space { margin-right: 0.5rem }
 *.with-right-space { margin-right: 1rem }
 *.with-lotsa-right-space { margin-right: 2rem }
@@ -134,6 +135,7 @@ div.grid-stack > * {
 *.with-row-space { @extend .with-left-space, .with-right-space }
 *.with-lotsa-row-space { @extend .with-lotsa-left-space, .with-lotsa-right-space }
 
+*.with-a-little-headspace { margin-top: 0.25rem }
 *.with-some-headspace { margin-top: 0.5rem }
 *.with-headspace { margin-top: 1rem }
 *.with-lotsa-headspace { margin-top: 2rem }

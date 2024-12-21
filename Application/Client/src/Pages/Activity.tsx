@@ -80,11 +80,11 @@ export default class ActivityPage extends Component<BaseProps, ActivityPageState
 				stock_filters={false} table_buttons={false} ref={this.data_page} filter_handler={this.state.filter_handler}>
 
 				<div>{isset (this.state.data) ? <CheckboxFilterList id="checkbox_list" ref={this.filter_list}>
-					<CheckboxFilter text="Buys" data_page={this.data_page.current} field_name="transaction_type" field_value="Buy" />
-					<CheckboxFilter text="Reinvestments" data_page={this.data_page.current} field_name="transaction_type" field_value="Reinvestment" />
-					<CheckboxFilter text="Sales" data_page={this.data_page.current} field_name="transaction_type" field_value="Sell" />
-					<CheckboxFilter text="Dividends" data_page={this.data_page.current} field_name="transaction_type" field_value="Dividend" />
-					<CheckboxFilter text="Splits" data_page={this.data_page.current} field_name="transaction_type" field_value="Split" />
+					<CheckboxFilter text="Buys" field_name="transaction_type" field_value="Buy" />
+					<CheckboxFilter text="Reinvestments" field_name="transaction_type" field_value="Reinvestment" />
+					<CheckboxFilter text="Sales" field_name="transaction_type" field_value="Sell" />
+					<CheckboxFilter text="Dividends" field_name="transaction_type" field_value="Dividend" />
+					<CheckboxFilter text="Splits" field_name="transaction_type" field_value="Split" />
 				</CheckboxFilterList> : null}</div>
 
 			</DataPageControl> : null}
