@@ -1,14 +1,18 @@
+import { BaseModel } from "Models/Abstract/BaseModels";
+
+
 /**** Types ****/
 
 
 export type DataFilterList = Array<DataFilter>
 export type NameValueArray = Array<NameValuePair>
 
-export enum FilterType {inclusive, exclusive}
+export enum FilterType {inclusive, exclusive, boundary, date_range}
 export enum BoundaryType {lower, upper}
 
 
 /**** Classes ****/
+
 
 export class NameValuePair<IModel = string> {
 
@@ -23,20 +27,28 @@ export class NameValuePair<IModel = string> {
 }// NameValuePair;
 
 
-export class DataFilter {
+export class DataFilter extends BaseModel {
 
 	public field: string = null;
-	public value: string | Date = null;
-	public type: FilterType = null;
+	public value: StringDate = null;
+	public type: FilterType = FilterType.exclusive;
 	public partial: boolean  = false;
 	public boundary: BoundaryType = null;
 
-	constructor (field: string, value: string | Date, type: FilterType = FilterType.exclusive, partial: boolean = false, boundary = null) {
+	public constructor (value?: Object | string, field?: string) {
+
+		super ();
+
+		if (Object.isObject (value)) {
+			value.Keys.forEach ((key: string) => {
+				if (this.Keys.contains (key)) this [key] = value [key];
+			});
+			return;
+		}// if;
+
 		this.field = field;
-		this.value = value;
-		this.type = type;
-		this.partial = partial;
-		this.boundary = boundary;
+		this.value = (value as string);
+
 	}// constructor;
 
 }// DataFilter;

@@ -39,7 +39,7 @@ export default class DividendsPage extends Component<BaseProps, DividendsPageSta
 			<div className="title">Dividends</div>
 
 			<DataPageControl data={this.state.data} properties={properties} form={EditDividendForm}
-				search_filters={properties.fields} stock_filters={true} table_buttons={true}
+				search_filters={properties.fields} date_filter_field="issue_date" stock_filters={true} table_buttons={true}
 				save_command="SaveDividend" delete_command="DeleteDividend">
 			</DataPageControl>
 

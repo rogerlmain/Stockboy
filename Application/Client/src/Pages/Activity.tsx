@@ -70,12 +70,6 @@ export default class ActivityPage extends Component<BaseProps, ActivityPageState
 
 			<div className="title">Activity</div>
 
-			<FilterHandler data={this.data} parent={this} ref={this.filter_handler} />
-
-			<TableFilters data={this.state.data} search_filters={properties.fields} stock_filters={true}
-				onFilterChange={this.update_data} ref={this.table_filters}>
-			</TableFilters>
-
 			{isset (this.state.loading) ? <Eyecandy text={this.state.loading} /> : isset (this.state.data) ? <DataPageControl data={this.state.data} properties={properties} 
 				stock_filters={false} table_buttons={false} ref={this.data_page} filter_handler={this.state.filter_handler}>
 

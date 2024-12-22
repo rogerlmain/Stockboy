@@ -98,8 +98,7 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 			</div>
 
 			{this.state.loading ? <Eyecandy text="Loading holdings" /> : (isset (this.state.data) ? <DataPageControl data={this.state.data?.holdings_list} 
-				data_type="Stock Holdings" properties={properties} table_buttons={false} ref={this.data_page}
-				date_filters={false} search_filters={properties.fields}>
+				data_type="Stock Holdings" properties={properties} table_buttons={false} ref={this.data_page} search_filters={properties.fields}>
 				<div style={{ position: "absolute" }}>
 					<StockStatusFilters />
 				</div>

@@ -28,7 +28,7 @@ declare global {
 	interface DateConstructor {
 		current_date (): Date;
 		earlier (value: Date);
-		format (date_value: string | Date, format?: DateFormats): string;
+		format (date_value: StringDate, format?: DateFormats): string;
 		later (value: Date);
 		month_name (month: number): string;
 		today (format?: DateFormats): string;
@@ -296,14 +296,14 @@ Component.prototype.setState = function (state: any, callback?: () => void): boo
 
 Date.current_date = function (): Date { return new Date () }
 
-Date.earlier = function (value: String | Date): boolean {
+Date.earlier = function (value: StringDate): boolean {
 	if (typeof value == "string") value = new Date (value as string);
 	let result: boolean = (value as Date) < new Date ();
 	return result;
 }// earlier;
 
 
-Date.format = function (date_value: string | Date, format: DateFormats = DateFormats.readable): string {
+Date.format = function (date_value: StringDate, format: DateFormats = DateFormats.readable): string {
 
 	if (is_null (date_value)) return null;
 
@@ -317,7 +317,7 @@ Date.format = function (date_value: string | Date, format: DateFormats = DateFor
 }// Date.format;
 
 
-Date.later = function (value: String | Date): boolean {
+Date.later = function (value: StringDate): boolean {
 	if (typeof value == "string") value = new Date (value as string);
 	let result: boolean = (value as Date) > new Date ();
 	return result;

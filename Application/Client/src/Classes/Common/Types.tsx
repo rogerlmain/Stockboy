@@ -17,6 +17,7 @@ declare global {
 	type HoldingsFilterList = Array<HoldingsStatus>
 
 	type StringObject = string | Object
+	type StringDate = string | Date
 
 	type DataArray = Array<IBaseModel>
 	type StringArray = Array<string>

@@ -23,10 +23,11 @@ class DataPageControlProps {
 	children: ChildElement;
 
 	filter_handler: FilterHandler;
-	search_filters: DataKeyArray;
 	stock_filters: boolean;
-	date_filters: boolean;
 	table_buttons: boolean;
+
+	search_filters: DataKeyArray;
+	date_filter_field?: string;
 
 	align_buttons?: ButtonAlignment;
 
@@ -96,10 +97,11 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 		children: null,
 
 		filter_handler: null,
-		search_filters: null,
 		stock_filters: true,
-		date_filters: true,
 		table_buttons: false,
+
+		search_filters: null,
+		date_filter_field: null,
 
 		align_buttons: ButtonAlignment.right,
 
@@ -127,14 +129,9 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 		return <DataPageContext.Provider value={this}>
 			<div className="full-size column-block">
 
-				{not_set (this.props.filter_handler) ? <FilterHandler data={this.props.data} parent={this} 
-					search_filters={this.props.search_filters} ref={this.filter_handler_control}>
-				</FilterHandler> : null}
+				{not_set (this.props.filter_handler) ? <FilterHandler ref={this.filter_handler_control} /> : null}
 
-				{((this.props.search_filters || this.props.stock_filters) && isset (this.props.data)) ? <TableFilters data={this.props.data} 
-					search_filters={this.props.search_filters} stock_filters={this.props.stock_filters} date_filters={this.props.date_filters}
-					parent={this} ref={this.table_filters} onFilterChange={this.filter_handler?.update_stock_filters.bind (this.filter_handler)}>
-				</TableFilters> : null}
+				{((this.props.search_filters || this.props.stock_filters) && isset (this.props.data)) ? <TableFilters ref={this.table_filters} /> : null}
 
 				<div className="full-size column-centered row-block" ref={this.grid_block}>
 
