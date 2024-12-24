@@ -1,14 +1,44 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Server.Classes;
 using Stockboy.Classes;
 using Stockboy.Classes.Queries;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 
 
 namespace Stockboy.Controllers {
 
-	public class Dividends (DataContext context): DataController<DividendsTableRecord, DividendModel> (context) {
+	public class Dividends (DataContext context): BaseController (context) {
+
+		private IQueryable<DividendModel> SelectQuery () { 
+			IQueryable<DividendModel> result = from dvd in context.dividends
+				join brk in context.brokers on dvd.broker_id equals brk.id
+				join tck in context.tickers on dvd.ticker_id equals tck.id
+				where (!dvd.deleted) && (dvd.user_id == current_user!.user_id)
+				select new DividendModel () {
+					id = dvd.id,
+					user_id = dvd.user_id,
+					broker = brk.name ?? String.Empty,
+					company = tck.name ?? String.Empty,
+					ticker = tck.symbol,
+					broker_id = dvd.broker_id,
+					ticker_id = dvd.ticker_id,
+					issue_date = dvd.issue_date,
+					amount_per_share = dvd.amount_per_share,
+					share_quantity = dvd.share_quantity,
+					payout = dvd.amount_per_share * dvd.share_quantity
+				};
+			return result;
+		}// SelectQuery;
+
+
+		private DividendModel? GetDividendById (Guid? id) { 
+			return SelectQuery ().Where ((DividendModel item) => item.id == id).FirstOrDefault ();
+		}// GetDividendById;
+
+		
+		/********/
+
 
 		[HttpGet]
 		[Route ("GetDividendTotals")]
@@ -16,7 +46,7 @@ namespace Stockboy.Controllers {
 
 			try {
 
-				DividendModelList? data = DividendQueries.SelectQuery (context).ToList ();
+				DividendModelList? data = SelectQuery ().ToList ();
 				DividendSummaryList? summary = null;
 
 				if (isset (data)) foreach (var item in data!) {
@@ -49,7 +79,7 @@ namespace Stockboy.Controllers {
 		[HttpPost]
 		[Route ("GetDividends")]
 		public IActionResult GetDividends () {
-			IQueryable<DividendModel> result = DividendQueries.SelectQuery (context).OrderByDescending ((DividendModel dividend) => dividend.issue_date);
+			IQueryable<DividendModel> result = SelectQuery ().OrderByDescending ((DividendModel dividend) => dividend.issue_date);
 			return new JsonResult (result);
 		}// GetDividends;
 
@@ -65,12 +95,14 @@ namespace Stockboy.Controllers {
 				//new Transactions (context).SaveData ("get_transaction_by_id", transaction);
 			}// if;
 
-			try {
-				DividendsTableRecord? dividend = SaveData (new DividendsTableRecord ().Merge (parameters));
-				return new JsonResult (DividendQueries.GetDividendById (context, dividend!.id));
-			} catch (Exception except) {
-				return this.error_message (except.Message);
-			}// try;
+  			switch (isset (parameters.id)) {
+				case true: context.dividends.Update (parameters); break;
+				default: context.dividends.Add (parameters); break;
+			}// switch;
+
+			context.SaveChanges ();
+
+			return new JsonResult (GetDividendById (parameters.id));
 
 		}// SaveDividend;
 

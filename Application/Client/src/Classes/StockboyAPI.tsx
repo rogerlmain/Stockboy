@@ -55,7 +55,7 @@ export default class StockboyAPI extends APIClass {
 
 		return new Promise (resolve => {
 			super.fetch_data (`${url}`, body).then (response => {
-				if (isset (response ["message"])) {
+				if (isset (response?.["message"])) {
 					popup_window.show (<ErrorWindow text="Unauthorized access." onClose={() => {
 						clearStorage ("key");
 						base_page.forceUpdate ();

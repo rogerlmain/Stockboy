@@ -186,6 +186,7 @@ namespace Stockboy.Classes {
 					if (item.transaction_type != TransactionTypes.buy) continue; // Initial buy required. None registered. Move on.
 
 					holding = new () {
+						user_id = current_user!.user_id,
 						broker_id = item.broker_id,
 						ticker_id = item.ticker_id,
 						broker = item.broker,
@@ -263,6 +264,7 @@ namespace Stockboy.Classes {
 
 			return (from pld in ProfitLossQueries.GetProfitLossDetails (context, holdings_data!) 
 			select new ProfitLossModel () {
+				user_id = pld.user_id,
 				broker_id = pld.broker_id,
 				ticker_id = pld.ticker_id,
 				broker = pld.broker,

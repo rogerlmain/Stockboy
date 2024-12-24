@@ -12,7 +12,6 @@
 
 
 	public class TransactionsTableRecord: StockDataModel {
-		public required Guid user_id { get; set; }
 		public decimal price { get; set; }
 		public decimal quantity { get; set; }
 		public DateTime transaction_date { get; set; }

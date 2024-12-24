@@ -11,9 +11,10 @@ namespace Stockboy.Classes.Queries {
 			join tck in context.tickers on tra.ticker_id equals tck.id
 			join brk in context.brokers on tra.broker_id equals brk.id
 			join ttp in context.transaction_types on tra.transaction_type_id equals ttp.id
-			where !tra.deleted && (tra.user_id == current_user.user_id)
+			where !tra.deleted && (tra.user_id == current_user!.user_id)
 			select new TransactionModel () {
 				id = tra.id,
+				user_id = tra.user_id,
 				broker_id = brk.id,
 				ticker_id = tck.id,
 				company = tck.name ?? String.Empty,
@@ -34,9 +35,9 @@ namespace Stockboy.Classes.Queries {
 		public static TransactionModelList? get_transactions (DataContext context) => SelectQuery (context).ToList ();
 
 
-		public static TransactionModel? get_transaction_by_id (DataContext context, Guid? id) {
+		public static TransactionModel? GetTransactionById (DataContext context, Guid? id) {
 			return SelectQuery (context).Where ((TransactionModel item) => item.id == id).FirstOrDefault ();
-		}// get_transaction_by_id;
+		}// GetTransactionById;
 
 
 		public static TransactionsTableRecord? get_dividend_transaction (DataContext context, DividendsTableRecord dividend) => (from item in context.transactions
@@ -50,18 +51,6 @@ namespace Stockboy.Classes.Queries {
 				item
 		).FirstOrDefault ();
 
-
-		public static Guid? save_transaction (DataContext context, TransactionsTableRecord transaction) {
-
-			switch (isset (transaction.id)) {
-				case true: context.transactions.Update (transaction); break;
-				default: context.transactions.Add (transaction); break;
-			}// switch;
-
-			context.SaveChanges ();
-			return transaction.id;
-
-		}// save_transaction;
 
 	}// TransactionQueries;
 

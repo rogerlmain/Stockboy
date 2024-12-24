@@ -77,7 +77,9 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 							onChange={(event: ChangeEvent<HTMLSelectElement>) => this.setState ({ lookup_field: event.currentTarget.value })}>
 						</SelectList>
 
-						<input type="text" id="stock_ticker" onChange={(event: InputChangeEvent) => this.setState ({ lookup_value: event.currentTarget.value })} />
+						<input type="text" id="stock_ticker" style={{ width: "9rem" }}
+							onChange={(event: InputChangeEvent) => this.setState ({ lookup_value: event.currentTarget.value })}>
+						</input>
 
 						<button id="stock_lookup_button" onClick={() => {
 
@@ -91,6 +93,8 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 							this.filter_handler.filter_data ();
 
 						}}>Lookup</button>
+
+						<button id="clear_lookup_button" onClick={() => {}}>Clear</button>
 
 					</div>
 

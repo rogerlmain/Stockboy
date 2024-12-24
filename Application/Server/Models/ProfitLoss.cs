@@ -15,9 +15,7 @@ namespace Stockboy.Models {
 	}// ProfitLossModel;
 
 
-	public class ProfitLossDetailsModel {
-		public Guid? broker_id { get; set; } = null;
-		public Guid? ticker_id { get; set; } = null;
+	public class ProfitLossDetailsModel: StockDataModel {
 		public String broker { get; set; } = String.Empty;
 		public String symbol { get; set; } = String.Empty;
 		public String company { get; set; } = String.Empty;

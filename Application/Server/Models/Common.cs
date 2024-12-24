@@ -44,6 +44,7 @@ namespace Stockboy.Models {
 
 
 	public class StockDataModel: DataModel {
+		public required Guid user_id { get; set; }
 		public Guid? broker_id { get; set; } = null;
 		public Guid? ticker_id { get; set; } = null;
 	}// StockModel;

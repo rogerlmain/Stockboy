@@ -12,6 +12,7 @@ namespace Stockboy.Classes.Queries {
 			from div in dvj.DefaultIfEmpty ()
 
 			select new ProfitLossDetailsModel () {
+				user_id = current_user!.user_id,
 				broker_id = hdd.broker_id ?? Guid.Empty,
 				ticker_id = hdd.ticker_id ?? Guid.Empty,
 				broker = hdd.broker,
@@ -26,9 +27,10 @@ namespace Stockboy.Classes.Queries {
 		}// GetProfitLossDetails;
 
 
-		public static IEnumerable<ProfitLossModel> GetProfitLossTotals (DataContext context, ProfitLossDetailsList profit_loss_details) {
+		public static IEnumerable<ProfitLossModel> GetProfitLossTotals (ProfitLossDetailsList profit_loss_details) {
 			return from pld in profit_loss_details
 			group pld by new {
+				pld.user_id,
 				pld.broker_id,
 				pld.ticker_id,
 				pld.broker,
@@ -40,6 +42,7 @@ namespace Stockboy.Classes.Queries {
 				pld.dividend_payout
 			} into ghd
 			select new ProfitLossModel () {
+				user_id = ghd.Key.user_id,
 				broker_id = ghd.Key.broker_id,
 				ticker_id = ghd.Key.ticker_id,
 				broker = ghd.Key.broker,
