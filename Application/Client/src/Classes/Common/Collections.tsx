@@ -4,10 +4,13 @@ import { BaseModel } from "Models/Abstract/BaseModels";
 /**** Types ****/
 
 
-export type DataFilterList = Array<DataFilter>
 export type NameValueArray = Array<NameValuePair>
 
-export enum FilterType {inclusive, exclusive, boundary, date_range}
+
+/**** Enumeratons ****/
+
+
+export enum FilterType {inclusive, exclusive, boundary, date_range, partial}
 export enum BoundaryType {lower, upper}
 
 
@@ -32,7 +35,6 @@ export class DataFilter extends BaseModel {
 	public field: string = null;
 	public value: StringDate = null;
 	public type: FilterType = FilterType.exclusive;
-	public partial: boolean  = false;
 	public boundary: BoundaryType = null;
 
 	public constructor (value?: Object | string, field?: string) {

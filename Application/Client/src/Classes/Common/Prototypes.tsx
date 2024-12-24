@@ -133,6 +133,7 @@ declare global {
 
 	interface String {
 
+		contains (candidate: string): boolean;
 		isInteger (): boolean;
 		leadingCharacters (char: string)
 		matches (candidate: string): boolean;
@@ -651,6 +652,9 @@ String.Comma = ",";
 
 
 String.isString = function (candidate: any) { return typeof candidate == "string" }
+
+
+String.prototype.contains = function (candidate: string) { return this.indexOf (candidate) > -1 }
 
 
 String.prototype.isInteger = function () {

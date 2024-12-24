@@ -45,6 +45,20 @@ export class DataKeyArray {
 	public get length () { return this.key_values.length }
 
 
+	public get values () {
+		
+		let result: StringArray = null;
+
+		this.key_values.forEach ((value: DataKey) => {
+			if (is_null (result)) result = new Array<string>;
+			result.push (value.id);
+		})
+
+		return result;
+
+	}// values;
+
+
 	public get titleCase () { 
 
 		let result: DataKeyArray = null;
@@ -85,7 +99,7 @@ export class DataKeyArray {
 	public push = (value: DataKey): void => {
 		if (is_null (this.key_values)) this.key_values = new Array<DataKey> ();
 		this.key_values.push (value);
-	}// push;
+	};// push;
 
 
 	constructor (values: StringObjectArray = null, keys: StringPair = null) {

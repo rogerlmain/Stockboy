@@ -71,7 +71,7 @@ export default class CheckboxDateFilter extends Component<CheckboxDateFilterProp
 				}}>
 			</input>
 			<input type="date" id={this.props.id} disabled={!this.state.use_date} ref={this.date_field}
-				onChange={(event: ChangeEvent<HTMLInputElement>) => this.set_date_filter ()}>
+				onChange={() => this.set_date_filter ()}>
 			</input>
 		</div>
 	}// render;

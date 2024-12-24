@@ -1,18 +1,19 @@
 import DataPageControl, { DataPageContext } from "Controls/DataPageControl";
 
-import { BoundaryType, DataFilter, DataFilterList, FilterType } from "Classes/Common/Collections";
-import { DataKeyArray } from "Classes/DataKeys";
+import { BoundaryType, DataFilter, FilterType } from "Classes/Common/Collections";
 import { IBaseModel } from "Models/Abstract/BaseModels";
 import { Component } from "react";
 
 
+type FilterList = Array<DataFilter>
+
+
 export default class FilterHandler extends Component {
 
-	private filters: DataFilterList = null;
+	private filters: FilterList = null;
 
 
 	private get data_page (): DataPageControl {	return (this.context as DataPageControl) }
-	private get search_filters (): DataKeyArray { return this.data_page.props.search_filters }
 	private get data (): DataArray { return this.data_page.props.data }
 
 
@@ -30,7 +31,8 @@ export default class FilterHandler extends Component {
 	public add_filter (filter: DataFilter) {
 
 		if (is_null (this.filters)) this.filters = new Array<DataFilter> ();
-		if (filter.type != FilterType.inclusive) this.filters.remove (this.filters.find ((item: DataFilter) => item.id == filter.id));
+
+		if (filter.type != FilterType.inclusive) this.remove_filter (filter.id);
 
 		this.filters.push (filter);
 		this.filter_data ();
@@ -38,30 +40,34 @@ export default class FilterHandler extends Component {
 	}// add_filter;
 
 
-	public remove_filter (id: string): void { 
+	public remove_filter (id: string): void {
 
-		let filter: DataFilter = this.filters?.find ((filter: DataFilter) => (filter.id == id));
+		let item: DataFilter = this.filters.find ((item: DataFilter) => item.id == id);
 
-		if (isset (filter)) {
-			this.filters.remove (filter);
-			this.filter_data ();
-		}// if;
+		if (isset (item)) this.filters.remove (item);
+		this.filter_data ();
 
 	}// remove_filter;
-
-
-	public remove_partial_filters () {
-		if (isset (this.filters)) {
-			let filters = this.filters.filter ((filter: DataFilter) => filter.partial);
-			filters.forEach ((filter: DataFilter) => this.filters.remove (filter));
-		}// if;
-	}// remove_partial_filters;
 
 
 	public update_stock_filters (broker_id: string, ticker_id: string) {
 		isset (broker_id) ? this.add_filter (new DataFilter (broker_id, "broker_id")) : this.remove_filter ("broker_id");
 		isset (ticker_id) ? this.add_filter (new DataFilter (ticker_id, "ticker_id")) : this.remove_filter ("ticker_id");
 	}// update_stock_filters;
+
+
+	public search_fields (item: IBaseModel, filter: DataFilter): boolean {
+
+		let key_list: StringArray = isset (filter.field) ? [filter.field] : this.data_page.props.properties.fields.values;
+		let key: string = null;
+
+		for (key of key_list) {
+			if (item [key].toString ().contains (filter.value as string)) return true;
+		}// for;
+
+		return false;
+
+	}// search_fields;
 
 
 	public filter_exclusive_items () {
@@ -71,7 +77,9 @@ export default class FilterHandler extends Component {
 		this.filters.forEach ((filter: DataFilter) => {
 
 			let included_data: DataArray = null;
+
 			if (filter.type == FilterType.inclusive) return;
+			if (not_defined (data)) return;
 
 			data.forEach ((item: IBaseModel) => {
 
@@ -82,6 +90,7 @@ export default class FilterHandler extends Component {
 				switch (filter.type) {
 					case FilterType.boundary: included = this.within_bounds (item [filter.field], filter.value, filter); break;
 					case FilterType.date_range: included = this.within_bounds (new Date (item [filter.field]), new Date (filter.value), filter); break;
+					case FilterType.partial: included = this.search_fields (item, filter); break;
 					default: included = (item [filter.field] == filter.value); break;
 				}// switch;
 
@@ -97,13 +106,21 @@ export default class FilterHandler extends Component {
 
 		});
 
-		this.data_page.setState ({ data });
+		this.data_page.state.data = data;
 
-	}// filter_data;
+	}// filter_exclusive_items;
+
+
+	public filter_inclusive_items () {
+
+	}// filter_inclusive_items;
 
 
 	public filter_data () {
-		if (is_defined (this.data)) return /*filter_inclusive_items (*/this.filter_exclusive_items ()/*)*/
+		if (not_defined (this.data) || not_defined (this.filters)) return;
+		this.filter_exclusive_items ();
+		this.filter_inclusive_items ();
+		this.data_page.forceUpdate ();
 	}// filter_data;
 
 

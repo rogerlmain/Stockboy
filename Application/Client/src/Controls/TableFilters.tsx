@@ -81,14 +81,11 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 
 						<button id="stock_lookup_button" onClick={() => {
 
-							this.filter_handler.remove_partial_filters ();
-
 							if (is_defined (this.state.lookup_value)) return this.filter_handler.add_filter (new DataFilter ({
 								id: "stock_lookup",
 								field: this.state.lookup_field, 
 								value: this.state.lookup_value, 
-								type: FilterType.inclusive, 
-								partial: true
+								type: FilterType.partial
 							}));
 
 							this.filter_handler.filter_data ();

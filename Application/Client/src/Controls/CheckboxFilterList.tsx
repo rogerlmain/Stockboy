@@ -38,7 +38,12 @@ export class CheckboxFilter extends Component<CheckboxFilterProps> {
 
 
 	public update_filter (checkbox: HTMLInputElement) {
-		if (checkbox.checked) return this.data_page.filter_handler.add_filter (new DataFilter (this.props.field_name, checkbox.value));
+		if (checkbox.checked) return this.data_page.filter_handler.add_filter (new DataFilter ({
+			id: this.props.field_name, 
+			field: this.props.field_name,
+			value: checkbox.checked,
+			type: FilterType.inclusive
+		}));
 		this.data_page.filter_handler.remove_filter (this.props.field_name);
 	}// update_filter;
 
