@@ -1,6 +1,6 @@
 import DataPageControl, { DataPageContext } from "Controls/DataPageControl";
 
-import { DataFilter } from "Classes/Common/Collections";
+import { DataFilter, FilterType } from "Classes/Common/Collections";
 import { CheckboxFilter, CheckboxFilterList } from "Controls/CheckboxFilterList";
 import { Component } from "react";
 
@@ -8,7 +8,12 @@ import { Component } from "react";
 export default class StockStatusFilters extends Component {
 
 	public componentDidMount () {
-		(this.context as DataPageControl).filter_handler.add_filter (new DataFilter ("Live", "status"));
+		(this.context as DataPageControl).filter_handler.add_filter (new DataFilter ({
+			id: "live_checkbox",
+			field: "status", 
+			value: "Live",
+			type: FilterType.inclusive
+		}));
 	}// componentDidMount;
 
 

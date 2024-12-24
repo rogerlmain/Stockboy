@@ -39,9 +39,9 @@ export class CheckboxFilter extends Component<CheckboxFilterProps> {
 
 	public update_filter (checkbox: HTMLInputElement) {
 		if (checkbox.checked) return this.data_page.filter_handler.add_filter (new DataFilter ({
-			id: this.props.field_name, 
+			id: checkbox.id, 
 			field: this.props.field_name,
-			value: checkbox.checked,
+			value: checkbox.value,
 			type: FilterType.inclusive
 		}));
 		this.data_page.filter_handler.remove_filter (this.props.field_name);
@@ -55,14 +55,17 @@ export class CheckboxFilter extends Component<CheckboxFilterProps> {
 
 
 	public render () {
+
+		let id: string = `${this.props.field_value.cleaned}_checkbox`;
+
 		return <div className="container">
 
-			<input type="checkbox" id={`${this.props.field_value}_checkbox`}
+			<input type="checkbox" id={id}
 				onChange={(event: InputChangeEvent) => this.update_filter (event.currentTarget)}
 				ref={this.checkbox} value={this.props.field_value} defaultChecked={this.props.checked}>
 			</input>
 
-			<label htmlFor={`${this.props.field_value}_checkbox`}>{this.props.text}</label>
+			<label htmlFor={id}>{this.props.text}</label>
 
 		</div>
 	}// render;

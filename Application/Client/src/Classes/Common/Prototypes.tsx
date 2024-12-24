@@ -145,6 +145,8 @@ declare global {
 		trimmedStart (value: string);
 		trimmedEnd (value: string);
 		trimmed (value: string): string;
+
+		get cleaned (): string;
 		get null_value (): string;
 
 	}// String;
@@ -685,7 +687,7 @@ String.prototype.leadingCharacters = function (char: string): number {
 
 
 String.prototype.matches = function (candidate: string) {
-	return this.toLowerCase ().trim () == candidate.toLowerCase ().trim ();
+	return this.cleaned == candidate.cleaned;
 }// matches;
 
 
@@ -768,6 +770,7 @@ String.prototype.trimmed = function (value: string = String.Empty) {
 }// trimmed;
 
 
-Object.defineProperty (String.prototype, "null_value", {
-	get: function (): string { return (this.trim () == String.Empty) ? null : this }
-})
+Object.defineProperties (String.prototype, {
+	cleaned: { get: function () { return this.toLowerCase ().trim () } },
+	null_value: { get: function (): string { return (this.trim () == String.Empty) ? null : this } }
+});

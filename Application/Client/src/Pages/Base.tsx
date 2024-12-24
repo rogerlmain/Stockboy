@@ -1,7 +1,8 @@
 import PopupWindow from "Controls/Common/Windows/PopupWindow";
 
+import MainPage from "Main";
+
 import LoginPage from "Pages/Login";
-import MainPage from "Pages/Main";
 import SignupPage from "Pages/SignupPage";
 
 import { Component, createRef, ReactElement, RefObject } from "react";

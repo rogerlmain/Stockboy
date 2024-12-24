@@ -11,19 +11,20 @@ type FilterList = Array<DataFilter>
 export default class FilterHandler extends Component {
 
 	private filters: FilterList = null;
+	private filtered_data: DataArray = null;
 
 
 	private get data_page (): DataPageControl {	return (this.context as DataPageControl) }
 	private get data (): DataArray { return this.data_page.props.data }
 
 
-	private get_filters (inclusive: boolean): FilterList {
+	private get_filters (type: FilterType): FilterList {
 
 		let result: FilterList = null;
 
 		this.filters.forEach ((filter: DataFilter) => {
 			if (is_null (result)) result = new Array<DataFilter> ();
-			if (inclusive && (filter.type == FilterType.inclusive)) return result.push (filter);
+			if ((type == FilterType.inclusive) && (filter.type == FilterType.inclusive)) return result.push (filter);
 			if (filter.type != FilterType.inclusive) return result.push (filter);
 		});
 
@@ -87,16 +88,13 @@ export default class FilterHandler extends Component {
 
 	public filter_items (filters: FilterList, filter_type: FilterType) {
 
-		let data: DataArray = this.data;
+		let data_list: DataArray = null;
 
-		this.filters.forEach ((filter: DataFilter) => {
+		filters.forEach ((filter: DataFilter) => {
 
-			let data_list: DataArray = null;
+			if (not_defined (this.filtered_data)) return;
 
-			if (filter.type == FilterType.inclusive) return;
-			if (not_defined (data)) return;
-
-			data.forEach ((item: IBaseModel) => {
+			this.filtered_data.forEach ((item: IBaseModel) => {
 
 				let included: boolean = null;
 
@@ -117,20 +115,24 @@ export default class FilterHandler extends Component {
 
 			});
 
-			if (filter_type == FilterType.exclusive) data = data_list;
+			if (filter_type != FilterType.inclusive) {
+				this.filtered_data = data_list;
+				data_list = null;
+			}// if;
 
 		});
 
-		this.data_page.state.data = data;
+		if (filter_type == FilterType.inclusive) this.filtered_data = data_list;
 
 	}// filter_exclusive_items;
 
 
 	public filter_data () {
 		if (not_defined (this.data) || not_defined (this.filters)) return;
-		this.filter_items (this.get_filters (true), FilterType.inclusive);
-		this.filter_items (this.get_filters (false), FilterType.exclusive);
-		this.data_page.forceUpdate ();
+		this.filtered_data = this.data;
+		this.filter_items (this.get_filters (FilterType.inclusive), FilterType.inclusive);
+		this.filter_items (this.get_filters (FilterType.exclusive), FilterType.exclusive);
+		this.data_page.setState ({ data: this.filtered_data });
 	}// filter_data;
 
 
