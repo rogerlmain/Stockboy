@@ -1,6 +1,7 @@
 import StockboyAPI from "Classes/StockboyAPI";
 import DataPageControl from "Controls/DataPageControl";
 import EditDividendForm from "Forms/EditDividendForm";
+import StockStatusFilters from "Controls/StockStatusFilters";
 
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
@@ -8,8 +9,7 @@ import { DataTableProperties } from "Controls/Tables/DataTable";
 import { DataKeyArray } from "Classes/DataKeys";
 import { DividendListModel } from "Models/Dividends";
 import { Component } from "react";
-import StockStatusFilters from "../Controls/StockStatusFilters";
-import Eyecandy from "../Controls/Common/Eyecandy";
+import Eyecandy from "Controls/Common/Eyecandy";
 
 
 const properties: DataTableProperties = {
@@ -41,13 +41,14 @@ export default class DividendsPage extends Component<BaseProps, DividendsPageSta
 
 			<div className="title">Dividends</div>
 
-			{/*{this.state.loading ? <Eyecandy text="Loading dividends" /> : */}<DataPageControl data={this.state.data} properties={properties} data_type="Dividends"
+			{this.state.loading ? <Eyecandy text="Loading dividends" /> : <DataPageControl data={this.state.data} 
+				properties={properties} data_type="dividends"
 				table_buttons={true} form={EditDividendForm} search_filters={properties.fields} stock_filters={true}
 				save_command="SaveDividend" delete_command="DeleteDividend" date_filter_field="issue_date" parent={this}>
 
-				<StockStatusFilters />
+				{isset (this.state.data) ? <StockStatusFilters /> : null}
 
-			</DataPageControl>{/*}*/}
+			</DataPageControl>}
 
 		</div>
 	}// render;

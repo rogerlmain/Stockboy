@@ -23,9 +23,17 @@ export default class FilterHandler extends Component {
 		let result: FilterList = null;
 
 		this.filters.forEach ((filter: DataFilter) => {
-			if (is_null (result)) result = new Array<DataFilter> ();
-			if ((type == FilterType.inclusive) && (filter.type == FilterType.inclusive)) return result.push (filter);
-			if (filter.type != FilterType.inclusive) return result.push (filter);
+
+			let add_filter = (filter: DataFilter) => {
+				if (is_null (result)) result = new Array<DataFilter> ();
+				result.push (filter);
+			};// add_filter;
+
+			switch (type) {
+				case FilterType.inclusive: if (filter.type == FilterType.inclusive) return add_filter (filter); break;
+				default: if (filter.type != FilterType.inclusive) return add_filter (filter); break;
+			}// switch;
+			
 		});
 
 		return result;
@@ -48,7 +56,7 @@ export default class FilterHandler extends Component {
 
 		if (is_null (this.filters)) this.filters = new Array<DataFilter> ();
 
-		if (filter.type != FilterType.inclusive) this.remove_filter (filter.id);
+		if (filter.type != FilterType.inclusive) this.remove_filter (filter.id, false);
 
 		this.filters.push (filter);
 		this.filter_data ();
@@ -56,12 +64,12 @@ export default class FilterHandler extends Component {
 	}// add_filter;
 
 
-	public remove_filter (id: string): void {
+	public remove_filter (id: string, filter: boolean = true): void {
 
 		let item: DataFilter = this.filters.find ((item: DataFilter) => item.id == id);
 
 		if (isset (item)) this.filters.remove (item);
-		this.filter_data ();
+		if (filter) this.filter_data ();
 
 	}// remove_filter;
 
@@ -90,7 +98,7 @@ export default class FilterHandler extends Component {
 
 		let data_list: DataArray = null;
 
-		filters.forEach ((filter: DataFilter) => {
+		if (isset (filters)) filters.forEach ((filter: DataFilter) => {
 
 			if (not_defined (this.filtered_data)) return;
 

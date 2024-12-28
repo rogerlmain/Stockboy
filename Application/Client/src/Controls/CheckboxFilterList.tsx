@@ -44,7 +44,7 @@ export class CheckboxFilter extends Component<CheckboxFilterProps> {
 			value: checkbox.value,
 			type: FilterType.inclusive
 		}));
-		this.data_page.filter_handler.remove_filter (this.props.field_name);
+		this.data_page.filter_handler.remove_filter (checkbox.id);
 	}// update_filter;
 
 

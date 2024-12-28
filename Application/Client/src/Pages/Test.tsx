@@ -1,7 +1,7 @@
 import { Component, RefObject, createRef } from "react";
 
 import StockboyAPI from "Classes/StockboyAPI";
-import PopupWindow from "../Controls/Common/Windows/PopupWindow";
+import PopupWindow from "Controls/Common/Windows/PopupWindow";
 
 
 class TestState {

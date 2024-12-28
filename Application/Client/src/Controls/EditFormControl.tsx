@@ -3,7 +3,7 @@ import Eyecandy from "Controls/Common/Eyecandy";
 
 import { IBaseModel } from "Models/Abstract/BaseModels";
 import { Component, ComponentClass, createRef, MouseEvent, RefObject } from "react";
-import StockboyAPI from "../Classes/StockboyAPI";
+import StockboyAPI from "Classes/StockboyAPI";
 
 
 export class EditFormControlProps {

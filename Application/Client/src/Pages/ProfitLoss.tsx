@@ -7,7 +7,7 @@ import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { ProfitLossModel } from "Models/Holdings";
 import { Component, createRef, RefObject } from "react";
-import { DataKey, DataKeyArray } from "../Classes/DataKeys";
+import { DataKey, DataKeyArray } from "Classes/DataKeys";
 
 
 const properties: DataTableProperties = {
