@@ -31,7 +31,7 @@ class DataPageControlProps {
 
 	align_buttons?: ButtonAlignment;
 
-	form: ComponentClass;
+	form: ComponentClass<any, any>;
 	data_type: string;
 
 	parent: Component;
@@ -125,6 +125,7 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 		this.setState ({ data: this.props.data });
 	}// componentDidUpdate;
 
+
 	public render () {
 		return <DataPageContext.Provider value={this}>
 			<div className="full-size column-block">
@@ -137,7 +138,9 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 					<div className="full-height column-centered column-block">
 
-						{is_null (this.props.data) ? <div className="bold-text">{`No ${this.props.data_type} defined`}</div> : <DataTable data={this.state.data} properties={this.props.properties} ref={this.data_table} parent={this} /> }
+						{is_null (this.props.data) ? <div className="bold-text">{`No ${this.props.data_type} defined`}</div> : <DataTable data={this.state.data} 
+							properties={this.props.properties} ref={this.data_table} parent={this}>
+						</DataTable>}
 
 						{this.props.table_buttons ? <div className={`button-bar ${this.props.align_buttons == ButtonAlignment.center ? "column-centered" : null}`}>
 							<TableButtons selected_row={this.state.selected_row}

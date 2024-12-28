@@ -1,5 +1,4 @@
-﻿using Server.Classes;
-using Stockboy.Classes.Queries;
+﻿using Stockboy.Classes.Queries;
 using Stockboy.Models;
 
 
@@ -10,7 +9,8 @@ namespace Stockboy.Classes {
 		private const int batch_size = 5;
 
 
-		private readonly DataContext context;
+		private readonly HttpContext context;
+		private readonly DataContext data_context;
 		private readonly StockAPIClient client;
 
 
@@ -22,10 +22,19 @@ namespace Stockboy.Classes {
 		}// TransactionTypes;
 
 
-		private HoldingsData (DataContext context, StockAPIClient client) {
+		private HoldingsData (HttpContext context, StockAPIClient client) {
 			this.context = context;
+			this.data_context = context.RequestServices.GetRequiredService<DataContext> ();
 			this.client = client;
 		}// constructor;
+
+
+		private Boolean fresh_data { 
+			get {
+				SettingsTableRecord? settings = (from set in data_context.settings where set.name == "last_updated" select set).FirstOrDefault ();
+				return isset (settings) && DateTime.Parse (settings!.value).LaterThan (DateTime.Now.AddHours (-1));
+			}// get;
+		}// fresh_data;
 
 
 		/********/
@@ -68,7 +77,7 @@ namespace Stockboy.Classes {
 			if (is_null (history)) return null;
 
 			List<DividendHistoryList>? result = (from his in history!.historicalStockList
-				join tck in context.tickers on his.symbol equals tck.symbol
+				join tck in data_context.tickers on his.symbol equals tck.symbol
 				select (from hpy in his.historical select new DividendHistory () {
 					ticker_id = tck.id,
 					symbol = tck.symbol,
@@ -89,12 +98,12 @@ namespace Stockboy.Classes {
 
             foreach (DividendHistoryList items in history_list!) {
 				if (items.Count < 2) continue;
-				tickers = context.tickers.Where (tkr => tkr.id == items [0].ticker_id).ToList ();
+				tickers = data_context.tickers.Where (tkr => tkr.id == items [0].ticker_id).ToList ();
 				tickers.ForEach (tck => {
 					tck.frequency = (int) Math.Round ((items [0].payment_date - items [1].payment_date).Days / 30.437);
 					if (tck.frequency < 1) tck.frequency = 1;
 				});
-				context.SaveChanges ();
+				data_context.SaveChanges ();
             }// foreach;
 
 			return history;
@@ -123,11 +132,9 @@ namespace Stockboy.Classes {
 
 		private async Task update_stock_data () {
 			try {
-				SettingsTableRecord? settings = (from set in context.settings where set.name == "last_updated" select set).FirstOrDefault ();
+				if (fresh_data) return;
 
-				if (isset (settings) && DateTime.Parse (settings!.value).LaterThan (DateTime.Now.AddHours (-1))) return;
-
-				TickersTableList tickers = (from ticker in context.tickers.ToList ()
+				TickersTableList tickers = (from ticker in data_context.tickers.ToList ()
 					where (ticker.price != -1) select ticker).ToList ();
 
 				if (tickers.Count == 0) return;
@@ -147,10 +154,10 @@ namespace Stockboy.Classes {
 					
 				});
 
-				if (not_set (settings)) settings = new SettingsTableRecord () { name = "last_updated" };
+				SettingsTableRecord? settings = new () { name = "last_updated" };
 
 				settings!.value = DateTime.Now.ToString ();
-				context.settings.Save (settings);
+				data_context.settings.Save (settings);
 
 			} catch (Exception except) {
 				if (except is not AbortException) throw;
@@ -170,7 +177,7 @@ namespace Stockboy.Classes {
 			HoldingsModelList? holdings = null;
 			HoldingsModel? holding = null;
 
-			ActivityViewList activity = (from atv in context.activity_view.ToList ()
+			ActivityViewList activity = (from atv in data_context.activity_view.ToList ()
 				where is_null (report_dates) || atv.transaction_date.EarlierThan ((from rdt in report_dates
 					where 
 						(rdt.ticker_id == atv.ticker_id) &&
@@ -240,7 +247,7 @@ namespace Stockboy.Classes {
 			HoldingsModelList? holdings = GetHoldingsData (report_dates);
 
 			if (is_null (holdings)) return null;
-			TickersTableList stock_prices = context.tickers.ToList ();
+			TickersTableList stock_prices = data_context.tickers.ToList ();
 
 			holdings!.ForEach ((HoldingsModel holding) => {
 				TickerTableRecord? stock_price = stock_prices?.Find ((TickerTableRecord item) => holding.ticker_id == item.id);
@@ -256,35 +263,55 @@ namespace Stockboy.Classes {
 
 		public ProfitLossModelList? GetProfitLossList () {
 
-  			HoldingsModelList? holdings_data = HoldingsPriceList ();
+			if (is_null (Holdings)) return null;
 
-			if (is_null (holdings_data)) return null;
+			ProfitLossDetailsList profit_loss_details = ProfitLossQueries.GetProfitLossDetails (data_context, Holdings!).ToList ();
 
-			ProfitLossDetailsList profit_loss_details = ProfitLossQueries.GetProfitLossDetails (context, holdings_data!).ToList ();
-
-			return (from pld in ProfitLossQueries.GetProfitLossDetails (context, holdings_data!) 
-			select new ProfitLossModel () {
-				user_id = pld.user_id,
-				broker_id = pld.broker_id,
-				ticker_id = pld.ticker_id,
-				broker = pld.broker,
-				symbol = pld.symbol,
-				company = pld.company,
-				status = pld.status,
-				sales_profit = pld.sales_profit,
-				dividend_payout = pld.dividend_payout,
-				value_profit = pld.value_profit,
-				overall_profit = pld.sales_profit + pld.value_profit + pld.dividend_payout,
-			}).ToList ();
+			return (from pld in profit_loss_details
+				select new ProfitLossModel () {
+					user_id = pld.user_id,
+					broker_id = pld.broker_id,
+					ticker_id = pld.ticker_id,
+					broker = pld.broker,
+					symbol = pld.symbol,
+					company = pld.company,
+					status = pld.status,
+					sales_profit = pld.sales_profit,
+					dividend_payout = pld.dividend_payout,
+					value_profit = pld.value_profit,
+					overall_profit = pld.sales_profit + pld.value_profit + pld.dividend_payout,
+				}
+			).ToList ();
 
 		}// GetProfitLossList;
 
-		public async static Task<HoldingsData> Create (DataContext context, StockAPIClient client) {
-			HoldingsData holdings_data = new (context, client);
-			await holdings_data.update_stock_data ();
-			return holdings_data;
-		}// Create;
 
+		public static async Task<HoldingsData> Current (HttpContext context) {
+
+			HoldingsData? holdings_data = context.Session.GetObject<HoldingsData> ("holdings_data");
+
+			holdings_data ??= new (context, context.RequestServices.GetRequiredService<StockAPIClient> ());
+			if (!holdings_data!.fresh_data) await holdings_data!.update_stock_data ();
+
+			return holdings_data;
+
+		}// Current;
+
+
+		public HoldingsModelList? Holdings {
+			get {
+
+				HoldingsModelList? list = context.Session.GetObject<HoldingsModelList> ("holdings_model");
+
+				if (list is null) {
+					list = this.HoldingsPriceList ();
+					if (list is not null) context.Session.SetObject ("holdings_model", list);
+				}// if;
+
+				return list;
+
+			}// get;
+		}// Holdings;
 
 	}// HoldingsData;
 

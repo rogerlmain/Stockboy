@@ -1,11 +1,10 @@
 ﻿namespace Stockboy.Models {
 
 	public class DividendRequestModel: DividendsTableRecord {
-		public required Boolean reinvested { get; set; }
-		public required DateTime transaction_date { get; set; }
-		public required DateTime settlement_date { get; set; }
-		public required decimal quantity { get; set; }
-		public required decimal price { get; set; }
+		public Boolean reinvested { get; set; } = false;
+		public DateTime? transaction_date { get; set; }
+		public DateTime? settlement_date { get; set; }
+		public decimal? price { get; set; }
 	}// DividendRequestModel;
 
 
@@ -13,6 +12,7 @@
         public string broker { get; set; } = String.Empty;
 		public string company { get; set; } = String.Empty;
         public string ticker { get; set; } = String.Empty;
+		public String status { get; set; } = String.Empty;
         public DateTime issue_date { get; set; }
         public decimal amount_per_share { get; set; }
         public decimal share_quantity { get; set; }

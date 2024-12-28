@@ -46,6 +46,9 @@ namespace Stockboy.Classes.Queries {
 				(item.broker_id == dividend.broker_id) &&
 				(item.ticker_id == dividend.ticker_id) &&
 				(item.transaction_date == dividend.issue_date) &&
+
+// add purchase price to search criteria
+
 				(type.name.Equals ("buy"))
 			select
 				item

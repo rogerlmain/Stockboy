@@ -8,12 +8,12 @@ using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
-	public class Splits (DataContext context): BaseController (context) {
+	public class Splits: BaseController {
 
 		private IQueryable<SplitListModel> SelectQuery () {
-			IQueryable<SplitListModel> result = from spl in context.splits
-				join brk in context.brokers on spl.broker_id equals brk.id 
-				join tck in context.tickers on spl.ticker_id equals tck.id
+			IQueryable<SplitListModel> result = from spl in data_context.splits
+				join brk in data_context.brokers on spl.broker_id equals brk.id 
+				join tck in data_context.tickers on spl.ticker_id equals tck.id
 				select new SplitListModel () {
 					id = spl.id,
 					user_id = spl.user_id,
@@ -48,11 +48,11 @@ namespace Stockboy.Controllers {
 		public IActionResult SaveSplit ([FromBody] SplitsTableRecord parameters) {
 
   			switch (isset (parameters.id)) {
-				case true: context.splits.Update (parameters); break;
-				default: context.splits.Add (parameters); break;
+				case true: data_context.splits.Update (parameters); break;
+				default: data_context.splits.Add (parameters); break;
 			}// switch;
 
-			context.SaveChanges ();
+			data_context.SaveChanges ();
 
 			return new JsonResult (GetSplitById (parameters.id));
 

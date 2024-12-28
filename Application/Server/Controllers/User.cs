@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Classes;
-using Stockboy.Controllers.Abstract;
 using Stockboy.Classes;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 
 
 namespace Stockboy.Controllers {
 
-	public class UserController (DataContext context): BaseController (context) {
+	public class UserController: BaseController {
 
 		private const String invalid_email = "Not a valid email address.";
 
 		private String? valid_email (String email_address) {
 
-			if ((from usr in context.users
+			if ((from usr in data_context.users
 				where usr.email_address == email_address
 				select usr
 			).Any ()) return "Email address already in use.";
@@ -27,11 +26,14 @@ namespace Stockboy.Controllers {
 		}// valid_email;
 
 
+		/********/
+
+
 		[HttpPost]
 		[Route ("LoginUser")]
 		public IActionResult LoginUser ([FromBody] Credentials credentials) {
 
-			UserRecord? user = (from usr in context.users 
+			UserRecord? user = (from usr in data_context.users 
 				where
 					(usr.email_address == credentials.email_address) &&
 					(usr.password == credentials.password)
@@ -48,7 +50,7 @@ namespace Stockboy.Controllers {
 
 			current_user = user;
 
-			UserRecord some_user = current_user;
+			UserRecord some_user = current_user!;
 
 			return new JsonResult (new { 
 				message = "validated",
@@ -60,16 +62,12 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("SaveUser")]
-		public IActionResult SaveUser ([FromBody] UsersTableRecord account) {
-			return context.users.Save (account);
-		}// SaveUser;
+		public IActionResult SaveUser ([FromBody] UsersTableRecord account) => new JsonResult (data_context.users.Save (account));
 
 
 		[HttpPost]
 		[Route ("ValidateEmailAddress")]
-		public IActionResult ValidateEmailAddress ([FromBody] TextModel email_address) {
-			return new JsonResult (new { message = valid_email (email_address.text) });
-		}// ValidateUsername;
+		public IActionResult ValidateEmailAddress ([FromBody] TextModel email_address) => new JsonResult (new { message = valid_email (email_address.text) });
 
 	}// UserController;
 

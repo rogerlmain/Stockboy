@@ -6,15 +6,15 @@ using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
-	public class Stocks (DataContext context, StockAPIClient client): BaseController (context) {
+	public class StocksController: BaseController {
 
 		[HttpPost]
 		[Route ("GetHoldings")]
-		public async Task<IActionResult?> GetHoldings () {
+		public async Task<IActionResult> GetHoldings () {
 
-			DividendsHandler dividends = new (context);
-			HoldingsData holdings_data = await HoldingsData.Create (context, client);
-			HoldingsModelList? price_list = holdings_data.HoldingsPriceList ();
+			DividendsHandler dividends = new (data_context);
+			HoldingsData holdings_data = await HoldingsData.Current (http_context);
+			HoldingsModelList? price_list = holdings_data.Holdings;
 
 			if (is_null (price_list)) return new JsonResult (null);
 
@@ -30,7 +30,7 @@ namespace Stockboy.Controllers {
 		[HttpPost]
 		[Route ("GetStockDetails")]
 		public IActionResult GetStockDetails ([FromBody] StockModel stock) {
-			return new JsonResult (new StockDetails (context, client).GetStockDetails (stock));
+			return new JsonResult (new StockDetails (http_context).GetStockDetails (stock));
 		}// GetStockDetails;
 
 	}// Holdings;

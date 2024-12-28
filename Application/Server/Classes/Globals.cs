@@ -1,5 +1,4 @@
-﻿using Server.Classes;
-using Stockboy.Models;
+﻿using Stockboy.Models;
 
 namespace Stockboy.Classes {
 
@@ -9,6 +8,9 @@ namespace Stockboy.Classes {
 
 
 	public static partial class Globals {
+
+		public static ISession? session = null;
+
 
 		public const char comma = ',';
 		public const char space = ' ';
@@ -21,19 +23,17 @@ namespace Stockboy.Classes {
 		public static bool isset (object? value) => !not_set (value);
 		public static bool not_set (object? value) => is_null (value) || value is string && value.ToString () == string.Empty || value is Array && (value as Array)!.Length == 0;
 
-		private static HttpContextAccessor context { get; set; } = new HttpContextAccessor ();
-
 
 		public static ConfigurationRoot AppSettings () => (ConfigurationRoot) new ConfigurationBuilder ().SetBasePath (Directory.GetCurrentDirectory ()).AddJsonFile ("appsettings.json", true, true).Build ();
 
 
 		public static UserRecord? current_user {
 
-			get { return context.HttpContext?.Session.GetObject<UserRecord> ("user"); }
+			get { return session?.GetObject<UserRecord> ("user"); }
 
 			set { 
 				if (is_null (value)) throw new Exception ("Current user candidate is not defined.");
-				context.HttpContext?.Session.SetObject ("user", value!); 
+				session?.SetObject ("user", value!); 
 			}// setter;
 
 		}// UserRecord;

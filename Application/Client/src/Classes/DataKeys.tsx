@@ -10,7 +10,7 @@ export class DataKey {
 	private key_value: DataKeyType = null;
 
 	public get id (): string { return String.isString (this.key_value) ? (this.key_value as string) : Object.keys (this.key_value) [0] }
-	public get name (): string { return String.isString (this.key_value) ? this.key_value as string : this.key_value [this.id] }
+	public get name (): string { return String.isString (this.key_value) ? (this.key_value as string).titleCase () : this.key_value [this.id] }
 
 	constructor (value: DataKeyType) {
 		this.key_value = value;

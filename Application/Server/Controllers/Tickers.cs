@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Server.Classes;
-using Stockboy.Controllers.Abstract;
 using Stockboy.Classes;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 
 
 namespace Stockboy.Controllers {
 
-	public class Tickers (DataContext context) : BaseController (context) {
+	public class TickersController : BaseController {
 
 		public void save_ticker (ValueModel parameters, String symbol) {
 
@@ -22,7 +21,7 @@ namespace Stockboy.Controllers {
 				deleted = false
 			};
 
-			if (is_null (parameters?.value)) context.tickers.SaveData (ticker);
+			if (is_null (parameters?.value)) data_context.tickers.Save (ticker);
 
 		}// save_broker;
 
@@ -32,8 +31,8 @@ namespace Stockboy.Controllers {
 		public IActionResult GetTickers () {
 
 			var result = (
-				from tck in context.tickers.Where (ticker => !ticker.deleted)
-				from utk in context.user_tickers.Where (user_ticker => tck.id == user_ticker.ticker_id).DefaultIfEmpty ()
+				from tck in data_context.tickers.Where (ticker => !ticker.deleted)
+				from utk in data_context.user_tickers.Where (user_ticker => tck.id == user_ticker.ticker_id).DefaultIfEmpty ()
 				where
 					((utk.ticker_id != tck.id) && tck.approved) || 
 					((utk.user_id == current_user!.user_id) && utk.deleted)
@@ -54,8 +53,8 @@ namespace Stockboy.Controllers {
 		public IActionResult GetUserTickers () {
 
 			var result = (
-				from tck in context.tickers
-				join utk in context.user_tickers on
+				from tck in data_context.tickers
+				join utk in data_context.user_tickers on
 					tck.id equals utk.ticker_id
 				where
 					(utk.user_id == current_user!.user_id) &&
@@ -90,7 +89,7 @@ namespace Stockboy.Controllers {
 				ticker_id = ticker!.id ?? Guid.Empty,
 			};
 
-			context.user_tickers.Save (user_ticker);
+			data_context.user_tickers.Save (user_ticker);
 
 			return new JsonResult (parameters.ticker);
 
@@ -99,7 +98,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("DeleteTicker")]
-		public IActionResult DeleteTicker ([FromBody] DataModel parameters) => this.DeleteRecord (context.tickers, parameters);
+		public IActionResult DeleteTicker ([FromBody] DataModel parameters) => this.DeleteRecord (data_context.tickers, parameters);
 
 	}// Tickers;
 

@@ -47,8 +47,8 @@ app.UseCors ();
 app.UseSession ();
 app.UseAuthorization ();
 
-app.UseMiddleware<UserValidator> ();
-
 app.MapControllers ();
+
+app.UseMiddleware<Initializer> ();
 
 app.Run ();

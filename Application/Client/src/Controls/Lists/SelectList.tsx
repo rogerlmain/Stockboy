@@ -81,7 +81,7 @@ export default class SelectList extends Component<SelectListProps, SelectListSta
 				{this.props.header ?? (this.props.allow_all ? "All" : `Select ${this.props.id.titleCase ()}`)}
 			</option> : null}
 
-			{this.props.data?.map ((item: DataKey) => <option key={item.id} value={item.id}>{item.name.titleCase ()}</option>)}
+			{this.props.data?.map ((item: DataKey) => <option key={item.id} value={item.id}>{item.name}</option>)}
 
 		</select>
 

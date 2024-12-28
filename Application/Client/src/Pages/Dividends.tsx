@@ -8,6 +8,8 @@ import { DataTableProperties } from "Controls/Tables/DataTable";
 import { DataKeyArray } from "Classes/DataKeys";
 import { DividendListModel } from "Models/Dividends";
 import { Component } from "react";
+import StockStatusFilters from "../Controls/StockStatusFilters";
+import Eyecandy from "../Controls/Common/Eyecandy";
 
 
 const properties: DataTableProperties = {
@@ -25,6 +27,7 @@ type DividendList = Array<DividendListModel>;
 
 class DividendsPageState {
 	data: DividendList = null;
+	loading: boolean = false;
 }// DividendsPageState;
 
 
@@ -38,10 +41,13 @@ export default class DividendsPage extends Component<BaseProps, DividendsPageSta
 
 			<div className="title">Dividends</div>
 
-			<DataPageControl data={this.state.data} properties={properties} form={EditDividendForm}
-				search_filters={properties.fields} date_filter_field="issue_date" stock_filters={true} table_buttons={true}
-				save_command="SaveDividend" delete_command="DeleteDividend">
-			</DataPageControl>
+			{/*{this.state.loading ? <Eyecandy text="Loading dividends" /> : */}<DataPageControl data={this.state.data} properties={properties} data_type="Dividends"
+				table_buttons={true} form={EditDividendForm} search_filters={properties.fields} stock_filters={true}
+				save_command="SaveDividend" delete_command="DeleteDividend" date_filter_field="issue_date" parent={this}>
+
+				<StockStatusFilters />
+
+			</DataPageControl>{/*}*/}
 
 		</div>
 	}// render;
@@ -51,8 +57,17 @@ export default class DividendsPage extends Component<BaseProps, DividendsPageSta
 
 		super (props);
 
+		this.state.loading = true;
+
 		new StockboyAPI ().fetch_data ("GetDividends").then ((result: DividendList) => {
-			this.setState ({ data: new Array<DividendListModel> ().assign (result, DividendListModel) })
+
+			if (not_defined (result)) return;
+
+			this.setState ({ 
+				data: new Array<DividendListModel> ().assign (result, DividendListModel), 
+				loading: false
+			});
+
 		});
 
 	}// constructor;

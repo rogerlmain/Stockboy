@@ -3,7 +3,7 @@ import DataPageControl from "Controls/DataPageControl";
 
 import EditTransactionForm from "Forms/EditTransactionForm";
 
-import { BaseProps } from "Controls/Abstract/BaseProperties";
+import { BaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { DataKeyArray } from "Classes/DataKeys";
@@ -24,7 +24,7 @@ const properties: DataTableProperties = {
 type TransactionList = Array<TransactionListModel>
 
 
-class TransactionsPageState {
+class TransactionsPageState implements IBaseState {
 	data: TransactionList = null;
 }// TransactionsPageState;
 

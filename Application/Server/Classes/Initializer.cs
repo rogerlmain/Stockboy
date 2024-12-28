@@ -1,13 +1,14 @@
-﻿using Server.Classes;
-using Stockboy.Controllers.Abstract;
+﻿using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 
 
 namespace Stockboy.Classes {
 
-	public class UserValidator (RequestDelegate next) {
+	public class Initializer (RequestDelegate next) {
 
-		public async Task InvokeAsync (HttpContext http_context, DataContext data_context) {
+		public async Task InvokeAsync (HttpContext http_context) {
+
+			Globals.session = http_context.Session;
 
 			if (http_context.Request.RouteValues ["action"]?.ToString () != "LoginUser") {
 
@@ -19,18 +20,22 @@ namespace Stockboy.Classes {
 
 				if (is_null (user)) {
 
-					user = (from usr in data_context.users
-							where usr.id == user_id
-							select new UserRecord () {
-								user_id = usr.id,
-								first_name = usr.first_name,
-								last_name = usr.last_name,
-								email_address = usr.email_address,
-								administrator = usr.administrator
-							}).FirstOrDefault ();
+					DataContext context = http_context.RequestServices.GetRequiredService<DataContext> ();
+
+					user = (from usr in context.users
+						where usr.id == user_id
+						select new UserRecord () {
+							user_id = usr.id,
+							first_name = usr.first_name,
+							last_name = usr.last_name,
+							email_address = usr.email_address,
+							administrator = usr.administrator
+						}
+					).FirstOrDefault ();
 
 					if (is_null (user)) throw new Exception ("Invalid User ID - User not found.");
 					http_context.Session.SetObject ("user", user!);
+
 					return;
 
 				}// if;
@@ -43,6 +48,6 @@ namespace Stockboy.Classes {
 
 		}// InvokeAsync
 
-	}// UserValidator;
+	}// Initializer;
 
 }// Stockboy.Classes;

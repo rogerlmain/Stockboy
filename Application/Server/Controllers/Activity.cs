@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Classes;
-using Stockboy.Controllers.Abstract;
 using Stockboy.Classes;
 using Stockboy.Classes.Queries;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 
 
 namespace Stockboy.Controllers {
 
-	public class Activity (DataContext context): BaseController (context) {
+	public class Activity: BaseController {
 
 		[HttpPost]
 		[Route ("GetActivity")]
@@ -17,7 +16,7 @@ namespace Stockboy.Controllers {
 
 				Decimal total_quantity = 0;
 
-				ActivityModelList activity = ActivityQueries.get_activity (context, parameters.broker_id, parameters.ticker_id).ToList ();
+				ActivityModelList activity = ActivityQueries.get_activity (data_context, parameters.broker_id, parameters.ticker_id).ToList ();
 
 				foreach (ActivityModel item in activity) {
 

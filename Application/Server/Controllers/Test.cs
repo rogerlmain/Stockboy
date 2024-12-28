@@ -11,7 +11,7 @@ namespace Stockboy.Controllers {
 	}// StringParameter;
 
 
-	public class TestController (DataContext context): BaseController (context) {
+	public class TestController: BaseController {
 
 		[HttpPost]
 		[Route ("TestMe")]

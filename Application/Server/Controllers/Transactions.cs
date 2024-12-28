@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Server.Classes;
 using Stockboy.Classes;
 using Stockboy.Classes.Queries;
 using Stockboy.Controllers.Abstract;
@@ -9,13 +8,13 @@ using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
-	public class Transactions (DataContext context): BaseController (context) {
+	public class TransactionsController: BaseController {
 
 		private IQueryable<TransactionModel> SelectQuery () {
-			IQueryable<TransactionModel> result = from tra in context.transactions
-				join tck in context.tickers on tra.ticker_id equals tck.id
-				join brk in context.brokers on tra.broker_id equals brk.id
-				join ttp in context.transaction_types on tra.transaction_type_id equals ttp.id
+			IQueryable<TransactionModel> result = from tra in data_context.transactions
+				join tck in data_context.tickers on tra.ticker_id equals tck.id
+				join brk in data_context.brokers on tra.broker_id equals brk.id
+				join ttp in data_context.transaction_types on tra.transaction_type_id equals ttp.id
 				where !tra.deleted && (tra.user_id == current_user!.user_id)
 				select new TransactionModel () {
 					id = tra.id,
@@ -47,14 +46,16 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetTransactions")]
-		public IActionResult GetTransactions () => new JsonResult (TransactionQueries.get_transactions (context));
+		public IActionResult GetTransactions () => new JsonResult (TransactionQueries.get_transactions (data_context));
 
 
 		[HttpPost]
 		[Route ("GetDividendTransaction")]
 		public IActionResult GetDividendTransaction ([FromBody] DividendsTableRecord dividend) {
 
-			TransactionsTableRecord? result = TransactionQueries.get_dividend_transaction (context, dividend);
+if (dividend is null) return Error ("No luck.");
+
+			TransactionsTableRecord? result = TransactionQueries.get_dividend_transaction (data_context, dividend);
 
 			if (isset (result) && ((result!.price * result.quantity).round (2) != (dividend.amount_per_share * dividend.share_quantity).round (2))) result = null;
 			return new JsonResult (new { id = isset (result) ? result!.id : new Guid? () });
@@ -64,12 +65,12 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetTransactionTypes")]
-		public IActionResult GetTransactionTypes () => new JsonResult (context?.transaction_types.ToList ().OrderBy ("sort_order"));
+		public IActionResult GetTransactionTypes () => new JsonResult (data_context?.transaction_types.ToList ().OrderBy ("sort_order"));
 
 
 		[HttpPost]
 		[Route ("DeleteTransaction")]
-		public IActionResult DeleteTransaction ([FromBody] DataModel parameters) => this.DeleteRecord (context.transactions, parameters);
+		public IActionResult DeleteTransaction ([FromBody] DataModel parameters) => this.DeleteRecord (data_context.transactions, parameters);
 
 
 		[HttpPost]
@@ -77,11 +78,11 @@ namespace Stockboy.Controllers {
 		public IActionResult SaveTransaction ([FromBody] TransactionsTableRecord parameters) {
 
 			switch (isset (parameters.id)) {
-				case true: context.transactions.Update (parameters); break;
-				default: context.transactions.Add (parameters); break;
+				case true: data_context.transactions.Update (parameters); break;
+				default: data_context.transactions.Add (parameters); break;
 			}// switch;
 
-			context.SaveChanges ();
+			data_context.SaveChanges ();
 
 			return new JsonResult (GetTransactionById (parameters.id));
 
@@ -93,8 +94,8 @@ namespace Stockboy.Controllers {
 		public IActionResult UpdateTransactionType ([FromBody] UpdateTransactionModel parameters) {
 
 			try {
-				context.transactions.Where (item => item.id == parameters.id).ExecuteUpdate (item => 
-					item.SetProperty (value => value.transaction_type_id, context.transaction_types.Where (type => 
+				data_context.transactions.Where (item => item.id == parameters.id).ExecuteUpdate (item => 
+					item.SetProperty (value => value.transaction_type_id, data_context.transaction_types.Where (type => 
 						type.name.Equals (parameters.type)
 					).First ().id)
 				);

@@ -1,22 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Server.Classes;
-using Stockboy.Controllers.Abstract;
 using Stockboy.Classes;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 
 
 namespace Stockboy.Controllers {
 
-	public class Brokers (DataContext context) : BaseController (context) {
+	public class Brokers: BaseController {
 
 		[HttpPost]
 		[Route ("GetBrokers")]
 		public IActionResult GetBrokers () {
 
 			var result = (
-				from brk in context.brokers.Where (broker => !broker.deleted)
-				from ubr in context.user_brokers.Where (user_broker => brk.id == user_broker.broker_id).DefaultIfEmpty ()
+				from brk in data_context.brokers.Where (broker => !broker.deleted)
+				from ubr in data_context.user_brokers.Where (user_broker => brk.id == user_broker.broker_id).DefaultIfEmpty ()
 				where
 					((ubr.broker_id != brk.id) && brk.approved) || 
 					((ubr.user_id == current_user!.user_id) && ubr.deleted)
@@ -36,8 +35,8 @@ namespace Stockboy.Controllers {
 		public IActionResult GetUserBrokers () {
 
 			var result = (
-				from brk in context.brokers
-				join ubr in context.user_brokers on
+				from brk in data_context.brokers
+				join ubr in data_context.user_brokers on
 					brk.id equals ubr.broker_id
 				where
 					(ubr.user_id == current_user!.user_id) &&
@@ -62,7 +61,7 @@ namespace Stockboy.Controllers {
 
 			if (not_set (broker_data)) throw new Exception ("Broker is undefined");
 
-			BrokerTableRecord? broker = (from brk in context.brokers
+			BrokerTableRecord? broker = (from brk in data_context.brokers
 				where brk.id == broker_data!.id
 				select brk
 			).FirstOrDefault ();
@@ -74,7 +73,7 @@ namespace Stockboy.Controllers {
 
 			if (broker!.name != broker_data!.value) {
 				broker.name = broker_data.value;
-				context.brokers.SaveData (broker);
+				data_context.brokers.Save (broker);
 			}// if;
 
 			UserBrokerTableRecord user_brokers = new () {
@@ -82,7 +81,7 @@ namespace Stockboy.Controllers {
 				broker_id = broker!.id ?? Guid.Empty,
 			};
 
-			context.user_brokers.Save (user_brokers);
+			data_context.user_brokers.Save (user_brokers);
 
 			return GetUserBrokers ();
 
@@ -91,7 +90,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("DeleteBroker")]
-		public IActionResult DeleteBroker ([FromBody] DataModel parameters) => this.DeleteRecord (context.brokers, parameters);
+		public IActionResult DeleteBroker ([FromBody] DataModel parameters) => this.DeleteRecord (data_context.brokers, parameters);
 
 	}// Brokers;
 

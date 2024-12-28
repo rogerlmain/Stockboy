@@ -98,10 +98,9 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 			</div>
 
 			{this.state.loading ? <Eyecandy text="Loading holdings" /> : (isset (this.state.data) ? <DataPageControl data={this.state.data?.holdings_list} 
-				data_type="Stock Holdings" properties={properties} table_buttons={false} ref={this.data_page} search_filters={properties.fields}>
-				<div style={{ position: "absolute" }}>
-					<StockStatusFilters />
-				</div>
+				properties={properties} data_type="Stock Holdings" table_buttons={false} ref={this.data_page} 
+				search_filters={properties.fields}>
+				<StockStatusFilters />
 			</DataPageControl> : <label>No stock holdings</label>)}
 
 		</div>
@@ -114,8 +113,10 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 
 		new StockboyAPI ().fetch_data ("GetHoldings").then ((result: HomeDetailsModel) => {
 			let data: HomeDetailsModel = new HomeDetailsModel ();
-			this.setState ({ loading: false });
-			if (isset (result)) this.setState ({ data: data.assign (result) });
+			this.setState ({ 
+				loading: false,
+				data: data.assign (result) 
+			});
 		});
 
 	}// constructor;

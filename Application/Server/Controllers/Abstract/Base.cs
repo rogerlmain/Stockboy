@@ -22,10 +22,29 @@ namespace Stockboy.Controllers.Abstract {
 	}// ControllerExceptionFilter;
 
 
+	public abstract class BaseClass (HttpContext context) {
+
+		protected HttpContext http_context = context;
+		protected DataContext data_context = context.RequestServices.GetRequiredService<DataContext> ();
+
+		protected ISession session = context.Session;
+		protected IServiceProvider service_provider = context.RequestServices;
+
+	}// BaseClass;
+
+
 	[EnableCors ("CorsPolicy")]
 	[TypeFilter (typeof (ControllerExceptionFilter))]
-	public abstract class BaseController (DataContext data_context): Controller {
-		protected DataContext context = data_context;
+	public abstract class BaseController: Controller {
+
+		protected HttpContext http_context { get {  return HttpContext; } }
+		protected DataContext data_context { get { return service_provider.GetRequiredService<DataContext> (); } }
+
+		protected IServiceProvider service_provider { get { return http_context.RequestServices; } }
+		protected ISession session { get { return http_context.Session; } }
+
+		protected JsonResult Error (String text) => new (new { error = text });
+
 	}// BaseController;
 
 }// Stockboy.Controllers.Abstract;

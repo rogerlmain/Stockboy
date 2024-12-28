@@ -1,12 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using Server.Classes;
 using Stockboy.Models;
 using System.Data;
 
 
 namespace Stockboy.Classes {
 
+	// Deprecated - Use LINQ instead
 	public class Database {
 
 

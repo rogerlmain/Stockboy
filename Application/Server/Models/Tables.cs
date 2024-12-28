@@ -1,4 +1,6 @@
-﻿namespace Stockboy.Models {
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Stockboy.Models {
 
 
 	public interface IDataTableModel: IDataModel {
@@ -9,6 +11,14 @@
 	public class DataTableModel: DataModel, IDataModel, IDataTableModel {
 		public String? name { get; set; } = null;
 	}// DataTableModel;
+
+
+	public class HoldingsTableRecord: StockModel {
+		[Key]
+		public required Guid id { get; set; }
+		public required Decimal quantity { get; set; }
+		public required Decimal cost { get; set; }
+	}// HoldingsTableRecord;
 
 
 	public class TransactionsTableRecord: StockDataModel {
@@ -34,9 +44,9 @@
 
 
 	public class DividendsTableRecord: StockDataModel {
-		public DateTime issue_date { get; set; }
-		public decimal amount_per_share { get; set; }
-		public decimal share_quantity { get; set; }
+		public required DateTime issue_date { get; set; }
+		public required decimal amount_per_share { get; set; }
+		public required decimal share_quantity { get; set; }
 	}// DividendsTableRecord;
 
 

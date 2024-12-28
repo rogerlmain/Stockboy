@@ -12,8 +12,6 @@ import { Component, RefObject, createRef } from "react";
 
 
 class EditDividendFormProps implements IFormProps {
-	broker_id: String;
-	ticker_id: String;
 	data?: DividendDataModel;
 }// EditDividendFormProps;
 
@@ -21,7 +19,7 @@ class EditDividendFormProps implements IFormProps {
 class EditDividendFormState {
 	broker_id: string = null;
 	total_dividend: string = null;
-	reinvested: boolean = true;
+	reinvested: boolean = /*true*/false;
 }// EditDividendFormState;
 
 
@@ -70,8 +68,6 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 
 
 	public static defaultProps: EditDividendFormProps = {
-		broker_id: null,
-		ticker_id: null,
 		data: this.test_data,
 	}// defaultProps;
 
@@ -82,10 +78,13 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 	public onSave (): Promise<PromptResponse> {
 		return new Promise (resolve => {
 
-			let values = new FormData (this.form.current.closest ("form"));
+			let values = new FormData (this.form.current.closest ("form")).get_data ();
+
+values.delete ("id");
+//values.set ("id", null);
 
 			this.api.fetch_data ("GetDividendTransaction", values).then ((response: BaseModel) => {
-				if (isset (response.id)) return popup_window.show (<div>
+				if (isset (response?.id)) return popup_window.show (<div>
 
 					A stock purchase was found on the same date for the same broker,<br />
 					ticker and amount. Would you like to update that transaction<br />
@@ -121,13 +120,13 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 
 				<label htmlFor="amount_per_share">Amount per share</label>
 				<input id="amount_per_share" type="currency" commas="true" ref={this.per_share_textbox_ref}
-					defaultValue={this.props.data?.amount_per_share} required={true}
+					defaultValue={this.props.data?.amount_per_share ?? "0.12"} required={true}
 					onChange={this.update_total_dividend}>
 				</input>
 
 				<label htmlFor="share_quantity">Share quantity</label>
 				<input id="share_quantity" type="numeric" decimalPlaces={6} ref={this.quantity_textbox_ref}
-					defaultValue={this.props.data?.share_quantity} required={true}
+					defaultValue={this.props.data?.share_quantity ?? "12.25"} required={true}
 					onChange={this.update_total_dividend}>
 				</input>
 				
@@ -138,7 +137,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 				}}>
 					<label htmlFor="issue_date">Issue Date</label>
 					<input id="issue_date" type="date" required={true}
-						defaultValue={Date.format (this.props.data?.issue_date, DateFormats.database)}>
+						defaultValue={/*Date.format (this.props.data?.issue_date, DateFormats.database) ??*/ "2024-12-10"}>
 					</input>
 				</div>
 
@@ -147,7 +146,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 						<div className="two-column-grid">
 							<label htmlFor="reinvested">Reinvested</label>
 							<input id="reinvested" type="checkbox" value={this.state.reinvested.toString ()}
-								style={{ width: "1rem" }} defaultChecked={true} 
+								style={{ width: "1rem" }} defaultChecked={this.state.reinvested} 
 								onChange={(event: InputChangeEvent) => this.setState ({ reinvested: event.target.checked })}>
 							</input>
 						</div>
@@ -173,7 +172,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 						</input>
 				
 						<label htmlFor="quantity">Number of shares purchased</label>
-						<input id="quantity" type="numeric" commas="true" decimalPlaces={numeric_decimals} required={this.state.reinvested} 
+						<input id="share_quantity" type="numeric" commas="true" decimalPlaces={numeric_decimals} required={this.state.reinvested} 
 							defaultValue={this.props.data?.shares_purchased}>
 						</input>
 

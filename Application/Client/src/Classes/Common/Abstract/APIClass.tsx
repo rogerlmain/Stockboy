@@ -16,7 +16,7 @@ export default abstract class APIClass {
 
 
 	protected fetch (url: RequestInfo, body: any = null): Promise<any> {
-		return new Promise ((resolve) => {
+		return new Promise (resolve => {
 
 			const parameters: RequestInit = {
 				credentials: "include",
@@ -30,7 +30,7 @@ export default abstract class APIClass {
 			fetch (url, parameters).then (response => {
 				try {
 					if (response.ok) return response.json ();
-					throw "Bad request";
+					throw { message: "Bad request" };
 				} catch (except: any) {
 					return { error: except.message };
 				}// try;
