@@ -29,14 +29,6 @@ namespace Stockboy.Classes {
 		}// constructor;
 
 
-		private Boolean fresh_data { 
-			get {
-				SettingsTableRecord? settings = (from set in data_context.settings where set.name == "last_updated" select set).FirstOrDefault ();
-				return isset (settings) && DateTime.Parse (settings!.value).LaterThan (DateTime.Now.AddHours (-1));
-			}// get;
-		}// fresh_data;
-
-
 		/********/
 
 
@@ -132,10 +124,7 @@ namespace Stockboy.Classes {
 
 		private async Task update_stock_data () {
 			try {
-				if (fresh_data) return;
-
-				TickersTableList tickers = (from ticker in data_context.tickers.ToList ()
-					where (ticker.price != -1) select ticker).ToList ();
+				TickersTableList tickers = (from ticker in data_context.tickers.ToList () where (ticker.price != -1) select ticker).ToList ();
 
 				if (tickers.Count == 0) return;
 
@@ -153,11 +142,6 @@ namespace Stockboy.Classes {
 					if (isset (dividends?.historical)) set_stock_data (ticker, dividends, price);
 					
 				});
-
-				SettingsTableRecord? settings = new () { name = "last_updated" };
-
-				settings!.value = DateTime.Now.ToString ();
-				data_context.settings.Save (settings);
 
 			} catch (Exception except) {
 				if (except is not AbortException) throw;
@@ -288,10 +272,20 @@ namespace Stockboy.Classes {
 
 		public static async Task<HoldingsData> Current (HttpContext context) {
 
-			HoldingsData? holdings_data = context.Session.GetObject<HoldingsData> ("holdings_data");
+			HoldingsData? holdings_data = new (context, context.RequestServices.GetRequiredService<StockAPIClient> ());
+			DataContext data_context = context.RequestServices.GetRequiredService<DataContext> ();
 
-			holdings_data ??= new (context, context.RequestServices.GetRequiredService<StockAPIClient> ());
-			if (!holdings_data!.fresh_data) await holdings_data!.update_stock_data ();
+			SettingsTableRecord? settings = (from set in data_context.settings where set.name == "last_updated" select set).FirstOrDefault ();
+
+			if (not_set (settings) || DateTime.Parse (settings!.value).EarlierThan (DateTime.Now.AddHours (-1))) {
+
+				await holdings_data!.update_stock_data ();
+				if (settings is null) settings = new () { name = "last_updated" };
+
+				settings!.value = DateTime.Now.ToString ();
+				data_context.settings.Save (settings);
+
+			}// if;
 
 			return holdings_data;
 

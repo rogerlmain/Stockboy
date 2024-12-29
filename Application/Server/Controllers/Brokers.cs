@@ -14,7 +14,7 @@ namespace Stockboy.Controllers {
 		public IActionResult GetBrokers () {
 
 			var result = (
-				from brk in data_context.brokers.Where (broker => !broker.deleted)
+				from brk in data_context.brokers.Where (broker => (!broker.deleted ?? true))
 				from ubr in data_context.user_brokers.Where (user_broker => brk.id == user_broker.broker_id).DefaultIfEmpty ()
 				where
 					((ubr.broker_id != brk.id) && brk.approved) || 

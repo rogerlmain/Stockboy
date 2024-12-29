@@ -3,7 +3,10 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using Stockboy.Classes;
+using Stockboy.Models;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace Stockboy.Controllers.Abstract {
@@ -40,10 +43,19 @@ namespace Stockboy.Controllers.Abstract {
 		protected HttpContext http_context { get {  return HttpContext; } }
 		protected DataContext data_context { get { return service_provider.GetRequiredService<DataContext> (); } }
 
+
 		protected IServiceProvider service_provider { get { return http_context.RequestServices; } }
 		protected ISession session { get { return http_context.Session; } }
 
-		protected JsonResult Error (String text) => new (new { error = text });
+
+		protected JsonResult Error (String? text) => new (new { error = text ?? "Undefined error." });
+		protected JsonResult Message (String? text) => new (new { message = text ?? "No message." });
+
+
+		public JsonResult DeleteRecord<TModel> (DbSet<TModel> dataset, IDataModel parameters) where TModel : DataModel {
+			dataset.Where (item => item.id == parameters.id).ExecuteUpdate<IDataModel> (property => property.SetProperty (item => item.deleted, true));
+			return new JsonResult (new { success = true });
+		}// DeleteBroker;
 
 	}// BaseController;
 

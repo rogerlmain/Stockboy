@@ -14,7 +14,6 @@ declare global {
 		assign (template: AnyArray, data_type: any): Array<T>
 		contains (value: any): boolean
 		getDates (fieldname: string): Array<Date>
-		getIntegers (allow_non_numeric?: boolean): Array<number>
 		list (fieldname: string): AnyArray
 		remove (value: T): Array<T>
 		sorted (fieldname: string): Array<T>
@@ -50,7 +49,7 @@ declare global {
 
 
 	interface FormData {
-		get_data (): FormData;
+		get sanitized (): Object;
 	}// FormData;
 
 
@@ -134,7 +133,6 @@ declare global {
 	interface String {
 
 		contains (candidate: string): boolean;
-		isInteger (): boolean;
 		leadingCharacters (char: string)
 		matches (candidate: string): boolean;
 		parseInt (): number;
@@ -148,7 +146,9 @@ declare global {
 
 		get cleaned (): string;
 		get null_value (): string;
-
+		get isBoolean (): boolean;
+		get isNumeric (): boolean;
+		get isInteger (): boolean;
 	}// String;
 
 }// declare global;
@@ -212,27 +212,6 @@ Array.prototype.getDates = function (fieldname: string): Array<Date> {
 	return result;
 
 }// getDates;
-
-
-Array.prototype.getIntegers = function (allow_non_numeric: boolean = false): Array<number> {
-
-	let result: Array<number> = null;
-
-	this.forEach ((value: string) => {
-
-		if (value == String.Empty) value = "0";
-		if (!value.isInteger () && !allow_non_numeric) {
-			throw `Invalid value in Array.prototype.getIntegers: ${value}`;
-		}
-		if (is_null (result)) result = new Array<number> ();
-
-		result.push (value.parseInt () ?? 0);
-
-	});
-
-	return result;
-
-}// getIntegers;
 
 
 Array.prototype.list = function (fieldname: string): AnyArray {
@@ -397,21 +376,27 @@ Element.prototype.hasClass = function (class_name: string): boolean { return thi
 /**** FormData Prototype Functions ****/
 
 
-// Removes empty elements from FormData
-FormData.prototype.get_data = function (): FormData {
+Object.defineProperties (FormData.prototype, {
+	sanitized: { 
+		get: function (): Object {
 
-	let form_data = null;
+			let result: Object = null;
 
-	this.forEach ((value: FormDataEntryValue, key: string) => {
-		if (!key.matches ("null") && is_defined (value)) {
-			if (is_null (form_data)) form_data = new FormData ();
-			form_data.append (key, value);
-		}// if;
-	});
+			this.forEach ((form_value: FormDataEntryValue, key: string) => {
 
-	return form_data;
+				let value: string = form_value as string;
 
-}// get_data;
+				if (!key.matches ("null") && is_defined (value)) {
+					if (is_null (result)) result = new Object ();
+					result [key] = (value.isNumeric ? Number (value) : (value.isBoolean ? value.matches ("true") : value));
+				}// if;
+			});
+
+			return result;
+
+		}// get;
+	}// data;
+});
 
 
 /**** HTMLElement Prototype Functions ****/
@@ -467,7 +452,7 @@ Object.defineProperties (HTMLElement.prototype, {
 /**** HTMLDivElement Prototype Functions ****/
 
 
-HTMLDivElement.prototype.form_data = function (): FormData {
+HTMLDivElement.prototype.form_data = function (): Object {
 
 	let elements = this.querySelectorAll ("select");
 	let result: FormData = new FormData ();
@@ -476,7 +461,7 @@ HTMLDivElement.prototype.form_data = function (): FormData {
 		result.append (element.id, element.value);
 	});
 
-	return result;
+	return result.sanitized;
 
 }// form_data;
 
@@ -638,6 +623,7 @@ Object.defineProperties (Object.prototype, {
 
 	GetType: { get: function (): Function { return Object.getPrototypeOf (this).constructor } },
 	GetTypeName: { get: function (): string { return Object.getPrototypeOf (this).constructor.name } },
+
 	Keys: { get: function (): StringArray { return Object.keys (this) } },
 	NoData: { get: function (): boolean { return this.hasKey ("data") && (this.data == no_data) } },
 	Replica: { get: function (): any { return new (Object.getPrototypeOf (this).constructor) () } },
@@ -657,18 +643,6 @@ String.isString = function (candidate: any) { return typeof candidate == "string
 
 
 String.prototype.contains = function (candidate: string) { return this.indexOf (candidate) > -1 }
-
-
-String.prototype.isInteger = function () {
-
-	for (let char of this) {
-		if (char == "-") continue;
-		if (!digits.contains (parseInt (char))) return false;
-	}// for;
-
-	return true;
-
-}// isInteger;
 
 
 String.prototype.leadingCharacters = function (char: string): number {
@@ -771,6 +745,12 @@ String.prototype.trimmed = function (value: string = String.Empty) {
 
 
 Object.defineProperties (String.prototype, {
+
 	cleaned: { get: function () { return this.toLowerCase ().trim () } },
-	null_value: { get: function (): string { return (this.trim () == String.Empty) ? null : this } }
+	null_value: { get: function (): string { return (this.trim () == String.Empty) ? null : this } },
+
+	isBoolean: { get: function (): boolean { return this.matches ("true") || this.matches ("false") } },
+	isNumeric: { get: function (): boolean { return !isNaN (Number (this)) } },
+	isInteger: { get: function (): boolean { return this.isNumeric && ((Number (this) % 1) == 0) } }		
+
 });

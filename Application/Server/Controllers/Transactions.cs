@@ -15,7 +15,7 @@ namespace Stockboy.Controllers {
 				join tck in data_context.tickers on tra.ticker_id equals tck.id
 				join brk in data_context.brokers on tra.broker_id equals brk.id
 				join ttp in data_context.transaction_types on tra.transaction_type_id equals ttp.id
-				where !tra.deleted && (tra.user_id == current_user!.user_id)
+				where (!tra.deleted) && (tra.user_id == current_user!.user_id)
 				select new TransactionModel () {
 					id = tra.id,
 					user_id = tra.user_id,
@@ -93,17 +93,14 @@ if (dividend is null) return Error ("No luck.");
 		[Route ("UpdateTransactionType")]
 		public IActionResult UpdateTransactionType ([FromBody] UpdateTransactionModel parameters) {
 
-			try {
-				data_context.transactions.Where (item => item.id == parameters.id).ExecuteUpdate (item => 
-					item.SetProperty (value => value.transaction_type_id, data_context.transaction_types.Where (type => 
-						type.name.Equals (parameters.type)
-					).First ().id)
-				);
-			} catch (Exception except) {
-				return new JsonResult (new { error = except.Message });
-			}// try;
+			data_context.transactions.Where (item => item.id == parameters.id).ExecuteUpdate (item => 
+				item.SetProperty (value => value.transaction_type_id, data_context.transaction_types.Where (type => 
+					type.name.Equals (parameters.type)
+				).First ().id)
+			);
 
 			return new JsonResult (new { success = true });
+
 		}// UpdateTransactionType;
 
 	}// Transactions;

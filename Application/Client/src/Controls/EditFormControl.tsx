@@ -48,7 +48,7 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 		if (!this.required_fields_completed ()) return event.preventDefault ();
 
-		const form_data: FormData = new FormData (this.form.current).get_data ();
+		const form_data: FormData = new FormData (this.form.current);
 		const new_record: boolean = !form_data.has ("id");
 
 		popup_window.show (this.eyecandy);

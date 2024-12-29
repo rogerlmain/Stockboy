@@ -1,5 +1,4 @@
 import APIClass from "Classes/Common/Abstract/APIClass";
-import ErrorWindow from "Controls/Common/Windows/ErrorWindow";
 
 
 const stockboy_url = local_host ? "https://localhost:3002" : "https://stockboy.rogerlmain.com:3002";
@@ -55,14 +54,15 @@ export default class StockboyAPI extends APIClass {
 
 		return new Promise (resolve => {
 			super.fetch_data (`${url}`, body).then (response => {
-				if (isset (response?.["message"])) {
-					popup_window.show (<ErrorWindow text="Unauthorized access." onClose={() => {
-						clearStorage ("key");
-						base_page.forceUpdate ();
-					}} />);
+
+				if ((isset (response ["error"]) && (response ["error"]).indexOf ("Invalid User ID") == 0)) {
+					clearStorage ("key");
+					base_page.forceUpdate ();
 					resolve (null);
 				}// if;
+
 				resolve (response);
+
 			});
 		});
 

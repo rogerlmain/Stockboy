@@ -21,10 +21,11 @@ export default abstract class APIClass {
 			const parameters: RequestInit = {
 				credentials: "include",
 				method: is_null (body) ? "get" : "post",
-				headers: { "content-type": "application/json" }
+				headers: { "content-type": "application/json; charset=utf-8" }
 			};
 
-			if (body instanceof FormData) body = Object.fromEntries (body);
+			if (body instanceof FormData) body = body.sanitized;
+
 			if (isset (body)) parameters ["body"] = JSON.stringify (body);
 
 			fetch (url, parameters).then (response => {

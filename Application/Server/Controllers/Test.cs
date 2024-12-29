@@ -16,7 +16,7 @@ namespace Stockboy.Controllers {
 		[HttpPost]
 		[Route ("TestMe")]
 		public IActionResult TestMe ([FromBody] StringParameter parameters /*String value*/) {
-			return new JsonResult (new { message = parameters.value });
+			return new JsonResult (Message (parameters.value));
 		}// TestMe;
 
 	}// TestController;

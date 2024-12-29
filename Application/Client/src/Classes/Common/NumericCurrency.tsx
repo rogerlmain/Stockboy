@@ -15,10 +15,10 @@ declare global {
 	}// HTMLInputElement;
 
 
-	interface Object {
+	interface HTMLInputElement {
 		get isCurrency (): boolean;
 		get isNumeric (): boolean;
-	}// Object;
+	}// HTMLInputElement;
 
 
 }// global;
@@ -89,12 +89,12 @@ HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 	let parts = value.split (".");
 
 	if ((parts.length > 2) || ((parts.length > 1) && (decimal_places == 0))) return event.preventDefault (); // too many decimal points or decimals not allowed
-	if ((parts.length == 2) && (((parts [1] != String.Empty) && !parts [1].isInteger) || (parts [1].length > decimal_places))) return event.preventDefault (); // garbage in decimal section or too many decimal places
+	if ((parts.length == 2) && (((parts [1] != String.Empty) && !(parts [1] as String).isInteger) || (parts [1].length > decimal_places))) return event.preventDefault (); // garbage in decimal section or too many decimal places
 
 	if (parts [0][0] == "-") parts [0] = parts [0].substring (1);
 
 	if ((parts [0] != "0") && (parts [0].leadingCharacters ("0") > leading_zeros)) return event.preventDefault (); // too many leading zeros
-	if ((parts [0] != String.Empty) && !parts [0].isInteger ()) return event.preventDefault (); // garbage in number section
+	if ((parts [0] != String.Empty) && !(parts [0] as String).isInteger) return event.preventDefault (); // garbage in number section
 
 	return true;
 
@@ -102,19 +102,8 @@ HTMLInputElement.prototype.valid_keystroke = function (event: KeyboardEvent) {
 
 
 Object.defineProperties (Object.prototype, {
-
-	isCurrency: { 
-		get: function () {
-			return ((this instanceof HTMLInputElement) && (this.getAttribute ("type")?.toLowerCase () == "currency"));
-		}// get;
-	},// isCurrency;
-
-	isNumeric: {
-		get: function () {
-			return ((this instanceof HTMLInputElement) && (this.getAttribute ("type")?.toLowerCase () == "numeric"));
-		}// get;
-	},// isNumeric;
-
+	isCurrency: { get: function () { return this.getAttribute ("type")?.toLowerCase () == "currency" } },
+	isNumeric: { get: function () { return this.getAttribute ("type")?.toLowerCase () == "numeric" } }
 });
 
 

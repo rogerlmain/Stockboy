@@ -67,7 +67,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("ValidateEmailAddress")]
-		public IActionResult ValidateEmailAddress ([FromBody] TextModel email_address) => new JsonResult (new { message = valid_email (email_address.text) });
+		public IActionResult ValidateEmailAddress ([FromBody] TextModel email_address) => new JsonResult (Message (valid_email (email_address.text)));
 
 	}// UserController;
 

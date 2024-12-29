@@ -11,6 +11,25 @@ import { Component, RefObject, createRef } from "react";
 
 
 
+const test_data: DividendDataModel = {
+
+	id: null,
+
+	broker_id: "80e43ec8-016a-453d-b4ff-80d9d79a2bc7",
+	ticker_id: "7a664c2c-0324-4ba4-8be4-f1712a7f90be",
+	amount_per_share: 0.12,
+	share_quantity: 91.2259,
+	issue_date: new Date ("2024-12-10T00:00:00"),
+	reinvested: true,
+
+	transaction_date: new Date ("2024-12-10T00:00:00"),
+	settlement_date: new Date ("2024-12-11T00:00:00"),
+	shares_purchased: 1.141826,
+	purchase_price: 9.59,
+
+}// test_data;
+
+
 class EditDividendFormProps implements IFormProps {
 	data?: DividendDataModel;
 }// EditDividendFormProps;
@@ -19,8 +38,11 @@ class EditDividendFormProps implements IFormProps {
 class EditDividendFormState {
 	broker_id: string = null;
 	total_dividend: string = null;
-	reinvested: boolean = /*true*/false;
+	reinvested: boolean = true;
 }// EditDividendFormState;
+
+
+let debugging: boolean = true;
 
 
 export default class EditDividendForm extends Component<EditDividendFormProps, EditDividendFormState> {
@@ -30,21 +52,6 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 	private form: RefObject<HTMLDivElement> = createRef ();
 
 	private get edit_mode (): boolean { return isset (this.props.data.id) };
-
-
-	private static test_data: DividendDataModel = {
-		broker_id: "80e43ec8-016a-453d-b4ff-80d9d79a2bc7",
-		ticker_id: "4676d995-5c5b-4bd9-b1b7-26532e391c42",
-		amount_per_share: 0.165,
-		share_quantity: 0.054,
-		issue_date: new Date ("2024-07-31T00:00:00"),
-		reinvested: false,
-
-		transaction_date: new Date ("2024-07-31T00:00:00"),
-		settlement_date: new Date ("2024-08-01T00:00:00"),
-		shares_purchased: 0.000418,
-		purchase_price: 23.92,
-	}// test_data;
 
 
 	private per_share_textbox_ref: RefObject<HTMLInputElement> = createRef ();
@@ -68,7 +75,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 
 
 	public static defaultProps: EditDividendFormProps = {
-		data: this.test_data,
+		data: null,
 	}// defaultProps;
 
 
@@ -78,10 +85,7 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 	public onSave (): Promise<PromptResponse> {
 		return new Promise (resolve => {
 
-			let values = new FormData (this.form.current.closest ("form")).get_data ();
-
-values.delete ("id");
-//values.set ("id", null);
+			let values = new FormData (this.form.current.closest ("form"));
 
 			this.api.fetch_data ("GetDividendTransaction", values).then ((response: BaseModel) => {
 				if (isset (response?.id)) return popup_window.show (<div>
@@ -112,21 +116,24 @@ values.delete ("id");
 	public render () {
 		return <div ref={this.form}>
 
-			<input type="hidden" id="id" name="id" value={this.props.data?.id} />
+			<input type="hidden" id="id" name="id" value={this.props.data?.id ?? (debugging ? test_data.id : null)} />
 
-			<TickerSelector broker_id={this.props.data?.broker_id} ticker_id={this.props.data?.ticker_id} required={true} allow_all={false} />
+			<TickerSelector  required={true} allow_all={false}
+				broker_id={this.props.data?.broker_id ?? (debugging ? test_data.broker_id : null)} 
+				ticker_id={this.props.data?.ticker_id ?? (debugging ? test_data.ticker_id : null)}>
+			</TickerSelector>
 
 			<div className="compact four-column-grid with-headspace">
 
 				<label htmlFor="amount_per_share">Amount per share</label>
 				<input id="amount_per_share" type="currency" commas="true" ref={this.per_share_textbox_ref}
-					defaultValue={this.props.data?.amount_per_share ?? "0.12"} required={true}
+					defaultValue={this.props.data?.amount_per_share ?? (debugging ? test_data.amount_per_share : null)} required={true}
 					onChange={this.update_total_dividend}>
 				</input>
 
 				<label htmlFor="share_quantity">Share quantity</label>
 				<input id="share_quantity" type="numeric" decimalPlaces={6} ref={this.quantity_textbox_ref}
-					defaultValue={this.props.data?.share_quantity ?? "12.25"} required={true}
+					defaultValue={this.props.data?.share_quantity ?? (debugging ? test_data.share_quantity : null)} required={true}
 					onChange={this.update_total_dividend}>
 				</input>
 				
@@ -137,7 +144,7 @@ values.delete ("id");
 				}}>
 					<label htmlFor="issue_date">Issue Date</label>
 					<input id="issue_date" type="date" required={true}
-						defaultValue={/*Date.format (this.props.data?.issue_date, DateFormats.database) ??*/ "2024-12-10"}>
+						defaultValue={Date.format (this.props.data?.issue_date ?? (debugging ? test_data.issue_date : null), DateFormats.database)}>
 					</input>
 				</div>
 
@@ -146,7 +153,7 @@ values.delete ("id");
 						<div className="two-column-grid">
 							<label htmlFor="reinvested">Reinvested</label>
 							<input id="reinvested" type="checkbox" value={this.state.reinvested.toString ()}
-								style={{ width: "1rem" }} defaultChecked={this.state.reinvested} 
+								style={{ width: "1rem" }} defaultChecked={this.props.data?.reinvested ?? (debugging ? test_data.reinvested : null)} 
 								onChange={(event: InputChangeEvent) => this.setState ({ reinvested: event.target.checked })}>
 							</input>
 						</div>
@@ -163,22 +170,22 @@ values.delete ("id");
 
 						<label htmlFor="transaction_date">Transaction Date</label>
 						<input id="transaction_date" type="date" required={this.state.reinvested} 
-							defaultValue={Date.format (this.props.data?.transaction_date, DateFormats.database)}>
+							defaultValue={Date.format (this.props.data?.transaction_date ?? (debugging ? test_data.transaction_date : null), DateFormats.database)}>
 						</input>
 
 						<label htmlFor="settlement_date">Settlement Date</label>
 						<input id="settlement_date" type="date" required={this.state.reinvested} 
-							defaultValue={Date.format (this.props.data?.settlement_date, DateFormats.database)}>
+							defaultValue={Date.format (this.props.data?.settlement_date ?? (debugging ? test_data.settlement_date : null), DateFormats.database)}>
 						</input>
 				
 						<label htmlFor="quantity">Number of shares purchased</label>
 						<input id="share_quantity" type="numeric" commas="true" decimalPlaces={numeric_decimals} required={this.state.reinvested} 
-							defaultValue={this.props.data?.shares_purchased}>
+							defaultValue={this.props.data?.shares_purchased ?? (debugging ? test_data.shares_purchased : null)}>
 						</input>
 
 						<label htmlFor="price">Purchase price</label>
 						<input id="price" type="currency" commas="true" required={this.state.reinvested} 
-							defaultValue={this.props.data?.purchase_price}>
+							defaultValue={this.props.data?.purchase_price ?? (debugging ? test_data.purchase_price : null)}>
 						</input>
 
 					</div>

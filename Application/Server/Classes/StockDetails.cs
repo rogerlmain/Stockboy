@@ -5,9 +5,11 @@ namespace Stockboy.Classes {
 
 	public class StockDetails (HttpContext http_context): BaseClass (http_context) {
 
-		public async Task<StockDetailsModel> GetStockDetails (StockModel stock) {
+		public async Task<StockDetailsModel?> GetStockDetails (StockModel stock) {
 
-			HoldingsModelList holdings = (await HoldingsData.Current (http_context)).Holdings;
+			HoldingsModelList? holdings = (await HoldingsData.Current (http_context)).Holdings;
+
+			if (holdings is null) return null;
 
 			StockDetailsModel result = ((
 				from tck in data_context.tickers
