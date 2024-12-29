@@ -94,9 +94,7 @@ namespace Stockboy.Controllers {
 		[Route ("SaveDividend")]
 		public IActionResult SaveDividend ([FromBody] DividendRequestModel parameters) {
 
-return Message ("Debugging. That's enough.");
-
-			if (parameters.reinvested.Value) {
+			if (parameters.reinvested) {
 				TransactionsTableRecord transaction = new () { user_id = current_user!.user_id };
 				transaction.Merge (parameters).transaction_type_id = new Guid ("D6BC19B8-4BDE-4D87-9DB3-BAC3C41476B0");
 				//context.transactions.SaveData (transaction);
