@@ -11,6 +11,9 @@ import { Component, RefObject, createRef } from "react";
 
 
 
+let debugging: boolean = false;
+
+
 const test_data: DividendDataModel = {
 
 	id: null,
@@ -40,9 +43,6 @@ class EditDividendFormState {
 	total_dividend: string = null;
 	reinvested: boolean = true;
 }// EditDividendFormState;
-
-
-let debugging: boolean = true;
 
 
 export default class EditDividendForm extends Component<EditDividendFormProps, EditDividendFormState> {
