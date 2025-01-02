@@ -19,6 +19,7 @@ declare global {
 		sorted (fieldname: string): Array<T>
 		update<TModel> (value: TModel, fieldname: string): Array<T>
 
+		get duplicate (): Array<T>
 		get empty (): boolean
 
 	}// Array<T>;
@@ -103,13 +104,13 @@ declare global {
 	interface Object {
 
 		assign (template: any): any;
-		clone (): any;
 		copy (...candidates: Object []): Object;
 		hasKey (key_name: string): boolean;
 		matches (candidate: any): boolean;
 		merge (...candidates: Object []): Object;
 		toJson (): string;
 
+		get duplicate (): any;
 		get GetType (): Function;
 		get GetTypeName (): string;
 		get Keys (): StringArray;
@@ -175,7 +176,7 @@ Array.prototype.add = function<T> (value: T): Array<T> {
 
 
 Array.prototype.append = function<T> (value: T): Array<T> {
-	let new_array: Array<T> = this.clone ();
+	let new_array: Array<T> = this.duplicate;
 	new_array.push (value);
 	return new_array;
 }// append;
@@ -258,6 +259,21 @@ Array.prototype.update = function<TModel> (value: TModel, fieldname: string = "i
 
 
 Object.defineProperties (Array.prototype, {
+	duplicate: { get: 
+		function () {
+	
+			let new_array: Array<any> = null;
+
+			this.forEach ((item: any) => {
+				if (is_null (new_array)) new_array = new Array<any> ();
+				new_array.push (item.duplicate);
+			});
+
+			return new_array;
+
+		}// duplicate;
+	},
+
 	empty: { get: function () { return this.length == 0 } },
 });
 
@@ -386,7 +402,7 @@ Object.defineProperties (FormData.prototype, {
 
 				let value: string = form_value as string;
 
-				if (!key.matches ("null") && is_defined (value)) {
+				if (!key.matches ("null") && not_empty (value)) {
 					if (is_null (result)) result = new Object ();
 					result [key] = (value.isNumeric ? Number (value) : (value.isBoolean ? value.matches ("true") : value));
 				}// if;
@@ -564,7 +580,7 @@ Object.prototype.assign = function (template: any): any {
 
 		let element = this.properties?.[item];
 
-		if (not_defined (template [item])) continue;
+		if (is_empty (template [item])) continue;
 
 		if (Array.isArray (template [item])) {
 			this [item] = new Array<typeof element> ().assign (template [item], element);
@@ -578,9 +594,6 @@ Object.prototype.assign = function (template: any): any {
 	return this;
 
 }// assign;
-
-
-Object.prototype.clone = function () { return this.Replica.assign (this) }
 
 
 Object.prototype.copy = function (...candidates: Object []): Object {
@@ -620,6 +633,30 @@ Object.prototype.toJson = function () { return JSON.stringify (this) }
 
 
 Object.defineProperties (Object.prototype, {
+
+	duplicate: { get: 
+		function () { 
+
+			let duplicate = this.Replica;
+
+			for (let index = 0; index < this.Keys.length; index++) {
+
+				let key: string = this.Keys [index];
+
+				if (Array.isArray (this [key]) || (typeof this [key] == "object")) {
+					duplicate [key] = this [key].duplicate;
+					continue;
+				}// if;
+
+				if ((typeof this [key]) == "function") continue;
+				duplicate [key] = this [key];
+
+			}// for;
+
+			return duplicate;
+
+		}// duplicate;
+	},
 
 	GetType: { get: function (): Function { return Object.getPrototypeOf (this).constructor } },
 	GetTypeName: { get: function (): string { return Object.getPrototypeOf (this).constructor.name } },

@@ -1,12 +1,9 @@
-import StockboyAPI from "Classes/StockboyAPI"
-
-import DataPageControl from "Controls/DataPageControl"
 import Eyecandy from "Controls/Common/Eyecandy"
-import FilterHandler from "Controls/FilterHandler"
-import TableFilters from "Controls/TableFilters"
+import DataPageControl from "Controls/DataPageControl"
+import ActivityFilters from "Controls/Filters/ActivityFilters"
+import FilterHandler from "Controls/Filters/FilterHandler"
 
 import { BaseProps } from "Controls/Abstract/BaseProperties"
-import { CheckboxFilter, CheckboxFilterList } from "Controls/CheckboxFilterList"
 import { DataTableProperties } from "Controls/Tables/DataTable"
 
 import { DataKeyArray } from "Classes/DataKeys"
@@ -36,27 +33,7 @@ class ActivityPageState {
 
 export default class ActivityPage extends Component<BaseProps, ActivityPageState> {
 
-	private filter_handler: RefObject<FilterHandler> = createRef ();
 	private data_page: RefObject<DataPageControl> = createRef ();
-	private filter_list: RefObject<CheckboxFilterList> = createRef ();
-	private table_filters: RefObject<TableFilters> = createRef ();
-
-	private data: ActivityModelArray = null;
-
-
-	private update_data = (broker_id: string, ticker_id: string) => this.setState ({ loading: "Loading activity"}, () => {
-		new StockboyAPI ().fetch_data ("GetActivity", { broker_id, ticker_id }).then (response => {
-
-			this.data = new Array<ActivityModel> ().assign (response, ActivityModel);
-
-			this.setState ({ 
-				data: response.clone (),
-				filter_handler: this.filter_handler.current,
-				loading: null,
-			});
-
-		});
-	});
 
 
 	/********/
@@ -73,13 +50,7 @@ export default class ActivityPage extends Component<BaseProps, ActivityPageState
 			{isset (this.state.loading) ? <Eyecandy text={this.state.loading} /> : isset (this.state.data) ? <DataPageControl data={this.state.data} properties={properties} 
 				stock_filters={false} table_buttons={false} ref={this.data_page} filter_handler={this.state.filter_handler}>
 
-				<div>{isset (this.state.data) ? <CheckboxFilterList id="checkbox_list" ref={this.filter_list}>
-					<CheckboxFilter text="Buys" field_name="transaction_type" field_value="Buy" />
-					<CheckboxFilter text="Reinvestments" field_name="transaction_type" field_value="Reinvestment" />
-					<CheckboxFilter text="Sales" field_name="transaction_type" field_value="Sell" />
-					<CheckboxFilter text="Dividends" field_name="transaction_type" field_value="Dividend" />
-					<CheckboxFilter text="Splits" field_name="transaction_type" field_value="Split" />
-				</CheckboxFilterList> : null}</div>
+				{isset (this.state.data) ? <ActivityFilters /> : null}
 
 			</DataPageControl> : null}
 

@@ -1,7 +1,8 @@
 import EditFormControl from "Controls/EditFormControl";
-import FilterHandler from "Controls/FilterHandler";
 import TableButtons from "Controls/TableButtons";
-import TableFilters from "Controls/TableFilters";
+
+import FilterHandler from "Controls/Filters/FilterHandler";
+import TableFilters from "Controls/Filters/TableFilters";
 
 import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 

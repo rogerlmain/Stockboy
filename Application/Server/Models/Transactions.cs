@@ -4,6 +4,7 @@
 		public string broker { get; set; } = String.Empty;
         public string ticker { get; set; } = String.Empty;
         public string company { get; set; } = String.Empty;
+		public String status { get; set; } = String.Empty;
 		public decimal price { get; set; }
 		public decimal quantity { get; set; }
 		public decimal cost { get; set; }

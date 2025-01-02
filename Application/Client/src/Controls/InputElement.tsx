@@ -31,7 +31,7 @@ export default class InputElement extends Component<InputElementProps> {
 	public componentDidMount () {
 		this.container.current.querySelectorAll<FormField> (form_fields).forEach ((element: FormField) => {
 			element.addEventListener (element.type == "select" ? "change" : "keyup", () => {
-				if (is_defined (element.value)) return element.style.border = "solid 1px red";
+				if (not_empty (element.value)) return element.style.border = "solid 1px red";
 				element.style.removeProperty ("border");
 			});
 		});

@@ -31,7 +31,8 @@ export default abstract class APIClass {
 			fetch (url, parameters).then (response => {
 				try {
 					if (response.ok) return response.json ();
-					throw { message: "Bad request" };
+					if (response.type == "cors") throw { message: "Cors error" };
+					throw { message: `Error status ${response.status}` };
 				} catch (except: any) {
 					return { error: except.message };
 				}// try;

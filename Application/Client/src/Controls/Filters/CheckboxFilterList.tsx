@@ -13,59 +13,73 @@ class CheckboxFilterProps {
 }// CheckboxFilterProps;
 
 
+class CheckboxFilterState {
+	checked: boolean = false;
+}// CheckboxFilterState;
+
+
 class CheckboxFilterListProps extends BaseProps {
 	children: ChildElement;
 }// CheckboxFilterListProps;
 
 
-export class CheckboxFilter extends Component<CheckboxFilterProps> {
+export class CheckboxFilter extends Component<CheckboxFilterProps, CheckboxFilterState> {
 
 	private checkbox: RefObject<HTMLInputElement> = createRef ();
 
-
-	public data_page: DataPageControl = null;
+	private id: string = `${this.props.field_value.cleaned}_checkbox`;
 
 
 	/********/
 
 
+	public data_page: DataPageControl = null;
+
+
 	public static defaultProps: CheckboxFilterProps = {
 		text: null,
-		checked: true,
+		checked: false,
 		field_name: null,
 		field_value: null,
 	}// CheckboxFilterProps;
 
 
-	public update_filter (checkbox: HTMLInputElement) {
-		if (checkbox.checked) return this.data_page.filter_handler.add_filter (new DataFilter ({
-			id: checkbox.id, 
+	public update_filter () {
+		if (this.state.checked) return this.data_page.filter_handler.add_filter (new DataFilter ({
+			id: this.id, 
 			field: this.props.field_name,
-			value: checkbox.value,
+			value: this.props.field_value,
 			type: FilterType.inclusive
 		}));
-		this.data_page.filter_handler.remove_filter (checkbox.id);
+		this.data_page.filter_handler.remove_filter (this.id);
 	}// update_filter;
 
 
 	public componentDidMount () {
 		this.data_page = this.context as DataPageControl;
-		this.data_page.filter_handler.filter_data ();
+		this.setState ({ checked: this.props.checked });
 	}// componentDidMount;
 
 
+	public componentDidUpdate (props: CheckboxFilterProps, state: CheckboxFilterState) {
+
+		this.data_page.filter_handler.has_inclusive_filters = true;
+
+		if (props?.checked != this.props.checked) this.setState ({ checked: this.props.checked });
+		if (state?.checked != this.state.checked) this.update_filter ();
+
+	}// componentDidUpdate;
+
+
 	public render () {
-
-		let id: string = `${this.props.field_value.cleaned}_checkbox`;
-
 		return <div className="container">
 
-			<input type="checkbox" id={id}
-				onChange={(event: InputChangeEvent) => this.update_filter (event.currentTarget)}
+			<input type="checkbox" id={this.id}
+				onChange={(event: InputChangeEvent) => this.setState ({ checked: event.currentTarget.checked })}//this.update_filter (event.currentTarget)}
 				ref={this.checkbox} value={this.props.field_value} defaultChecked={this.props.checked}>
 			</input>
 
-			<label htmlFor={id}>{this.props.text}</label>
+			<label htmlFor={this.id}>{this.props.text}</label>
 
 		</div>
 	}// render;

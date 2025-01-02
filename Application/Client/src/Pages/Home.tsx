@@ -1,15 +1,16 @@
 import StockboyAPI from "Classes/StockboyAPI";
+import StockStatusFilters from "Controls/Filters/StockStatusFilters";
 
 import Eyecandy from "Controls/Common/Eyecandy";
 import DataPageControl from "Controls/DataPageControl";
-import StockStatusFilters from "Controls/StockStatusFilters";
 
+import { DataKeyArray } from "Classes/DataKeys";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 
-import { DataKeyArray } from "Classes/DataKeys";
 import { DividendPayment, DividendPayoutItem } from "Models/Dividends";
 import { HoldingsModel, HomeDetailsModel } from "Models/Holdings";
+
 import { Component, createRef, RefObject } from "react";
 
 

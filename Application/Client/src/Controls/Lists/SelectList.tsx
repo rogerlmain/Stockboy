@@ -74,7 +74,7 @@ export default class SelectList extends Component<SelectListProps, SelectListSta
 
 			onChange={(event: ChangeEvent<HTMLSelectElement>) => {
 				if (isset (this.props.onChange)) this.props.onChange (event);
-				this.setState ({ selected_item: is_defined (event.currentTarget.value) ? event.currentTarget.value : null });
+				this.setState ({ selected_item: not_empty (event.currentTarget.value) ? event.currentTarget.value : null });
 			}}>
 
 			{not_set (this.state.selected_item) || (this.props.allow_all) ? <option key={"header"} value={String.Empty}>

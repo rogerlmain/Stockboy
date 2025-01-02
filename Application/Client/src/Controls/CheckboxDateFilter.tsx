@@ -1,5 +1,6 @@
+import FilterHandler from "Controls/Filters/FilterHandler";
+
 import DataPageControl, { DataPageContext } from "Controls/DataPageControl";
-import FilterHandler from "Controls/FilterHandler";
 
 import { BoundaryType, DataFilter, FilterType } from "Classes/Common/Collections";
 import { BaseModel } from "Models/Abstract/BaseModels";
@@ -30,7 +31,7 @@ export default class CheckboxDateFilter extends Component<CheckboxDateFilterProp
 	private set_date_filter () {
 		this.setState ({ use_date: this.date_checkbox.current.checked }, () => {
 
-			if (not_defined (this.date_field.current.value)) return;
+			if (is_empty (this.date_field.current.value)) return;
 
 			if (this.state.use_date) {
 				this.filter_handler.add_filter (new DataFilter ({

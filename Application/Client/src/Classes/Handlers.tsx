@@ -4,7 +4,7 @@ new MutationObserver ((mutations: Array<MutationRecord>) => {
 		let items: FormFieldList = document.querySelectorAll (form_fields);
 
 		items.forEach ((element: FormField) => {
-			if (is_defined (element.getAttribute ("name"))) return;
+			if (not_empty (element.getAttribute ("name"))) return;
 			element.setAttribute ("name", element.getAttribute ("id"));
 		});
 

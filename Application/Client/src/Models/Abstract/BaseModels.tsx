@@ -44,7 +44,10 @@ export type DateType = Date | string;
 /**** Interfaces ****/
 
 
-export interface IBaseModel { id?: string }
+export interface IBaseModel { 
+	id?: string;
+	included?: boolean;
+}// IBaseModel;
 
 
 export interface IStockModel extends IBaseModel {
@@ -66,6 +69,7 @@ export abstract class BaseModel implements IBaseModel {
 
 	@Invisible
 	public id?: string = null;
+	public included?: boolean = true;
 
 	public static invisible_fields: StringArray = null;
 

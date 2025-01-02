@@ -47,8 +47,8 @@ declare global {
 	var is_null: Function;
 	var not_null: Function;
 
-	var is_defined: Function;
-	var not_defined: Function;
+	var not_empty: Function;
+	var is_empty: Function;
 
 	var is_undefined: Function;
 
@@ -99,19 +99,17 @@ globalThis.control_keys = ["c", "v", "a"]; // use in conjunction with ctrl key
 
 globalThis.no_data = "No data available";
 
-globalThis.is_empty = (value: any): boolean => (String.isString (value) && (value == String.Empty)) || (Array.isArray (value) && (value.length == 0));
-globalThis.not_empty = (value: any): boolean => !is_empty (value);
-
-globalThis.isset = (value: any): boolean => not_null (value) && (value != undefined);
-globalThis.not_set = (value: any): boolean => !isset (value);
+globalThis.is_undefined = (value: any): boolean => value === undefined;
+globalThis.not_undefined = (value: any): boolean => !is_undefined (value);
 
 globalThis.is_null = (value: any): boolean => (value === null);
 globalThis.not_null = (value: any): boolean => !is_null (value);
 
-globalThis.is_defined = (value: any): boolean => isset (value) && not_empty (value);
-globalThis.not_defined = (value: any): boolean => !is_defined (value);
+globalThis.isset = (value: any): boolean => not_null (value) && (value != undefined);
+globalThis.not_set = (value: any): boolean => !isset (value);
 
-globalThis.is_undefined = (value: any): boolean => value == undefined;
+globalThis.is_empty = (value: any): boolean => not_set (value) || (String.isString (value) && (value == String.Empty)) || (Array.isArray (value) && (value.length == 0));
+globalThis.not_empty = (value: any): boolean => !is_empty (value);
 
 globalThis.conditional = (condition: boolean, output: any): string => condition ? output : String.Empty;
 

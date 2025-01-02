@@ -55,7 +55,7 @@ export default class StockboyAPI extends APIClass {
 		return new Promise (resolve => {
 			super.fetch_data (`${url}`, body).then (response => {
 
-				if ((isset (response ["error"]) && (response ["error"]).indexOf ("Invalid User ID") == 0)) {
+				if ((isset (response?.["error"]) && (response ["error"]).indexOf ("Invalid User ID") == 0)) {
 					clearStorage ("key");
 					base_page.forceUpdate ();
 					resolve (null);

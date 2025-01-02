@@ -33,7 +33,7 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 		let result: boolean = true;
 
 		fields.forEach ((field: FormField) => {
-			if (field.hasAttribute ("required") && (not_defined (field.value))) {
+			if (field.hasAttribute ("required") && (is_empty (field.value))) {
 				field.setAttribute ("enforced", "true");
 				result = false;
 			}// if;
@@ -126,7 +126,7 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 					set_required (element);
 					element.addEventListener (event_name, () => {
-						if (is_defined (element.value)) return clear_required (element);
+						if (not_empty (element.value)) return clear_required (element);
 						set_required (element);
 					});
 				}// if;

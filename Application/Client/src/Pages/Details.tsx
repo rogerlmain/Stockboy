@@ -39,7 +39,7 @@ export default class StockDetailsPage extends Component<StockDetailsPageProps, S
 				onTickerChange={(ticker_id: string) => this.setState ({ ticker_id }, this.select_stock)}>
 			</TickerSelector>
 
-			{is_defined (this.state.stock_details) ? <div className="column-block with-lotsa-headspace">
+			{not_empty (this.state.stock_details) ? <div className="column-block with-lotsa-headspace">
 
 				<div className="centered row-block title">{this.state.stock_details.company}</div>
 

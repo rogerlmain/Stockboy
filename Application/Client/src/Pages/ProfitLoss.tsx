@@ -1,13 +1,12 @@
 import StockboyAPI from "Classes/StockboyAPI";
-
 import DataPageControl from "Controls/DataPageControl";
-import StockStatusFilters from "Controls/StockStatusFilters";
+import StockStatusFilters from "Controls/Filters/StockStatusFilters";
 
+import { DataKey, DataKeyArray } from "Classes/DataKeys";
 import { BaseProps } from "Controls/Abstract/BaseProperties";
 import { DataTableProperties } from "Controls/Tables/DataTable";
 import { ProfitLossModel } from "Models/Holdings";
 import { Component, createRef, RefObject } from "react";
-import { DataKey, DataKeyArray } from "Classes/DataKeys";
 
 
 const properties: DataTableProperties = {

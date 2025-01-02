@@ -12,7 +12,7 @@ declare global {
 	type FormField = (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)
 	type FormFieldList = NodeListOf<FormField>
 
-	type FieldValue = string | number | Date
+	type FieldValue = string | number | Date | boolean;
 
 	type HoldingsFilterList = Array<HoldingsStatus>
 

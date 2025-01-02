@@ -10,8 +10,7 @@ import { DividendDataModel } from "Models/Dividends";
 import { Component, RefObject, createRef } from "react";
 
 
-
-let debugging: boolean = false;
+let debugging: boolean = true;
 
 
 const test_data: DividendDataModel = {

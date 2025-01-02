@@ -12,7 +12,6 @@ namespace Stockboy.Controllers {
 		private async Task<DividendModelList?> SelectQuery () {
 
 			HoldingsModelList? holdings = (await HoldingsData.Current (http_context)).Holdings;
-
 			if (holdings is null) return null;
 
 			DividendModelList dividends = (
