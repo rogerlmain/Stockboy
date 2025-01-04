@@ -10,7 +10,7 @@ import { DividendDataModel } from "Models/Dividends";
 import { Component, RefObject, createRef } from "react";
 
 
-let debugging: boolean = true;
+let debugging: boolean = false;
 
 
 const test_data: DividendDataModel = {
@@ -18,16 +18,16 @@ const test_data: DividendDataModel = {
 	id: null,
 
 	broker_id: "80e43ec8-016a-453d-b4ff-80d9d79a2bc7",
-	ticker_id: "7a664c2c-0324-4ba4-8be4-f1712a7f90be",
-	amount_per_share: 0.12,
-	share_quantity: 91.2259,
-	issue_date: new Date ("2024-12-10T00:00:00"),
-	reinvested: true,
+	ticker_id: "4676d995-5c5b-4bd9-b1b7-26532e391c42",
+	amount_per_share: 0.40,
+	share_quantity: 9.7926,
+	issue_date: new Date ("2024-12-18T00:00:00"),
+	reinvested: false,
 
-	transaction_date: new Date ("2024-12-10T00:00:00"),
-	settlement_date: new Date ("2024-12-11T00:00:00"),
-	shares_purchased: 1.141826,
-	purchase_price: 9.59,
+	transaction_date: new Date ("2024-12-18T00:00:00"),
+	settlement_date: new Date ("2024-12-19T00:00:00"),
+	shares_purchased: 0.143066,
+	purchase_price: 27.40,
 
 }// test_data;
 
@@ -177,8 +177,8 @@ export default class EditDividendForm extends Component<EditDividendFormProps, E
 							defaultValue={Date.format (this.props.data?.settlement_date ?? (debugging ? test_data.settlement_date : null), DateFormats.database)}>
 						</input>
 				
-						<label htmlFor="quantity">Number of shares purchased</label>
-						<input id="share_quantity" type="numeric" commas="true" decimalPlaces={numeric_decimals} required={this.state.reinvested} 
+						<label htmlFor="purchase_quantity">Number of shares purchased</label>
+						<input id="purchase_quantity" type="numeric" commas="true" decimalPlaces={numeric_decimals} required={this.state.reinvested} 
 							defaultValue={this.props.data?.shares_purchased ?? (debugging ? test_data.shares_purchased : null)}>
 						</input>
 

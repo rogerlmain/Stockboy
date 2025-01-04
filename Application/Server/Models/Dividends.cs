@@ -2,9 +2,10 @@
 
 	public class DividendRequestModel: DividendsTableRecord {
 		public Boolean reinvested { get; set; } = false;
-		public DateTime? transaction_date { get; set; }
-		public DateTime? settlement_date { get; set; }
-		public decimal? price { get; set; }
+		public required DateTime transaction_date { get; set; }
+		public required DateTime settlement_date { get; set; }
+		public required decimal price { get; set; }
+		public required decimal purchase_quantity { get; set; }
 	}// DividendRequestModel;
 
 

@@ -96,16 +96,11 @@ namespace Stockboy.Controllers {
 			if (parameters.reinvested) {
 				TransactionsTableRecord transaction = new () { user_id = current_user!.user_id };
 				transaction.Merge (parameters).transaction_type_id = new Guid ("D6BC19B8-4BDE-4D87-9DB3-BAC3C41476B0");
-				//context.transactions.SaveData (transaction);
-				//new Transactions (context).SaveData ("get_transaction_by_id", transaction);
+				transaction.quantity = parameters.purchase_quantity;
+				data_context.transactions.Save (transaction);
 			}// if;
 
-			switch (isset (parameters.id)) {
-				case true: data_context.dividends.Update (parameters); break;
-				default: data_context.dividends.Add (parameters); break;
-			}// switch;
-
-			data_context.SaveChanges ();
+			data_context.dividends.Save (parameters);
 
 			return new JsonResult (GetDividendById (parameters.id));
 

@@ -12,12 +12,8 @@ export function TypeSafe (object_type: any = null) {
 		if (object_type == Date) {
 
 			return Object.defineProperty (target, key, {
-				get: function (): string {
-					return this.date_value.format ("MMMM d, yyyy");
-				},
-				set: function (new_value: string) {
-					this.date_value = new Date (new_value);
-				}
+				get: function (): Date { return this [`${key}_value`] },
+				set: function (new_value: string) { this [`${key}_value`] = new Date (new_value) }
 			});
 
 		}// if;
@@ -25,7 +21,7 @@ export function TypeSafe (object_type: any = null) {
 		let prototype: any = target.constructor.prototype;
 
 		if (not_set (prototype.properties)) prototype.properties = new Array<Object> ();
-		prototype.properties [key] = object_type;
+		prototype.properties [key] = new object_type ();
 		return null;
 	};
 }// TypeSafe;

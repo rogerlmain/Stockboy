@@ -68,23 +68,26 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 			let dataset: Array<IBaseModel> = this.props.data_page_control.props.parent.state ["data"].update<IBaseModel> (response);
 
-			this.props.data_page_control.filter_handler.filter_data ();
-			await this.props.data_page_control.props.parent.setState ({ data: dataset });
+			this.props.data_page_control.props.parent.setState ({ data: dataset }, async () => {
 
-			if (new_record) {
-				return popup_window.show (<div>
+				this.props.data_page_control.filter_handler.filter_data (() => this.props.data_page_control.sort ());
 
-					Transaction saved. Save another one?
+				if (new_record) {
+					return popup_window.show (<div>
 
-					<div className="button-bar">
-						<button onClick={() => popup_window.show (<EditFormControl {...this.props} data={Object.fromEntries (form_data)}/>)}>Yes</button>
-						<button onClick={() => popup_window.hide ()}>No</button>
-					</div>
+						Transaction saved. Save another one?
 
-				</div>);
-			}// if;
+						<div className="button-bar">
+							<button onClick={() => popup_window.show (<EditFormControl {...this.props} data={Object.fromEntries (form_data)}/>)}>Yes</button>
+							<button onClick={() => popup_window.hide ()}>No</button>
+						</div>
 
-			popup_window.hide ();
+					</div>);
+				}// if;
+
+				popup_window.hide ();
+
+			});
 			
 		});
 

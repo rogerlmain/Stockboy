@@ -182,13 +182,13 @@ Array.prototype.append = function<T> (value: T): Array<T> {
 }// append;
 
 
-Array.prototype.assign = function (template: AnyArray, data_type: any = Object): AnyArray {
+Array.prototype.assign = function (template: AnyArray, data_type: any): AnyArray {
 
 	let result: AnyArray = null;
 
 	template.forEach (item => {
 		if (is_null (result)) result = new Array<any> ();
-		result.push (new data_type ().assign (item));
+		result.push (not_set (data_type) ? new Object ().assign (item) : new data_type ().assign (item));
 	});
 
 	return result;
@@ -283,7 +283,7 @@ Object.defineProperties (Array.prototype, {
 
 let nativeSetState = Component.prototype.setState;
 
-Component.prototype.setState = function (state: any, callback?: () => void): boolean | Promise<boolean> {
+Component.prototype.setState = function (state: any, callback?: Callback): boolean | Promise<boolean> {
 	nativeSetState.call (this, state, callback);
 	return true;
 }// setState;
@@ -578,7 +578,7 @@ Object.prototype.assign = function (template: any): any {
 
 	for (let item of Object.getOwnPropertyNames (template)) {
 
-		let element = this.properties?.[item];
+		let element = this?.[item];
 
 		if (is_empty (template [item])) continue;
 

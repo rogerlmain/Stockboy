@@ -117,6 +117,9 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 	public state: DataPageControlState = new DataPageControlState ();
 
 
+	public sort = (): void => this.data_table.current.sort ();
+
+
 	public remove_row = () => this.setState ({ data: this.state.data.toSpliced (this.state.data.indexOf (this.state.data.find ((element: IBaseModel) => element.id == this.state.selected_row.id)), 1) });
 
 

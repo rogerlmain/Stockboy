@@ -64,7 +64,7 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 						{this.state.data?.payments_list?.map ((payment: DividendPayment) => <div className="table-row">
 							<div>{payment.company}</div>
 							<div>{payment.ticker}</div>
-							<div>{payment.payment_date as String}</div>
+							<div>{new Date (payment.payment_date).format ("MMMM d, yyyy")}</div>
 							<div className="right-aligned row-block">{(payment.amount_per_share * payment.quantity).round_to (4)}</div>
 						</div>)}
 					</div>

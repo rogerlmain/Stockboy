@@ -22,7 +22,7 @@ export class DividendPayment {
 	public ticker: String = null;
 
 	@TypeSafe (Date)
-	public payment_date: DateType = null;
+	public payment_date: Date = null;
 
 	public amount_per_share: number = null;
 	public quantity: number = null;

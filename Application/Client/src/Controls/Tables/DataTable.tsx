@@ -52,12 +52,12 @@ export default class DataTable extends Component<DataTableProps> {
 
 	private sort_table (sort_field: string, ascending: boolean) {
 
-		let key = sort_field as keyof IBaseModel;
-		let sort_values: Array<IBaseModel> = this.props.data.toSorted ((first, second) => ascending ? (first [key] >= second [key] ? 1 : -1) : (first [key] <= second [key] ? 1 : -1));
+			let key = sort_field as keyof IBaseModel;
+			let sort_values: Array<IBaseModel> = this.props.data.toSorted ((first, second) => ascending ? (first [key] >= second [key] ? 1 : -1) : (first [key] <= second [key] ? 1 : -1));
 
-		this.setState ({ 
-			sort_field,
-			ascending
+			this.setState ({ 
+				sort_field,
+				ascending
 		}, () => this.props.parent.setState ({ data: sort_values }));
 		
 	}// sort_table;
@@ -79,13 +79,7 @@ export default class DataTable extends Component<DataTableProps> {
 
 
 	private show_totals () {
-/*
-		let blank_field = (index: number): boolean => {
-			if (index == (this.props.properties.fields.length - 1)) return false;
-			if (this.props.properties.total_fields.contains (this.props.properties.fields.names [index + 1])) return false;
-			return true;
-		}// blank_field;
-*/
+
 		let field_names = this.props.properties.fields.ids;
 
 		return <div className="table-footer">
@@ -132,14 +126,17 @@ export default class DataTable extends Component<DataTableProps> {
 	}// format;
 
 
-	public componentDidUpdate (props: DataTableProps) {
+	public sort = (): void => this.sort_table (this.state.sort_field, this.state.ascending);
+
+
+	public componentDidUpdate (props: DataTableProps, state: DataTableState) {
 		if (props?.data?.matches (this.props.data)) return;
 		if (isset (this.data_block.current)) this.data_block.current.style.gridTemplateColumns = `repeat(${this.field_count}, min-content)`;
-		if (isset (this.state.sort_field)) this.sort_table (this.state.sort_field, this.state.ascending);
+		if ((state?.sort_field != this.state.sort_field) && isset (this.state.sort_field)) this.sort ();
 	}// componentDidUpdate;
 
 
-	public componentDidMount = () => this.componentDidUpdate (null);
+	public componentDidMount = () => this.componentDidUpdate (null, null);
 
 
 	public render () {

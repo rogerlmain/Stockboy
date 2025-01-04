@@ -75,7 +75,7 @@ export class CheckboxFilter extends Component<CheckboxFilterProps, CheckboxFilte
 		return <div className="container">
 
 			<input type="checkbox" id={this.id}
-				onChange={(event: InputChangeEvent) => this.setState ({ checked: event.currentTarget.checked })}//this.update_filter (event.currentTarget)}
+				onChange={(event: InputChangeEvent) => this.setState ({ checked: event.currentTarget.checked })}
 				ref={this.checkbox} value={this.props.field_value} defaultChecked={this.props.checked}>
 			</input>
 

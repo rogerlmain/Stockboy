@@ -33,5 +33,9 @@ declare global {
 	type ButtonClickEvent = MouseEvent<HTMLButtonElement>
 	type KeyEvent = KeyboardEvent<HTMLElement>
 
+	/**** Functions ****/
+
+	type Callback = () => void;
+
 }// global;
 

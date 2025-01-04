@@ -82,7 +82,7 @@ export default class MainPage extends Component {
 
 
 		<div className="column-centered row-block with-some-legroom with-headspace">
-			Stockboy Stock Ledger - &copy; Copyright 2024 - The Roger Main Programming Company
+			Stockboy Stock Ledger - &copy; Copyright 2024-2025 - The Roger Main Programming Company
 		</div>
 
 	</div>
@@ -90,7 +90,7 @@ export default class MainPage extends Component {
 
 	constructor (props: BaseProps) {
 		super (props);
-		this.state.page = PageType.transactions;
+		this.state.page = PageType.dividends;
 	}// constructor;
 
 }// MainPage;
