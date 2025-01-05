@@ -10,7 +10,7 @@ import { DividendDataModel } from "Models/Dividends";
 import { Component, RefObject, createRef } from "react";
 
 
-let debugging: boolean = false;
+let debugging: boolean = true;
 
 
 const test_data: DividendDataModel = {
@@ -19,15 +19,15 @@ const test_data: DividendDataModel = {
 
 	broker_id: "80e43ec8-016a-453d-b4ff-80d9d79a2bc7",
 	ticker_id: "4676d995-5c5b-4bd9-b1b7-26532e391c42",
-	amount_per_share: 0.40,
+	amount_per_share: 0.165,
 	share_quantity: 9.7926,
-	issue_date: new Date ("2024-12-18T00:00:00"),
+	issue_date: new Date ("2024-11-29T00:00:00"),
 	reinvested: false,
 
-	transaction_date: new Date ("2024-12-18T00:00:00"),
-	settlement_date: new Date ("2024-12-19T00:00:00"),
-	shares_purchased: 0.143066,
-	purchase_price: 27.40,
+	transaction_date: null, //new Date ("2024-12-18T00:00:00"),
+	settlement_date: null, //new Date ("2024-12-19T00:00:00"),
+	shares_purchased: null, //0.143066,
+	purchase_price: null, //27.40,
 
 }// test_data;
 
@@ -40,7 +40,7 @@ class EditDividendFormProps implements IFormProps {
 class EditDividendFormState {
 	broker_id: string = null;
 	total_dividend: string = null;
-	reinvested: boolean = true;
+	reinvested: boolean = debugging ? test_data.reinvested : true;
 }// EditDividendFormState;
 
 
