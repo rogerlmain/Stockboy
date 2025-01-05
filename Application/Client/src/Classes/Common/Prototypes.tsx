@@ -11,7 +11,7 @@ declare global {
 
 		add (value: T): Array<T>
 		append (value: T): Array<T>
-		assign (template: AnyArray, data_type: any): Array<T>
+		assign (template: AnyArray, data_type?: any): Array<T>
 		contains (value: any): boolean
 		getDates (fieldname: string): Array<Date>
 		list (fieldname: string): AnyArray
@@ -182,9 +182,11 @@ Array.prototype.append = function<T> (value: T): Array<T> {
 }// append;
 
 
-Array.prototype.assign = function (template: AnyArray, data_type: any): AnyArray {
+Array.prototype.assign = function (template: AnyArray, data_type: any /* Deprecated - use TypedArray instead */): AnyArray {
 
 	let result: AnyArray = null;
+
+	if (is_null (data_type)) data_type = this ["type"];
 
 	template.forEach (item => {
 		if (is_null (result)) result = new Array<any> ();

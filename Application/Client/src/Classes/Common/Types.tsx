@@ -35,7 +35,7 @@ declare global {
 
 	/**** Functions ****/
 
-	type Callback = () => void;
+	type Callback = () => any;
 
 }// global;
 

@@ -91,7 +91,7 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("SaveDividend")]
-		public IActionResult SaveDividend ([FromBody] DividendRequestModel parameters) {
+		public async Task<IActionResult> SaveDividend ([FromBody] DividendRequestModel parameters) {
 
 			if (parameters.reinvested) {
 				TransactionsTableRecord transaction = new () { user_id = current_user!.user_id };
@@ -102,7 +102,7 @@ namespace Stockboy.Controllers {
 
 			data_context.dividends.Save (parameters);
 
-			return new JsonResult (GetDividendById (parameters.id));
+			return new JsonResult (await GetDividendById (parameters.id));
 
 		}// SaveDividend;
 

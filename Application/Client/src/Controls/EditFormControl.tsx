@@ -1,9 +1,11 @@
-import DataPageControl from "Controls/DataPageControl";
+import StockboyAPI from "Classes/StockboyAPI";
+import TypedArray from "Classes/TypedArray";
+
 import Eyecandy from "Controls/Common/Eyecandy";
+import DataPageControl from "Controls/DataPageControl";
 
 import { IBaseModel } from "Models/Abstract/BaseModels";
 import { Component, ComponentClass, createRef, MouseEvent, RefObject } from "react";
-import StockboyAPI from "Classes/StockboyAPI";
 
 
 export class EditFormControlProps {
@@ -66,7 +68,9 @@ export default class EditFormControl extends Component<EditFormControlProps> {
 
 			if (is_null (response)) return;
 
-			let dataset: Array<IBaseModel> = this.props.data_page_control.props.parent.state ["data"].update<IBaseModel> (response);
+			let dataset: any = this.props.data_page_control.props.parent.state ["data"];
+
+			dataset = this.props.data_page_control.props.parent.state ["data"].update<IBaseModel> (response);
 
 			this.props.data_page_control.props.parent.setState ({ data: dataset }, async () => {
 

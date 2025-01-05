@@ -1,4 +1,5 @@
 import StockboyAPI from "Classes/StockboyAPI";
+import TypedArray from "Classes/TypedArray";
 import DataPageControl from "Controls/DataPageControl";
 import EditTransactionForm from "Forms/EditTransactionForm";
 
@@ -68,7 +69,7 @@ export default class TransactionsPage extends Component<BaseProps, TransactionsP
 		new StockboyAPI ().fetch_data ("GetTransactions").then ((result: TransactionList) => {
 			this.setState ({ loading: false }, () => {
 				if (not_set (result)) return;
-				this.setState ({ data: new Array<TransactionListModel> ().assign (result, TransactionListModel) });
+				this.setState ({ data: new TypedArray (TransactionListModel).assign (result) });
 			});
 		});
 

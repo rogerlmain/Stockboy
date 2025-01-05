@@ -11,6 +11,7 @@ import { DataTableProperties } from "Controls/Tables/DataTable";
 import { DataKeyArray } from "Classes/DataKeys";
 import { DividendListModel } from "Models/Dividends";
 import { Component } from "react";
+import TypedArray from "../Classes/TypedArray";
 
 
 const properties: DataTableProperties = {
@@ -63,7 +64,7 @@ export default class DividendsPage extends Component<BaseProps, DividendsPageSta
 		new StockboyAPI ().fetch_data ("GetDividends").then ((result: DividendList) => {
 			this.setState ({ loading: false }, () => {
 				if (is_empty (result)) return;
-				this.setState ({ data: new Array<DividendListModel> ().assign (result, DividendListModel) });
+				this.setState ({ data: new TypedArray (DividendListModel).assign_values (result) });
 			});
 		});
 
