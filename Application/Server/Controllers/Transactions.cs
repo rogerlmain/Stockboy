@@ -9,51 +9,46 @@ namespace Stockboy.Controllers {
 
 	public class TransactionsController: BaseController {
 
-		private TransactionModelList? SelectQuery () {
+		private async Task<IEnumerable<TransactionModel>> SelectQuery () {
 
-			//HoldingsModelList? holdings = HoldingsData.Current (http_context).GetHoldingsStatus ();
-			//if (holdings is null) return null;
+			HoldingsStatusList? holdings_status = (await HoldingsData.Current (http_context)).GetStatus;
 
-			//TransactionModelList transactions = (from tra in data_context.transactions
-			//	join tck in data_context.tickers on tra.ticker_id equals tck.id
-			//	join brk in data_context.brokers on tra.broker_id equals brk.id
-			//	join ttp in data_context.transaction_types on tra.transaction_type_id equals ttp.id
-			//	where (!tra.deleted) && (tra.user_id == current_user!.user_id)
-			//	select new TransactionModel () {
-			//		id = tra.id,
-			//		user_id = tra.user_id,
-			//		broker_id = brk.id,
-			//		ticker_id = tck.id,
-			//		company = tck.name ?? String.Empty,
-			//		broker = brk.name ?? String.Empty,
-			//		ticker = tck.symbol ?? String.Empty,
-			//		price = tra.price,
-			//		quantity = tra.quantity,
-			//		cost = tra.price * tra.quantity,
-			//		transaction_date = tra.transaction_date,
-			//		settlement_date = tra.settlement_date,
-			//		transaction_type = ttp.name,
-			//		transaction_type_id = ttp.id,
-			//	}// TransactionModel;
-			//).ToList ();
+			TransactionModelList transactions = (from tra in data_context.transactions
+				join tck in data_context.tickers on tra.ticker_id equals tck.id
+				join brk in data_context.brokers on tra.broker_id equals brk.id
+				join ttp in data_context.transaction_types on tra.transaction_type_id equals ttp.id
+				where (!tra.deleted) && (tra.user_id == current_user!.user_id)
+				select new TransactionModel () {
+					id = tra.id,
+					user_id = tra.user_id,
+					broker_id = brk.id,
+					ticker_id = tck.id,
+					company = tck.name ?? String.Empty,
+					broker = brk.name ?? String.Empty,
+					ticker = tck.symbol ?? String.Empty,
+					price = tra.price,
+					quantity = tra.quantity,
+					cost = tra.price * tra.quantity,
+					transaction_date = tra.transaction_date,
+					settlement_date = tra.settlement_date,
+					transaction_type = ttp.name,
+					transaction_type_id = ttp.id,
+				}// TransactionModel;
+			).ToList ();
 
-			//TransactionModelList? result = (from tra in transactions
-			//	join hld in holdings on 
-			//		new { tra.user_id, tra.broker_id, tra.ticker_id } equals
-			//		new { hld.user_id, hld.broker_id, hld.ticker_id }
-			//	where (!tra.deleted) && (tra.user_id == current_user!.user_id)
-			//	select tra.Merge (new { hld.status })
-			//).ToList ();
+			if (holdings_status is null) return transactions;
 
-			//return result;
-
-			return null;
+			return (from tra in transactions
+				join hld in holdings_status on tra.ticker_id equals hld.ticker_id
+				select tra.Merge (new { hld.status })
+			);
 
 		}// SelectQuery;
 
 
-		private TransactionModel? GetTransactionById (Guid? id) {
-			return SelectQuery ()?.Where ((TransactionModel item) => item.id == id).FirstOrDefault ();
+		private async Task<TransactionModel>? GetTransactionById (Guid? id) {
+			//return await SelectQuery ().Where ((TransactionModel item) => item.id == id).FirstOrDefault ();
+return null;
 		}// GetTransactionById;
 
 
@@ -78,11 +73,7 @@ namespace Stockboy.Controllers {
 		[HttpPost]
 		[Route ("GetTransactions")]
 		public async Task<IActionResult> GetTransactions () {
-
-HoldingsStatusList? data = (await HoldingsData.Current (http_context)).GetHoldingStatus ();
-return Message ("No transactions found ... yet.");
-
-			TransactionModelList? result = SelectQuery ()?.OrderByDescending ((TransactionModel transaction) => transaction.transaction_date).ToList ();
+			TransactionModelList? result = (await SelectQuery ()).OrderByDescending ((TransactionModel transaction) => transaction.transaction_date).ToList ();
 			return new JsonResult (isset (result) ? result : Message ("No transactions recorded."));
 		}// GetTransactions;
 

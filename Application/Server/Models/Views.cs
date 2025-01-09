@@ -30,6 +30,7 @@ namespace Stockboy.Models {
 		public decimal? total_quantity { get; set; } = null;
 		public decimal? total_cost { get; set; } = null;
 		public decimal? current_value { get; set; } = null;
+		public string? status { get; set; } = null;
 	}// ActivityData;
 
 }// Stockboy.Models;

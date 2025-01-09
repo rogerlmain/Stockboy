@@ -67,6 +67,7 @@ namespace Stockboy.Controllers {
 			).FirstOrDefault ();
 
 			if (is_null (broker)) broker = new () {
+				id = Guid.NewGuid (),
 				approved = current_user!.administrator || broker!.approved,
 				deleted = false
 			};
@@ -77,8 +78,9 @@ namespace Stockboy.Controllers {
 			}// if;
 
 			UserBrokerTableRecord user_brokers = new () {
+				id = Guid.NewGuid (),
 				user_id = parameters.user_id,
-				broker_id = broker!.id ?? Guid.Empty,
+				broker_id = broker!.id,
 			};
 
 			data_context.user_brokers.Save (user_brokers);

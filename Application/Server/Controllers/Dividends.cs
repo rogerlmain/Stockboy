@@ -96,10 +96,17 @@ return null;
 		public IActionResult SaveDividend ([FromBody] DividendRequestModel parameters) {
 
 			if (parameters.reinvested) {
-				TransactionsTableRecord transaction = new () { user_id = current_user!.user_id };
+
+				TransactionsTableRecord transaction = new () { 
+					id = Guid.NewGuid (),
+					user_id = current_user!.user_id 
+				};
+
 				transaction.Merge (parameters).transaction_type_id = new Guid ("D6BC19B8-4BDE-4D87-9DB3-BAC3C41476B0");
 				transaction.quantity = parameters.purchase_quantity ?? 0;
+
 				data_context.transactions.Save (transaction);
+
 			}// if;
 
 			data_context.dividends.Save (parameters);

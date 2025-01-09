@@ -14,7 +14,7 @@ namespace Stockboy.Controllers {
 			// TO DO: Test if user is admin, otherwise add to a new "to be validated" list
 
 			TickerTableRecord? ticker = new () {
-				id = is_null (parameters?.id) ? Guid.NewGuid () : parameters?.id,
+				id = is_null (parameters?.id) ? Guid.NewGuid () : parameters!.id!.Value,
 				name = parameters?.value,
 				symbol = symbol,
 				approved = false,
@@ -23,7 +23,7 @@ namespace Stockboy.Controllers {
 
 			if (is_null (parameters?.value)) data_context.tickers.Save (ticker);
 
-		}// save_broker;
+		}// save_ticker;
 
 
 		[HttpPost]

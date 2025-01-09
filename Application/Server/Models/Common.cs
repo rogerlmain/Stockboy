@@ -9,8 +9,13 @@ namespace Stockboy.Models {
 	}// IBaseModel;
 
 
-	public interface IDataModel: IBaseModel {
+	public interface IDataModel {
+
+		[Key]
+		public Guid id { get; set; }
+
 		public Boolean deleted { get; set; }
+
 	}// IDataModel;
 
 
@@ -26,7 +31,9 @@ namespace Stockboy.Models {
 	}// BaseModel;
 
 
-	public class DataModel: BaseModel, IDataModel {
+	public class DataModel: IDataModel {
+		[Key]
+		public required Guid id { get; set; }
 		public Boolean deleted { get; set; } = false;
 	}// DataModel;
 

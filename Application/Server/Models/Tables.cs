@@ -50,10 +50,9 @@ namespace Stockboy.Models {
 	}// DividendsTableRecord;
 
 
-	public class UserBrokerTableRecord: BaseModel {
+	public class UserBrokerTableRecord: DataModel {
 		public Guid? user_id { get; set; } = null;
 		public Guid? broker_id { get; set; } = null;
-		public Boolean deleted { get; set; } = false;
 	}// UserBrokerTableRecord;
 
 

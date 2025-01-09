@@ -18,6 +18,7 @@ namespace Stockboy.Classes {
 
 
 		private ActivityDataList? activity = null;
+		private HoldingsStatusList? holdings_status = null;
 
 
 		private static class TransactionTypes {
@@ -32,13 +33,11 @@ namespace Stockboy.Classes {
 		GuidList? DefunctStocks { get { return (from tck in data_context.tickers where tck.price == -1 select tck.id).ToList (); } }
 
 
-		private void LoadActivityData () {
+		private ActivityDataList? GetActivityData () {
 
-			activity = (from atv in data_context.activity_view select atv).ToList ().Downcast<ActivityDataList> ();
+			ActivityDataList? activity = (from atv in data_context.activity_view select atv).ToList ().Downcast<ActivityDataList> ();
 
-			if (activity == null) return;
-
-			foreach (ActivityData view in activity) {
+			if (activity is not null) foreach (ActivityData view in activity) {
 
 				ActivityData? previous = (from act in activity
 					where
@@ -75,9 +74,11 @@ namespace Stockboy.Classes {
 				view.total_quantity = previous.total_quantity + view.quantity;
 				view.total_cost = previous.total_cost + (view.quantity * view.cost_price);
 
-			}// for;
+			}// if;
 
-		}// LoadActivityData;
+			return activity;
+
+		}// GetActivityData;
 
 
 		private HoldingsData (HttpContext context) {
@@ -203,163 +204,37 @@ namespace Stockboy.Classes {
 
 		private async Task LoadStockPrices () {
 
-  	//		SettingsTableRecord? settings = (from set in data_context.settings where set.name == "last_updated" select set).FirstOrDefault ();
+  			SettingsTableRecord? settings = (from set in data_context.settings where set.name == "last_updated" select set).FirstOrDefault ();
 
-			//if (not_set (settings) || DateTime.Parse (settings!.value).EarlierThan (DateTime.Now.AddHours (-1))) {
+			if (not_set (settings) || DateTime.Parse (settings!.value).EarlierThan (DateTime.Now.AddHours (-1))) {
 
 				await UpdateStockData ();
-			//	if (settings is null) settings = new () { name = "last_updated" };
+				if (settings is null) settings = new () { name = "last_updated" };
 
-			//	settings!.value = DateTime.Now.ToString ();
-			//	data_context.settings.Save (settings);
+				settings!.value = DateTime.Now.ToString ();
+				data_context.settings.Save (settings);
 
-			//}// if;
+			}// if;
 
 		}// LoadStockPrices;
 
 
-		/********
+		/********/
 
 
-		/********
+		public ActivityDataList? GetActivity { get { return activity; } }
+		public HoldingsStatusList? GetStatus { get { return holdings_status; } }
 
 
-		public HoldingsModelList? GetHoldingsData (StockDateModelList? report_dates = null) {
 
-			String? previous_broker = null;
-			String? previous_company = null;
+		public HoldingsStatusList? GetHoldingsStatus () {
 
-			HoldingsModelList? holdings = null;
-			HoldingsModel? holding = null;
-
-			ActivityViewList activity = (from atv in data_context.activity_view.ToList ()
-				where is_null (report_dates) || atv.transaction_date.EarlierThan ((from rdt in report_dates
-					where 
-						(rdt.ticker_id == atv.ticker_id) &&
-						(atv.user_id == current_user!.user_id)
-					select rdt.date).FirstOrDefault ()
-				) select atv
-			).ToList ();
-
-			foreach (ActivityView item in activity) {
-
-				if ((item.broker != previous_broker) || (item.company != previous_company)) {
-
-					if (item.transaction_type != TransactionTypes.buy) continue; // Initial buy required. None registered. Move on.
-
-					holding = new () {
-						user_id = current_user!.user_id,
-						broker_id = item.broker_id,
-						ticker_id = item.ticker_id,
-						broker = item.broker,
-						symbol = item.symbol,
-						company = item.company,
-						cost_price = item.cost_price,
-						current_price = item.current_price,
-					};
-
-					(holdings ??= new ()).Add (holding);
-				}// if;
-
-				if ((item.transaction_type == TransactionTypes.buy) || (item.transaction_type == TransactionTypes.reinvestment)) {
-
-					Decimal purchase_price = (item.cost_price * item.quantity).round (2);
-
-					holding!.total_purchase_cost += purchase_price;
-					holding!.current_purchase_cost += purchase_price;
-					holding!.quantity += item.quantity;
-
-				}// if;
-
-				if (item.transaction_type == TransactionTypes.sell) {
-
-					Decimal per_stock_cost = (holding!.current_purchase_cost / holding!.quantity);
-					Decimal sale_price = (item.cost_price * item.quantity).round (2);
-					Decimal shares_remaining = (holding!.quantity - item.quantity).round (6);
-					Decimal sold_stock_cost = (per_stock_cost * item.quantity);
-
-					holding.sales_profit += (sale_price - sold_stock_cost).round (2);
-					holding.total_sales_amount += sale_price.round (2);
-					holding.current_purchase_cost -= sold_stock_cost.round (2);
-					holding.quantity = shares_remaining;
-
-				}// if;
-
-				if (item.transaction_type == TransactionTypes.split) holding!.quantity = (holding.quantity * item.quantity).round (6);
-
-				previous_broker = item.broker;
-				previous_company = item.company;
-
-			}// foreach;
-
-			return holdings;
-
-		}// GetHoldingsData;
-
-
-		public HoldingsModelList? HoldingsPriceList (StockDateModelList? report_dates = null) {
-
-			HoldingsModelList? holdings = GetHoldingsData (report_dates);
-
-			if (is_null (holdings)) return null;
-			TickersTableList stock_prices = data_context.tickers.ToList ();
-
-			holdings!.ForEach ((HoldingsModel holding) => {
-				TickerTableRecord? stock_price = stock_prices?.Find ((TickerTableRecord item) => holding.ticker_id == item.id);
-				if (isset (stock_price)) holding.current_price = stock_price?.price;
-				holding.value = (holding.current_price < 0) ? 0 : holding.quantity * holding.current_price;
-				holding.status = (holding.current_price == -1) ? HoldingStatus.defunct : ((holding.quantity == 0) ? HoldingStatus.dead : HoldingStatus.live);
-			});
-
-			return holdings;
-		
-		}// HoldingsPriceList;
-
-
-		public ProfitLossModelList? GetProfitLossList () {
-
-			if (is_null (Holdings)) return null;
-
-			ProfitLossDetailsList profit_loss_details = ProfitLossQueries.GetProfitLossDetails (data_context, Holdings!).ToList ();
-
-			return (from pld in profit_loss_details
-				select new ProfitLossModel () {
-					user_id = pld.user_id,
-					broker_id = pld.broker_id,
-					ticker_id = pld.ticker_id,
-					broker = pld.broker,
-					symbol = pld.symbol,
-					company = pld.company,
-					status = pld.status,
-					sales_profit = pld.sales_profit,
-					dividend_payout = pld.dividend_payout,
-					value_profit = pld.value_profit,
-					overall_profit = pld.sales_profit + pld.value_profit + pld.dividend_payout,
-				}
-			).ToList ();
-
-		}// GetProfitLossList;
-
-
-		*/
-
-
-		public ActivityDataList? GetActivity => activity;
-
-
-		public HoldingsStatusList? GetHoldingStatus () {
-
-			var defunct_stocks = (from dst in DefunctStocks select new HoldingsStatusModel () {
-				ticker_id = dst/*.Value*/,
-				status = HoldingStatus.defunct
-			});
-
-			var tickers = (from tck in data_context.tickers 
+			TickersTableList tickers = (from tck in data_context.tickers 
 				where tck.price != -1
 				select tck
 			).ToList ();
 
-			var active_stocks = (from tck in tickers
+			return (from tck in tickers
 				join ftr in (
 					from ftr in (
 						from tra in (
@@ -389,17 +264,14 @@ namespace Stockboy.Classes {
 				from jtt in jtr.DefaultIfEmpty ()
 				select new HoldingsStatusModel () {
 					ticker_id = tck.id,
-					//jticker = jtt?.ticker_id,
-					//jtt?.quantity,
 					status = (jtt?.quantity > 0) ? HoldingStatus.live : HoldingStatus.dead
 				}
-			);//.ToList ();
+			).Union (from dst in (from dst in DefunctStocks select new HoldingsStatusModel () {
+				ticker_id = dst,
+				status = HoldingStatus.defunct
+			}) select dst).ToList ();
 
-var statuses = (from ast in active_stocks select ast).Union (from dst in defunct_stocks select dst);
-
-			return null;
-
-		}// GetHoldingStatus;
+		}// GetHoldingsStatus;
 
 
 		public HoldingsModelList? HoldingsPriceList (StockDateModelList dates) {
@@ -417,42 +289,29 @@ var statuses = (from ast in active_stocks select ast).Union (from dst in defunct
 		public static async Task<HoldingsData> Current (HttpContext context) {
 
 			HoldingsData? holdings_data = context.Session.GetObject<HoldingsData> ("holdings");
-
+			
 			if (holdings_data is null) {
+
 				holdings_data = new (context);
-				holdings_data.LoadActivityData ();
+
+				await holdings_data.LoadStockPrices ();
+
+				holdings_data.activity = holdings_data.GetActivityData ();
+				holdings_data.holdings_status = holdings_data.GetHoldingsStatus ();
+
+				holdings_data.activity = (from act in holdings_data.activity
+					join hst in holdings_data.holdings_status! on act.ticker_id equals hst.ticker_id into jst
+					from jha in jst.DefaultIfEmpty ()
+					select act.Merge (new { jha.status })
+				).ToList ();
+
+				context.Session.SetObject ("holdings", holdings_data);
+			
 			}// if;
-
-HoldingsStatusList? statuses = holdings_data.GetHoldingStatus ();
-
-			await holdings_data.LoadStockPrices ();
-
-			//context.Session.SetObject ("holdings", holdings_data);
-
+			
 			return holdings_data;
 
 		}// Current;
-
-
-		/*
-
-
-		public HoldingsModelList? Holdings {
-			get {
-
-				HoldingsModelList? list = http_context.Session.GetObject<HoldingsModelList> ("holdings_model");
-
-				if (list is null) {
-					list = this.HoldingsPriceList ();
-					if (list is not null) http_context.Session.SetObject ("holdings_model", list);
-				}// if;
-
-				return list;
-
-			}// get;
-		}// Holdings;
-
-		*/
 
 	}// HoldingsData;
 
