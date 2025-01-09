@@ -11,9 +11,9 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetActivity")]
-		public IActionResult GetActivity ([FromBody] StockModel parameters) {
+		public async Task<IActionResult> GetActivity ([FromBody] StockModel parameters) {
 
-			ActivityDataList? data = HoldingsData.Current (http_context).GetActivity;
+			ActivityDataList? data = (await HoldingsData.Current (http_context)).GetActivity;
 
 return new JsonResult (data);
 

@@ -10,19 +10,21 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetHoldings")]
-		public IActionResult GetHoldings () {
+		public async Task<IActionResult> GetHoldings () {
 
-			DividendsHandler dividends = new (data_context);
-			HoldingsData holdings_data = HoldingsData.Current (http_context);
-			HoldingsModelList? price_list = holdings_data.GetHoldings ();
+			//DividendsHandler dividends = new (data_context);
+			//HoldingsData holdings_data = await HoldingsData.Current (http_context);
+			//HoldingsModelList? price_list = holdings_data.GetHoldings ();
 
-			if (is_null (price_list)) return new JsonResult (null);
+			//if (is_null (price_list)) return new JsonResult (null);
 
-			return new JsonResult (new HomeModel () {
-				payments_list = dividends.GetPendingPayments (holdings_data),
-				holdings_list = price_list,
-				monthly_payout = dividends.GetMonthlyPayout (price_list!)
-			});
+			//return new JsonResult (new HomeModel () {
+			//	payments_list = dividends.GetPendingPayments (holdings_data),
+			//	holdings_list = price_list,
+			//	monthly_payout = dividends.GetMonthlyPayout (price_list!)
+			//});
+
+return null;
 
 		}// GetHoldings;
 

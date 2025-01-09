@@ -9,8 +9,8 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("TestMe")]
-		public IActionResult TestMe () {
-			HoldingsData data = HoldingsData.Current (http_context);
+		public async Task<IActionResult> TestMe () {
+			HoldingsData data = await HoldingsData.Current (http_context);
 			return new JsonResult (Message ("Peachy"));
 		}// TestMe;
 

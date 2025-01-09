@@ -14,7 +14,7 @@
 
 
 	public class UserTickerRecord: BaseModel {
-		public String ticker { get; set; } = String.Empty;
+		public required String ticker { get; set; }/* = String.Empty;*/
 		public String symbol { get; set; } = String.Empty;
 		public Guid? user_id { get; set; } = null;
 	}// UserTickerRecord;

@@ -86,7 +86,7 @@ namespace Stockboy.Controllers {
 
 			UserTickerTableRecord user_ticker = new () {
 				user_id = parameters.user_id,
-				ticker_id = ticker!.id ?? Guid.Empty,
+				ticker_id = ticker!.id/* ?? Guid.Empty*/,
 			};
 
 			data_context.user_tickers.Save (user_ticker);

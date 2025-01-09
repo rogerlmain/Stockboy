@@ -9,7 +9,6 @@ global using DividendPayoutList = System.Collections.Generic.List<Stockboy.Model
 global using ProfitLossModelList = System.Collections.Generic.List<Stockboy.Models.ProfitLossModel>;
 global using ProfitLossDetailsList = System.Collections.Generic.List<Stockboy.Models.ProfitLossDetailsModel>;
 
-global using HoldingsModelList = System.Collections.Generic.List<Stockboy.Models.HoldingsModel>;
 global using ShortStockQuoteList = System.Collections.Generic.List<Stockboy.Models.ShortStockQuote>;
 global using TickersTableList = System.Collections.Generic.List<Stockboy.Models.TickerTableRecord>;
 global using TransactionModelList = System.Collections.Generic.List<Stockboy.Models.TransactionModel>;

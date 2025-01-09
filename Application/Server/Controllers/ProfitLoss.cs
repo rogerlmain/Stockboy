@@ -10,9 +10,10 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetProfitAndLoss")]
-		public IActionResult GetProfitAndLoss () {
-			ProfitLossModelList? profit_loss_list = HoldingsData.Current (http_context).GetProfitLossList ();
-			return new JsonResult (is_null (profit_loss_list) ? new { data = no_data } : profit_loss_list);
+		public async Task<IActionResult> GetProfitAndLoss () {
+			//ProfitLossModelList? profit_loss_list = await HoldingsData.Current (http_context).GetProfitLossList ();
+			//return new JsonResult (is_null (profit_loss_list) ? new { data = no_data } : profit_loss_list);
+return Message ("Pending...");
 		}// GetProfitAndLoss;
 
 	}// ProfitLoss;

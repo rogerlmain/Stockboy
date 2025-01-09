@@ -564,37 +564,7 @@ Object.notObjectLike = function (candidate: any): boolean {
 
 
 Object.prototype.assign = function (template: any): any {
-
-	function create_element (element_type: any, template: any) {
-
-		if (Object.notObject (template)) return template;
-		if (not_set (element_type)) element_type = template.GetType;
-
-		let new_element = new element_type ();
-
-		new_element.assign (template);
-		return new_element;
-
-	}// create_element;
-
-
-	for (let item of Object.getOwnPropertyNames (template)) {
-
-		let element = this?.[item];
-
-		if (is_empty (template [item])) continue;
-
-		if (Array.isArray (template [item])) {
-			this [item] = new Array<typeof element> ().assign (template [item], element);
-			continue;
-		}// if;
-
-		this [item] = create_element (element, template [item]);
-
-	}// for;
-
-	return this;
-
+	return Object.assign (this, template);
 }// assign;
 
 

@@ -1,4 +1,6 @@
-﻿using MySqlX.XDevAPI;
+﻿global using GuidList = System.Collections.Generic.List<System.Guid/*?*/>;
+
+using MySqlX.XDevAPI;
 using Stockboy.Classes.Queries;
 using Stockboy.Models;
 
@@ -27,18 +29,14 @@ namespace Stockboy.Classes {
 		}// TransactionTypes;
 
 
-		private ActivityDataList? GetActivityData () {
+		GuidList? DefunctStocks { get { return (from tck in data_context.tickers where tck.price == -1 select tck.id).ToList (); } }
 
-			ActivityDataList? activity = (from atv in data_context.activity_view select atv).ToList ().Downcast<ActivityDataList> ();
 
-activity = (from act in activity 
-	where
-		(act.broker_id == new Guid ("80e43ec8-016a-453d-b4ff-80d9d79a2bc7")) &&
-		(act.ticker_id == new Guid ("4676d995-5c5b-4bd9-b1b7-26532e391c42"))
-	select act
-).OrderBy ((ActivityData item) => item.transaction_date).ToList ();
+		private void LoadActivityData () {
 
-			if (activity == null) return null;
+			activity = (from atv in data_context.activity_view select atv).ToList ().Downcast<ActivityDataList> ();
+
+			if (activity == null) return;
 
 			foreach (ActivityData view in activity) {
 
@@ -47,7 +45,6 @@ activity = (from act in activity
 						(act.broker_id == view.broker_id) &&
 						(act.ticker_id == view.ticker_id) &&
 						(activity.IndexOf (act) == (activity.IndexOf (view) - 1))
-						//(act.transaction_date >= view.transaction_date)
 					select act
 				).OrderByDescending (view => view.transaction_date).FirstOrDefault ();
 
@@ -80,24 +77,13 @@ activity = (from act in activity
 
 			}// for;
 
-			return activity;
-
-		}// GetActivityData;
+		}// LoadActivityData;
 
 
 		private HoldingsData (HttpContext context) {
-
 			http_context = context;
 			data_context = context.RequestServices.GetRequiredService<DataContext> ();
 			stock_api_client = context.RequestServices.GetRequiredService<StockAPIClient> ();
-
-			//activity = context.Session.GetObject<ActivityDataList> ("activity");
-
-			//if (activity is null) {
-				activity = GetActivityData ();
-			//	if (activity is not null) context.Session.SetObject ("activity", activity);
-			//}// if;
-
 		}// constructor;
 
 
@@ -215,19 +201,19 @@ activity = (from act in activity
 		}// UpdateStockData;
 
 
-		private async void LoadStockPrices () {
+		private async Task LoadStockPrices () {
 
-  			SettingsTableRecord? settings = (from set in data_context.settings where set.name == "last_updated" select set).FirstOrDefault ();
+  	//		SettingsTableRecord? settings = (from set in data_context.settings where set.name == "last_updated" select set).FirstOrDefault ();
 
-			if (not_set (settings) || DateTime.Parse (settings!.value).EarlierThan (DateTime.Now.AddHours (-1))) {
+			//if (not_set (settings) || DateTime.Parse (settings!.value).EarlierThan (DateTime.Now.AddHours (-1))) {
 
 				await UpdateStockData ();
-				if (settings is null) settings = new () { name = "last_updated" };
+			//	if (settings is null) settings = new () { name = "last_updated" };
 
-				settings!.value = DateTime.Now.ToString ();
-				data_context.settings.Save (settings);
+			//	settings!.value = DateTime.Now.ToString ();
+			//	data_context.settings.Save (settings);
 
-			}// if;
+			//}// if;
 
 		}// LoadStockPrices;
 
@@ -361,10 +347,59 @@ activity = (from act in activity
 		public ActivityDataList? GetActivity => activity;
 
 
-		public HoldingsModelList? GetHoldings () {
-			// DO MORE HERE
+		public HoldingsStatusList? GetHoldingStatus () {
+
+			var defunct_stocks = (from dst in DefunctStocks select new HoldingsStatusModel () {
+				ticker_id = dst/*.Value*/,
+				status = HoldingStatus.defunct
+			});
+
+			var tickers = (from tck in data_context.tickers 
+				where tck.price != -1
+				select tck
+			).ToList ();
+
+			var active_stocks = (from tck in tickers
+				join ftr in (
+					from ftr in (
+						from tra in (
+							from act in activity
+							group act by new {
+								act.ticker_id,
+								act.broker_id,
+							} into gct
+							select new {
+								gct.Last ().ticker_id,
+								gct.Last ().broker_id,
+								quantity = gct.Last ().total_quantity
+							}
+						) 
+						select new {
+							tra.broker_id,
+							tra.ticker_id,
+							tra.quantity
+						}
+					) 
+					group ftr by ftr.ticker_id into gtr
+					select new {
+						ticker_id = gtr.Key,
+						quantity = gtr.Sum (hld => hld.quantity)
+					}
+				) on tck.id equals ftr.ticker_id into jtr
+				from jtt in jtr.DefaultIfEmpty ()
+				select new HoldingsStatusModel () {
+					ticker_id = tck.id,
+					//jticker = jtt?.ticker_id,
+					//jtt?.quantity,
+					status = (jtt?.quantity > 0) ? HoldingStatus.live : HoldingStatus.dead
+				}
+			);//.ToList ();
+
+var statuses = (from ast in active_stocks select ast).Union (from dst in defunct_stocks select dst);
+
 			return null;
-		}// GetHoldings;
+
+		}// GetHoldingStatus;
 
 
 		public HoldingsModelList? HoldingsPriceList (StockDateModelList dates) {
@@ -379,10 +414,23 @@ activity = (from act in activity
 		}// GetProfitLossList;
 
 
-		public static HoldingsData Current (HttpContext context) {
-			HoldingsData? holdings_data = new (context);
-//			holdings_data.LoadStockPrices ();
+		public static async Task<HoldingsData> Current (HttpContext context) {
+
+			HoldingsData? holdings_data = context.Session.GetObject<HoldingsData> ("holdings");
+
+			if (holdings_data is null) {
+				holdings_data = new (context);
+				holdings_data.LoadActivityData ();
+			}// if;
+
+HoldingsStatusList? statuses = holdings_data.GetHoldingStatus ();
+
+			await holdings_data.LoadStockPrices ();
+
+			//context.Session.SetObject ("holdings", holdings_data);
+
 			return holdings_data;
+
 		}// Current;
 
 

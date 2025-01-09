@@ -11,36 +11,38 @@ namespace Stockboy.Controllers {
 
 		private DividendModelList? SelectQuery () {
 
-			HoldingsModelList? holdings = HoldingsData.Current (http_context).GetHoldings ();
-			if (holdings is null) return null;
+			//HoldingsModelList? holdings = HoldingsData.Current (http_context).GetHoldingsStatus ();
+			//if (holdings is null) return null;
 
-			DividendModelList dividends = (
-				from dvd in data_context.dividends
-				join brk in data_context.brokers on dvd.broker_id equals brk.id
-				join tck in data_context.tickers on dvd.ticker_id equals tck.id
-				where (!dvd.deleted) && (dvd.user_id == current_user!.user_id)
-				select new DividendModel () {
-					id = dvd.id,
-					user_id = dvd.user_id,
-					broker = brk.name ?? String.Empty,
-					ticker = tck.symbol,
-					company = tck.name ?? String.Empty,
-					broker_id = dvd.broker_id,
-					ticker_id = dvd.ticker_id,
-					issue_date = dvd.issue_date,
-					amount_per_share = dvd.amount_per_share,
-					share_quantity = dvd.share_quantity,
-					payout = dvd.amount_per_share * dvd.share_quantity
-				}
-			).ToList ();
+			//DividendModelList dividends = (
+			//	from dvd in data_context.dividends
+			//	join brk in data_context.brokers on dvd.broker_id equals brk.id
+			//	join tck in data_context.tickers on dvd.ticker_id equals tck.id
+			//	where (!dvd.deleted) && (dvd.user_id == current_user!.user_id)
+			//	select new DividendModel () {
+			//		id = dvd.id,
+			//		user_id = dvd.user_id,
+			//		broker = brk.name ?? String.Empty,
+			//		ticker = tck.symbol,
+			//		company = tck.name ?? String.Empty,
+			//		broker_id = dvd.broker_id,
+			//		ticker_id = dvd.ticker_id,
+			//		issue_date = dvd.issue_date,
+			//		amount_per_share = dvd.amount_per_share,
+			//		share_quantity = dvd.share_quantity,
+			//		payout = dvd.amount_per_share * dvd.share_quantity
+			//	}
+			//).ToList ();
 
-			return (from dvd in dividends
-				join hld in holdings on 
-					new { dvd.user_id, dvd.broker_id, dvd.ticker_id } equals
-					new { hld.user_id, hld.broker_id, hld.ticker_id }
-				where (!dvd.deleted) && (dvd.user_id == current_user!.user_id)
-				select dvd.Merge (new { hld.status })
-			).ToList ();
+			//return (from dvd in dividends
+			//	join hld in holdings on 
+			//		new { dvd.user_id, dvd.broker_id, dvd.ticker_id } equals
+			//		new { hld.user_id, hld.broker_id, hld.ticker_id }
+			//	where (!dvd.deleted) && (dvd.user_id == current_user!.user_id)
+			//	select dvd.Merge (new { hld.status })
+			//).ToList ();
+
+return null;
 
 		}// SelectQuery;
 

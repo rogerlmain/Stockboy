@@ -1,4 +1,6 @@
 ﻿global using StockDateModelList = System.Collections.Generic.List<Stockboy.Models.StockDateModel>;
+global using HoldingsModelList = System.Collections.Generic.List<Stockboy.Models.HoldingsModel>;
+global using HoldingsStatusList = System.Collections.Generic.List<Stockboy.Models.HoldingsStatusModel>;
 
 
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Stockboy.Models {
 
-	struct HoldingStatus {
+	public struct HoldingStatus {
 		public const string live = "Live";
 		public const string dead = "Dead";
 		public const string defunct = "Defunct";
@@ -42,6 +44,12 @@ namespace Stockboy.Models {
 		public decimal sales_profit { get; set; } = Decimal.Zero;
 		public string status { get; set; } = HoldingStatus.live;
 	}// HoldingsModel;
+
+
+	public class HoldingsStatusModel {
+		public required Guid ticker_id { get; set; }
+		public required String status { get; set; }
+	}// HoldingsStatusModel;
 
 
 	public class StockDateModel {
