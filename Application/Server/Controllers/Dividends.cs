@@ -9,9 +9,9 @@ namespace Stockboy.Controllers {
 
 	public class DividendsController : BaseController {
 
-		private async Task<DividendModelList?> SelectQuery () {
+		private DividendModelList? SelectQuery () {
 
-			HoldingsModelList? holdings = (await HoldingsData.Current (http_context)).Holdings;
+			HoldingsModelList? holdings = HoldingsData.Current (http_context).GetHoldings ();
 			if (holdings is null) return null;
 
 			DividendModelList dividends = (
@@ -45,7 +45,7 @@ namespace Stockboy.Controllers {
 		}// SelectQuery;
 
 
-		private async Task<DividendModel?> GetDividendById (Guid? id) => (await SelectQuery ())?.Where ((DividendModel item) => item.id == id).FirstOrDefault ();
+		private DividendModel? GetDividendById (Guid? id) => SelectQuery ()?.Where ((DividendModel item) => item.id == id).FirstOrDefault ();
 
 
 		/********/
@@ -53,9 +53,9 @@ namespace Stockboy.Controllers {
 
 		[HttpGet]
 		[Route ("GetDividendTotals")]
-		public async Task<IActionResult?> GetDividendTotals () {
+		public IActionResult? GetDividendTotals () {
 
-			DividendModelList? data = (await SelectQuery ())?.ToList ();
+			DividendModelList? data = SelectQuery ()?.ToList ();
 			DividendSummaryList? summary = null;
 
 			if (isset (data)) foreach (var item in data!) {
@@ -83,15 +83,15 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetDividends")]
-		public async Task<IActionResult> GetDividends () {
-			DividendModelList? result = (await SelectQuery ())?.OrderByDescending ((DividendModel dividend) => dividend.issue_date).ToList ();
+		public IActionResult GetDividends () {
+			DividendModelList? result = SelectQuery ()?.OrderByDescending ((DividendModel dividend) => dividend.issue_date).ToList ();
 			return new JsonResult (isset (result) ? result : Message ("No dividends recorded."));
 		}// GetDividends;
 
 
 		[HttpPost]
 		[Route ("SaveDividend")]
-		public async Task<IActionResult> SaveDividend ([FromBody] DividendRequestModel parameters) {
+		public IActionResult SaveDividend ([FromBody] DividendRequestModel parameters) {
 
 			if (parameters.reinvested) {
 				TransactionsTableRecord transaction = new () { user_id = current_user!.user_id };
@@ -102,7 +102,7 @@ namespace Stockboy.Controllers {
 
 			data_context.dividends.Save (parameters);
 
-			return new JsonResult (await GetDividendById (parameters.id));
+			return new JsonResult (GetDividendById (parameters.id));
 
 		}// SaveDividend;
 

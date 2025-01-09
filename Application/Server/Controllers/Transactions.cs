@@ -9,9 +9,9 @@ namespace Stockboy.Controllers {
 
 	public class TransactionsController: BaseController {
 
-		private async Task<TransactionModelList?> SelectQuery () {
+		private TransactionModelList? SelectQuery () {
 
-			HoldingsModelList? holdings = (await HoldingsData.Current (http_context)).Holdings;
+			HoldingsModelList? holdings = HoldingsData.Current (http_context).GetHoldings ();
 			if (holdings is null) return null;
 
 			TransactionModelList transactions = (from tra in data_context.transactions
@@ -50,8 +50,8 @@ namespace Stockboy.Controllers {
 		}// SelectQuery;
 
 
-		private async Task<TransactionModel?> GetTransactionById (Guid? id) {
-			return (await SelectQuery ())?.Where ((TransactionModel item) => item.id == id).FirstOrDefault ();
+		private TransactionModel? GetTransactionById (Guid? id) {
+			return SelectQuery ()?.Where ((TransactionModel item) => item.id == id).FirstOrDefault ();
 		}// GetTransactionById;
 
 
@@ -75,8 +75,8 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetTransactions")]
-		public async Task<IActionResult> GetTransactions () {
-			TransactionModelList? result = (await SelectQuery ())?.OrderByDescending ((TransactionModel transaction) => transaction.transaction_date).ToList ();
+		public IActionResult GetTransactions () {
+			TransactionModelList? result = SelectQuery ()?.OrderByDescending ((TransactionModel transaction) => transaction.transaction_date).ToList ();
 			return new JsonResult (isset (result) ? result : Message ("No transactions recorded."));
 		}// GetTransactions;
 

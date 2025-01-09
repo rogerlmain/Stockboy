@@ -5,9 +5,9 @@ namespace Stockboy.Classes {
 
 	public class StockDetails (HttpContext http_context): BaseClass (http_context) {
 
-		public async Task<StockDetailsModel?> GetStockDetails (StockModel stock) {
+		public StockDetailsModel? GetStockDetails (StockModel stock) {
 
-			HoldingsModelList? holdings = (await HoldingsData.Current (http_context)).Holdings;
+			HoldingsModelList? holdings = HoldingsData.Current (http_context).GetHoldings ();
 
 			if (holdings is null) return null;
 

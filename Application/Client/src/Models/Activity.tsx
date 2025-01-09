@@ -1,18 +1,20 @@
-import { BaseModel } from "Models/Abstract/BaseModels";
+import { BaseModel, StockModel } from "Models/Abstract/BaseModels";
 
 
-export class ActivityModel extends BaseModel {
-	public date: Date;
-	public transaction_type: string;
-	public broker_id: string;
-	public ticker_id: string;
+export class ActivityModel extends StockModel {
 	public broker: string;
 	public company: string;
-	public ticker: string;
+	public cost_price: number;
+	public current_price: number;
+	public current_value: object;
+	public payment_amount: object;
 	public quantity: number;
-	public amount: number;
+	public symbol: string;
+	public total_cost: number;
 	public total_quantity: number;
-	public total_amount: number;
+	public transaction_date: string;
+	public transaction_type: string;
+	public user_id: string;
 }// ActivityModel;
 
 

@@ -10,11 +10,11 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetHoldings")]
-		public async Task<IActionResult> GetHoldings () {
+		public IActionResult GetHoldings () {
 
 			DividendsHandler dividends = new (data_context);
-			HoldingsData holdings_data = await HoldingsData.Current (http_context);
-			HoldingsModelList? price_list = holdings_data.Holdings;
+			HoldingsData holdings_data = HoldingsData.Current (http_context);
+			HoldingsModelList? price_list = holdings_data.GetHoldings ();
 
 			if (is_null (price_list)) return new JsonResult (null);
 

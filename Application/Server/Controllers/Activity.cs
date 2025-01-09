@@ -12,6 +12,11 @@ namespace Stockboy.Controllers {
 		[HttpPost]
 		[Route ("GetActivity")]
 		public IActionResult GetActivity ([FromBody] StockModel parameters) {
+
+			ActivityDataList? data = HoldingsData.Current (http_context).GetActivity;
+
+return new JsonResult (data);
+
 			Decimal total_quantity = 0;
 
 			ActivityModelList activity = ActivityQueries.get_activity (data_context, parameters.broker_id, parameters.ticker_id).ToList ();

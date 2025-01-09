@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿global using StockDateModelList = System.Collections.Generic.List<Stockboy.Models.StockDateModel>;
+
+
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Stockboy.Models {

@@ -5,18 +5,13 @@ using Stockboy.Classes;
 
 namespace Stockboy.Controllers {
 
-	public class StringParameter {
-		public String? value { get; set; } = null;
-		//public Guid? user_id { get; set; } = null;
-	}// StringParameter;
-
-
 	public class TestController: BaseController {
 
 		[HttpPost]
 		[Route ("TestMe")]
-		public IActionResult TestMe ([FromBody] StringParameter parameters /*String value*/) {
-			return new JsonResult (Message (parameters.value));
+		public IActionResult TestMe () {
+			HoldingsData data = HoldingsData.Current (http_context);
+			return new JsonResult (Message ("Peachy"));
 		}// TestMe;
 
 	}// TestController;

@@ -1,3 +1,6 @@
+import StockboyAPI from "Classes/StockboyAPI"
+import TypedArray from "Classes/TypedArray"
+
 import Eyecandy from "Controls/Common/Eyecandy"
 import DataPageControl from "Controls/DataPageControl"
 import ActivityFilters from "Controls/Filters/ActivityFilters"
@@ -13,20 +16,20 @@ import { Component, createRef, RefObject } from "react"
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray (["date", "broker", "company", "ticker", "transaction_type", "quantity", "price", /*"amount",*/ "total_quantity"/*, {total_amount: "Total Cost"}*/]),
-	date_fields: ["date"],
+	fields: new DataKeyArray (["transaction_date", "broker", "company", {symbol: "ticker"}, "transaction_type", "quantity", "cost_price", "total_cost", "total_quantity"]),
+	date_fields: ["transaction_date"],
 	numeric_fields: ["quantity", "total_quantity"],
 	currency_fields: ["amount", "total_amount", "price"],
 //	rounded_fields: [{ cost: 2 }]
 }// properties;
 
 
-type ActivityModelArray = Array<ActivityModel>
+type ActivityList = Array<ActivityModel>
 
 
 class ActivityPageState {
-	loading: string = null;
-	data: ActivityModelArray = null;
+	loading: boolean = null;
+	data: ActivityList = null;
 	filter_handler: FilterHandler = null;
 }// ActivityPageState;
 
@@ -47,8 +50,9 @@ export default class ActivityPage extends Component<BaseProps, ActivityPageState
 
 			<div className="title">Activity</div>
 
-			{isset (this.state.loading) ? <Eyecandy text={this.state.loading} /> : isset (this.state.data) ? <DataPageControl data={this.state.data} properties={properties} 
-				stock_filters={false} table_buttons={false} ref={this.data_page} filter_handler={this.state.filter_handler}>
+			{this.state.loading ? <Eyecandy text="Loading activity..." /> : isset (this.state.data) ? <DataPageControl 
+				data={this.state.data} properties={properties} stock_filters={true} table_buttons={false} ref={this.data_page} 
+				filter_handler={this.state.filter_handler}>
 
 				{isset (this.state.data) ? <ActivityFilters /> : null}
 
@@ -56,5 +60,23 @@ export default class ActivityPage extends Component<BaseProps, ActivityPageState
 
 		</div>
 	}// render;
+
+	constructor (props: BaseProps) {
+
+		super (props);
+		this.state.loading = true;
+
+		new StockboyAPI ().fetch_data ("GetActivity").then ((result: ActivityList) => {
+			this.setState ({ loading: false }, () => {
+				if (is_empty (result)) return;
+				this.setState ({ 
+					loading: false,
+					data: new TypedArray (ActivityModel).assign_values (result) }, () => {
+					let x = 0;
+				});
+			});
+		});
+
+	}// constructor;
 
 }// ActivityPage;
