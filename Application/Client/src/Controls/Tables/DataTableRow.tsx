@@ -45,12 +45,16 @@ export default class DataTableRow extends Component<DataRowProps, DataRowState> 
 		for (let row of this.props.data_table.props.data) {
 
 			let key_row: HTMLInputElement = null;
+			let row_selected: boolean = true;
 
 			for (key_row of Array.from (key_rows)) {
-				if (row [key_row.name] != key_row.value) continue;
-				if (row.hasKey ("approved") && (row ["approved"] && !Administrator)) continue;
-				return row;
+				if ((row [key_row.name] != key_row.value) || (row?.["approved"] && !Administrator)) {
+					row_selected = false;
+					break;
+				}// if;
 			}// for;
+
+			if (row_selected) return row;
 
 		}// for;
 
