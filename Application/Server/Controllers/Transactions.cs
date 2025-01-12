@@ -52,7 +52,7 @@ return null;
 		}// GetTransactionById;
 
 
-		public TransactionsTableRecord? get_dividend_transaction (DividendsTableRecord dividend) => (from item in data_context.transactions
+		public TransactionsTableModel? get_dividend_transaction (DividendsTableRecord dividend) => (from item in data_context.transactions
 			join type in data_context.transaction_types on item.transaction_type_id equals type.id
 			where
 				(item.broker_id == dividend.broker_id) &&
@@ -84,7 +84,7 @@ return null;
 
 if (dividend is null) return Error ("No luck.");
 
-			TransactionsTableRecord? result = get_dividend_transaction (dividend);
+			TransactionsTableModel? result = get_dividend_transaction (dividend);
 
 			if (isset (result) && ((result!.price * result.quantity).round (2) != (dividend.amount_per_share * dividend.share_quantity).round (2))) result = null;
 			return new JsonResult (new { id = isset (result) ? result!.id : new Guid? () });
@@ -104,7 +104,7 @@ if (dividend is null) return Error ("No luck.");
 
 		[HttpPost]
 		[Route ("SaveTransaction")]
-		public IActionResult SaveTransaction ([FromBody] TransactionsTableRecord parameters) {
+		public IActionResult SaveTransaction ([FromBody] TransactionsTableModel parameters) {
 
 			switch (isset (parameters.id)) {
 				case true: data_context.transactions.Update (parameters); break;

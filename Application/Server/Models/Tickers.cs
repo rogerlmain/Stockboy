@@ -1,6 +1,7 @@
 ﻿namespace Stockboy.Models {
 
-	public class TickerTableRecord: DataTableModel {
+	public class TickerTableModel: DataTableModel {
+		public required new Guid id { get; set; }
 		public required String symbol { get; set; }
 		public Decimal? price { get; set; } = null;
 		public int? volume { get; set; } = null;
@@ -10,7 +11,7 @@
 		public Decimal? dividend_payout { get; set; } = null;
 		public int? frequency { get; set; } = null;
 		public Boolean approved { get; set; } = false;
-	}// TickerTableRecord;
+	}// TickerTableModel;
 
 
 	public class UserTickerRecord: BaseModel {

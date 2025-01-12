@@ -15,6 +15,15 @@
 	}// TransactionModel;
 
 
+	public class TransactionsTableModel: StockDataModel {
+		public decimal price { get; set; }
+		public decimal quantity { get; set; }
+		public DateTime transaction_date { get; set; }
+		public DateTime settlement_date { get; set; }
+		public Guid? transaction_type_id { get; set; }
+	}// TransactionsTableModel;
+
+
 	public class UpdateTransactionModel: BaseModel {
 		public string type { get; set; } = String.Empty;
 	}// UpdateTransactionModel;

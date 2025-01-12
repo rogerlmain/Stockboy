@@ -48,7 +48,7 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 		return <div className="container">
 
 			<div className="somewhat-spaced-out row-block with-headspace with-lotsa-legroom">
-
+{/*
 				{this.state.loading ? <Eyecandy text="Loading pending dividends" /> : (isset (this.state.data?.payments_list) ? <div className="column-block with-legroom">
 			
 					<div className="title">Upcoming Dividend Payments</div>
@@ -70,8 +70,8 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 					</div>
 
 				</div> : <label>No pending dividends</label>)}
-
-
+*/}
+{/*
 				{this.state.loading ? <Eyecandy text="Loading monthly dividends" /> : (isset (this.state.data?.monthly_payout) ? <div className="column-block">
 
 					<div className="title">Monthly Dividend Payments</div>
@@ -95,7 +95,7 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 					</div>
 
 				</div> : <label>No monthly dividends</label>)}
-
+*/}
 			</div>
 
 			{this.state.loading ? <Eyecandy text="Loading holdings" /> : (isset (this.state.data) ? <DataPageControl data={this.state.data?.holdings_list} 

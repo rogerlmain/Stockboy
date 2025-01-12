@@ -30,19 +30,17 @@ namespace Stockboy.Models {
 
 
 	[Keyless]
-	public class HoldingsModel: StockDataModel {
+	public class HoldingsModel {
+		public Guid? broker_id { get; set; } = null;
+		public Guid? ticker_id { get; set; } = null;
 		public string broker { get; set; } = String.Empty;
-		public string symbol { get; set; } = String.Empty;
 		public string company { get; set; } = String.Empty;
-		public decimal cost_price { get; set; } = Decimal.Zero;
-		public decimal? current_price { get; set; } = null;
-		public decimal quantity { get; set; } = Decimal.Zero;
-		public decimal current_purchase_cost { get; set; } = Decimal.Zero;
-		public decimal total_purchase_cost { get; set; } = Decimal.Zero;
-		public decimal total_sales_amount { get; set; } = Decimal.Zero;
-		public decimal? value { get; set; } = null;
-		public decimal sales_profit { get; set; } = Decimal.Zero;
+		public string symbol { get; set; } = String.Empty;
 		public string status { get; set; } = HoldingStatus.live;
+		public decimal quantity { get; set; } = Decimal.Zero;
+		public decimal? current_price { get; set; } = null;
+		public decimal? current_purchase_cost { get; set; } = Decimal.Zero;
+		public decimal? value { get; set; } = null;
 	}// HoldingsModel;
 
 
@@ -73,7 +71,7 @@ namespace Stockboy.Models {
 	public class HomeModel {
 		public DividendPaymentList? payments_list { get; set; } = null;
 		public HoldingsModelList? holdings_list { get; set; } = null;
-		public required DividendPayout monthly_payout { get; set; }
+//		public required DividendPayout monthly_payout { get; set; }
 	}// HomeModel;
 
 }// Stockboy.Models;

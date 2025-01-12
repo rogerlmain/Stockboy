@@ -88,7 +88,7 @@ namespace Stockboy.Classes {
 		}// constructor;
 
 
-		private static DateTime? GetPaymentDate (TickerTableRecord ticker, DateTime? last_payment_date, DateTime? next_payment_date) {
+		private static DateTime? GetPaymentDate (TickerTableModel ticker, DateTime? last_payment_date, DateTime? next_payment_date) {
 			if (isset (next_payment_date)) return next_payment_date;
 			if (isset (ticker.frequency) && isset (last_payment_date)) {
 				DateTime payment_date = (DateTime) last_payment_date!;
@@ -98,7 +98,7 @@ namespace Stockboy.Classes {
 		}// GetPaymentDate;
 
 
-		private static void SetStockData (TickerTableRecord ticker, HistoricalStockList? dividends, ShortStockQuote? price) {
+		private static void SetStockData (TickerTableModel ticker, HistoricalStockList? dividends, ShortStockQuote? price) {
 
 			StockDividendData last_payment_date = (from date in dividends!.historical
 				where date.paymentDate < DateTime.Now
@@ -191,7 +191,7 @@ namespace Stockboy.Classes {
 			if (is_null (stock_prices) && is_null (dividend_data)) return; // Nothing to update
 
 			symbols.ForEach ((string symbol) => {
-				TickerTableRecord ticker = (tickers!.Find ((TickerTableRecord ticker) => ticker.symbol == symbol))!;
+				TickerTableModel ticker = (tickers!.Find ((TickerTableModel ticker) => ticker.symbol == symbol))!;
 				ShortStockQuote? price = stock_prices?.Find ((ShortStockQuote stock_price) => stock_price.symbol == symbol);
 				HistoricalStockList? dividends = dividend_data?.historicalStockList?.Find ((HistoricalStockList item) => item.symbol == symbol);
 
@@ -288,27 +288,28 @@ namespace Stockboy.Classes {
 
 		public static async Task<HoldingsData> Current (HttpContext context) {
 
-			HoldingsData? holdings_data = context.Session.GetObject<HoldingsData> ("holdings");
+			HoldingsData? holdings_data = new (context);
 			
-			if (holdings_data is null) {
+			await holdings_data.LoadStockPrices ();
 
-				holdings_data = new (context);
+			holdings_data.activity = context.Session.GetSessionData ("activity", holdings_data.GetActivityData);
+			holdings_data.holdings_status = context.Session.GetSessionData ("status", holdings_data.GetHoldingsStatus);
 
-				await holdings_data.LoadStockPrices ();
 
-				holdings_data.activity = holdings_data.GetActivityData ();
-				holdings_data.holdings_status = holdings_data.GetHoldingsStatus ();
+var test_data = (from act in holdings_data.activity where 
+	act.broker_id == new Guid ("80e43ec8-016a-453d-b4ff-80d9d79a2bc7") &&
+	act.ticker_id == new Guid ("0953e82c-1178-4576-8438-2fdb28e79ea6")
+	select act
+).ToList ();
 
-				holdings_data.activity = (from act in holdings_data.activity
-					join hst in holdings_data.holdings_status! on act.ticker_id equals hst.ticker_id into jst
-					from jha in jst.DefaultIfEmpty ()
-					select act.Merge (new { jha.status })
-				).ToList ();
 
-				context.Session.SetObject ("holdings", holdings_data);
-			
-			}// if;
-			
+
+			holdings_data.activity = (from act in holdings_data.activity
+				join hst in holdings_data.holdings_status! on act.ticker_id equals hst.ticker_id into jst
+				from jha in jst.DefaultIfEmpty ()
+				select act.Merge (new { jha.status })
+			).ToList ();
+
 			return holdings_data;
 
 		}// Current;

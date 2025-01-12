@@ -21,15 +21,6 @@ namespace Stockboy.Models {
 	}// HoldingsTableRecord;
 
 
-	public class TransactionsTableRecord: StockDataModel {
-		public decimal price { get; set; }
-		public decimal quantity { get; set; }
-		public DateTime transaction_date { get; set; }
-		public DateTime settlement_date { get; set; }
-		public Guid? transaction_type_id { get; set; }
-	}// TransactionsTableRecord;
-
-
 	public class TransactionTypesTableRecord: BaseModel {
 		public string name { get; set; } = String.Empty;
 		public int sort_order { get; set; }

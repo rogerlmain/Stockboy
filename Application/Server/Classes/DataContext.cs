@@ -17,8 +17,8 @@ namespace Stockboy.Classes {
 		public required DbSet<HoldingsTableRecord> holdings { get; set; }
 		public required DbSet<SettingsTableRecord> settings { get; set; }
 		public required DbSet<SplitsTableRecord> splits { get; set; }
-		public required DbSet<TickerTableRecord> tickers { get; set; }
-		public required DbSet<TransactionsTableRecord> transactions { get; set; }
+		public required DbSet<TickerTableModel> tickers { get; set; }
+		public required DbSet<TransactionsTableModel> transactions { get; set; }
 		public required DbSet<TransactionTypesTableRecord> transaction_types { get; set; }
 		public required DbSet<UsersTableRecord> users { get; set; }
 		public required DbSet<UserBrokerTableRecord> user_brokers { get; set; }

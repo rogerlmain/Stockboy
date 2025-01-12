@@ -10,7 +10,7 @@ global using ProfitLossModelList = System.Collections.Generic.List<Stockboy.Mode
 global using ProfitLossDetailsList = System.Collections.Generic.List<Stockboy.Models.ProfitLossDetailsModel>;
 
 global using ShortStockQuoteList = System.Collections.Generic.List<Stockboy.Models.ShortStockQuote>;
-global using TickersTableList = System.Collections.Generic.List<Stockboy.Models.TickerTableRecord>;
+global using TickersTableList = System.Collections.Generic.List<Stockboy.Models.TickerTableModel>;
 global using TransactionModelList = System.Collections.Generic.List<Stockboy.Models.TransactionModel>;
 global using HoldingsTableList = System.Collections.Generic.List<Stockboy.Models.HoldingsTableRecord>;
 

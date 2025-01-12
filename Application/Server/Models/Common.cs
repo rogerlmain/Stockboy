@@ -12,7 +12,7 @@ namespace Stockboy.Models {
 	public interface IDataModel {
 
 		[Key]
-		public Guid id { get; set; }
+		public Guid? id { get; set; }
 
 		public Boolean deleted { get; set; }
 
@@ -33,7 +33,7 @@ namespace Stockboy.Models {
 
 	public class DataModel: IDataModel {
 		[Key]
-		public required Guid id { get; set; }
+		public Guid? id { get; set; }
 		public Boolean deleted { get; set; } = false;
 	}// DataModel;
 

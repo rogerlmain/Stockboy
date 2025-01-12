@@ -9,45 +9,41 @@ namespace Stockboy.Controllers {
 
 	public class DividendsController : BaseController {
 
-		private DividendModelList? SelectQuery () {
+		private async Task<IEnumerable<DividendModel>> SelectQuery () {
 
-			//HoldingsModelList? holdings = HoldingsData.Current (http_context).GetHoldingsStatus ();
-			//if (holdings is null) return null;
+			HoldingsStatusList? holdings_status = (await HoldingsData.Current (http_context)).GetStatus;
 
-			//DividendModelList dividends = (
-			//	from dvd in data_context.dividends
-			//	join brk in data_context.brokers on dvd.broker_id equals brk.id
-			//	join tck in data_context.tickers on dvd.ticker_id equals tck.id
-			//	where (!dvd.deleted) && (dvd.user_id == current_user!.user_id)
-			//	select new DividendModel () {
-			//		id = dvd.id,
-			//		user_id = dvd.user_id,
-			//		broker = brk.name ?? String.Empty,
-			//		ticker = tck.symbol,
-			//		company = tck.name ?? String.Empty,
-			//		broker_id = dvd.broker_id,
-			//		ticker_id = dvd.ticker_id,
-			//		issue_date = dvd.issue_date,
-			//		amount_per_share = dvd.amount_per_share,
-			//		share_quantity = dvd.share_quantity,
-			//		payout = dvd.amount_per_share * dvd.share_quantity
-			//	}
-			//).ToList ();
+			DividendModelList dividends = (
+				from dvd in data_context.dividends
+				join brk in data_context.brokers on dvd.broker_id equals brk.id
+				join tck in data_context.tickers on dvd.ticker_id equals tck.id
+				where (!dvd.deleted) && (dvd.user_id == current_user!.user_id)
+				select new DividendModel () {
+					id = dvd.id,
+					user_id = dvd.user_id,
+					broker = brk.name ?? String.Empty,
+					ticker = tck.symbol,
+					company = tck.name ?? String.Empty,
+					broker_id = dvd.broker_id,
+					ticker_id = dvd.ticker_id,
+					issue_date = dvd.issue_date,
+					amount_per_share = dvd.amount_per_share,
+					share_quantity = dvd.share_quantity,
+					payout = dvd.amount_per_share * dvd.share_quantity
+				}
+			).ToList ();
 
-			//return (from dvd in dividends
-			//	join hld in holdings on 
-			//		new { dvd.user_id, dvd.broker_id, dvd.ticker_id } equals
-			//		new { hld.user_id, hld.broker_id, hld.ticker_id }
-			//	where (!dvd.deleted) && (dvd.user_id == current_user!.user_id)
-			//	select dvd.Merge (new { hld.status })
-			//).ToList ();
+			if (holdings_status is null) return dividends;
 
-return null;
+			return (from dvd in dividends
+				join hld in holdings_status on dvd.ticker_id equals hld.ticker_id
+				select dvd.Merge (new { hld.status })
+			);
 
 		}// SelectQuery;
 
 
-		private DividendModel? GetDividendById (Guid? id) => SelectQuery ()?.Where ((DividendModel item) => item.id == id).FirstOrDefault ();
+		private async Task<DividendModel?> GetDividendById (Guid? id) => (await SelectQuery ())?.Where ((DividendModel item) => item.id == id).FirstOrDefault ();
 
 
 		/********/
@@ -55,9 +51,9 @@ return null;
 
 		[HttpGet]
 		[Route ("GetDividendTotals")]
-		public IActionResult? GetDividendTotals () {
+		public async Task<IActionResult>? GetDividendTotals () {
 
-			DividendModelList? data = SelectQuery ()?.ToList ();
+			DividendModelList? data = (await SelectQuery ())?.ToList ();
 			DividendSummaryList? summary = null;
 
 			if (isset (data)) foreach (var item in data!) {
@@ -85,8 +81,8 @@ return null;
 
 		[HttpPost]
 		[Route ("GetDividends")]
-		public IActionResult GetDividends () {
-			DividendModelList? result = SelectQuery ()?.OrderByDescending ((DividendModel dividend) => dividend.issue_date).ToList ();
+		public async Task<IActionResult> GetDividends () {
+			DividendModelList? result = (await SelectQuery ()).OrderByDescending ((DividendModel dividend) => dividend.issue_date).ToList ();
 			return new JsonResult (isset (result) ? result : Message ("No dividends recorded."));
 		}// GetDividends;
 
@@ -97,7 +93,7 @@ return null;
 
 			if (parameters.reinvested) {
 
-				TransactionsTableRecord transaction = new () { 
+				TransactionsTableModel transaction = new () { 
 					id = Guid.NewGuid (),
 					user_id = current_user!.user_id 
 				};
