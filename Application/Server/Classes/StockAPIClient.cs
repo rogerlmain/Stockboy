@@ -17,7 +17,11 @@ namespace Stockboy.Classes {
 
 			if (response.IsSuccessStatusCode) {
 				Stream stream = await response.Content.ReadAsStreamAsync ();
-				return await JsonParser.Parse<TModel> (stream);
+
+var value = new StreamReader (stream).ReadEverything ();
+
+				TModel? result = await JsonParser.Parse<TModel> (stream);
+				return result;
 			}// if;
 
 			return default;
@@ -29,7 +33,8 @@ namespace Stockboy.Classes {
 
 
 		public async Task<ShortStockQuoteList?> GetStockQuotes (String tickers) => await CallAPI<ShortStockQuoteList> (quote_path, tickers);
-		public async Task<StockDividendHistory?> GetDividendHistory (String tickers) => await CallAPI<StockDividendHistory> (dividend_path, tickers);
+		public async Task<StockDividendHistory?> GetDividendHistories (String tickers) => await CallAPI<StockDividendHistory> (dividend_path, tickers);
+		public async Task<HistoricalStockList?> GetDividendHistory (String ticker) => await CallAPI<HistoricalStockList> (dividend_path, ticker);
 
 	}// StockAPIClient;
 

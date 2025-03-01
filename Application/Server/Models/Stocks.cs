@@ -25,7 +25,9 @@ namespace Stockboy.Models {
 		public string? ticker { get; set; } = null;
 		public Decimal? quantity { get; set; } = Decimal.Zero;
 		public Decimal? price { get; set; } = Decimal.Zero;
+		public Decimal? cost { get; set; } = Decimal.Zero;
 		public Decimal? total_quantity { get; set; } = Decimal.Zero;
+		public Decimal? total_cost { get; set; } = Decimal.Zero;
 	}// ActivityModel;
 
 

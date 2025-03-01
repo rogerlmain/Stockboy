@@ -7,6 +7,19 @@ import { TickersDataModel } from "Models/Tickers";
 import { Component } from "react";
 
 
+let debugging: boolean = true;
+
+
+const test_data: TickersDataModel = {
+
+	id: null,
+
+	name: "Pennant Investment",
+	symbol: "PNNT",
+
+}// test_data;
+
+
 class TickerModel extends NameValuePair { public symbol: string = null }
 
 
@@ -72,10 +85,10 @@ export default class EditTickersForm extends Component<TickersFormProps, Tickers
 	public render () {
 		return <div className="two-column-grid">
 			<EditList id="tickers_list" name="ticker" data={this.ticker_list ()} 
-				value={isset (this.props.data) ? new IDModel (this.props.data.id, this.props.data.name) : null}
+				value={debugging ? new IDModel (null, test_data.name) : (isset (this.props.data) ? new IDModel (this.props.data.id, this.props.data.name) : null)}
 				onChange={(value: IDModel) => this.update_symbol (value)}>
 			</EditList>
-			<input type="text" name="symbol" placeholder="Symbol" style={{ width: "4rem" }} defaultValue={this.state.symbol} />
+			<input type="text" name="symbol" placeholder="Symbol" style={{ width: "4rem" }} defaultValue={debugging ? test_data.symbol : this.state.symbol} />
 		</div>
 	}// render;
 

@@ -18,6 +18,12 @@
 	}// HistoricalStockList;
 
 
+	public class StockStatistics {
+		public ShortStockQuote? price = null;
+		public HistoricalStockList? history = null;
+	}// StockStatistics;
+
+
     public class StockDividendData {
 		public DateTime? date { get; set; } = DateTime.Now;
 		public String label { get; set; } = String.Empty;

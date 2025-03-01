@@ -36,7 +36,7 @@ namespace Stockboy.Classes.Queries {
 				company = tck.name ?? String.Empty,
 				ticker = tck.symbol,
 				quantity = dvd.share_quantity,
-				price = null
+				price = tck.dividend_payout
 			}
 		);
 

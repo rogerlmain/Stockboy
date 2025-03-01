@@ -15,28 +15,31 @@ namespace Stockboy.Controllers {
 
 			ActivityDataList? data = (await HoldingsData.Current (http_context)).GetActivity;
 
-return new JsonResult (data);
-
 			Decimal total_quantity = 0;
+			Decimal total_cost = 0;
 
 			ActivityModelList activity = ActivityQueries.get_activity (data_context, parameters.broker_id, parameters.ticker_id).ToList ();
 
 			foreach (ActivityModel item in activity) {
-
-				if (item.transaction_type == "Dividend") {
-					item.quantity = null;
-					item.total_quantity = null;
-					continue;
-				}// if;
 
 				if (item.transaction_type == "Split") {
 					item.total_quantity = total_quantity *= item.quantity!.Value;
 					continue;
 				}// if;
 
-				if ((item.transaction_type == "Buy") || (item.transaction_type == "Reinvestment")) item.total_quantity = total_quantity += item.quantity ?? 0;
-					
-				if (item.transaction_type == "Sell") item.total_quantity = total_quantity -= item.quantity!.Value;
+				item.cost = item.quantity * item.price;
+
+				if (item.transaction_type == "Dividend") item.total_quantity = null;
+
+				if ((item.transaction_type == "Buy") || (item.transaction_type == "Reinvestment")) {
+					item.total_quantity = total_quantity += item.quantity ?? 0;
+					item.total_cost = total_cost += item.cost ?? 0;
+				}// if;
+
+				if (item.transaction_type == "Sell") {
+					item.total_quantity = total_quantity -= item.quantity ?? 0;
+					item.total_cost = total_cost -= item.cost ?? 0;
+				}// if;
 
 			}// foreach
 

@@ -26,7 +26,7 @@
 	}// DividendSummary;
 
 
-	class DividendHistory {
+	public class DividendHistory {
 		public required Guid? ticker_id { get; set; } = null;
 		public required String symbol { get; set; }
 		public required DateTime payment_date { get; set; }

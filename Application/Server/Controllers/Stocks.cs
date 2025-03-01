@@ -40,10 +40,10 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("GetHoldings")]
-		public async Task<IActionResult> GetHoldings () {
+		public async Task<IActionResult> GetHoldings ([FromBody] Boolean refresh) {
 
 			DividendsHandler dividends = new (data_context);
-			HoldingsData holdings_data = await HoldingsData.Current (http_context);
+			HoldingsData holdings_data = await HoldingsData.Current (http_context, refresh);
 			HoldingsModelList? holdings_list = holdings_model_query (holdings_data).ToList ();
 
 			if (is_null (holdings_list)) return Message ("No data");

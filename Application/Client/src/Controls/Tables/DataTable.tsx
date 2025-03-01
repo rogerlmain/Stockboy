@@ -7,12 +7,14 @@ import GlyphArrow, { direction_type } from "Controls/GlyphArrow";
 import { DataKey, DataKeyArray } from "Classes/DataKeys";
 import { BaseProps, IBaseState } from "Controls/Abstract/BaseProperties";
 import { IBaseModel } from "Models/Abstract/BaseModels";
-import { Component, createRef, RefObject } from "react";
+import { Component, Context, createContext, createRef, RefObject } from "react";
+import EyecandyButton from "../Common/EyecandyButton";
 
 
 class DataTableState implements IBaseState {
 	sort_field: string = null;
 	ascending: boolean = true;
+	refreshing: boolean = false;
 	selected_row: IBaseModel = null;
 }// DataTableState;
 
@@ -35,6 +37,9 @@ export class DataTableProps extends BaseProps {
 	properties: DataTableProperties;
 	parent: Component;
 }// DataTableProps;
+
+
+export const DataTableContext: Context<Component> = createContext (null);
 
 
 export default class DataTable extends Component<DataTableProps> {
@@ -168,10 +173,26 @@ export default class DataTable extends Component<DataTableProps> {
 				</div>
 			</ScrollBlock>
 
-			<div className="full-width right-aligned bold-text row-block with-some-headspace">Total: {this.props.data.length} {"record".plural (this.props.data.length)}</div>
+			<div className="totally-spaced-out full-width row-block with-some-headspace">
+
+				{isset (this.context) ? <EyecandyButton 
+					text="Refreshing..."
+					eyecandy_visible={this.state.refreshing} onClick={() => this.context ["load_data"] (true).then (() => this.setState ({ refreshing: false }))}>
+					Refresh
+				</EyecandyButton> : String.Empty}
+
+				<div className="bold-text row-centered row-block">Total: {this.props.data.length} {"record".plural (this.props.data.length)}</div>
+
+			</div>
 
 		</div>
 
 	}// render;
+
+
+	public constructor (props: DataTableProps) {
+		super (props);
+		this.context = DataTableContext;
+	}// constructor;
 
 }// DataTable;

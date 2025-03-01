@@ -7,7 +7,7 @@ import { TransactionDataModel } from "Models/Transactions";
 import { Component } from "react";
 
 
-let debugging: boolean = true;
+let debugging: boolean = false;
 
 
 const test_data: TransactionDataModel = {
@@ -44,11 +44,11 @@ export default class EditTransactionForm extends Component<EditTransactionFormPr
 
 			<div className="compact four-column-grid with-headspace">
 
-				<label>Price</label>
-				<input id="price" type="currency" commas="true" defaultValue={this.props.data?.price ?? (debugging ? test_data.price : null)} required={true} />
-
 				<label htmlFor="quantity">Quantity</label>
 				<input id="quantity" type="numeric" decimalPlaces={numeric_decimals} defaultValue={this.props.data?.quantity ?? (debugging ? test_data.quantity : null)} />
+
+				<label>Price</label>
+				<input id="price" type="currency" commas="true" defaultValue={this.props.data?.price ?? (debugging ? test_data.price : null)} required={true} />
 
 				<label htmlFor="transaction_date">Transaction Date</label>
 				<input id="transaction_date" type="date" defaultValue={Date.format (this.props.data?.transaction_date ?? (debugging ? test_data.transaction_date : null), DateFormats.database)} />

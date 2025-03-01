@@ -7,6 +7,7 @@ import TableFilters from "Controls/Filters/TableFilters";
 import DataTable, { DataTableProperties } from "Controls/Tables/DataTable";
 
 import { DataKeyArray } from "Classes/DataKeys";
+import { Container } from "Controls/Common";
 import { DeleteForm } from "Forms/DeleteForm";
 import { IBaseModel, StockModel } from "Models/Abstract/BaseModels";
 import { Component, ComponentClass, createContext, createRef, RefObject } from "react";
@@ -142,9 +143,11 @@ export default class DataPageControl extends Component<DataPageControlProps, Dat
 
 					<div className="full-height column-centered column-block">
 
-						{is_null (this.props.data) ? <div className="bold-text">{`No ${this.props.data_type} defined`}</div> : <DataTable data={this.state.data} 
-							properties={this.props.properties} ref={this.data_table} parent={this}>
-						</DataTable>}
+						{is_null (this.props.data) ? <div className="bold-text">{`No ${this.props.data_type} defined`}</div> : <Container>
+							<DataTable data={this.state.data} 
+								properties={this.props.properties} ref={this.data_table} parent={this}>
+							</DataTable>
+						</Container>}
 
 						{this.props.table_buttons ? <div className={`button-bar ${this.props.align_buttons == ButtonAlignment.center ? "column-centered" : null}`}>
 							<TableButtons selected_row={this.state.selected_row}

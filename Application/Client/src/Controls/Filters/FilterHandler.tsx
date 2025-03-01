@@ -157,21 +157,21 @@ export default class FilterHandler extends Component {
 
 	public filter_data (callback: Callback = null) {
 
-			let filtered_data: DataArray = this.filtered_exclusively (this.data, this.get_filters ("type", FilterType.exclusive));
-			let filters: FilterList = this.get_filters ("type", FilterType.inclusive);
+		let filtered_data: DataArray = this.filtered_exclusively (this.data, this.get_filters ("type", FilterType.exclusive));
+		let filters: FilterList = this.get_filters ("type", FilterType.inclusive);
 
-			if (this.has_inclusive_filters && is_null (filters)) return this.data_page.setState ({ data: null });
+		if (this.has_inclusive_filters && is_null (filters)) return this.data_page.setState ({ data: null });
 
-			let filter_fields: StringArray = null;
+		let filter_fields: StringArray = null;
 
-			filters.forEach ((filter: DataFilter) => {
-				if (is_null (filter_fields)) filter_fields = new Array<string> ();
-				if (!filter_fields.contains (filter.field)) filter_fields.push (filter.field);
-			});
+		if (isset (filters)) filters.forEach ((filter: DataFilter) => {
+			if (is_null (filter_fields)) filter_fields = new Array<string> ();
+			if (!filter_fields.contains (filter.field)) filter_fields.push (filter.field);
+		});
 
-			filter_fields.forEach ((field: string) => {
-				filtered_data = this.filtered_inclusively (filtered_data, this.get_filters ("field", field));
-			});
+		if (isset (filter_fields)) filter_fields.forEach ((field: string) => {
+			filtered_data = this.filtered_inclusively (filtered_data, this.get_filters ("field", field));
+		});
 
 		this.data_page.setState ({ data: filtered_data }, callback);
 

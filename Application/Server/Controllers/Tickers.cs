@@ -7,24 +7,7 @@ using Stockboy.Models;
 
 namespace Stockboy.Controllers {
 
-	public class TickersController : BaseController {
-
-		public void save_ticker (ValueModel parameters, String symbol) {
-
-			// TO DO: Test if user is admin, otherwise add to a new "to be validated" list
-
-			TickerTableModel? ticker = new () {
-				id = is_null (parameters?.id) ? Guid.NewGuid () : parameters!.id!.Value,
-				name = parameters?.value,
-				symbol = symbol,
-				approved = false,
-				deleted = false
-			};
-
-			if (is_null (parameters?.value)) data_context.tickers.Save (ticker);
-
-		}// save_ticker;
-
+	public class TickersController: BaseController {
 
 		[HttpPost]
 		[Route ("GetTickers")]
@@ -77,21 +60,39 @@ namespace Stockboy.Controllers {
 
 		[HttpPost]
 		[Route ("SaveTicker")]
-		public IActionResult SaveTicker ([FromBody] UserTickerRecord parameters) {
+		public async Task<IActionResult> SaveTicker ([FromBody] UserTickerRecord parameters) {
 
 			ValueModel? ticker = JsonConvert.DeserializeObject<ValueModel> (parameters.ticker);
 
-			if (not_set (ticker)) throw new Exception ("Ticker is undefined");
-			if (is_null (ticker!.id)) this.save_ticker (ticker!, parameters.symbol);
+			if (ticker is null) throw new Exception ("Ticker is undefined");
+
+			StockStatistics statistics = await HoldingsData.GetStockStatistics (http_context, parameters.symbol);
+
+			if ((statistics.price is not null) && (statistics.history is not null)) {
+
+				TickerTableModel ticker_table = new () { 
+					name = ticker!.value,
+					symbol = parameters.symbol
+				};
+
+				HoldingsData.SetStockData (ticker_table, statistics.history, statistics.price);
+				ticker_table.frequency = HoldingsData.GetDividendFrequency (statistics.history);
+				data_context.tickers.Save (ticker_table);
+				return new JsonResult (ticker_table);
+
+			}// if;
 
 			UserTickerTableRecord user_ticker = new () {
 				user_id = parameters.user_id,
-				ticker_id = ticker!.id/* ?? Guid.Empty*/,
+				ticker_id = ticker!.id,
 			};
 
 			data_context.user_tickers.Save (user_ticker);
 
-			return new JsonResult (parameters.ticker);
+			return new JsonResult (new {
+				id = ticker.id,
+				name = ticker.value,
+			});
 
 		}// SaveTicker;
 

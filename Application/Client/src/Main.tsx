@@ -90,7 +90,7 @@ export default class MainPage extends Component {
 
 	constructor (props: BaseProps) {
 		super (props);
-		this.state.page = PageType.transactions;
+		this.state.page = PageType.home;
 	}// constructor;
 
 }// MainPage;

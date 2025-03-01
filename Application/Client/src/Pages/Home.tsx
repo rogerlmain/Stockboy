@@ -5,10 +5,11 @@ import Eyecandy from "Controls/Common/Eyecandy";
 import DataPageControl from "Controls/DataPageControl";
 
 import { DataKeyArray } from "Classes/DataKeys";
-import { BaseProps } from "Controls/Abstract/BaseProperties";
-import { DataTableProperties } from "Controls/Tables/DataTable";
 
-import { DividendPayment, DividendPayoutItem } from "Models/Dividends";
+import { BaseProps } from "Controls/Abstract/BaseProperties";
+import { Container } from "Controls/Common";
+import { DataTableContext, DataTableProperties } from "Controls/Tables/DataTable";
+
 import { HoldingsModel, HomeDetailsModel } from "Models/Holdings";
 
 import { Component, createRef, RefObject } from "react";
@@ -42,6 +43,19 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 
 
 	public state: HomePageState = new HomePageState ();
+
+
+	public load_data (refresh: boolean) {
+		return new Promise<void> (resolve => {
+			new StockboyAPI ().fetch_data ("GetHoldings", { refresh }).then ((result: HomeDetailsModel) => {
+				let data: HomeDetailsModel = new HomeDetailsModel ();
+				this.setState ({ 
+					loading: false,
+					data: data.assign (result) 
+				}, () => resolve ());
+			});
+		});
+	}// load_data;
 
 
 	public render () {
@@ -98,29 +112,23 @@ export default class HomePage extends Component<BaseProps, HomePageState> {
 */}
 			</div>
 
-			{this.state.loading ? <Eyecandy text="Loading holdings" /> : (isset (this.state.data) ? <DataPageControl data={this.state.data?.holdings_list} 
-				properties={properties} data_type="Stock Holdings" table_buttons={false} ref={this.data_page} 
-				search_filters={properties.fields}>
-				<StockStatusFilters />
-			</DataPageControl> : <label>No stock holdings</label>)}
+			{this.state.loading ? <Eyecandy text="Loading holdings" /> : (isset (this.state.data) ? <Container>
+				<DataTableContext.Provider value={this}>
+					<DataPageControl data={this.state.data?.holdings_list} 
+						properties={properties} data_type="Stock Holdings" table_buttons={false} ref={this.data_page} 
+						search_filters={properties.fields}>
+						<StockStatusFilters />
+					</DataPageControl>
+				</DataTableContext.Provider>
+			</Container> : <label>No stock holdings</label>)}
 
 		</div>
 	}// render;
 
 
-	constructor (props: BaseProps) {
-
+	public constructor (props: BaseProps) {
 		super (props);
-
-		new StockboyAPI ().fetch_data ("GetHoldings").then ((result: HomeDetailsModel) => {
-			let data: HomeDetailsModel = new HomeDetailsModel ();
-			this.setState ({ 
-				loading: false,
-				data: data.assign (result) 
-			});
-		});
-
+		this.load_data (false);
 	}// constructor;
 
 }// TransactionsPage;
-

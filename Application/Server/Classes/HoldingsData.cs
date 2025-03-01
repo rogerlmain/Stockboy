@@ -1,7 +1,7 @@
-﻿global using GuidList = System.Collections.Generic.List<System.Guid/*?*/>;
+﻿global using GuidList = System.Collections.Generic.List<System.Guid>;
+global using IntegerList = System.Collections.Generic.List<int>;
 
-using MySqlX.XDevAPI;
-using Stockboy.Classes.Queries;
+
 using Stockboy.Models;
 
 
@@ -12,13 +12,13 @@ namespace Stockboy.Classes {
 		private const int batch_size = 5;
 
 
-		private readonly HttpContext http_context;
 		private readonly DataContext data_context;
 		private readonly StockAPIClient stock_api_client;
 
 
 		private ActivityDataList? activity = null;
 		private HoldingsStatusList? holdings_status = null;
+		private Boolean refreshing = false;
 
 
 		private static class TransactionTypes {
@@ -30,12 +30,16 @@ namespace Stockboy.Classes {
 		}// TransactionTypes;
 
 
-		GuidList? DefunctStocks { get { return (from tck in data_context.tickers where tck.price == -1 select tck.id).ToList (); } }
+		GuidList? DefunctStocks { get { return (from tck in data_context.tickers where tck.price == -1 select (Guid) tck.id!).ToList (); } }
 
 
 		private ActivityDataList? GetActivityData () {
 
-			ActivityDataList? activity = (from atv in data_context.activity_view select atv).ToList ().Downcast<ActivityDataList> ();
+			ActivityDataList? activity = (from atv in data_context.activity_view 
+				where atv.transaction_type != TransactionTypes.dividend
+				select atv
+			).ToList ().Downcast<ActivityDataList> ();
+
 
 			if (activity is not null) foreach (ActivityData view in activity) {
 
@@ -50,12 +54,6 @@ namespace Stockboy.Classes {
 				if (previous is null) {
 					view.total_quantity = view.quantity;
 					view.total_cost = (view.quantity * view.cost_price);
-					continue;
-				}// if;
-
-				if (view.transaction_type == TransactionTypes.dividend) {
-					view.total_quantity = previous.total_quantity;
-					view.total_cost = previous.total_cost;
 					continue;
 				}// if;
 
@@ -82,7 +80,6 @@ namespace Stockboy.Classes {
 
 
 		private HoldingsData (HttpContext context) {
-			http_context = context;
 			data_context = context.RequestServices.GetRequiredService<DataContext> ();
 			stock_api_client = context.RequestServices.GetRequiredService<StockAPIClient> ();
 		}// constructor;
@@ -98,35 +95,13 @@ namespace Stockboy.Classes {
 		}// GetPaymentDate;
 
 
-		private static void SetStockData (TickerTableModel ticker, HistoricalStockList? dividends, ShortStockQuote? price) {
-
-			StockDividendData last_payment_date = (from date in dividends!.historical
-				where date.paymentDate < DateTime.Now
-				select date
-			).OrderByDescending (date => date.paymentDate).First ();
-
-			StockDividendData? next_payment_date = (from date in dividends.historical
-				where date.paymentDate > DateTime.Now select date
-			).OrderBy (date => date.paymentDate).FirstOrDefault ();
-
-			ticker.price = price?.price ?? -1;
-			ticker.volume = price?.volume;
-
-			ticker.last_payment_date = last_payment_date?.paymentDate;
-			ticker.next_payment_date = GetPaymentDate (ticker, last_payment_date?.paymentDate, next_payment_date?.paymentDate);
-			ticker.ex_dividend_date = next_payment_date?.recordDate;
-			ticker.dividend_payout = next_payment_date?.dividend ?? last_payment_date?.dividend;
-
-		}// SetStockData;
-
-
-		private async Task<StockDividendHistory?> GetDividendHistory (StringList symbols) {
+		private async Task<StockDividendHistory?> GetDividendHistories (StringList symbols) {
 
 			int index = 0;
 			StockDividendHistory? result = null;
 
 			while (index < symbols.Count) {
-				StockDividendHistory? sublist = await stock_api_client.GetDividendHistory (String.Join (comma, symbols.Skip (index).Take (batch_size)));
+				StockDividendHistory? sublist = await stock_api_client.GetDividendHistories (String.Join (comma, symbols.Skip (index).Take (batch_size)));
 				if (isset (sublist)) {
 					result ??= new ();
 					result.historicalStockList = result.historicalStockList.Concat (sublist!.historicalStockList).ToArray ();
@@ -136,7 +111,7 @@ namespace Stockboy.Classes {
 
 			return result;
 
-		}// GetDividendHistory;
+		}// GetDividendHistories;
 
 
 		private List<DividendHistoryList>? DividendHistoryQuery (StockDividendHistory? history) {
@@ -157,7 +132,7 @@ namespace Stockboy.Classes {
 		}// DividendHistoryQuery;
 
 
-		private StockDividendHistory? UpdateDividendFrequency (StockDividendHistory? history, TickersTableList tickers) {
+		private StockDividendHistory? UpdateDividendFrequencyList (StockDividendHistory? history) {
 
 			List<DividendHistoryList>? history_list = DividendHistoryQuery (history);
 
@@ -165,7 +140,7 @@ namespace Stockboy.Classes {
 
             foreach (DividendHistoryList items in history_list!) {
 				if (items.Count < 2) continue;
-				tickers = data_context.tickers.Where (tkr => tkr.id == items [0].ticker_id).ToList ();
+				TickersTableList tickers = data_context.tickers.Where (tkr => tkr.id == items [0].ticker_id).ToList ();
 				tickers.ForEach (tck => {
 					tck.frequency = (int) Math.Round ((items [0].payment_date - items [1].payment_date).Days / 30.437);
 					if (tck.frequency < 1) tck.frequency = 1;
@@ -175,7 +150,7 @@ namespace Stockboy.Classes {
 
 			return history;
 
-		}// UpdateDividendFrequency;
+		}// UpdateDividendFrequencies;
 
 
 		private async Task UpdateStockData () {
@@ -186,7 +161,7 @@ namespace Stockboy.Classes {
 
 			StringList symbols = (from tck in tickers select tck.symbol).ToList ();
 			ShortStockQuoteList? stock_prices = await stock_api_client.GetStockQuotes (String.Join (comma, symbols)) ?? this.Abort ();
-			StockDividendHistory? dividend_data = UpdateDividendFrequency (await GetDividendHistory (symbols), tickers!) ?? this.Abort ();
+			StockDividendHistory? dividend_data = UpdateDividendFrequencyList (await GetDividendHistories (symbols)) ?? this.Abort ();
 
 			if (is_null (stock_prices) && is_null (dividend_data)) return; // Nothing to update
 
@@ -206,7 +181,7 @@ namespace Stockboy.Classes {
 
   			SettingsTableRecord? settings = (from set in data_context.settings where set.name == "last_updated" select set).FirstOrDefault ();
 
-			if (not_set (settings) || DateTime.Parse (settings!.value).EarlierThan (DateTime.Now.AddHours (-1))) {
+			if (not_set (settings) || DateTime.Parse (settings!.value).EarlierThan (DateTime.Now.AddHours (-1)) || refreshing) {
 
 				await UpdateStockData ();
 				if (settings is null) settings = new () { name = "last_updated" };
@@ -225,6 +200,72 @@ namespace Stockboy.Classes {
 		public ActivityDataList? GetActivity { get { return activity; } }
 		public HoldingsStatusList? GetStatus { get { return holdings_status; } }
 
+
+		public static int? GetDividendFrequency (HistoricalStockList? history) {
+
+			IntegerList? frequencies = null;
+			DateTime? previous_paydate = null;
+
+			if (history is null) return null;
+
+			foreach (StockDividendData data in history!.historical.ToList ().Take (12).ToList ().Sort ("paymentDate")) {
+
+				if ((previous_paydate is not null) && (data.paymentDate is not null)) {
+
+					int lapse = (int) Math.Round (((DateTime) data.paymentDate! - (DateTime) previous_paydate!).Days / 30.437);
+
+					if (lapse > 0) {
+						frequencies ??= new ();
+						frequencies.Add (lapse);
+					}// if;
+
+				}// if;
+
+				previous_paydate = data.paymentDate;
+
+			}// foreach;
+
+			if (frequencies is null) return null;
+			return (int) Math.Round (frequencies.Average ());
+
+		}// GetDividendFrequency;
+
+
+		public static async Task<StockStatistics> GetStockStatistics (HttpContext context, String symbol) {
+
+			HoldingsData data = new HoldingsData (context);
+
+			StockAPIClient api_client = context.RequestServices.GetRequiredService<StockAPIClient> ();
+			ShortStockQuoteList? stock_prices = await data.stock_api_client.GetStockQuotes (String.Join (comma, symbol));
+
+			return new StockStatistics () {
+				price = (await data.stock_api_client.GetStockQuotes (String.Join (comma, symbol)))?.FirstOrDefault (),
+				history = await api_client.GetDividendHistory (symbol)
+			}; 
+
+		}// GetStockStatistics;
+
+
+		public static void SetStockData (TickerTableModel ticker, HistoricalStockList? dividends, ShortStockQuote? price) {
+
+			StockDividendData last_payment_date = (from date in dividends!.historical
+				where date.paymentDate < DateTime.Now
+				select date
+			).OrderByDescending (date => date.paymentDate).First ();
+
+			StockDividendData? next_payment_date = (from date in dividends.historical
+				where date.paymentDate > DateTime.Now select date
+			).OrderBy (date => date.paymentDate).FirstOrDefault ();
+
+			ticker.price = price?.price ?? -1;
+			ticker.volume = price?.volume;
+
+			ticker.last_payment_date = last_payment_date?.paymentDate;
+			ticker.next_payment_date = GetPaymentDate (ticker, last_payment_date?.paymentDate, next_payment_date?.paymentDate);
+			ticker.ex_dividend_date = next_payment_date?.recordDate;
+			ticker.dividend_payout = next_payment_date?.dividend ?? last_payment_date?.dividend;
+
+		}// SetStockData;
 
 
 		public HoldingsStatusList? GetHoldingsStatus () {
@@ -263,7 +304,7 @@ namespace Stockboy.Classes {
 				) on tck.id equals ftr.ticker_id into jtr
 				from jtt in jtr.DefaultIfEmpty ()
 				select new HoldingsStatusModel () {
-					ticker_id = tck.id,
+					ticker_id = (Guid) tck.id!,
 					status = (jtt?.quantity > 0) ? HoldingStatus.live : HoldingStatus.dead
 				}
 			).Union (from dst in (from dst in DefunctStocks select new HoldingsStatusModel () {
@@ -286,23 +327,16 @@ namespace Stockboy.Classes {
 		}// GetProfitLossList;
 
 
-		public static async Task<HoldingsData> Current (HttpContext context) {
+		public static async Task<HoldingsData> Current (HttpContext context, Boolean refresh = false) {
 
 			HoldingsData? holdings_data = new (context);
+
+			holdings_data.refreshing = refresh;
 			
 			await holdings_data.LoadStockPrices ();
 
-			holdings_data.activity = context.Session.GetSessionData ("activity", holdings_data.GetActivityData);
-			holdings_data.holdings_status = context.Session.GetSessionData ("status", holdings_data.GetHoldingsStatus);
-
-
-var test_data = (from act in holdings_data.activity where 
-	act.broker_id == new Guid ("80e43ec8-016a-453d-b4ff-80d9d79a2bc7") &&
-	act.ticker_id == new Guid ("0953e82c-1178-4576-8438-2fdb28e79ea6")
-	select act
-).ToList ();
-
-
+			holdings_data.activity = refresh ? holdings_data.GetActivityData () : context.Session.GetSessionData ("activity", holdings_data.GetActivityData);
+			holdings_data.holdings_status = refresh ? holdings_data.GetHoldingsStatus () : context.Session.GetSessionData ("status", holdings_data.GetHoldingsStatus);
 
 			holdings_data.activity = (from act in holdings_data.activity
 				join hst in holdings_data.holdings_status! on act.ticker_id equals hst.ticker_id into jst

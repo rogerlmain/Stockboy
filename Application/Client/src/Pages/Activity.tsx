@@ -16,11 +16,11 @@ import { Component, createRef, RefObject } from "react"
 
 const properties: DataTableProperties = {
 	keys: ["id"],
-	fields: new DataKeyArray (["transaction_date", "broker", "company", {symbol: "ticker"}, "transaction_type", "quantity", "cost_price", "total_cost", "total_quantity"]),
-	date_fields: ["transaction_date"],
+	fields: new DataKeyArray ([{ date: "transaction_date"}, "broker", "company", "ticker", "transaction_type", "quantity", "price", "cost", "total_quantity", "total_cost"]),
+	date_fields: ["date"],
 	numeric_fields: ["quantity", "total_quantity"],
-	currency_fields: ["amount", "total_amount", "price"],
-//	rounded_fields: [{ cost: 2 }]
+	currency_fields: ["price", "cost", "total_cost"],
+	rounded_fields: [{ quantity: 4}, { total_quantity: 4}, { cost: 2 }]
 }// properties;
 
 

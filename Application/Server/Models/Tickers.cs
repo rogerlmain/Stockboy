@@ -1,7 +1,6 @@
 ﻿namespace Stockboy.Models {
 
 	public class TickerTableModel: DataTableModel {
-		public required new Guid id { get; set; }
 		public required String symbol { get; set; }
 		public Decimal? price { get; set; } = null;
 		public int? volume { get; set; } = null;
