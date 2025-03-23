@@ -100,8 +100,8 @@ export default class TableFilters extends Component<TableFiltersProps, TableFilt
 					</div>
 
 					{isset (this.date_filter_field) ? <div className="somewhat-spaced-out column-centered row-block with-a-little-headspace">
-						<CheckboxDateFilter id="start_date" boundary={BoundaryType.lower} />
-						<CheckboxDateFilter id="end_date" boundary={BoundaryType.upper} />
+						<CheckboxDateFilter id="start_date" text="Start date" boundary={BoundaryType.lower} />
+						<CheckboxDateFilter id="end_date" text="End date" boundary={BoundaryType.upper} />
 					</div> : null}
 
 				</div>

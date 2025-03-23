@@ -9,6 +9,7 @@ import { ChangeEvent, Component, createRef, RefObject } from "react";
 
 class CheckboxDateFilterProps extends BaseModel {
 	public boundary: BoundaryType;
+	public text: string;
 }// CheckboxDateFilterProps;
 
 
@@ -56,7 +57,8 @@ export default class CheckboxDateFilter extends Component<CheckboxDateFilterProp
 
 	public static defaultProps: CheckboxDateFilterProps = {
 		id: null,
-		boundary: null
+		boundary: null,
+		text: null
 	}// CheckboxDateFilterState;
 
 
@@ -65,7 +67,7 @@ export default class CheckboxDateFilter extends Component<CheckboxDateFilterProp
 
 	public render () {
 		return <div className="row-centered row-block">
-			<label htmlFor="start_date" onClick={() => this.date_checkbox.current.click ()}>Start date</label>
+			<label htmlFor="start_date" onClick={() => this.date_checkbox.current.click ()}>{this.props.text}</label>
 			<input type="checkbox" className="with-a-little-right-space" ref={this.date_checkbox}
 				onChange={(event: ChangeEvent<HTMLInputElement>) => {
 					this.setState ({ use_date: event.currentTarget.checked }, () => this.set_date_filter ())

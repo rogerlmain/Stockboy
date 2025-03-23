@@ -62,16 +62,15 @@ namespace Stockboy.Controllers {
 		[Route ("SaveTicker")]
 		public async Task<IActionResult> SaveTicker ([FromBody] UserTickerRecord parameters) {
 
-			ValueModel? ticker = JsonConvert.DeserializeObject<ValueModel> (parameters.ticker);
-
-			if (ticker is null) throw new Exception ("Ticker is undefined");
+			if (parameters.ticker is null) throw new Exception ("Ticker is undefined");
 
 			StockStatistics statistics = await HoldingsData.GetStockStatistics (http_context, parameters.symbol);
 
 			if ((statistics.price is not null) && (statistics.history is not null)) {
 
-				TickerTableModel ticker_table = new () { 
-					name = ticker!.value,
+				TickerTableModel ticker_table = new () {
+					id = parameters.id,
+					name = parameters.ticker,
 					symbol = parameters.symbol
 				};
 
@@ -84,14 +83,14 @@ namespace Stockboy.Controllers {
 
 			UserTickerTableRecord user_ticker = new () {
 				user_id = parameters.user_id,
-				ticker_id = ticker!.id,
+				ticker_id = parameters.id,
 			};
 
 			data_context.user_tickers.Save (user_ticker);
 
 			return new JsonResult (new {
-				id = ticker.id,
-				name = ticker.value,
+				id = parameters.id,
+				name = parameters.ticker,
 			});
 
 		}// SaveTicker;

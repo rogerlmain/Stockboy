@@ -84,10 +84,16 @@ export default class EditTickersForm extends Component<TickersFormProps, Tickers
 
 	public render () {
 		return <div className="two-column-grid">
+{/*
+<div className="outlined">
 			<EditList id="tickers_list" name="ticker" data={this.ticker_list ()} 
 				value={debugging ? new IDModel (null, test_data.name) : (isset (this.props.data) ? new IDModel (this.props.data.id, this.props.data.name) : null)}
 				onChange={(value: IDModel) => this.update_symbol (value)}>
 			</EditList>
+</div>
+*/}
+			<input type="hidden" name="id" value={this.props.data.id} />
+			<input type="text" name="ticker" defaultValue={debugging ? test_data.name : (isset (this.props.data) ? this.props.data.name : String.Empty)} />
 			<input type="text" name="symbol" placeholder="Symbol" style={{ width: "4rem" }} defaultValue={debugging ? test_data.symbol : this.state.symbol} />
 		</div>
 	}// render;
