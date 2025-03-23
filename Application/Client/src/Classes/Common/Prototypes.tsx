@@ -188,7 +188,7 @@ Array.prototype.assign = function (template: AnyArray, data_type: any /* Depreca
 
 	if (is_null (data_type)) data_type = this ["type"];
 
-	template.forEach (item => {
+	if (isset (template)) template.forEach (item => {
 		if (is_null (result)) result = new Array<any> ();
 		result.push (not_set (data_type) ? new Object ().assign (item) : new data_type ().assign (item));
 	});

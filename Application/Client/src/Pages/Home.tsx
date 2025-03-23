@@ -20,11 +20,12 @@ export type HoldingsList = Array<HoldingsModel>
 
 const properties: DataTableProperties = {
 	keys: ["ticker_id", "broker_id"],
-	fields: new DataKeyArray (["broker", "company", {symbol: "Ticker"}, "status", "quantity", "current_price", { current_purchase_cost: "Purchase Value", value: "Current Value" }]),
+	fields: new DataKeyArray (["broker", "company", {symbol: "Ticker"}, "status", "quantity", "current_price", { current_purchase_cost: "Purchase Value", value: "Current Value", profit: "Profit / Loss" }]),
+	highlighted_fields: ["profit"],
 	numeric_fields: ["quantity"],
-	currency_fields: ["current_price", "current_purchase_cost", "value"],
-	rounded_fields: [{ value: 2 }],
-	total_fields: ["current_purchase_cost", "value"],
+	currency_fields: ["current_price", "current_purchase_cost", "value", "profit"],
+	rounded_fields: [{ value: 2 }, { profit: 2 }],
+	total_fields: ["current_purchase_cost", "value", "profit"],
 }// properties;
 
 

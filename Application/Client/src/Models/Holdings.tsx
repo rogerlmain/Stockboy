@@ -16,6 +16,7 @@ export class HoldingsModel extends StockModel {
 	public volume: number;
 	public total_purchase_cost: number;
 	public current_purchase_cost: number;
+	public profit: number;
 	public total_sales_amount: number;
 	public value: number;
 	public last_updated: Date;
@@ -27,6 +28,7 @@ export class HoldingsModel extends StockModel {
 export class ProfitLossModel extends HoldingsModel {
 	public dividend_payout: number;
 	public value_profit: number;
+	public reinvestment_profit: number;
 	public overall_profit: number;
 }// ProfitLossModel;
 

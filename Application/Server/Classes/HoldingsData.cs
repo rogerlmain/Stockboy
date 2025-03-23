@@ -1,6 +1,8 @@
 ﻿global using GuidList = System.Collections.Generic.List<System.Guid>;
 global using IntegerList = System.Collections.Generic.List<int>;
 
+global using ActivityViewQueryable = System.Linq.IQueryable<Stockboy.Models.ActivityView>;
+
 
 using Stockboy.Models;
 
@@ -33,7 +35,7 @@ namespace Stockboy.Classes {
 		GuidList? DefunctStocks { get { return (from tck in data_context.tickers where tck.price == -1 select (Guid) tck.id!).ToList (); } }
 
 
-		private ActivityDataList? GetActivityData () {
+		private ActivityDataList? GetActivityData (string? transaction_type) {
 
 			ActivityDataList? activity = (from atv in data_context.activity_view 
 				where atv.transaction_type != TransactionTypes.dividend
@@ -69,14 +71,44 @@ namespace Stockboy.Classes {
 					continue;
 				}// if;
 
-				view.total_quantity = previous.total_quantity + view.quantity;
-				view.total_cost = previous.total_cost + (view.quantity * view.cost_price);
+				if (transaction_type is null || (view.transaction_type == transaction_type)) {
+					view.total_quantity = previous.total_quantity + view.quantity;
+					view.total_cost = previous.total_cost + (view.quantity * view.cost_price);
+				}// if;
 
 			}// if;
 
 			return activity;
 
 		}// GetActivityData;
+
+
+		private ActivityDataList? GetActivityData () => GetActivityData (null);
+
+
+		private DividendSummaryList GetDividendHoldings () {
+
+			ActivityViewQueryable dividend_list = (from dividends in data_context.activity_view 
+				where (dividends.transaction_type == TransactionTypes.dividend) &&
+					(dividends.transaction_date > (from activity in data_context.activity_view 
+						where (activity.transaction_type == TransactionTypes.sell)
+						select activity.transaction_date
+					).Max ())
+				select dividends
+			);
+
+			DividendSummaryList result = (from dividends in dividend_list
+				group dividends by new {dividends.broker_id, dividends.ticker_id} into totals
+				select new DividendSummary () {
+					broker_id = totals.Key.broker_id,
+					ticker_id = totals.Key.ticker_id,
+					payout = totals.Sum ((ActivityView activity) => activity.payment_amount) ?? 0
+				}
+			).ToList ();
+
+			return result;
+
+		}// GetDividendHoldings;
 
 
 		private HoldingsData (HttpContext context) {
@@ -201,6 +233,33 @@ namespace Stockboy.Classes {
 		public HoldingsStatusList? GetStatus { get { return holdings_status; } }
 
 
+		public HoldingsModelList? GetActivityList (string? transaction_type = null) {
+
+			ActivityDataList? activity_list = (transaction_type is null) ? activity : GetActivityData (transaction_type);
+
+			HoldingsModelList? result = (activity_list is null) ? null : (from act in activity_list
+				group act by new {
+					act.broker_id,
+					act.ticker_id
+				} into gac
+				select gac.Last () into lga
+				select new HoldingsModel () {
+					broker_id = lga.broker_id,
+					ticker_id = lga.ticker_id,
+  					broker = lga.broker,
+					company = lga.company,
+					symbol = lga.symbol,
+					quantity = lga.total_quantity ?? 0,
+					current_price = lga.current_price,
+					current_purchase_cost = lga.total_cost
+				}// select;
+			).ToList ();
+
+			return (result?.Count == 0) ? null : result;
+
+		}// ActivityList;
+
+
 		public static int? GetDividendFrequency (HistoricalStockList? history) {
 
 			IntegerList? frequencies = null;
@@ -315,16 +374,47 @@ namespace Stockboy.Classes {
 		}// GetHoldingsStatus;
 
 
+		public ProfitLossModelList? GetProfitAndLoss () {
+
+			HoldingsModelList? reinvestment_list = GetActivityList (TransactionTypes.reinvestment);
+			DividendSummaryList dividend_holdings = GetDividendHoldings ();
+
+			ProfitLossModelList result = (from buys in GetActivityList (TransactionTypes.buy)
+				join reinvestments in reinvestment_list on new {
+					buys.broker_id,
+					buys.ticker_id
+				} equals new {
+					reinvestments.broker_id,
+					reinvestments.ticker_id
+				}
+				join dividends in dividend_holdings on new {
+					buys.broker_id,
+					buys.ticker_id
+				} equals new {
+					dividends.broker_id,
+					dividends.ticker_id
+				}
+				select new ProfitLossModel () {
+					broker = buys.broker,
+					company = buys.company,
+					symbol = buys.symbol,
+					sales_profit = 0,		// FIX THIS - GET SALES SUBTRACTED FROM COSTS
+					dividend_payout = dividends.payout,
+					value_profit = buys.profit,
+					reinvestment_profit = buys.profit + reinvestments.profit,
+					overall_profit = buys.profit + reinvestments.profit + dividends.payout
+				}
+			).ToList ();
+
+			return result;
+
+		}// GetProfitLossList;
+
+
 		public HoldingsModelList? HoldingsPriceList (StockDateModelList dates) {
 			// DO MORE HERE
 			return null;
 		}// HoldingsPriceList;
-
-
-		public ProfitLossModelList? GetProfitLossList () {
-			// DO MORE HERE
-			return null;		
-		}// GetProfitLossList;
 
 
 		public static async Task<HoldingsData> Current (HttpContext context, Boolean refresh = false) {
@@ -335,7 +425,7 @@ namespace Stockboy.Classes {
 			
 			await holdings_data.LoadStockPrices ();
 
-			holdings_data.activity = refresh ? holdings_data.GetActivityData () : context.Session.GetSessionData ("activity", holdings_data.GetActivityData);
+			holdings_data.activity = refresh ? holdings_data.GetActivityData () : context.Session.GetSessionData<ActivityDataList> ("activity", holdings_data.GetActivityData);
 			holdings_data.holdings_status = refresh ? holdings_data.GetHoldingsStatus () : context.Session.GetSessionData ("status", holdings_data.GetHoldingsStatus);
 
 			holdings_data.activity = (from act in holdings_data.activity

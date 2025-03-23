@@ -40,6 +40,8 @@ namespace Stockboy.Controllers.Abstract {
 	[TypeFilter (typeof (ControllerExceptionFilter))]
 	public abstract class BaseController: Controller {
 
+		protected JsonResult NullData { get { return new (null); } }
+
 		protected HttpContext http_context { get {  return HttpContext; } }
 		protected DataContext data_context { get { return service_provider.GetRequiredService<DataContext> (); } }
 

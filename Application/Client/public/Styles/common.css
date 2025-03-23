@@ -268,6 +268,7 @@ div.title {
 }
 
 div.warning {
+  color: #A00;
   font-weight: bold;
   font-size: 9pt;
   margin-bottom: 1rem;
@@ -278,10 +279,6 @@ div.row-divider {
   margin: 1rem 0;
   border: none;
   border-top: solid 1px var(--border-color);
-}
-
-div.warning {
-  color: #A00;
 }
 
 /**** Button Styles ****/

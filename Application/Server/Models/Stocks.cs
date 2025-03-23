@@ -42,6 +42,7 @@ namespace Stockboy.Models {
 		public decimal quantity { get; set; } = Decimal.Zero;
 		public decimal? current_price { get; set; } = null;
 		public decimal? current_purchase_cost { get; set; } = Decimal.Zero;
+		public decimal? profit { get; set; }
 		public decimal? value { get; set; } = null;
 	}// HoldingsModel;
 

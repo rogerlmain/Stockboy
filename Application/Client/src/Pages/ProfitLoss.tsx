@@ -14,12 +14,13 @@ const properties: DataTableProperties = {
 		{ sales_profit: "Sales Profit/Loss"}, 
 		{ dividend_payout: "Dividend Payout" },
 		"value_profit",
+		"reinvestment_profit",
 		{ overall_profit: "Overall Profit/Loss" }
 	]),
-	currency_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],
-	total_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],
-	highlighted_fields: ["sales_profit", "dividend_payout", "value_profit", "overall_profit"],
-	rounded_fields: [{ sales_profit: 2 }, { dividend_payout: 2 }, { value_profit: 2 }, { overall_profit: 2 }]
+	currency_fields: ["sales_profit", "dividend_payout", "value_profit", "reinvestment_profit", "overall_profit"],
+	total_fields: ["sales_profit", "dividend_payout", "value_profit", "reinvestment_profit", "overall_profit"],
+	highlighted_fields: ["sales_profit", "dividend_payout", "value_profit", "reinvestment_profit", "overall_profit"],
+	rounded_fields: [{ sales_profit: 2 }, { dividend_payout: 2 }, { value_profit: 2 }, { reinvestment_profit: 2 }, { overall_profit: 2 }]
 }// properties;
 
 
