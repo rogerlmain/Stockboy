@@ -1,4 +1,5 @@
-﻿using Stockboy.Models;
+﻿using Stockboy.Classes.Extensions;
+using Stockboy.Models;
 
 
 namespace Stockboy.Classes {

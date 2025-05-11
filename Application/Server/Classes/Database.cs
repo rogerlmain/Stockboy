@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using Stockboy.Classes.Extensions;
 using Stockboy.Models;
 using System.Data;
 

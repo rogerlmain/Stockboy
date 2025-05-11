@@ -1,4 +1,6 @@
-﻿namespace Stockboy.Models {
+﻿using System.Security.Cryptography;
+
+namespace Stockboy.Models {
 
 	public class DividendRequestModel: DividendsTableRecord {
 		public Boolean reinvested { get; set; } = false;
@@ -54,6 +56,24 @@
 		public required DividendPayoutList payouts { get; set; }
 		public required Decimal total { get; set; }
 	}// DividendPayout;
+
+
+	public class GraphData {
+		public required String description { get; set; }
+		public required Decimal value { get; set; }
+	}// GraphData;
+
+
+	public class DateRangeParameters {
+ 		public DateTime? start_date { get; set; }
+		public DateTime? end_date { get; set; }
+	}// DateRangeParameters;
+
+
+	public class DividendTotalsModel: DateRangeParameters {
+		public required String increment { get; set; }
+		public Guid? ticker_id { get; set; } = null;
+	}// DividendTotalsModel;
 
 
 }// Stockboy.Models;

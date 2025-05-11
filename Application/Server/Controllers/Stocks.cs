@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stockboy.Controllers.Abstract;
 using Stockboy.Classes;
+using Stockboy.Classes.Extensions;
 using Stockboy.Models;
 
 

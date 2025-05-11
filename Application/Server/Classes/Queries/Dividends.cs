@@ -11,8 +11,8 @@ namespace Stockboy.Classes.Queries {
 				dvd.ticker_id,
 			} into dvg
 			select new DividendSummary () {
-				broker_id = dvg.Key.broker_id,
-				ticker_id = dvg.Key.ticker_id,
+				broker_id = (Guid) dvg.Key.broker_id!,
+				ticker_id = (Guid) dvg.Key.ticker_id!,
 				payout = dvg.Sum (div => div.amount_per_share * div.share_quantity)
 			};
 		}// GetDividendTotals;

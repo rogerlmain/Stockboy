@@ -1,78 +1,52 @@
-import StockboyAPI from "Classes/StockboyAPI";
-import TickerSelector from "Controls/TickerSelector";
+import Optional from "Controls/Common/Optional";
+import DividendDetailsPage from "Pages/Details/Dividends";
+import StockDetailsPage from "Pages/Details/Stocks";
 
-import { StockDetailsModel } from "Models/Holdings";
 import { Component } from "react";
 
 
-class StockDetailsPageProps {}
+enum DetailsSelection { stocks, dividends }
 
 
-class StockDetailsPageState {
-	public broker_id: string = null;
-	public ticker_id: string = null;
-	public stock_details: StockDetailsModel = null;
-}// StockDetailsPageState;
+class DetailsPageState {
+	public selection: DetailsSelection = null;
+}// DetailsPageState;
 
 
-export default class StockDetailsPage extends Component<StockDetailsPageProps, StockDetailsPageState> {
+export default class DetailsPage extends Component<Object, DetailsPageState> {
 
-	private select_stock () {
-		new StockboyAPI ().fetch_data ("GetStockDetails", { 
-			broker_id: this.state.broker_id, 
-			ticker_id: this.state.ticker_id 
-		}).then (result => this.setState ({ stock_details: new StockDetailsModel ().assign (result) }));
-	}// select_stock;
-
-
-	/********/
-
-
-	public state: StockDetailsPageState = new StockDetailsPageState ();
+	public state: DetailsPageState = new DetailsPageState ();
 
 
 	public render () {
-		return <div>
+		return <div className="full-size flex-grid">
 		
-			<TickerSelector allow_all={false}
-				onBrokerChange={(broker_id: string) => this.setState ({ broker_id }, this.select_stock)}
-				onTickerChange={(ticker_id: string) => this.setState ({ ticker_id }, this.select_stock)}>
-			</TickerSelector>
-
-			{not_empty (this.state.stock_details) ? <div className="column-block with-lotsa-headspace">
-
-				<div className="centered row-block title">{this.state.stock_details.company}</div>
+			<div className="spaced-out top-aligned full-page row-block">
 
 				<div className="two-column-grid">
 
-					<label>Brokers</label>
-					<div className="column-block">{this.state.stock_details.brokers.map ((broker: string) => <div>{broker}</div>)}</div>
+					<input type="radio" id="stock_selection" name="details_selection" value={DetailsSelection.stocks} 
+						onClick={() => this.setState ({ selection: DetailsSelection.stocks })} />
+					<label htmlFor="stock_selection" className="left-aligned">Stocks</label>
 
-					<label>Ticker</label>
-					<div>{this.state.stock_details.ticker}</div>
-
-					<label>First Purchased</label>
-					<div>{this.state.stock_details.first_purchased as string}</div>
-
-					<label>Last Purchased</label>
-					<div>{this.state.stock_details.last_purchased as string}</div>
-
-					<label>First Dividend</label>
-					<div>{this.state.stock_details.first_dividend_date as string}</div>
-
-					<label>Last Dividend</label>
-					<div>{this.state.stock_details.last_dividend_date as string}</div>
-
-					<label>Next Dividend</label>
-					<div>{this.state.stock_details.next_dividend_date as string}</div>
-
-					<label>Dividend Freqency</label>
+					<input type="radio" id="dividend_selection" name="details_selection" value={DetailsSelection.dividends} 
+						onClick={() => this.setState ({ selection: DetailsSelection.dividends })}/>
+					<label htmlFor="dividend_selection" className="left-aligned">Dividends</label>
 
 				</div>
-			
-			</div> : null}
-			
+
+				<Optional condition={this.state.selection == DetailsSelection.dividends}><DividendDetailsPage /></Optional>
+				<Optional condition={this.state.selection == DetailsSelection.stocks}><StockDetailsPage /></Optional>
+
+			</div>
+
 		</div>
 	}// render;
 
-}// StockDetailsStockDetailsPage;
+
+	public constructor (props: Object) {
+		super (props);
+		this.state.selection = DetailsSelection.dividends;
+	}// constructor;
+
+}// DetailsPage;

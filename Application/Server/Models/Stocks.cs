@@ -1,6 +1,7 @@
-﻿global using StockDateModelList = System.Collections.Generic.List<Stockboy.Models.StockDateModel>;
-global using HoldingsModelList = System.Collections.Generic.List<Stockboy.Models.HoldingsModel>;
+﻿global using HoldingsModelList = System.Collections.Generic.List<Stockboy.Models.HoldingsModel>;
 global using HoldingsStatusList = System.Collections.Generic.List<Stockboy.Models.HoldingsStatusModel>;
+global using StockDateModelList = System.Collections.Generic.List<Stockboy.Models.StockDateModel>;
+global using StockValueList = System.Collections.Generic.List<Stockboy.Models.StockValue>;
 
 
 using Microsoft.EntityFrameworkCore;
@@ -32,9 +33,7 @@ namespace Stockboy.Models {
 
 
 	[Keyless]
-	public class HoldingsModel {
-		public Guid? broker_id { get; set; } = null;
-		public Guid? ticker_id { get; set; } = null;
+	public class HoldingsModel: BaseStockModel {
 		public string broker { get; set; } = String.Empty;
 		public string company { get; set; } = String.Empty;
 		public string symbol { get; set; } = String.Empty;
@@ -69,6 +68,19 @@ namespace Stockboy.Models {
 		public DateTime last_dividend_date { get; set; } = DateTime.MinValue;
 		public DateTime? next_dividend_date { get; set; } = DateTime.MinValue;
 	}// StockDetailsModel;
+
+
+	public class StockTotal: BaseStockModel {
+		public required String company { get; set; }
+		public required String broker { get; set; }
+		public decimal amount { get; set; }
+	}// StockTotal;
+
+
+	public class StockValue: BaseStockModel {
+		public decimal cost { get; set; }
+		public decimal quantity { get; set; }
+	}// StockValue;
 
 
 	public class HomeModel {

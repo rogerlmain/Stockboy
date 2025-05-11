@@ -1,74 +1,8 @@
-﻿/**** Debugging Styles ****/
-*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined {
-  border: solid 1px red;
-}
-
-*.blue-outlined {
-  border: solid 1px blue;
-}
-
-*.green-outlined {
-  border: solid 1px green;
-}
-
-div.test-grid div {
-  align-items: center;
-  width: 200px;
-}
-
-/**** Tag Styles ****/
-/**** Text Styles ****/
-div.bold-text {
-  font-weight: bold;
-}
-
-/**** Display Styles ****/
-*.container {
-  display: contents;
-}
-
-*.hidden {
-  display: none !important;
-}
-
-/**** Layout Styles ****/
-div.grid-stack {
-  display: grid;
-  grid-template-columns: min-content;
-}
-
-div.grid-stack > * {
-  grid-area: 1/1;
-}
-
-*.full-width, div.button-bar, html, body, .full-page {
-  width: 100%;
-}
-
-*.full-height, html, body, .full-page {
-  height: 100%;
-}
-
-*.full-page {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-}
-
-*.full-size {
-  flex-grow: 1;
-  overflow: hidden;
-}
-
-*.scrollable {
-  overflow: hidden;
-}
-
-*.column-block {
+﻿*.column-block {
   display: flex;
   flex-direction: column;
 }
-*.column-block.a-little-spaced-out, div.column-block.button-bar {
+*.column-block.a-little-spaced-out, div.column-block.button-bar, *.column-block.slightly-spaced-out {
   row-gap: 0.25rem;
 }
 *.column-block.somewhat-spaced-out {
@@ -81,7 +15,7 @@ div.grid-stack > * {
   row-gap: 2rem;
 }
 *.column-block.totally-spaced-out {
-  align-content: space-between;
+  justify-content: space-between;
 }
 *.column-block.left-aligned {
   align-items: flex-start;
@@ -101,13 +35,22 @@ div.grid-stack > * {
 *.column-block.bottom-aligned {
   justify-content: flex-end;
 }
+*.column-block.fill-width, *.column-block.fill-size {
+  flex-grow: 1;
+}
+*.column-block.fill-height, *.column-block.fill-size {
+  align-self: stretch;
+}
+*.column-block.scrolling {
+  overflow-y: auto;
+}
 
 /* column-block */
 *.row-block, div.button-bar, *.flex-block {
   display: flex;
   flex-direction: row;
 }
-*.row-block.a-little-spaced-out, div.button-bar, *.flex-block.a-little-spaced-out {
+*.row-block.a-little-spaced-out, div.row-block.button-bar, div.button-bar, *.row-block.slightly-spaced-out, *.flex-block.a-little-spaced-out, div.flex-block.button-bar, *.flex-block.slightly-spaced-out {
   column-gap: 0.25rem;
 }
 *.row-block.somewhat-spaced-out, div.somewhat-spaced-out.button-bar, *.flex-block.somewhat-spaced-out {
@@ -120,12 +63,12 @@ div.grid-stack > * {
   column-gap: 2rem;
 }
 *.row-block.totally-spaced-out, div.totally-spaced-out.button-bar, *.flex-block.totally-spaced-out {
-  justify-content: space-between;
+  align-content: space-between;
 }
 *.row-block.left-aligned, div.left-aligned.button-bar, *.flex-block.left-aligned {
   justify-content: flex-start;
 }
-*.row-block.right-aligned, div.button-bar, *.flex-block.right-aligned {
+*.row-block.right-aligned, div.row-block.button-bar, div.button-bar, *.flex-block.right-aligned, div.flex-block.button-bar {
   justify-content: flex-end;
 }
 *.row-block.column-centered, div.column-centered.button-bar, *.flex-block.column-centered {
@@ -140,43 +83,47 @@ div.grid-stack > * {
 *.row-block.bottom-aligned, div.bottom-aligned.button-bar, *.flex-block.bottom-aligned {
   align-items: flex-end;
 }
-
-/* row-block */
-*.centered {
-  align-items: center;
-  justify-content: center;
+*.row-block.fill-width, div.fill-width.button-bar, *.row-block.fill-size, div.fill-size.button-bar, *.flex-block.fill-width, *.flex-block.fill-size {
+  align-self: stretch;
+}
+*.row-block.fill-height, div.fill-height.button-bar, *.row-block.fill-size, div.fill-size.button-bar, *.flex-block.fill-height, *.flex-block.fill-size {
+  flex-grow: 1;
+}
+*.row-block.scrolling, div.scrolling.button-bar, *.flex-block.scrolling {
+  overflow-x: auto;
 }
 
-*.wrappable {
-  white-space: normal;
+/* row-block */
+*.row-block.backwards, div.backwards.button-bar, *.column-block.backwards {
+  flex-direction: column-reverse;
 }
 
 /**** Margin Styles ****/
-*.with-some-left-space, .with-some-row-space, *.with-some-space {
+*.with-some-left-elbowroom, .with-some-row-space, *.with-some-space {
   margin-left: 0.5rem;
 }
 
-*.with-left-space, .with-row-space, *.with-with-space {
+*.with-left-elbowroom, .with-row-space, *.with-with-space {
   margin-left: 1rem;
 }
 
-*.with-lotsa-left-space, .with-lotsa-row-space, *.with-lotsa-space {
+*.with-lotsa-left-elbowroom, .with-lotsa-row-space, *.with-lotsa-space {
   margin-left: 2rem;
 }
 
-*.with-a-little-right-space {
+*.with-a-little-right-elbowroom {
   margin-right: 0.25rem;
 }
 
-*.with-some-right-space, .with-some-row-space, *.with-some-space {
+*.with-some-right-elbowroom, .with-some-row-space, *.with-some-space {
   margin-right: 0.5rem;
 }
 
-*.with-right-space, .with-row-space, *.with-with-space {
+*.with-right-elbowroom, .with-row-space, *.with-with-space {
   margin-right: 1rem;
 }
 
-*.with-lotsa-right-space, .with-lotsa-row-space, *.with-lotsa-space {
+*.with-lotsa-right-elbowroom, .with-lotsa-row-space, *.with-lotsa-space {
   margin-right: 2rem;
 }
 
@@ -208,22 +155,94 @@ div.grid-stack > * {
   margin-bottom: 2rem;
 }
 
-/**** Positioning Styles ****/
-*.relative {
+/**** Padding Styles ****/
+*.with-some-head-padding, .with-some-column-padding, *.somewhat-padded-cell, *.with-some-padding {
+  padding-top: 0.5rem;
+}
+
+*.with-head-padding, .with-column-padding, *.standard-padded-cell, *.with-padding {
+  padding-top: 1rem;
+}
+
+*.with-lotsa-head-padding, .with-lotsa-column-padding, *.lotsa-padded-cell, *.with-lotsa-padding {
+  padding-top: 2rem;
+}
+
+*.with-some-leg-padding, .with-some-column-padding, *.somewhat-padded-cell, *.with-some-padding {
+  padding-bottom: 0.5rem;
+}
+
+*.with-leg-padding, .with-column-padding, *.standard-padded-cell, *.with-padding {
+  padding-bottom: 1rem;
+}
+
+*.with-lotsa-leg-padding, .with-lotsa-column-padding, *.lotsa-padded-cell, *.with-lotsa-padding {
+  padding-bottom: 2rem;
+}
+
+*.with-some-left-elbow-padding, .with-some-elbow-padding, *.somewhat-padded-cell, *.with-some-padding {
+  padding-left: 0.5rem;
+}
+
+*.with-left-elbow-padding, .with-elbow-padding, *.standard-padded-cell, *.with-padding {
+  padding-left: 1rem;
+}
+
+*.with-lotsa-left-elbow-padding, .with-lotsa-elbow-padding, *.lotsa-padded-cell, *.with-lotsa-padding {
+  padding-left: 2rem;
+}
+
+*.with-some-right-elbow-padding, .with-some-elbow-padding, *.somewhat-padded-cell, *.with-some-padding {
+  padding-right: 0.5rem;
+}
+
+*.with-right-elbow-padding, .with-elbow-padding, *.standard-padded-cell, *.with-padding {
+  padding-right: 1rem;
+}
+
+*.with-lotsa-right-elbow-padding, .with-lotsa-elbow-padding, *.lotsa-padded-cell, *.with-lotsa-padding {
+  padding-right: 2rem;
+}
+
+/**** Charts and Graphs ****/
+div.legend-color-block {
+  width: 1rem;
+  height: 1rem;
+  border: solid 1px black;
+}
+
+div.bar-graph {
+  height: 12rem;
+  border-left: solid 1px black;
+  border-bottom: solid 1px black;
   position: relative;
 }
-
-*.absolute {
-  position: absolute;
+div.bar-graph div.bar-container {
+  width: 2rem;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin: 0 0.25rem;
+}
+div.bar-graph div.bar-container div.bar-entry {
+  width: 100%;
+  border: solid 1px black;
+  background-color: #ACF;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
-div.full-screen {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: 0;
+div.bar-marker {
+  width: 2rem;
+  margin: 0 0.25rem;
+  text-align: center;
+}
+
+div.padded-graph {
+  width: 0.5rem;
 }
 
 :root {
@@ -248,6 +267,12 @@ div.full-screen {
   white-space: nowrap;
   margin: 0;
   padding: 0;
+}
+
+/**** Layout Styles ****/
+*.shrink-wrapped {
+  width: min-content;
+  height: min-content;
 }
 
 /**** Tag Styles ****/
@@ -335,6 +360,9 @@ div[class*=-column-grid] label {
   align-items: center;
   justify-content: flex-end;
 }
+div[class*=-column-grid] label.left-aligned {
+  justify-content: flex-start;
+}
 div[class*=-column-grid] *.full-width, div[class*=-column-grid] html, div[class*=-column-grid] body, div[class*=-column-grid] .full-page, div[class*=-column-grid] div.button-bar {
   grid-column: 1/-1;
 }
@@ -394,6 +422,99 @@ img.eyecandy .small {
 }
 img.eyecandy .medium {
   height: 1.2rem;
+}
+
+/**** Debugging Styles ****/
+*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined {
+  border: solid 1px red;
+}
+
+*.blue-outlined {
+  border: solid 1px blue;
+}
+
+*.green-outlined {
+  border: solid 1px green;
+}
+
+div.test-grid div {
+  align-items: center;
+  width: 200px;
+}
+
+/**** Tag Styles ****/
+/**** Text Styles ****/
+div.bold-text {
+  font-weight: bold;
+}
+
+/**** Display Styles ****/
+*.container {
+  display: contents;
+}
+
+*.hidden {
+  display: none !important;
+}
+
+/**** Layout Styles ****/
+div.grid-stack {
+  display: grid;
+  grid-template-columns: min-content;
+}
+
+div.grid-stack > * {
+  grid-area: 1/1;
+}
+
+*.full-width, div.button-bar, html, body, .full-page {
+  width: 100%;
+}
+
+*.full-height, html, body, .full-page {
+  height: 100%;
+}
+
+*.full-page {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+*.full-size {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+*.scrollable {
+  overflow: hidden;
+}
+
+*.centered {
+  align-items: center;
+  justify-content: center;
+}
+
+*.wrappable {
+  white-space: normal;
+}
+
+/**** Positioning Styles ****/
+*.relative {
+  position: relative;
+}
+
+*.absolute {
+  position: absolute;
+}
+
+div.full-screen {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
 }
 
 /********/

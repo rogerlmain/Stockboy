@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Stockboy.Classes;
+using Stockboy.Classes.Extensions;
 using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 

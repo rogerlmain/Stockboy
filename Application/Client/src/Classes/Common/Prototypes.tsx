@@ -29,6 +29,7 @@ declare global {
 		current_date (): Date;
 		earlier (value: Date);
 		format (date_value: StringDate, format?: DateFormats): string;
+		isDate (candidate: any): boolean;
 		later (value: Date);
 		month_name (month: number): string;
 		today (format?: DateFormats): string;
@@ -115,6 +116,7 @@ declare global {
 		get GetTypeName (): string;
 		get Keys (): StringArray;
 		get NoData (): boolean;
+		get Pristine (): boolean;
 		get Replica (): any;
 
 	}// Object;
@@ -347,6 +349,9 @@ Date.prototype.appended_day = function () {
 	}// switch;
 	
 }// appended_day;
+
+
+Date.isDate = function (candidate: any): boolean { return candidate instanceof Date }
 
 
 Date.prototype.format = function (template) {
@@ -635,6 +640,17 @@ Object.defineProperties (Object.prototype, {
 
 	Keys: { get: function (): StringArray { return Object.keys (this) } },
 	NoData: { get: function (): boolean { return this.hasKey ("data") && (this.data == no_data) } },
+
+	Pristine: { get: function (): boolean {
+
+		for (let key of this.Keys) {
+			if (Object.isObject (key) && is_assigned (this [key])) return false;
+		}// for;
+
+		return true;
+
+	}},
+
 	Replica: { get: function (): any { return new (Object.getPrototypeOf (this).constructor) () } },
 
 });

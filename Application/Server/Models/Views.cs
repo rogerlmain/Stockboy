@@ -23,7 +23,7 @@ namespace Stockboy.Models {
 
 
 	public class ActivityData: ActivityView {
-		public decimal? cost { get; set; } = null;
+		//public decimal? cost { get; set; } = null;
 		public decimal? total_quantity { get; set; } = null;
 		public decimal? total_cost { get; set; } = null;
 		public decimal? current_value { get; set; } = null;

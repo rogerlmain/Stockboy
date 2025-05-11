@@ -1,0 +1,65 @@
+*.column-block {
+
+	display: flex;
+	flex-direction: column; 
+
+	&.a-little-spaced-out, &.slightly-spaced-out { row-gap: 0.25rem }
+	&.somewhat-spaced-out { row-gap: 0.5rem }
+	&.spaced-out { row-gap: 1rem }
+	&.very-spaced-out { row-gap: 2rem }
+	&.totally-spaced-out { justify-content: space-between }
+
+	&.left-aligned { align-items: flex-start }
+	&.right-aligned { align-items: flex-end }
+
+	&.column-centered { align-items: center }
+	&.row-centered { justify-content: center }
+
+	&.top-aligned { justify-content: flex-start }
+	&.bottom-aligned { justify-content: flex-end }
+
+	&.fill-width { flex-grow: 1 }
+	&.fill-height { align-self: stretch }
+
+	&.fill-size { @extend .fill-width, .fill-height }
+
+	&.scrolling { overflow-y: auto }
+
+}/* column-block */
+
+
+*.row-block, *.flex-block {
+
+	display: flex;
+	flex-direction: row; 
+
+	&.a-little-spaced-out, &.slightly-spaced-out { column-gap: 0.25rem }
+	&.somewhat-spaced-out { column-gap: 0.5rem }
+	&.spaced-out { column-gap: 1rem }
+	&.very-spaced-out { column-gap: 2rem }
+	&.totally-spaced-out { align-content: space-between }
+
+	&.left-aligned { justify-content: flex-start }
+	&.right-aligned { justify-content: flex-end }
+
+	&.column-centered { justify-content: center }
+	&.row-centered { align-items: center }
+
+	&.top-aligned { align-items: flex-start }
+	&.bottom-aligned { align-items: flex-end }
+
+	&.fill-width { align-self: stretch }
+	&.fill-height { flex-grow: 1 }
+
+	&.fill-size { @extend .fill-width, .fill-height }
+
+	&.scrolling { overflow-x: auto }
+
+}/* row-block */
+
+
+*.row-block, *.column-block {
+	&.backwards { flex-direction: column-reverse }
+}// *.row-block, *.column-block;
+
+

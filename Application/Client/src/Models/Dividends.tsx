@@ -1,7 +1,19 @@
+import TypedArray from "Classes/TypedArray";
 import { TypeSafe, DateType, StockModel } from "Models/Abstract/BaseModels";
 
 
 type DividendPayoutList = Array<DividendPayoutItem>
+
+
+export enum Period {
+	weekly = "weekly",
+	monthly = "monthly",
+	yearly = "yearly"
+}// Period;
+
+
+export class GraphDataList extends TypedArray { public constructor () { super (GraphData) } }
+
 
 class DividendPaymentModel {
 	public company: string = null;
@@ -74,3 +86,25 @@ export class DividendPayout {
 	public payouts: DividendPayoutList = null;
 	public total: number = null;
 }// DividendPayout;
+
+
+export class GraphData {
+	public description: string = null;
+	public value: number = null;
+}// GraphData;
+
+
+export class CompanyPercentages {
+	[index: string]: GraphDataList;
+}// CompanyPercentages;
+
+
+export class DateRangeParameters {
+	public start_date: Date = null;
+	public end_date: Date = null;
+}// DateRangeParameters;
+
+
+export class DividendTotalsParameters extends DateRangeParameters {
+	public increment: Period = null;
+}// DividendTotalsParameters;

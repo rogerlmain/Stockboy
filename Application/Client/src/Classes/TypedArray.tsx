@@ -3,6 +3,14 @@ export default class TypedArray extends Array {
 	public type: any;
 
 
+	public assign (values: AnyArray | Object): typeof this {
+		this.clear ();
+		if (!Array.isArray (values)) values = [values];
+		(values as AnyArray).forEach ((value: any) => this.push (new this.type ().assign (value)));
+		return this;
+	};// assign;
+
+
 	public assign_values = (values: any) => {
 
 		this.clear ();

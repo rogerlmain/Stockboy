@@ -1,4 +1,4 @@
-import PopupWindow from "Controls/Common/Windows/PopupWindow";
+import PopupWindow from "Controls/Windows/PopupWindow";
 
 import MainPage from "Main";
 

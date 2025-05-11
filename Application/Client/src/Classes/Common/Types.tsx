@@ -1,13 +1,28 @@
-/* eslint-disable no-unused-vars */
-
 import { HoldingsStatus } from "Classes/Common/Globals";
 import { IBaseModel } from "Models/Abstract/BaseModels";
 import { ChangeEvent, ReactElement, MouseEvent, KeyboardEvent } from "react";
 
-export { };
+
+export {};
+
+
+namespace arrays {
+
+	export class ReactElementList extends Array<ReactElement> {}
+
+}// arrays;
 
 
 declare global {
+
+	namespace globalThis {
+
+		export import ReactElementList = arrays.ReactElementList;
+
+	}// globalThis;
+
+
+	type ReactElementContainer = ReactElement | ReactElementList;
 
 	type FormField = (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)
 	type FormFieldList = NodeListOf<FormField>
@@ -39,3 +54,5 @@ declare global {
 
 }// global;
 
+
+Object.assign (globalThis, arrays);

@@ -1,0 +1,66 @@
+/**** Margin Styles ****/
+
+
+*.with-some-left-elbowroom { margin-left: 0.5rem }
+*.with-left-elbowroom { margin-left: 1rem }
+*.with-lotsa-left-elbowroom { margin-left: 2rem }
+
+*.with-a-little-right-elbowroom { margin-right: 0.25rem }
+*.with-some-right-elbowroom { margin-right: 0.5rem }
+*.with-right-elbowroom { margin-right: 1rem }
+*.with-lotsa-right-elbowroom { margin-right: 2rem }
+
+*.with-some-row-space { @extend .with-some-left-elbowroom, .with-some-right-elbowroom }
+*.with-row-space { @extend .with-left-elbowroom, .with-right-elbowroom }
+*.with-lotsa-row-space { @extend .with-lotsa-left-elbowroom, .with-lotsa-right-elbowroom }
+
+*.with-a-little-headspace { margin-top: 0.25rem }
+*.with-some-headspace { margin-top: 0.5rem }
+*.with-headspace { margin-top: 1rem }
+*.with-lotsa-headspace { margin-top: 2rem }
+
+*.with-some-legroom { margin-bottom: 0.5rem }
+*.with-legroom { margin-bottom: 1rem }
+*.with-lotsa-legroom { margin-bottom: 2rem }
+
+*.with-some-room { @extend .with-some-legroom, .with-some-headspace }
+*.with-room { @extend .with-legroom, .with-headspace }
+*.with-lotsa-room { @extend .with-lotsa-legroom, .with-lotsa-headspace }
+
+*.with-some-space { @extend .with-some-row-space, .with-some-room }
+*.with-with-space { @extend .with-row-space, .with-room }
+*.with-lotsa-space { @extend .with-lotsa-row-space, .with-lotsa-room }
+
+
+/**** Padding Styles ****/
+
+
+*.with-some-head-padding { padding-top: 0.5rem }
+*.with-head-padding { padding-top: 1rem }
+*.with-lotsa-head-padding { padding-top: 2rem }
+
+*.with-some-leg-padding { padding-bottom: 0.5rem }
+*.with-leg-padding { padding-bottom: 1rem }
+*.with-lotsa-leg-padding { padding-bottom: 2rem }
+
+*.with-some-left-elbow-padding { padding-left: 0.5rem }
+*.with-left-elbow-padding { padding-left: 1rem }
+*.with-lotsa-left-elbow-padding { padding-left: 2rem }
+
+*.with-some-right-elbow-padding { padding-right: 0.5rem }
+*.with-right-elbow-padding { padding-right: 1rem }
+*.with-lotsa-right-elbow-padding { padding-right: 2rem }
+
+*.with-some-elbow-padding { @extend .with-some-left-elbow-padding, .with-some-right-elbow-padding }
+*.with-elbow-padding { @extend .with-left-elbow-padding, .with-right-elbow-padding }
+*.with-lotsa-elbow-padding { @extend .with-lotsa-left-elbow-padding, .with-lotsa-right-elbow-padding }
+
+*.with-some-column-padding { @extend .with-some-leg-padding, .with-some-head-padding }
+*.with-column-padding { @extend .with-leg-padding, .with-head-padding }
+*.with-lotsa-column-padding { @extend .with-lotsa-leg-padding, .with-lotsa-head-padding }
+
+*.somewhat-padded-cell, *.with-some-padding { @extend .with-some-elbow-padding, .with-some-column-padding }
+*.standard-padded-cell, *.with-padding { @extend .with-elbow-padding, .with-column-padding }
+*.lotsa-padded-cell, *.with-lotsa-padding { @extend .with-lotsa-elbow-padding, .with-lotsa-column-padding }
+
+

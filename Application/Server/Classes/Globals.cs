@@ -1,4 +1,7 @@
-﻿using Stockboy.Models;
+﻿using Stockboy.Classes.Extensions;
+using Stockboy.Models;
+using System.Globalization;
+
 
 namespace Stockboy.Classes {
 
@@ -37,6 +40,10 @@ namespace Stockboy.Classes {
 			}// setter;
 
 		}// UserRecord;
+
+
+		public static String month_name (int number) => CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName (number);
+		public static String month_abbreviation (int number) => CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName (number);
 
 	}// Globals;
 

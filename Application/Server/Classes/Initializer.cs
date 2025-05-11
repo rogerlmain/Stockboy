@@ -1,4 +1,5 @@
-﻿using Stockboy.Controllers.Abstract;
+﻿using Stockboy.Classes.Extensions;
+using Stockboy.Controllers.Abstract;
 using Stockboy.Models;
 
 

@@ -1,4 +1,6 @@
-@import "Common/Common.scss";
+@import "Layout/Blocks.scss";
+@import "Layout/Margins.scss";
+@import "Controls/Graphs.scss";
 
 
 :root {
@@ -31,6 +33,15 @@
 }
 
 
+/**** Layout Styles ****/
+
+
+*.shrink-wrapped {
+	width: min-content;
+	height: min-content;
+}// *.shrink-wrapped;
+
+
 /**** Tag Styles ****/
 
 
@@ -42,7 +53,7 @@ body {
 label {
 	font-weight: bold;
 	margin-right: 0.5rem;
-}
+}// label;
 
 
 /**** Text Styles ****/
@@ -114,7 +125,9 @@ div[class*="-column-grid"] {
 		flex-direction: row;
 		align-items: center;
 		justify-content: flex-end;
-	}
+
+		&.left-aligned { justify-content: flex-start }
+	}// label;
 
 	*.full-width { grid-column: 1/-1 }
 
@@ -178,6 +191,98 @@ img.eyecandy {
 	.small { height: 0.8rem }
 
 	.medium { height: 1.2rem }
+}
+
+
+/**** Debugging Styles ****/
+
+
+*.bordered, *.bordered *, *.semi-bordered, *.semi-bordered > *, *.outlined { border: solid 1px red }
+*.blue-outlined { border: solid 1px blue }
+*.green-outlined { border: solid 1px green }
+
+
+div.test-grid div { 
+	align-items: center;
+	width: 200px;
+}
+
+
+/**** Tag Styles ****/
+
+
+html, body, *.full-page { @extend .full-width, .full-height }
+
+
+/**** Text Styles ****/
+
+
+div.bold-text { font-weight: bold }
+
+
+/**** Display Styles ****/
+
+
+*.container { display: contents }
+
+*.hidden { display: none !important }
+
+/**** Layout Styles ****/
+
+
+div.grid-stack {
+	display: grid;
+	grid-template-columns: min-content;
+}
+
+div.grid-stack > * {
+	grid-area: 1 / 1;
+}
+
+
+*.full-width { width: 100% }
+*.full-height { height: 100% }
+
+
+*.full-page {
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+
+*.full-size {
+	flex-grow: 1;
+	overflow: hidden;
+}
+
+
+*.scrollable { overflow: hidden }
+
+
+*.centered {
+	align-items: center;
+	justify-content: center;
+}
+
+
+*.wrappable { white-space: normal }
+
+
+/**** Positioning Styles ****/
+
+
+*.relative { position: relative }
+*.absolute { position: absolute }
+
+
+div.full-screen {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: 0;
 }
 
 

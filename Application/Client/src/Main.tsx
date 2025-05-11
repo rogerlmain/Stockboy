@@ -2,7 +2,7 @@ import MainMenuItem from "Controls/MainMenuItem";
 
 import ActivityPage from "Pages/Activity";
 import BrokersPage from "Pages/Brokers";
-import StockDetailsPage from "Pages/Details";
+import DetailsPage from "Pages/Details";
 import DividendsPage from "Pages/Dividends";
 import HomePage from "Pages/Home";
 import ProfitLossPage from "Pages/ProfitLoss";
@@ -41,7 +41,7 @@ export default class MainPage extends Component {
 		switch (this.state.page) {
 			case PageType.home: return <HomePage />;
 			case PageType.activity: return <ActivityPage />;
-			case PageType.details: return <StockDetailsPage />;
+			case PageType.details: return <DetailsPage />;
 			case PageType.transactions: return <TransactionsPage />;
 			case PageType.dividends: return <DividendsPage />;
 			case PageType.splits: return <SplitsPage />;
@@ -90,7 +90,7 @@ export default class MainPage extends Component {
 
 	constructor (props: BaseProps) {
 		super (props);
-		this.state.page = PageType.home;
+		this.state.page = PageType.details;
 	}// constructor;
 
 }// MainPage;

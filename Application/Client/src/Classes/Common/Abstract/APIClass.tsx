@@ -1,4 +1,4 @@
-import ErrorWindow from "Controls/Common/Windows/ErrorWindow";
+import ErrorWindow from "Controls/Windows/ErrorWindow";
 
 
 window.addEventListener ("unhandledrejection", (event) => {

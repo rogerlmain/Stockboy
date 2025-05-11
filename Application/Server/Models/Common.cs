@@ -3,6 +3,13 @@
 
 namespace Stockboy.Models {
 
+	public static class Period {
+		public const String weekly = "weekly";
+		public const String monthly = "monthly";
+		public const String yearly = "yearly";
+	}// Period;
+
+
 	public interface IBaseModel {
 		[Key]
 		public Guid? id { get; set; }
@@ -19,10 +26,13 @@ namespace Stockboy.Models {
 	}// IDataModel;
 
 
-	public interface IStockModel: IBaseModel {
-        public Guid? broker_id { get; set; }
-        public Guid? ticker_id { get; set; }
-	}// StockModel;
+	public class BaseStockModel {
+		public String? broker { get; set; } = null;
+		public String? company { get; set; } = null;
+		public String? symbol { get; set; } = null;
+        public required Guid broker_id { get; set; }
+        public required Guid ticker_id { get; set; }
+	}// BaseStockModel;
 
 
 	public class BaseModel: IBaseModel {
@@ -43,10 +53,8 @@ namespace Stockboy.Models {
 	}// ValueModel;
 
 
-	public class StockModel {
+	public class StockModel: BaseStockModel {
 		public Guid? user_id { get; set; } = null;
-		public Guid? broker_id { get; set; } = null;
-		public Guid? ticker_id { get; set; } = null;
 	}// StockDataModel;
 
 
@@ -60,5 +68,6 @@ namespace Stockboy.Models {
 	public class TextModel {
 		public String text { get; set; } = String.Empty;
 	}// TextModel;
+
 
 }// Stockboy.Models;
